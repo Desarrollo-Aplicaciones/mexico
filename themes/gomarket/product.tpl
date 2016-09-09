@@ -487,8 +487,8 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 			</div> *}
 		
 			<div class="row-phone-number">
-				<div class="phone-number-city"><span class="txt-phone-number"><strong>{* Aquí el nombre de una ciudad especifica *}</strong>55 4170 8434</span></div>
-				<div class="ctn-btn-call"><a href="tel:5541708434"><div class="btn-call">Llamar</div></a></div>
+				<div class="phone-number-city"><span class="txt-phone-number"><strong>{* Aquí el nombre de una ciudad especifica *}</strong>55 6732 1100</span></div>
+				<div class="ctn-btn-call"><a href="tel:+5567321100"><div class="btn-call">Llamar</div></a></div>
 			</div>
 		</div>
 
