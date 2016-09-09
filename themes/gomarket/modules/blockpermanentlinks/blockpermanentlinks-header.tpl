@@ -27,7 +27,7 @@
 <div class="block_permanent_links">
 	<p id="header_link_contact">
 		<span>Línea de atención y ventas nacional sin costo:</span>
-		<a class="number" href="tel:+5541708434">55 4170 8434</a>
+		<a class="number" href="tel:+5567321100">55 6732 1100</a>
 	</p>
 </div>
 	<!--<li id="header_link_sitemap"><a href="{$link->getPageLink('sitemap')|escape:'html'}" title="{l s='sitemap' mod='blockpermanentlinks'}">{l s='sitemap' mod='blockpermanentlinks'}</a></li>-->
