@@ -1,0 +1,197 @@
+/************************ progressivediscounts ************************/
+#title_progressive_discounts{
+	font-family:Arial,Verdana,Helvetica,sans-serif;
+	font-size:1.6em;
+	color:#000;
+	float:left;
+	margin-top:16px;
+}
+
+#buttons_progressive_discounts{
+	float:right;
+}
+
+#block_body_progressive_discounts{
+	margin-top:10px;
+}
+
+#alert_empty_list_pd{
+	text-align:center;
+	background-color:#fff;
+	font-family:Arial,Verdana,Helvetica,sans-serif;
+	font-size:1.0em;
+	color:#000;
+}
+
+/************************ buttons_progressive_discounts ************************/
+.block_buttons{
+	text-align:center;
+	cursor:pointer;
+	cursor:hand;
+	color:#000;
+	margin-left:10px;
+}
+
+.img_buttons{
+	padding:0;
+}
+
+#block_save_discount, #block_cancel_discount{
+	float:left;
+}
+
+#block_add_discount{
+	width:100px;
+}
+
+/************************ list_progressive_discounts ************************/
+.list{
+	margin:10px;
+	max-height:300px;
+	overflow-y:scroll;
+}
+
+th{
+	font-weight:600;
+	padding:5px 15px;
+	text-align:center;
+}
+
+td{
+	padding:5px 15px;
+	text-align:center;
+}
+
+tr:nth-child(even){
+	background:#FFFFFF;
+}
+
+#button_view_detail{
+	cursor:pointer;
+	cursor:hand;
+}
+
+#detailProgresiveDiscount{
+	display:none;
+	width:auto;
+}
+
+#enabledPD{
+	cursor:pointer;
+	cursor:hand;
+}
+
+/************************ form_progressive_discounts ************************/
+.margin_field{
+	color:#7f7f7f;
+	padding:0 0 1em 260px;
+}
+
+.fields_numerics{
+	width:30px;
+}
+
+#field_id{
+	display:none;
+}
+
+#field_home_page_module{
+	display:none;
+}
+
+#fielsets_list_coupon{
+	background-color:#E0F2F7;
+}
+
+#fielsets_list_product{
+	background-color:#f7f8e0;
+}
+
+#block_error{
+	border:1px solid #cc0000;
+	padding:13px 5px 5px 40px;
+	min-height:28px;
+	margin:0 0 10px;
+	border-radius:15px;
+	color:#d8000c;
+	display:none;
+}
+
+/* cart_rules */
+#block_cart_rules{
+	font-size:0.9em;
+}
+
+#button_search_coupon{
+	cursor:pointer;
+	cursor:hand;
+	width:21px;
+}
+
+#list_cart_rules{
+	display:none;
+}
+
+#alert_coupon{
+	display:none;
+}
+
+#button_remove_coupon{
+	cursor:pointer;
+	cursor:hand;
+}
+
+/* products */
+#block_products{
+	font-size:0.9em;
+}
+
+#button_search_product{
+	cursor:pointer;
+	cursor:hand;
+	width:21px;
+}
+
+#list_products{
+	display:none;
+}
+
+#alert_product{
+	display:none;
+}
+
+#alert_productExistList{
+	display:none;
+}
+
+#alert_productExistPD{
+	display:none;
+}
+
+#button_remove_product{
+	cursor:pointer;
+	cursor:hand;
+}
+
+/************************ detail_progressive_discounts ************************/
+.titledetails{
+	border:1px solid #ccced7;
+	font-weight:700;
+	padding:0.2em 0.5em;
+}
+
+#detailcartrules{
+	background-color:#e0f2f7;
+}
+
+#detailproducts{
+	background-color:#f7f8e0;
+}
+
+#detailListCartRules{
+	background-color:#e0f2f7;
+}
+
+#detailListProducts{
+	background-color:#f7f8e0;
+}

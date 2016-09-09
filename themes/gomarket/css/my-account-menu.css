@@ -1,0 +1,55 @@
+
+.myaccount_lnk_list li	a{font-weight:600;font-size:12px;}
+.myaccount_lnk_list {
+	width:100%;
+	text-align: center;
+	display:inline-block;
+	text-align: center;
+	list-style-type:none;
+}
+.myaccount_lnk_list li {
+	width: 170px;
+	text-align: left;
+	margin:5px 12px;
+	line-height: 1;
+	display:inline-block;
+	position: relative;
+	background-color: #f0f0f0;
+	height: 36px;
+	font-weight:600;
+	vertical-align: top;
+}
+.myaccount_lnk_list li:after {
+	left: 100%;
+	top: 0%;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-style: solid;
+	border-color: transparent transparent transparent #f0f0f0;
+	border-width: 19px 0 18px 10px;
+}
+.img_cont{
+	vertical-align: middle;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	padding:10px;
+	background-color: white;
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+	border:2px solid #f0f0f0;
+	margin: -4px 0 -4px -8px;
+}
+.title_cont{
+	vertical-align: middle;
+	display: inline-block;
+	margin: 12px 0;
+}
+.myaccount_lnk_list img.icon{opacity:0.5}
+.myaccount_lnk_list li:hover img.icon{opacity:1}
+.mode_footer {top: 40px;}
+#footer .manufacturerContainer{display: none;}

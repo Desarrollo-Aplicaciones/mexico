@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <module>
+            <name>reportesfl</name>
+            <displayName><![CDATA[reportes a la medida para Farmalisto]]></displayName>
+            <version><![CDATA[0.1 Omega]]></version>
+            <description><![CDATA[Listado de reportes a la medida para Farmalisto Colombia.]]></description>
+            <author><![CDATA[Farmalisto]]></author>
+            <tab><![CDATA[administration]]></tab>
+            <is_configurable>1</is_configurable>
+            <need_instance>0</need_instance>
+	<limited_countries></limited_countries>
+        </module>

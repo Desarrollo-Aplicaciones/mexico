@@ -1,0 +1,25 @@
+/* block top user information */
+#header_user {float:left; padding-left: 12px;}
+
+#header_user p { color: #595a5e }
+#header_user span { font-weight: bold }
+#header_user ul {}
+#header_user ul#header_nav{margin:0;float:left;}
+#header_user ul.codespot_shopcart{position:relative;right:20px;top:25px;clear:left}
+#header_user li {
+	float: left;
+	white-space: nowrap;margin-right:7px;
+}
+#header_user li  a:hover{text-decoration:none}
+#header_user  a,
+#header_user_info a {font-weight:700;font-size:11px;color:#686868}
+#header_user  a:hover,
+#header_user_info a:hover{color:#ED2F15}
+#header_user #shopping_cart a{float:left;}
+#header_user #shopping_cart p.right{width:auto;float:left;padding:5px 0;text-transform:uppercase;font-size:12px;font-weight:700;text-align:left}
+#header_user #shopping_cart span.ajax_cart_total{clear:left;display:block;color:#dfa42d!important}
+#header_user #your_account,
+#header_user_info{float:left;margin:0 7px 5px 0;background: url(../../../img/bkg_line.jpg) no-repeat right center;padding-right:7px; }
+
+#header_user #shopping_cart{position:absolute;right:0;top:55px;margin:0;padding:5px 10px;height:30px;}
+#header_user #shopping_cart a{background: url(img/i_cart.png) no-repeat left 0;padding-top:7px;padding-left:50px;text-transform:uppercase;color:#575757;font:700 12px/20px "Open Sans",Helvetica,arial; height: 30px;}

@@ -1,0 +1,1 @@
+style css: background, color_text, color_bg, border_color, font

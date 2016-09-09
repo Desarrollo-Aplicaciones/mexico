@@ -1,0 +1,87 @@
+.blockproductscategory{position:relative;}
+h2.productscategory_h2 { background: url("../../../img/bkg_feater.jpg") repeat-x scroll left bottom #F9F9F9;
+    color: #3A3A3A;
+    font: 700 13px/1.35 "Open Sans",Helvetica,arial;
+    padding: 5px 20px 7px;
+    text-transform: uppercase;}
+
+#productscategory {overflow:hidden;padding:10px 0 50px}
+
+#productscategory_list {
+	overflow: hidden;
+	float: left;
+	width: 100%;
+}
+.three_column  .grid_8  #productscategory{position:relative;padding-top:25px}
+.caroufredsel_wrapper{margin:0!important;width:97%!important;}
+#productscategory_list ul {
+	list-style-type:none;
+	margin: 0 0 0 14px;
+}
+#productscategory_list li {width:150px;vertical-align:top;height:auto;margin:0;padding:10px 0 0;position:relative;float:left}
+#productscategory_list li .center_block{padding:0 20px;}
+#productscategory_list li a.lnk_img {display:block;text-align:center;margin-bottom:10px;}
+#productscategory_list li a.lnk_img img{max-width:100%;height:auto}
+#productscategory_list li p.product_name {text-align:left;display:block;}
+#productscategory_list li p.product_name a{ font:700 12px/15px Helvetica,Arial, Verdana, sans-serif;	text-transform:none;}
+
+#productscategory_noscroll {
+	height: 120px;
+	width: 100%;
+	margin-bottom: 30px;
+}
+
+#productscategory_scroll_left, #productscategory_scroll_right {
+	background: url('img/thumbs_left.gif') no-repeat center;
+	text-indent: -3000px;
+	display: block;
+	width: 9px;
+	height: 18px;
+	float: left;
+	margin-top: 30px;
+}
+
+#productscategory_scroll_right { background-image: url('img/thumbs_right.gif'); }
+.three_column  .grid_8 .blockproductscategory a.btn {top:5px}
+
+.blockproductscategory a.btn{right:15px;left:auto;top:10px;background-image: url('img/i_productscategory.png');background-repeat:no-repeat;width:8px;height:11px;}
+.blockproductscategory a.btn.prev{right:35px;}
+.blockproductscategory a.btn.prev:hover{background-position:-22px 0}
+.blockproductscategory a.btn.next:hover{background-position:-22px 100%}
+
+        
+        .comprar_hov:hover
+        {
+         color: #red !important;
+        }
+        #contenedor1{width: 99%;float: left;height: 343px;margin-left: 15px;}
+        #productscategory{margin: 0 0 0 10px;height: 486px!important;}
+        #contenedor2{float: left;height: 235px;margin-top: 66px; background-size: 95%  90%}
+        #contenedor3{width: 146px; height: 97px;float: left;margin-top: -73px;width:100%}
+        #imagenn{margin:-18px 0px 0px -2px;}
+        #PrecioPrice{font-size: 18px;word-spacing: -4px;font-family: 'Open Sans', sans-serif !important;color: #969696;text-align: center;font-weight: 600; display: inline-block;  vertical-align: middle;  line-height: normal;}
+    	#tituloProduc a{color: #999999; font-size: 13px;font-family: 'Open Sans', sans-serif !important;font-weight: 600;}
+    	#tituloProduc{text-align: center;margin-left: 20px;float: left;height: 86px; line-height: 86px}
+    	#productscategory_list div.caroufredsel_wrapper{height: 352px!important;}
+    	#botonComprar{background: linear-gradient(#E9A647, #E5902E) repeat scroll 0 0 rgba(0, 0, 0, 0) ;font: 400 14px/20px 'Open Sans'; text-align: center; border:0px solid; border-radius:5px; width: 145px; height: 40px; position: absolute;top: 272px;left: 18px;;}
+    	#contenedorProducto{width: 168px;height: 88px!important;line-height: 44px;float: left;margin-top: 84px;margin-left: -27px;}
+       #botonAgotado{background: linear-gradient(#E9A647, #E5902E) repeat scroll 0 0 rgba(0, 0, 0, 0) ;font: 400 14px/20px 'Open Sans',Helvetica,arial; text-align: center; border:0px solid; border-radius:5px; width: 145px; height: 40px; position: absolute; padding: 0 0 0 0;top: 271px;}
+       #textoSeo{width: 50%;text-align: justify;margin-top: -9px;}
+       #textosseo{float: left;width: 100%;height: 522px;margin-top: -180px;}
+       #elei{width:193px!important;}
+
+@media only screen and (min-width: 768px) and (max-width: 1000px) {
+       #productscategory_list .caroufredsel_wrapper {width: 731px!important;}
+     }
+       
+    @media only screen and (min-width: 480px) and (max-width: 767px) {    
+      #thumbs_list .caroufredsel_wrapper {width: 380px!important;}
+      #productscategory_list .caroufredsel_wrapper {width: 385px!important;}
+      #productscategory {height: 607px!important;}
+   }   
+
+    @media only screen and (min-width: 200px) and (max-width: 479px) {     
+       #productscategory {height: 720px!important;}
+       #productscategory_list .caroufredsel_wrapper {margin: 0!important;width: 99% !important;}
+       #productscategory_list li {float: left;height: auto;margin-left: 72px;padding: 10px 0 0;position: relative;vertical-align: top;width: 150px;}
+   }

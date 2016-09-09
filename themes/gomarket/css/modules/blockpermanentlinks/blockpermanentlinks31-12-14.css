@@ -1,0 +1,7 @@
+ul#header_links{width:auto;float:left;margin:0;}
+#header_links li#header_link_home{margin-left:0}
+#header_links li{width:auto;float:left;margin-right:7px;}
+#header_links li + li{background: url(img/bkg_line.jpg) no-repeat left center;padding-left:7px;}
+#header_links li a{font-weight:700;font-size:11px;color:#686868;text-transform:capitalize}
+#header_links li a:hover,#header_links li a.active{color:#ed2f15;text-decoration:none}
+#header_links li#header_link_home{background:none;padding-left:0}

@@ -1,0 +1,30 @@
+div.addresses{position:relative;width:100%}
+div.addresses p{margin-bottom:10px;width:100%;clear:both;display:block}
+div.addresses p label{text-transform:none}
+div.addresses p.address_delivery label,div.addresses p#address_invoice_form label{float:none;font-weight:700;line-height:25px;width:100%;margin:0;display:block}
+div.addresses p select{width:236px;}
+div.addresses p.checkbox{width:auto;margin-bottom:20px}
+div.addresses #address_invoice_form{margin-left:0;margin-top:10px;padding-top:0!important;width:100%;overflow:hidden}
+div.addresses p.address_add, div.addresses p#address_invoice_form{padding-bottom:20px;margin-bottom:20px;}
+div.addresses #address_invoice_form a.button_large,div.addresses .address_add a.button_large{float:left;margin-left:0!important;}
+div.addresses h3{margin:0}
+div.addresses p.checkbox input{height:auto;margin-right:4px!important;vertical-align:-2px}
+div.addresses ul.item{clear:both}
+ul.address{float:left;list-style-image:none;list-style-position:outside;list-style-type:none;margin-bottom:7px;position:relative;width:45%}
+ul#address_delivery.address{margin-right:30px}
+.three_column .grid_8 ul.address{width:100%;margin:0 0 20px!important;}
+ul.address li{line-height:20px;text-transform:none}
+li.address_title{
+    text-transform:uppercase!important;color:#3a3a3a;font:700 11px/1.35 "Open Sans",Helvetica,Arial, Verdana, sans-serif;padding-bottom:10px;}
+li.address_name,li.address_firstname,li.address_lastname{font-weight:700;color:#3a3a3a}
+span.address_name,span.address_firstname,span.address_lastname,span.address_update a,span.address_delete a{}
+span.address_name,span.address_firstname,span.address_lastname,span.address_company{font-weight:700}
+li.address_update,li.address_delete{color:#d4050f;font-weight:700;margin-top:10px}
+.addresses #ordermsg{float:left;padding-top:5px;width:100%}
+.addresses #ordermsg p{padding-left:0}
+.addresses #ordermsg .textarea textarea{height:100px;width:90%;}
+li.address_update a,li.address_delete a,l li.address_update a,li.address_delete a{font-weight:700;text-transform:uppercase;color:#ed2f15}
+li.address_update a:hover,li.address_delete a:hover,l li.address_update a:hover,li.address_delete a:hover{color:#3a3a3a}
+p.cart_navigation.submit{float:left;margin:10px 0 !important ;width:100% !important}
+
+

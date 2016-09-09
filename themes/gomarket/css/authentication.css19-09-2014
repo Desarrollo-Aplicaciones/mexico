@@ -1,0 +1,178 @@
+.contenedor{
+  position:relative;
+   background-color: transparent;
+   border: 1px #9A9A9A solid;
+   -moz-border-radius: 10px;
+   -webkit-border-radius: 10px;
+   border-radius: 10px;
+   -webkit-border-radius: 10px;
+   -moz-border-radius: 10px;
+   -ms-border-radius: 10px;
+   border-radius: 10px;
+   padding: 15px;
+}
+
+.titulo{
+display: inline-block;
+font-size: 10pt!important;
+color:#00817b;
+font-weight: 600;    
+font-family: 'Open Sans', sans-serif;
+padding:0 10px;
+}
+
+.obliga{
+    color:#9a9a9a;
+    font-size: 7pt;
+    float: right;
+    font-family: 'Open Sans', sans-serif;
+    margin-right: 10px;
+    margin-top:5px;
+}
+
+.etiqueta{
+    color:#646464;
+    font-family: 'Open Sans', sans-serif;
+}
+
+#email{    
+    width: 95%;
+}
+
+#passwd{
+    width: 95%;
+}
+
+.form-logueo{
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
+    height: 177px;
+    overflow: hidden;
+}
+
+#SubmitLogin{
+   border: 1px #FFA500 solid;
+   -moz-border-radius: 3px;
+   -webkit-border-radius: 3px;
+   border-radius: 3px;
+   background-color: transparent;
+   background-image: url(../img/authentication/index_Button2_bkgrnd.png);
+   background-repeat: repeat-x;
+   background-position: left top;
+   color: #FFFFFF;
+   font-family: Verdana;
+   font-weight: bold;
+   font-size: 10pt;
+   width: 122px;
+   height: 40px;
+}
+
+#SubmitLogin:hover{
+    cursor: pointer;
+}
+
+#submitAccount{
+     border: 1px #FFA500 solid;
+   -moz-border-radius: 3px;
+   -webkit-border-radius: 3px;
+   border-radius: 3px;
+   background-color: transparent;
+   background-image: url(../img/authentication/index_Button2_bkgrnd.png);
+   background-repeat: repeat-x;
+   background-position: left top;
+   color: #FFFFFF;
+   font-family: Verdana;
+   font-weight: bold;
+   font-size: 10pt;
+   width: 122px;
+   height: 40px;
+   text-transform: capitalize;
+}
+
+#submitAccount:hover{
+    cursor: pointer;
+}
+
+.olvida{
+font-family:'Open Sans', sans-serif;
+transition:none;
+color: #b7689e;   
+}
+.olvida:hover
+{
+color: #B7659E !important;
+}
+.resaltar{
+    color: #b7689e;
+    font-weight: bold;
+    font-size: 9pt;
+}
+
+.beneficio{
+    font-size: 9pt;
+    text-justify: auto;
+    width: 150px;
+    display: table-cell;
+    padding-left: 20px;
+}
+
+.validacion{
+    display: inline;
+    float:right ! important;
+    margin-right: 10px;
+    font-size: 9pt;
+    color:red;
+    border: solid red 1px;
+    border-radius: 3px;
+    padding-left: 10px;
+    padding-right: 10px;    
+    background-color: lightyellow;
+}
+#guest_email{width: 98%}
+/*-------------tercer-hole-----------------*/
+.medios_pago
+{
+width:50%; float:right; text-align: center;
+}
+
+.seguridad
+{
+width:49%;
+float:left;
+text-align: center
+}
+.imagen_medios
+{
+  width:51px;
+  display:inline-block;
+  padding:5px;
+}
+/*----------------segundo-hole------------------*/
+#opinvitado, #opregistrado
+{
+margin:0 5px 0 -10px;
+}
+fieldset
+{
+  width:100%;
+}
+#seguridadTitulo
+{
+font-family:'Open Sans', sans-serif;
+margin-top: 8px;
+font-size: 11px;
+}
+.form-registro
+{
+text-align: left !important;
+width:100%;
+float:left;
+font-size: 8pt !important;
+font-family: 'Open Sans', sans-serif;
+}
+select, option
+{
+font-family: 'Open Sans', sans-serif !important;
+}

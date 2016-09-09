@@ -1,0 +1,108 @@
+.cpanelContainer{
+	position:fixed; 
+	top:25%; 
+	left:0; 
+	z-index:100;font:normal 12px/16px "Myriad Pro",Arial, Verdana, sans-serif!important;display:block!important;
+}
+@media only screen and (max-width: 959px) {
+	.cpanelContainer{top:0;}
+}
+.cpanelContainer ul{
+	background-color:transparent !important;
+	width:100%;
+}
+.cpanel_icon span{
+	display:none;
+}
+.cpanel_icon{
+	background:url(i-setting.png) no-repeat; 
+	width:40px; 
+	height:40px; 
+	cursor:pointer;
+	float:right;
+	 position: absolute;
+    right: 0;
+    top: -4px;
+    z-index: 999;
+}
+.cpanel_icon:hover{
+	transform:rotate(180deg);
+	-webkit-transform:rotate(180deg);
+	-moz-transform:rotate(180deg);
+	-o-transform:rotate(180deg);
+	transition: all 0.2s ease;
+	-webkit-transition: all 0.2s ease;
+	-moz-transition: all 0.2s ease;
+	-o-transition: all 0.2s ease;
+	background:url(i-setting-open.png) no-repeat; 
+}
+.cpanel_opened .cpanel_icon{
+	background:url(i-setting-open.png) no-repeat; 
+}
+.cpanel_opened .cpanel_icon:hover{
+	background:url(i-setting.png) no-repeat; 
+}
+.cpanel_content_container{overflow:hidden}
+.out_improved{overflow:hidden;
+background:#fff;width:268px;border:1px solid #CECECE;padding:15px;
+box-shadow:0 0 10px #999999;}
+.cpanel_closed  .out_improved{display:none;}
+.cpanel_content_container.cpanel_closed  .theme_sett_heading{background:none}
+.cpanel_content_container .theme_sett_heading
+{
+	background:url(bkg_cpanel.png) no-repeat 0 0; 
+    color: #fff;
+    display: block;
+    height: 26px;
+    margin: 0;
+    padding:5px 10px 0;
+    text-align: left;
+    width: 280px;font:700 27px/22px Tangerine,Georgia,Arial,'sans-serif';
+}
+.cpanel_content_container #improved{
+	padding:0 0 20px; 
+	max-height:400px;overflow-y:auto;
+}
+.cpanelContainer ul li a{
+	color:#000 !important;
+}
+.cpanelContainer ul li:hover{
+	background-color:transparent !important;
+}
+.cpanelContainer ul li a.head{font-style:italic;border-bottom:1px solid #F44D00;padding-bottom:7px;line-height:24px}
+
+/**/
+.head, li, h2 { margin-bottom:10px; }
+
+	.head { 
+		text-decoration:none; 
+		font-size:20px; 
+		display:block;
+	}
+
+	.content { 
+		display:none;
+	}
+
+	#improved li {
+		position:relative;
+		overflow:hidden;padding-right:15px;
+	}
+	
+	#improved {
+	}
+	#improved .content .pattern_item{width:30px;height:30px;border:1px solid #f1f1f1;cursor:pointer;float:left;margin:0 5px 4px 0}
+	#improved .content .pattern_item img{width:30px;height:30px;}
+	#improved .content .pattern_item:hover,#improved .content .pattern_item.active{border:1px solid #000;}
+	#improved p {
+		margin:0px !important;
+	}
+	
+#improved .color_item,#improved .font_item{overflow:hidden;padding:5px 0 10px;border-bottom:1px solid #f1f1f1;margin-bottom:5px;}
+#improved .color_item h4{float:left;width:210px;padding-top:5px}
+.bg_color_setting{background-image:url(bkg_color_select.png)!important ;float:right;text-indent:-9999px;width:21px;height:21px;background-repeat:no-repeat;border:2px solid #E1E1E1;}
+#improved .color_item .explain,#improved .font_item .explain {clear:left;display:block;font-size:10px;font-style:italic;overflow:hidden;padding:3px 0 0;width:100%}
+#improved .font_item select{width:100%;padding:3px;margin:2px 0}
+.font_item h4,.color_item h4{font-family:"Myriad Pro",Arial,Verdana,sans-serif !important;color:#222 !important}
+ 
+

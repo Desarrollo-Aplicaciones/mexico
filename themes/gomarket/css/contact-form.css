@@ -1,0 +1,13 @@
+body#contact-form form p.textarea textarea{width:182px}
+body#contact-form form p.text input{width:182px}
+body#contact-form div#center_column form select{width:202px!important;  }
+form.std p.desc_contact span.like_input{text-align:left;width:366px}
+body#contact-form div#center_column form textarea#message{height:80px!important;width:182px!important}
+#contact-form form.std label,#contact-form form.std p span,#password form.std p span,#password form.std label{line-height:22px;text-align:left}
+#contact-form form p.submit{padding-left:142px!important}
+#fileUpload{line-height:25px;height:28px;}
+#desc_contact0{display:none}
+#contact form.std p.select select {width: 265px !important;}
+#contact p.text input, #contact p.select input {width:254px;}
+#contact p.submit{padding-left:0;}
+p.textarea #message{min-height:80px;min-width:254px;}

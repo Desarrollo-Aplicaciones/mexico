@@ -1,0 +1,56 @@
+/* block top user information */
+#header_user {float:left; padding-left: 3px; width: 270px; margin-left: auto ;  margin-right: auto ; text-align: center;}
+
+#header_user p { color: #595a5e }
+#header_user span { font-weight: bold }
+#header_user ul {}
+#header_user ul#header_nav{margin:0;float:left;}
+#header_user ul.codespot_shopcart{position:relative;right:20px;top:25px;clear:left}
+#header_user li {
+	float: left;
+	white-space: nowrap;margin-right:7px;
+}
+#header_user li  a:hover{text-decoration:none}
+#header_user  a,
+#header_user_info a {font-weight:500;font-size:10px;color:#686868}
+#header_user  a:hover,
+#header_user_info a:hover{color:#ED2F15}
+#header_user #your_account,
+#header_user_info{float:left;margin:0 7px 5px 0;background: url(../../../img/bkg_line.jpg) no-repeat right center;padding-right:7px; }
+
+/**********************************************************
+		LINE ATENCION
+****************************************************** */
+
+#linea_atencion {
+	text-align: center; 
+	float: left;
+	padding-right:10px;
+	height: 38px;
+}
+/*
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+	#linea_atencion {
+	margin-left: 70px; /* safari chrome
+	}
+}
+
+@media screen and (-ms-high-contrast: active) (-ms-high-contrast: none){
+	 #linea_atencion {
+	margin-left: 70px; /* IE
+	}
+}
+
+html[data-useragent*='Trident/7.0'] 
+		 #linea_atencion {
+	margin-left: 70px; /* IE
+	}
+*/
+
+#shopping_cart a{float:right; padding-left: 33px;}
+#shopping_cart p.right{width:auto;float:left;padding:5px 0;text-transform:uppercase;font-size:12px;font-weight:500;text-align:left}
+
+#shopping_cart span.ajax_cart_total{clear:left;display:block;color:#dfa42d!important}
+#shopping_cart{float:right; position:relative;right:0;top:0px;margin:0;padding:2px 15px;}
+
+#shopping_cart a{background: url(img/Shopping_cart_14.png) no-repeat left 0;padding-top:5px;padding-left:33px;text-transform:uppercase;color:#575757;font:500 12px/20px "Open Sans",Helvetica,arial; }

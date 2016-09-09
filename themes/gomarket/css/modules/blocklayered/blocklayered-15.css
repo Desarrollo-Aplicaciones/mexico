@@ -1,0 +1,145 @@
+#layered_block_left ul {
+	height: auto;
+}
+
+#layered_form > div > div {
+	margin-bottom: 15px;
+}
+#layered_form > div > div.layered_price{border:none;margin-top:0}
+#layered_block_left .hide-action {
+	display: block;
+	text-align: right;
+	padding-right: 5px;
+}
+#layered_block_left .hide-action:hover {
+	text-decoration: underline;
+}
+
+#layered_block_left ul li {
+	list-style-type: none;padding:5px 0;#padding:2px 0;font-weight;400;color:#646464;
+}
+
+#layered_block_left #enabled_filters , #layered_url_filter_block {
+}
+
+#layered_block_left #enabled_filters ul li {
+	margin-left: 0;
+	padding-left: 0;cursor:text;
+}
+#layered_block_left #enabled_filters ul li  a[title="Cancel"]{vertical-align:1px}
+
+/* Style moved form the template to the css  */
+#layered_block_left #enabled_filters ul li:hover {
+	background: inherit;
+	color: inherit;
+}
+
+#layered_block_left #enabled_filters a {
+	text-decoration: none;
+	color: red;
+}
+
+#layered_block_left ul li:hover {
+	color: #6a84b9;cursor:pointer;
+}
+
+#layered_block_left ul li label {
+	cursor: pointer;
+}
+#layered_block_left ul li label a:hover{color:#1b1b1b;text-decoration:none}
+#layered_block_left ul li.nomargin {
+	margin-left: 0;
+}
+
+#layered_block_left span.layered_subtitle {
+	font:700 13px/1.25 "Open Sans",Arial, Verdana, sans-serif;
+	margin-bottom: 5px;color:#3a3a3a;text-transform:uppercase;
+}
+
+#layered_block_left span.layered_close a { text-decoration: none;float:right;text-indent:-9999px;width:11px;height:7px;margin-top:4px; }
+
+#layered_block_left span.layered_close {
+	float: right;
+	font-weight: bold;
+	font-size: 12px;
+	margin-bottom: 4px;width:11px;
+}
+#layered_block_left span.layered_close a{background: url('img/less.png') no-repeat right center }
+#layered_block_left span.layered_close.closed a{background: url('img/more.png') no-repeat right center }
+#layered_block_left ul li input.checkbox {
+	vertical-align: -2px;
+	margin-right: 3px;height:auto;padding:0!important;border:none!important;margin-left:0
+}
+
+#layered_block_left ul li .disabled {
+	color: #666;
+}
+#product_list .warning {
+	margin-top: 13px;
+}
+
+#layered_form .select {
+	width: 165px;
+}
+#layered_form .color-option {
+	margin-left: 0;
+	width: 16px;
+	height: 16px;
+	padding:0;vertical-align:middle;border:none;cursor:pointer;
+}
+#layered_block_left .color-option.disable {
+	opacity: 0.5;
+	filter:alpha(opacity=50);
+	-moz-opacity:0.5; 
+}
+#layered_form  .color-option.on {
+	border: 1px solid red;cursor:text;
+}
+#layered_form input[type=radio] {
+	margin-left: 2px;
+	vertical-align: middle;
+}
+.layered_price_range {
+	margin-left: 7px;
+}
+.layered_price_range_unit {
+	margin-right: 7px;
+}
+.layered_slider_container {
+	margin: 15px 10px 0; width: 90%;
+}
+.layered_slider_container .ui-slider-horizontal{height:5px;}
+.layered_slider_container .ui-widget-header{background: url('img/bkg_scroll.jpg') repeat-x right center;height:6px;border:none!important}
+.layered_slider_container .ui-slider-horizontal .ui-slider-handle{height:19px;width:18px;margin-left:-10px;margin-top:-3px;}
+.layered_slider_container .ui-state-default,.layered_slider_container .ui-state-default.ui-state-hover,.layered_slider_container .ui-state-default.ui-state-focus{background: url('img/bkg_handle.png') no-repeat center center;border:none;}
+.layered_slider_container .ui-widget-content{background: url('img/bkg_corner.jpg') repeat-x center center;border:none;}
+.layered_slider_container  .ui-corner-all{border-radius:0}
+.layered_slider {
+	margin-top:5px;
+}
+.layered_input_range_min {
+	width:30px;
+}
+.layered_input_range_max {
+	width:40px;
+}
+.layered_list_selected {
+	font-weight: bold;
+}
+.layered_ajax_loader p {
+	margin: 20px 0;
+	text-align: center;
+}
+.hide-action {
+	text-align: center;
+	text-align: right;
+	display: block;
+	cursor: pointer;
+}
+.hide-action:hover {
+	font-weight: bold;
+}
+#layered_form div div ul {color:#646464;font-weight:400;padding-top:7px;}
+#ul_layered_id_attribute_group_2{overflow:hidden}
+#ul_layered_id_attribute_group_2 li{width:auto;float:left;margin-right:10px;#margin-right:5px;}
+#ul_layered_id_attribute_group_2 li label.layered_color{display:none}

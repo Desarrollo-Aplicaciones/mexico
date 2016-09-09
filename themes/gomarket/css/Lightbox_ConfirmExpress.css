@@ -1,0 +1,123 @@
+#pop-confirmExpress {
+    display: none;
+    background-color: white;
+    font-size: 13px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+    color: #818181;
+    height: 190px;
+    width: 250px;
+    margin-top: 15px;
+    margin-right: 30px;
+    margin-left: 15px;
+}
+
+.close_express {
+    content: "asdf";
+    font-size: 19.3px;
+    width:26px;
+    height:26px;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    border: 7px solid white;
+    background-color: #4d4d4d;
+    position:absolute;
+    top:-10px;
+    right:-10px;
+    color:white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.close_express:after {
+    content: "\00D7";
+}
+
+.block_information_express {
+    margin-top: 15px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 15px;
+}
+
+.block_title_express {
+    position: relative;
+    display: inline-block;
+    background-color: #ff922e;
+    padding: 10px;
+    color: #fff;
+    font-weight: 600;
+    top: -14px;
+    width: 130px;
+    height: 18px;
+    font-size: 15px;
+}
+
+.block_title_express:after {
+    left: 0;
+    top: 100%;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-style: solid;
+    border-color: #ff922e transparent transparent transparent;
+    border-width: 9px 76px 0;
+}
+
+
+#xpscancel, #xpsaccept{
+    padding:10px;
+    font-weight:600;
+    width:124px;
+}
+
+#xpscancel{
+    color:#646464;
+    background-color:#e5e5e5;
+    display: inline-block;
+    width: 90px;
+    margin-right: 5px;
+}
+
+#xpscancel:hover{
+    background-color:#C8C8C8 !important;
+    color:#FFF;
+}
+
+#xpscancel:active{
+    background-color:#fff !important;
+    color:#323232 !important;
+    border-color:#323232;
+}
+
+#xpsaccept{
+    background-color: #39cb98;
+    color:#FFF;
+    display: inline-block;
+    width: 90px;
+}
+
+#xpsaccept:hover{
+    background-color:#1E817A;
+}
+
+#xpsaccept:active{
+    background-color:#fff !important;
+    color:#FF922E !important;
+    border:#FF922E solid 1px;
+}
+
+.blurred {
+    -webkit-filter: blur(0px);
+    -moz-filter: blur(0px);
+    -ms-filter: blur(0px);
+    -o-filter: blur(0px);
+    filter: blur(0px);
+    filter: blur(0px);
+}
+
+.block_buttons_express{
+    margin-top: 10px;
+}

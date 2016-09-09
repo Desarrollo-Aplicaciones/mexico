@@ -1,0 +1,408 @@
+<?php
+
+
+class Address extends AddressCore
+{
+
+    /** @var int id_colonia */
+    public $id_colonia = 0;
+
+    /** @var string colonia_list */
+    public $colonia_list = '';
+    
+    /**
+     * [$colonia_name Nombre de la colonia]
+     * @var string
+     */
+    public $colonia_name = '';
+
+    /** @var string city_name */
+    public $city_name = '';
+
+    /** @var string address_city_list */
+    public $address_city_list = ''; //<option value=""> - ciudad - </option>';
+
+    public $is_rfc = 0;
+    
+
+    protected static $_idZones = array();
+    protected static $_idCountries = array();
+
+    /**
+     * @see ObjectModel::$definition
+     */
+    public static $definition = array(
+                                      'table' => 'address',
+                                      'primary' => 'id_address',
+                                      'fields' => array(
+                                                        'id_customer' =>        array('type' => self::TYPE_INT, 'validate' => 'isNullOrUnsignedId', 'copy_post' => false),
+                                                        'id_manufacturer' =>    array('type' => self::TYPE_INT, 'validate' => 'isNullOrUnsignedId', 'copy_post' => false),
+                                                        'id_supplier' =>        array('type' => self::TYPE_INT, 'validate' => 'isNullOrUnsignedId', 'copy_post' => false),
+                                                        'id_warehouse' =>       array('type' => self::TYPE_INT, 'validate' => 'isNullOrUnsignedId', 'copy_post' => false),
+                                                        'id_country' =>         array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId', 'required' => true),
+                                                        'id_state' =>           array('type' => self::TYPE_INT, 'validate' => 'isNullOrUnsignedId'),
+                                                        'alias' =>              array('type' => self::TYPE_STRING, 'validate' => 'isGenericName', 'required' => true, 'size' => 128),
+                                                        'company' =>            array('type' => self::TYPE_STRING, 'validate' => 'isGenericName', 'size' => 64),
+                                                        'lastname' =>           array('type' => self::TYPE_STRING, 'validate' => 'isName', 'required' => true, 'size' => 32),
+                                                        'firstname' =>          array('type' => self::TYPE_STRING, 'validate' => 'isName', 'required' => true, 'size' => 32),
+                                                        'vat_number' =>         array('type' => self::TYPE_STRING, 'validate' => 'isGenericName'),
+                                                        'address1' =>           array('type' => self::TYPE_STRING, 'validate' => 'isAddress', 'required' => true, 'size' => 128),
+                                                        'address2' =>           array('type' => self::TYPE_STRING, 'validate' => 'isAddress', 'size' => 128),
+                                                        'postcode' =>           array('type' => self::TYPE_STRING, 'validate' => 'isPostCode', 'size' => 12),
+                                                        'city' =>               array('type' => self::TYPE_STRING, 'validate' => 'isCityName', 'required' => true, 'size' => 64),
+                                                        'other' =>              array('type' => self::TYPE_STRING, 'validate' => 'isMessage', 'size' => 300),
+                                                        'phone' =>              array('type' => self::TYPE_STRING, 'validate' => 'isPhoneNumber', 'size' => 32),
+                                                        'phone_mobile' =>       array('type' => self::TYPE_STRING, 'validate' => 'isPhoneNumber', 'size' => 32),
+                                                        'dni' =>                array('type' => self::TYPE_STRING, 'validate' => 'isDniLite', 'size' => 16),
+                                                        'deleted' =>            array('type' => self::TYPE_BOOL, 'validate' => 'isBool', 'copy_post' => false),
+                                                        'date_add' =>           array('type' => self::TYPE_DATE, 'validate' => 'isDateFormat', 'copy_post' => false),
+                                                        'date_upd' =>           array('type' => self::TYPE_DATE, 'validate' => 'isDateFormat', 'copy_post' => false),
+                                                        'id_colonia' =>         array('type' => self::TYPE_INT, 'validate' => 'isNullOrUnsignedId'),
+                                                        'is_rfc' =>             array('type' => self::TYPE_BOOL),
+                                                        ),
+);
+
+/**
+     * Build an address
+     *
+     * @param integer $id_address Existing address id in order to load object (optional)
+     */
+public  function __construct($id_address = null, $id_lang = null)
+{
+    
+    parent::__construct($id_address);
+
+    if($id_address) {
+
+        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
+                                                                SELECT ac.id_city, cc.city_name FROM `'._DB_PREFIX_.'address_city` ac
+                                                                INNER JOIN  `'._DB_PREFIX_.'cities_col` cc ON (cc.id_city = ac.id_city)
+                                                                WHERE ac.`id_address` = '.(int)$id_address);
+
+        if(isset($result) && !empty($result) && count($result)>0 ) {
+            $this->city_id = $result[0]['id_city']."-".$this->id_colonia;
+            if (isset(Context::getContext()->employee->id)) {
+                $this->city_id = $result[0]['city_name'];
+            }
+
+            $this->city_name = $result[0]['city_name'];
+            $this->address_city_list.='<option value="'.$result[0]['id_city'].'" selected=selected>'.$result[0]['city_name'].'</option>';
+        }
+    }
+    
+    if ($this->id_colonia != 0 && isset($result) && !empty($result) && count($result)>0 ) {
+
+        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
+                                                                SELECT id_codigo_postal, nombre FROM `'._DB_PREFIX_.'cod_postal`
+                                                                WHERE `id_codigo_postal` = '.(int)$this->id_colonia);
+        $this->colonia_name = $result[0]['nombre'];
+        $this->colonia_list.='<option value="'.$result[0]['id_codigo_postal'].'" selected=selected>'.$result[0]['nombre'].'</option>';
+
+
+    }
+
+    /* Get and cache address country name */
+    if ($this->id)
+        $this->country = Country::getNameById($id_lang ? $id_lang : Configuration::get('PS_LANG_DEFAULT'), $this->id_country);
+}
+
+	/**
+	 * @see ObjectModel::add()
+	 */
+	public function add($autodate = true, $null_values = false)
+	{
+
+		$dir_change = explode( "|", $this->city );
+		
+		$nom_city = $this->city;
+
+		if ( is_numeric($dir_change[0])) {
+			$arr_nom_city = City::getCityByIdCity($dir_change[0]);
+			$nom_city = $arr_nom_city[0]['city_name'];
+            $val_cityid=$dir_change[0];
+        }
+
+        $this->city = $nom_city;
+
+        if ( ($this->id_colonia == '' ||  $this->id_colonia == NULL) && ( isset($dir_change[2]) && $dir_change[2] != '' && $dir_change[2] != NULL ) ) {
+         $this->id_colonia = $dir_change[2];
+     }
+
+     if ( ($this->postcode == '' ||  $this->postcode == NULL) && ( isset($dir_change[1]) && $dir_change[1] != '' && $dir_change[1] != NULL ) ) {
+         $this->postcode = $dir_change[1];
+     }
+
+
+		//$fp=fopen("C:/wamp/www/archivo.txt","a+"); fwrite($fp,print_r($this,true)."\r\n\r\n\r\n"); fclose($fp);
+
+
+     if (!parent::add($autodate, $null_values))
+         return false;
+
+     $Id_address=Db::getInstance()->Insert_ID(); 
+
+     if($Id_address == 0) {
+       $Id_address = $address->id;
+       
+       Db::getInstance()->update('address_city', array( 'id_city'=>(int)$val_cityid ), 'id_address = '.(int)$Id_address );
+
+   } else {
+
+       Db::getInstance()->insert('address_city', array( 'id_address'=>(int)$Id_address, 'id_city'=>(int)$dir_change[0] ));
+   }
+
+   if (Validate::isUnsignedId($this->id_customer))
+     Customer::resetAddressCache($this->id_customer);
+
+ return true;
+}
+
+
+
+public function update($null_values = false)
+{
+    $dir_change = explode( "|", $this->city );
+    
+    $nom_city = $this->city;
+
+    if ( is_numeric($dir_change[0])) {
+        $arr_nom_city = City::getCityByIdCity($dir_change[0]);
+        $nom_city = $arr_nom_city[0]['city_name'];
+        $val_cityid=$dir_change[0];
+    }
+
+    $this->city = $nom_city;
+
+    if ( ($this->id_colonia == '' ||  $this->id_colonia == NULL) && ( isset($dir_change[2]) && $dir_change[2] != '' && $dir_change[2] != NULL ) ) {
+        $this->id_colonia = $dir_change[2];
+    }
+
+    if ( ($this->postcode == '' ||  $this->postcode == NULL) && ( isset($dir_change[1]) && $dir_change[1] != '' && $dir_change[1] != NULL ) ) {
+        $this->postcode = $dir_change[1];
+    }
+
+    $Id_address = $this->id;
+    
+    Db::getInstance()->update('address_city', array( 'id_city'=>(int)$val_cityid ), 'id_address = '.(int)$Id_address );
+    
+        // Empty related caches
+    if (isset(self::$_idCountries[$this->id]))
+        unset(self::$_idCountries[$this->id]);
+    if (isset(self::$_idZones[$this->id]))
+        unset(self::$_idZones[$this->id]);
+
+    return parent::update($null_values);
+}
+
+
+
+
+   	/**
+	 * @see ObjectModel::delete()
+	 */
+       public function delete()
+       {
+          $customers_add = new Customer($this->id_customer);
+          $this->lastname = $customers_add->lastname;
+          $this->firstname = $customers_add->firstname;
+
+          if (Validate::isUnsignedId($this->id_customer))
+             Customer::resetAddressCache($this->id_customer);
+
+         if (!$this->isUsed())
+             return parent::delete();
+         else
+         {
+             $this->deleted = true;
+             return $this->update();
+         }
+     }
+     
+     
+     public function get_countryes() {
+
+        $query = "select country.id_country, country.`name` FROM
+        ps_country_active active INNER JOIN ps_country_lang country
+        ON( active.id_country = country.id_country);";
+
+        if ($results = Db::getInstance()->ExecuteS($query)) {
+
+            $str_countryes = '';
+            if (count($results) > 0) {
+                foreach ($results as $value) {
+                    $str_countryes .= '<option value="' . $value['id_country'] . '">' . $value['name'] . '</option>';
+                }
+                return json_encode(array('results' => $str_countryes));
+            }
+        }
+
+        return '!';
+    }
+
+    public function get_states($id_country) {
+
+        $query = "select  state.id_state,state.`name` FROM
+        ps_country country
+        INNER JOIN ps_state state ON (country.id_country= state.id_country)
+        WHERE country.id_country=" . (int) $id_country . ";";
+
+        if ($results = Db::getInstance()->ExecuteS($query)) {
+
+            $str_states = '';
+            if (count($results) > 0) {
+                foreach ($results as $value) {
+                    if (isset($_POST['selected']) && ((int) $_POST['selected']) > 0 && ((int) $_POST['selected']) === ((int) $value['id_state'])) {
+                        $str_states .= '<option value="' . $value['id_state'] . '" selected >' . $value['name'] . '</option>';
+                    } else {
+                        $str_states .= '<option value="' . $value['id_state'] . '">' . $value['name'] . '</option>';
+                    }
+                }
+                return json_encode(array('results' => $str_states));
+            }
+        }
+        return '!';
+    }
+
+    public function get_cityes($id_state) {
+
+        $str_cities = '<option value="">- Ciudad -</option>';
+        $cities = City::getCitiesByStateAvailableNoCarrier($id_state);
+
+        if (count($cities) > 0) {
+            foreach ($cities as $row) {
+                if (isset($_POST['selected']) && ((int) $_POST['selected']) > 0 && ((int) $_POST['selected']) === ((int) $row['id_city'])) {
+                    $str_cities .= '<option value="' . $row['id_city'] . '" selected >' . $row['city_name'] . '</option>';
+                } else {
+                    $str_cities .= '<option value="' . $row['id_city'] . '">' . $row['city_name'] . '</option>';
+                }
+            }
+            $array_result = array('results' => $str_cities);
+            return json_encode($array_result);
+        }
+
+        return '!';
+    }
+
+    public function get_list_address($billing_account_id) {
+
+        $id_customer = $this->get_id_custumer_account($billing_account_id);
+        $str_cityes = '<option value="">- Direcciones -</option>';
+
+        if ($id_customer !== '') {
+            $query = "select address.id_address,address.alias,address.postcode, address.address1,cities.city_name,state.`name` as state_name,country.`name` as country_name FROM
+            ps_customer customer 
+            INNER JOIN ps_address address ON(customer.id_customer=address.id_customer)
+            INNER JOIN ps_address_city city ON(city.id_address=address.id_address)
+            INNER JOIN ps_cities_col cities ON (cities.id_city=city.id_city)
+            INNER JOIN ps_state state ON( state.id_state=cities.id_state)
+            INNER JOIN ps_country_lang country ON( country.id_country=state.id_country)
+            WHERE customer.id_customer IN (
+                                           select customer.id_customer FROM
+                                           ps_sync_tracker sync INNER JOIN ps_customer customer
+                                           ON(sync.key2=customer.id_customer && sync.value2=customer.email)
+                                           WHERE sync.key1='" . $billing_account_id . "' GROUP BY customer.id_customer );";
+
+if ($results = Db::getInstance()->ExecuteS($query)) {
+
+    if (count($results) > 0) {
+
+        foreach ($results as $value) {
+            $str_cityes .= '<option value="' . $value['id_address'] . '">' . $value['city_name'] . ' _ ' . $value['alias'] . ' _ ' . $value['postcode'] . ' _ ' . $value['address1'] . ' _ ' . $value['city_name'] . ' ' . $value['state_name'] . ' ' . $value['country_name'] . '</option>';
+        }
+    }
+}
+return json_encode(array('results' => $str_cityes, 'id_customer' => $id_customer));
+}
+
+return '!';
+} 
+
+public  function get_countries_app() {
+
+    $query = "select country.id_country, country.`name` FROM
+    "._DB_PREFIX_."country_active active INNER JOIN "._DB_PREFIX_."country_lang country
+    ON( active.id_country = country.id_country);";
+
+    if ($results = Db::getInstance()->ExecuteS($query)) {
+        return $results;
+    }
+
+    return false;
+}
+
+static public function get_states_app($id_country) {
+
+    $query = "select  state.id_state as `id`,state.`name` FROM
+    "._DB_PREFIX_."country country
+    INNER JOIN "._DB_PREFIX_."state state ON (country.id_country= state.id_country)
+    WHERE country.id_country=" . (int) $id_country . ";";
+
+    if ($results = Db::getInstance()->ExecuteS($query)) {
+        return $results;
+    }
+
+    return false;
+}
+
+static public function get_cities_app($id_state) {
+
+ 
+    $citye_obj = new City();
+    $cities = $citye_obj->getCitiesByStateAvailable($id_state);
+    if (count($cities) > 0 && !empty($cities) && is_array($cities) ) {
+        $out_array = array();
+        foreach ($cities as $key => $value) {
+            $out_array[$key]['id'] = $value['id_city'];
+            $out_array[$key]['name'] = $value['city_name'];
+        }
+        return $out_array;
+    }
+
+    return false;
+}    
+
+
+public static function get_list_address_app($id_customer) {
+
+    $val_express = Configuration::get('EXPRESS') ? Configuration::get('EXPRESS') : 0;
+
+    if ($id_customer !== '') {
+
+        $query = "SELECT address.id_address, address.alias, address.postcode, address.address1,address.address2, cities.city_name, codp.nombre as colonia, 
+        state.`name` AS state_name, country.`name` AS country_name,
+        cac.precio_kilo, car.id_carrier, 
+        SUBSTRING(REPLACE( crp.delimiter2,'.',','),1,
+                  LENGTH(REPLACE( crp.delimiter2,'.',',')) -7) AS delimiter2,
+cac.express_abajo AS abajo,
+cac.express_arriba AS arriba
+FROM ps_customer customer 
+INNER JOIN "._DB_PREFIX_."address address ON (customer.id_customer=address.id_customer)
+INNER JOIN "._DB_PREFIX_."address_city city ON (city.id_address=address.id_address)
+INNER JOIN "._DB_PREFIX_."cities_col cities ON (cities.id_city=city.id_city)
+INNER JOIN "._DB_PREFIX_."state state ON ( state.id_state=cities.id_state)
+INNER JOIN "._DB_PREFIX_."country_lang country ON ( country.id_country=state.id_country)
+INNER JOIN "._DB_PREFIX_."carrier_city cac ON (cac.id_city_des = city.id_city) 
+INNER JOIN "._DB_PREFIX_."carrier car ON (car.id_reference = cac.id_carrier AND car.deleted = 0 AND car.active=1) 
+LEFT JOIN "._DB_PREFIX_."cod_postal codp ON(codp.id_codigo_postal = address.id_colonia)
+INNER JOIN "._DB_PREFIX_."range_price crp ON (crp.id_carrier = car.id_carrier)
+WHERE customer.id_customer = ".(int) $id_customer;
+$arr_dirs_user = array();
+
+if ($results = Db::getInstance()->ExecuteS($query)) {
+
+    if ( count($results) > 0 && !empty($results) && is_array($results)) {
+
+        return $results; 
+    }
+}           
+
+}
+
+return false;
+}
+
+
+
+
+}
+

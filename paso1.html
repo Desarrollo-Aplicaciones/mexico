@@ -1,0 +1,163 @@
+<!doctype html>
+<head>
+
+   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <style>  
+        .formupcvs { display: block; margin: 20px auto; background: #eee; border-radius: 10px; padding: 15px ;width: 400px;}
+        .progress { position:relative; width:400px; border: 1px solid #ddd; padding: 1px; border-radius: 3px; height: 2px;}
+        .bar { background-color: #B4F5B4; width:0%; height:2px; border-radius: 3px; }
+        .percent { position:absolute; display:inline-block; top:3px; left:48%; }
+        #status{margin-top: 30px;}
+    </style>
+
+       <form id="form_cvs_order"  action="file.php" method="post" enctype="multipart/form-data">
+           
+      <div style="position: relative;  height: 25px;" id="upluadfile"> 
+          <div style=" margin: -9px 0 0;">
+<div style="position: absolute; ">  <div style="position: absolute;  float:right;  "> <input type="file" name="file"></div> </div>
+          </div>
+<div style="position: absolute;  margin: 0 0 0 338px; "> <input id="submit_btn_cvs"  type="submit" value="Subir Archivo"> </div>
+            <input id="id_supplier_copy" type="hidden" class="" name="id_supplier_copy">
+
+            <div style="margin: 0px 0px 0px 455px;"> <input id="lipairtabla" type="button" value="Limpiar Tabla"> </div>
+
+            <input id="id_supplier_order_copy" type="hidden" name="id_supplier_order_copy"  value="hola esto es una prueba 123">
+    </div>    
+         <div class="progress">
+        <div class="bar"></div >
+        <div class="percent">0%</div >        
+         <div id="status"></div>         
+    </div>
+            
+   
+    </form>
+
+
+
+    <script >
+
+ $(document).ready(function() {
+
+         $("#lipairtabla").click( function(){
+
+            var strVar="";
+            strVar += "<thead>";
+            strVar += "<tr class=\"nodrag nodrop\">";
+            strVar += "<th style=\"width: 150px\">Referencia<\/th>";
+            strVar += "<th style=\"width: 50px\">EAN13<\/th>";
+            strVar += "<th style=\"width: 50px\">UPC<\/th>";
+            strVar += "<th style=\"width: 150px\">Referencia del proveedor<\/th>";
+            strVar += "<th>Nombre<\/th>";
+            strVar += "<th style=\"width: 100px\">Precio unitario (sin IVA)<\/th>";
+            strVar += "<th style=\"width: 100px\">Cantidad<\/th>";
+            strVar += "<th style=\"width: 100px\">Tasa de descuento (sin IVA)<\/th>";
+            strVar += "<th style=\"width: 100px\">Tasa de los impuestos<\/th>";
+            strVar += "<th style=\"width: 40px\">Eliminar<\/th>";
+            strVar += "<\/tr>";
+            strVar += "<\/thead>";
+            strVar += "<tbody>";
+            strVar += "<\/tbody>";
+
+            // se envia la nueva estructura de la tabla al form padre
+            $('#products_in_supply_order', parent.document).html(strVar);
+
+            // Se iguala el array de los productos cargados a los productos a limpiar
+            parent.product_ids_to_delete = parent.product_ids;
+
+            // se inicializa nuevamente el arreglo de los productos cargados
+            parent.product_ids = new Array();
+
+            // se carga la lista de los productos a eliminar
+            $('#product_ids_to_delete', window.parent.document).val(parent.product_ids_to_delete.join('|'));
+
+            // se limpia el tag que contiene el listado de elementos cargados
+            $('#product_ids', window.parent.document).val("");
+
+            // clear the cur_product_name field
+            $('#cur_product_name', window.parent.document).val("");
+           
+        });
+
+    
+
+            var bar = $('.bar');
+            var percent = $('.percent');
+            var status = $('#status');
+            var id_supplier_copy = $("#id_supplier", window.parent.document).val();
+            var supplier_order = $("#id_supply_order", window.parent.document).val();
+
+$('#id_supplier_order_copy').val(supplier_order);
+$('#id_supplier_copy').val(id_supplier_copy);
+$("#id_supplier", window.parent.document).change(function() {
+$('#id_supplier_copy').val($(this).val());
+ });
+
+
+            $('#form_cvs_order').ajaxForm({
+
+
+
+                beforeSend: function() {
+                    status.empty();
+                    var percentVal = '0%';
+                    bar.width(percentVal)
+                    percent.html(percentVal);
+                },
+                uploadProgress: function(event, position, total, percentComplete) {
+                    var percentVal = percentComplete + '%';
+                    bar.width(percentVal)
+                    percent.html(percentVal);
+                },
+                success: function() {
+                    var percentVal = '100%';
+                    bar.width(percentVal)
+                    percent.html(percentVal);
+                },
+               complete: function(xhr, textStatus) {
+                    //parent.console.log(textStatus);
+                    if(textStatus == "success") {
+                        //parent.console.log("antes pepe");
+                        $('#products_in_supply_order', parent.document).html(xhr.responseText);
+                        parent.product_ids = new Array();
+                        // status.html(xhr.responseText);
+                        //return($('#products_in_supply_order').val());
+                        //parent.console.log("pepe");
+                        var res =  $('#arr_prods', window.parent.document).val().split("|");
+                        //alert($('#arr_prods', window.parent.document).val());
+                        //console.log($('#arr_prods', window.parent.document).val());
+                        res.forEach(function(entry) {
+                            // add the current product id to the product_id array - used for not show another time the product in the list
+                            parent.product_ids.push(entry);
+                            //console.log(entry);
+
+                            // update the product_ids hidden field
+                            $('#product_ids', window.parent.document).val(parent.product_ids.join('|'));
+
+                            // clear the cur_product_name field
+                            $('#cur_product_name', window.parent.document).val("");
+
+                            // clear the product_infos var
+                            parent.product_infos = null;
+                        });
+
+                            
+                    }
+                },
+                 
+error: function(jqXHR, textStatus, errorThrown) {
+    //alert(jqXHR.status);
+    //alert(textStatus);
+    alert(errorThrown);
+}
+
+            });
+})
+
+  
+    </script>
+
+   
+ 
+</body>
+</html>

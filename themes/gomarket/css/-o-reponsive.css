@@ -1,0 +1,419 @@
+	/* Bigger then standard 960px (1280px) */
+	@media only screen and (min-width: 1200px) {
+		#primerHole{
+			display: block; min-width: 46.50%; max-width: 95%; height: 213px;float:left;overflow: hidden;width: 449px;
+		}
+		#segundoHole{display:block;min-width: 45%; max-width: 100%; height: 400px;float:right; overflow:hidden;width: 449px;}
+		#seguridadTitulo{display:block; font-size:11px; width: 224px; height: 35px;margin-top: 38px;margin-left: -35px;}
+		#seguridadImagen{diplay:block; margin:auto;margin-left: 70px;position: relative;top: 25px;}
+	}	
+	/* Bigger then standard 960 */
+	@media only screen and (min-width:1024px) and (max-width: 1279px) {
+	
+		/* theme */
+		form#searchbox{width:530px;}
+		.sf-menu{padding-left:0}
+		#menu{margin-top:0;z-index:10}
+
+		#featured-products_block_center{width:748px;}
+		.cat_banner{width:428px;}
+		.cs_right_cat_tab{width:490px;padding-bottom:10px}
+		.container_24 .grid_14 {	width:556px;}
+		.cs_home_filter_product .products_home_filter_product{width:325px;}
+		
+		.cs_top_banner_footer ul li{width:29%}
+		.cs_top_banner_footer ul.row_2  li.first{width:622px}
+		
+		#footer .cs_lastest_new, #footer .block_various_links .block, #footer #block_contact_infos{width:233.5px;}
+		
+		/*ul#product_list li, .accessories_block ul#product_list li{margin:0 5px}*/
+		.three_column  .sortPagiBar .nbrItemPage,
+		.three_column  .content_sortPagiBar .sortPagiBar #productsSortForm{float:left;margin-left:0}
+		.three_column .grid_12 #create-account_form, #authentication .three_column .grid_12  #login_form{width:100%;margin-bottom:15px;}
+		.three_column .cart_voucher input.discount_name{width:367px;}
+		.ac_results {width: 487px !important;}
+		
+		.one_column ul#product_list li.grid_3{margin:0 12px}
+		.grid_19 ul#product_list li.grid_5{margin:0 6px}
+		
+		.three_column #pb-right-column.three_column  #pb-left-column {width:100%;margin:0 0 0}
+		a:hover img{opacity:1}
+		#primerHole{
+			display: block; min-width: 46.50%; max-width: 95%; height: 213px;float:left;overflow: hidden;width: 449px;
+		}
+		#segundoHole{display:block;min-width: 45%; max-width: 100%; height: 400px;float:right; overflow:hidden;width: 449px;}
+	}
+	
+	/* Smaller than standard 960 (devices and browsers) */
+	@media only screen and (max-width: 1200px) {
+			#seguridadTitulo{
+			position: relative;
+			top: 30px;
+			left: -99px;
+			width: 76%;
+			}
+			#seguridadImagen{position: relative;top: 27px;left: 72px;}
+}
+	@media only screen and (max-width: 1023px) {
+		#listpage_content div.categTree,
+		#sitemap_content div.sitemap_block{width:50%}
+		
+		/*theme*/
+		form#searchbox{width: 288px;}
+		#search_block_top #search_query_top{width:88%}
+		.sf-menu{padding-left:0}
+		#menu{margin-top:0;z-index:10}
+		.cat_banner,.cs_right_cat_tab{float:none;display:block;overflow:hidden;margin:0;text-align:center;width:auto;text-align:left}
+		.cs_top_banner_footer ul li{width:29%}
+		.cs_top_banner_footer ul.row_2  li.first{width:498px}
+		#footer .cs_lastest_new, #footer .block_various_links .block, #footer #block_contact_infos{width:49.85%;margin-bottom:20px;padding:0;margin-right:1px;background:none}
+		
+		.three_column  .sortPagiBar .nbrItemPage,
+		.three_column  .content_sortPagiBar .sortPagiBar #productsSortForm{float:left;margin-left:0}
+		.three_column .grid_12 ul#product_list li{margin:0}
+		#create-account_form p.text input, #authentication #login_form p.text input{width:95%}
+		.three_column  #create-account_form, #authentication .three_column  #login_form{width:100%;margin-bottom:15px;}
+		.three_column #sitemap_content div.sitemap_block,
+		.three_column #listpage_content div.categTree{width:90%;margin-bottom:20px;}
+		.three_column #pb-right-column,
+		.three_column #pb-left-column{width:100%;margin:0 0 20px;}
+		a:hover img{opacity:1}
+		
+		#cs_href_top{display:none}
+		#primerHole{
+			display: block; min-width: 46.50%; max-width: 95%; height: 213px;float:left;overflow: hidden;width: 449px;
+		}
+		#segundoHole{display:block;min-width: 45%; max-width: 100%; height: 400px;float:right; overflow:hidden;width: 449px;}
+	}
+
+	/* Tablet Portrait size to standard 960 (devices and browsers) */
+	@media only screen and (min-width: 768px) and (max-width: 1000px) {
+		/*theme*/
+		.cs_revolution{width:364px;}
+		#featured-products_block_center{width:556px;}
+		.featured-products-content{min-height:295px;}
+		.cat_banner, .cs_right_cat_tab{margin:0 20px;padding-bottom:10px}
+		
+		/*ul#product_list li, .accessories_block ul#product_list li{margin:0 5px}*/
+		
+		
+		#create-account_form p.text input, #authentication #login_form p.text input{width:90%}
+		.two_column .grid_16 #create-account_form, #authentication .two_column .grid_16 #login_form{width:100%;margin-bottom:20px}
+		.three_column .grid_12 #create-account_form, #authentication .three_column .grid_12  #login_form{width:100%;margin-bottom:15px;}
+		
+		.two_column .cart_voucher input.discount_name{width:308px;}
+		.three_column .cart_voucher input.discount_name{width:342px;}
+		.container_24 .grid_14{width:384px;margin:0 0 10px;}
+		.cs_home_filter_product .products_home_filter_product{width:169px;min-height:270px}
+		.ac_results {   width: 310px !important;}
+		#menu .cs_mega_menu_cat .cs_ul_mega_menu > ul li.menu_item > div a{word-wrap: break-word;}
+		.sf-menu li,.sf-menu li + li{background-position:center right}
+		.three_column ul#product_list li.grid_5,
+		.three_column ul#product_list li.grid_4{margin:0 3px;}
+		.grid_19 ul#product_list li.grid_5{margin:0 5px}
+		
+		.accessories_block ul#product_list li{margin-left:-3px;}
+		.featured-products-content{min-height:266px;}
+		
+		.hook_csslide_new{float:none;}
+		#new-products_block_right{width:556px;}
+		#new-products_block_right .new_content{min-height:326px;padding:20px 10px 5px;}
+		#new-products_block_right li{margin:10px}
+		.cs_revolution{width:100%;clear:both;margin:0 0 10px}
+		
+		.list_manufacturer li a img{height:70px}
+		a.product_img_link:hover img, a.product_image:hover img{box-shadow:none;opcity:1}
+		
+
+		#segundoHole{margin-top: 20px;float: left;}
+		#pb-left-column {width: 480px;float: left;}
+		#more_info_block{max-width: 473px;}
+		#imgge {width: 50px;}
+		#informac {width: 34%;}
+		#labeles {width: 198px;margin-top: 12px;}
+		#imagenes {width: 54px;}
+ 		#imagenMarco{margin-top: -299px;}
+ 		#imagenMarco2{margin-top: -304px; margin-left:470px;}
+		#marco {width: 5px;height: 302px;}
+ 		#our_price_display {font-size: 25pt;margin-top: 26px;margin-left: 10px;}
+ 		#carousel-productscategory li{width: 250px!important;}
+        #contenedor3{margin-top: -47px!important;width:68%!important;}
+        #PrecioPrice{margin-top: 5px!important;margin-left: -2px;height: 105px;}
+    	#tituloProducto a{color: #969696; font-size: 11px;}
+    	#contenedor2 {float: left;height: 251px;margin-top: 106px}
+    	#botonComprar{ top: 280px!important;}
+    	#tituloProduc a{font-size: 11px!important;}
+    	#tituloProduc{height: 66px;margin-top: -15px;}
+    	.blockproductscategory a.btn.prev {right: 739px!important;top: 228px;}
+    	.blockproductscategory a.btn {top: 227px!important;}
+    	#price{margin-top:-323px;}
+    	#product_reference input{border: 0px;font-size: 16px;width: 28px;}
+    	#elei{width: 220px !important;}
+		#add_to_cart {width: 262px!important;}
+		#textosseo{height: 547px!important;}
+		#formula_medica{margin-top:-322px!important;margin-left: 442px!important;}
+		#logoPrecio {float: left;margin-top: -322px!important;margin-left: 0;}
+		#thumbs_list{left: 3px;}
+		#thumbs_list a.btn.next{left: 490px!important;}
+		#short_description_content {height: 197px;line-height: 13px;margin-right: 237px;margin-top: 20px;float: right;width: 224px;}
+		#formulaMedica1{margin-top: 0px;}
+		.caroufredsel_wrapper {width: 687px!important;}
+		#search_block_top {padding-left: 93px;width: 305px;}
+		form#searchbox {width: 100%;}
+		#search_block_top #search_query_top {width: 85%;}
+    	}
+	
+	
+	/* Small Tablet Portrait size to standard 600 (devices and browsers) */
+	@media only screen and (min-width: 480px) and (max-width: 767px) {
+		/*theme*/
+		body{-webkit-text-size-adjust: none; font-size:14px !important;}
+		
+
+
+				/*body{-webkit-text-size-adjust: none; font-size:14px !important;}*/
+		#header #cart_block,
+		#left_column,#right_column{display:none!important}
+		.ambiance-default, .ambiance-success, .ambiance-error{margin:10px 0;width:265px!important}
+		#search_block_top{padding-top:90px;margin-bottom:10px}
+		form#searchbox{width:100%;margin-left: -1px;}
+		#menu,.sf-contener{display:none}
+		#toTop{display:none!important}
+		
+		.cs_revolution{width:100%;margin:0 0 10px;}
+		#featured-products_block_center{width:100%}
+		.home_top_tab_category .list_carousel ul{width:104%}
+		.home_top_tab_category .list_carousel li{float:left;width:130px;margin-right:15px;}
+		.cs_right_cat_tab{margin-bottom:20px;}
+		.container_24 .grid_14{width:100%;margin:0 0 10px;}
+		
+		.cs_top_banner_footer ul li{width:100%;margin:0 0 20px;}
+		.cs_top_banner_footer ul li a img{width:100%}
+		#footer .cs_lastest_new, #footer .block_various_links .block, #footer #block_contact_infos{width:100%;margin-right:0;border-bottom:none;position:relative;min-height:20px;margin-bottom:0}
+		#footer .cs_lastest_new h4, #footer .block_various_links .block h4, #footer #block_contact_infos h4{margin-bottom:0!important}
+		#footer .cs_lastest_new .block .cs_content, #footer .block_various_links .block ul, #block_contact_infos ul{padding:15px 25px}
+		.static-footer-follow{float:left}
+		.static-footer-follow h4{padding-left:0!important}
+		
+		.sortPagiBar .nbrItemPage,
+		.content_sortPagiBar .sortPagiBar #productsSortForm{float:left;margin-left:0}
+		
+		.content_scene_cat{width:100%}
+		
+		ul#product_list li,
+		.accessories_block ul#product_list li{margin:0!important}
+		
+		#pb-right-column,#pb-left-column{width:100%!important;margin:0 0 0;}
+		#more_info_block{border:none;box-shadow:0 0 0 #fff}
+		.content_hide_show{margin-bottom:20px!important;}
+		
+		#order-detail-content,#block-history,#block-history .table_block{overflow-x:auto}
+		#address form.std p.required label, #address form.std p.text label, #address form.std p.textarea label{width:100%;margin:0;text-align:left}
+		#order .delivery_option label > table.resume, #order-opc .delivery_option label > table.resume{width:100%}
+		
+		#listpage_content div.categTree,
+		#sitemap_content div.sitemap_block{width:100%;margin-bottom:20px}
+		ul#product_list{margin-left:0;}
+		form.std label, form.std p span{width:100%;text-align:left;display:block;float:none}
+		p.checkbox label{display:inline}
+		#stores-table{display:none}
+		
+		#product_comparison td.td_empty{width:150px;}
+		#new_comment_form{width:100%}
+		#new_comment_form .product img{margin-right:0;max-width:100%;float:none}
+		#new_comment_form #criterions_list .star_content{margin:0}
+		#new_comment_form #criterions_list label{margin-right:5px}
+		#create-account_form, #authentication #login_form{width:100%!important;margin:0 0 20px!important;}
+		#account-creation_form .account_creation{width:100%;margin-bottom:20px;}
+		form#compare_shipping_form #compare_shipping p select{width:100%}
+		form#compare_shipping_form #compare_shipping p input#zipcode{width:96%}
+		ul.address{width:100%;margin:0 0 20px!important;}
+		
+		#sitemap_content div.sitemap_block,
+		#listpage_content div.categTree{width:90%;margin-bottom:20px;}
+		
+		#search_block_top #search_query_top{width:86%}
+		
+		#header_logo{top:54px;}
+		#currencies_block_top,#header_right #languages_block_top{float:right;margin:2px 0 0 20px;}
+		#currencies_block_top{clear:both}
+		
+		
+		.cart_quantity .cart_quantity_input{left:-3px}
+		.hook_csslide_new{width:100%;float:none}
+		#header_user #shopping_cart{z-index:100}
+		a.product_img_link:hover img, a.product_image:hover img{box-shadow:none;opcity:1}
+		.zoomdiv{display:none!important}
+
+		.cs_home_filter_product .products_content_tab .slide_image,
+		.cs_home_filter_product .products_home_filter_product{width:400px;padding:10px;border:none;}
+		ul#product_list li, .accessories_block ul#product_list li{width:49.5%;margin:0}
+		
+		#page .cart_voucher input.discount_name{width:236px;}
+		.ac_results {   width:375px !important;}
+		#header_user #shopping_cart{top:59px}
+		#megamenu-responsive li.parent > p{margin-top:5px;}
+		.show_hide_footer{top:7px}
+		#primerHole{width: 388px;}
+		#segundoHole{margin-top: 20px;float: left;width: 388px;}
+		ul#order_step {margin: 18px 0;}
+		#global{margin-left: 9px;margin-bottom: 114px;}
+		#more_info_block{max-width: 412px;height: 260px;}
+		#marco {width: 5px;height: 267px;}
+		#imagenMarco{margin-top: -265px;margin-left: -2px;}
+		#imagenMarco2{margin-top: -267px;margin-left: 389px;}
+		#carousel-productscategory li {width: 204px !important;}
+		#our_price_display{font-size: 21pt;margin-top: -11px;}
+		#add_to_cart{width: 226px;}
+    	.blockproductscategory a.btn.prev {right: 411px!important;}
+    	.blockproductscategory a.btn {top: 234px!important;right: 0px!important;}
+		#contenedor1 {margin-left: 20px!important;}
+		#textosseo{height: 680px!important;margin-top: 80px!important;}
+		#elementos_redes{width: 91%!important;margin-top: 29px;}
+		#formula_medica{margin-top:-220px!important;margin-left: 372px!important;}
+		#fabricante{width: 26%!important;}
+		#more_info_sheets #idTab1 {height: auto!important;line-height: 14px!important;}
+		#more_info_sheets{width:418px!important;background-color: #fafafa;height: 127px;margin-left: -9px;padding:0 0 20px;line-height: 14px!important;}
+		#pb-right-column #image-block{height: 196px!important;}
+		#thumbs_list ul#thumbs_list_frame {left: -4px!important;}
+		#price{margin-top:-265px!important;margin-right: -23px!important;}
+		#short_description_content {margin-right: 210px;width: 195px;}
+		#conteDescuento{}
+		#formulaMedica1{margin-top: -37px;}
+		#encabezados{width: 226%;}
+		#seguridadTitulo{display: block;font-size: 11px;width: 136px;height: 35px;margin-top: 38px;margin-left: -35px;}
+		#seguridadImagen{margin: auto;margin-left: 20px;position: relative;top: 36px;}
+		#tituloProducto{width: 68%;}
+		#cantidad{margin-left: 235px;}
+		.cs_cart_quantity{margin-top: -3px;}
+		#formula_medica{margin-top: -226px!important;margin-left: 371px!important;}
+		#logoPrecio {float: left;margin-top: -225px!important;margin-left: 0;}
+		#view_full_size{width: 244px;margin-left: 87px;}
+		#conteDescuento{}
+ 		#linea2{width:115px!important;}
+ 		#linea{width:115px!important;}
+ 		#mediosPagos {display: none;}
+ 		#redes_sociales{margin-right: -236px;margin-top: -210px;}
+ 		#compraSegura{display: none;}
+ 		#informac{display: none;}
+ 		#imagenMarco{display: none;}
+ 		#imagenMarco2{display: none;}
+ 		#marco {width: 5px;}
+ 		#labelPrecio{top:21px;font-size: 13pt;left: 3px;}
+		#formulaMedica1 {margin-top: 18px;}
+		#image-block{height: 239px;}		
+		#add_to_cart{width: 230px!important;}
+		#elei{width: 220px !important;}
+		#thumbs_list {width: 356px;margin: 0 auto;position: relative;left: 0px;}
+		#thumbs_list a.btn.prev{left:-24px!important;}
+		#thumbs_list a.btn.next{left: 371px!important;}
+		#more_info_sheets p{margin-left: 0px;width:auto;line-height: 14px!important;padding: 2px;}
+		#scro {width: 99%;}
+		#pb-right-column{height: 296px;}
+	}
+	
+	/* All Mobile Sizes (devices and browser) */
+	@media only screen and (min-width: 200px) and (max-width: 479px) {		
+		/*#fancybox-wrap{top:100%!important;}*/
+		/*theme*/		
+		.ac_results{width:238px!important}
+		.cs_home_banner_block p img{width:100%}
+		#footer .block_customer_service_links .block_content{padding-top:0;}
+		#footer  .grid_4{margin-bottom:15px;}
+		.sortPagiBar  .display{display:none!important}
+		.content_sortPagiBar .sortPagiBar .compare{float:left;margin-left:0;clear:left}
+		.content_sortPagiBar div.pagination ul.pagination{margin-bottom:7px;}
+		input#addressInput{width:285px}
+		#account-creation_form input.text, #account-creation_form #id_country, #account-creation_form #id_state{width:96%}
+		.product_list li .image{width:100%;float:none;margin-right:0}
+		.content_scene_cat {display: block;margin: 10px auto;overflow: hidden;width: 285px;}
+		#page .cart_voucher input.discount_name{width:278px;}
+		.cs_home_filter_product .products_content_tab .slide_image, .cs_home_filter_product .products_home_filter_product{width:280px;padding:10px;border:none}
+		#header_user #shopping_cart{top: 56px;left: 242px;height: 60px;}
+		.static-footer-payment h4{margin-bottom:0!important;padding-bottom:0!important}
+		.static-footer-payment p.icon a{padding:0 10px 0 0}
+		#primerHole{width: 268px;}
+		#segundoHole{margin-top: 20px;float: left;width: 268px;}
+		ul#order_step {margin: 18px 0;}
+		.olvida{position: relative;top: -10px;left: -74px;}
+		#seguridadTitulo{margin-top: -42px;margin-left: 54px;}
+		#seguridadImagen {margin: auto;margin-left: -63px;position: relative;top: 5px;}
+		.block{margin-top: 99px;margin-left: 1px;}
+		#view_full_size {width: 160px; margin-left: 53px;}
+		#logoPrecio {float: left;margin-top: -174px!important;margin-left: 0;width: 15%;}
+		#fabricante{width: 32%;}
+		#tituloProducto {width: 61%;margin-left: 124px;}
+		#pb-left-column{float:left;}
+		#mediosPagos{display: none;}
+		#pb-left-column h1 {font-size: 10pt !important;}
+		#cantidad {margin-left: 188px;margin-top: 3px; font-size: 10px !important;}
+		#product_reference{width: 302px;margin-left: 0px;margin-top: -3px;}
+		#product_reference input{width: 18px;}
+		#short_description_content{line-height: 13px;  height: auto;margin-left: 0px!important;}
+		#disponibilidad{margin-top: 0px;float: left;margin-left: 23px;}
+		span.availability,span.cs_out_of_stock{margin-top:-28px!important;margin-left: -15px!important;color: #629841;font-family: 'Open Sans' !important, sans-serif;padding: 5px;font-weight: 700;font-size: 10px !important;float: left;}
+		.dispo1{margin-top: -23px!important;margin-left: 45px!important;color: #629841;font-size: 10px !important;font-family: 'Open Sans', sans-serif;font-weight: 700;float: left;width: 70%;}
+		#dispo2{color: #629841;font-size: 10px !important;font-family: 'Open Sans', sans-serif;padding: 0px;font-weight: 700;font-size:9pt}
+		#dispo3{float:left;width: 62%;font-size: 10px !important;margin-left: 6px;font-family: 'Open Sans', sans-serif;margin-top: 18px;}
+		#price {margin-left: -288px;margin-top: 98px!important;float: left;width: 224px;}
+		#conteDescuento {width: 300px;}
+		#add_to_cart {margin-left: 224px!important;width:336px!important}
+		div #our_price_display{width: 249px;overflow: hidden;margin: 0px auto;}
+		#our_price_display{font-size: 25pt!important; float: left;width: 220px;text-align: center}
+		#more_info_sheets{padding: 0 0 !important;margin-left: 0px;margin-top: 0px;width: 298px!important;height: auto!important;overflow: none;background-color: #fafafa;}
+		#more_info_sheets p{width:256px!important;padding: 2px;}
+		#more_info_block{max-width: 299px;height:55px;box-shadow: 0 3px 1px #f0f0f0;margin-left: -9px;}
+		#imagenMarco {margin-top: -301px;margin-left: -9px!important;display: none;}
+		#imagenMarco2{margin-top: -301px;margin-left: 288px;display: none;}
+		#marco {width: 5px;}
+		#fabricante {width: 36%;}
+		#redes_sociales {margin-right: 433px!important;margin-top: 96px!important;}
+		#elementos_redes{margin-top: 9px!important;margin-left: 36px;}
+		#in{background-image: url('../img/icon/producto/in.png');width: 97%;height: 29px;margin-left: 0px;}
+		#goog{margin-top: -29px;margin-left: 77px;background-image: url('../img/icon/producto/g.png');width: 97%;height: 29px;}
+		#twit{margin-top: -29px;margin-left: 156px;background-image: url('../img/icon/producto/t.png');width: 97%;height: 29px;}
+		#face{margin-top: -29px;margin-left: 240px;background-image: url('../img/icon/producto/f.png');width: 97%;height: 29px;}
+		#labelFormula{color: #8D2F2B;font-size: 13px;margin-top: 14px;float: left;margin-left: 2px;width: 218px;}
+		#labelPrecio{ float: left;width: 249px;text-align: center}
+		#global{margin-left: 9px;margin-bottom: 114px;}
+		#carousel-productscategory li {width: 270px !important;}
+		#productscategory_list li {padding: 38px 0 0!important;}
+		#productscategory_list li a.lnk_img img {margin-left: -92px!important;}
+		#botonComprar {top: 301px!important;}
+    	.blockproductscategory a.btn.prev {right:289px!important;}
+    	.blockproductscategory a.btn {top: 250px!important;right: 0px!important;}
+    	#productscategory_list {margin-left: -21px;}
+		#contenedor1{margin-left: 84px!important;}
+		#textosseo{margin-top: 259px!important;height: 856px!important;width: 99%!important;margin-left: 0px!important;}
+		#textoSeo{margin-left: 88px!important;text-align: center!important;}
+		#pb-right-column #image-block {height: 129px;width: 282px;margin-right: 190px;}
+		#formula_medica {margin-top:-166px!important;margin-left: 263px!important;width: 37px;}
+ 		#compraSegura{display: none;}
+ 		#informac{display: none;}
+ 		#imagenMarco{display: none;}
+ 		#imagenMarco2{display: none;}
+		#formulaMedica1 {margin-top: 9px;margin-left: 0px;}
+		#cabeceraTitulo{float: right;margin-right: 190px;margin-top: -316px;width: 316px;}
+		#pb-right-column{margin-top: 89px;height: 199px;}
+		#pb-right-column #image-block  img#bigpic{margin-left: 0px!important;margin-top: 21px!important;}
+		#thumbs_list {width:74%!important;left: -42px!important;top: 6px;}
+		#thumbs_list a.btn.next{left: 265px!important;top: 7px!important;}
+		#thumbs_list a.btn.prev {left: -21px;}
+		#pb-right-column #views_block {padding: 0 0;}
+		.cs_cart_quantity{margin-top: -5px;}
+		#more_info_sheets ul.bullet {margin: 0;margin-left: 21px;}
+		#scro{overflow: auto!important;height: 87px!important;width:100%;}
+		.caroufredsel_wrapper {margin: 0!important;width: 73%!important;}
+		.sf-menu{padding-left:0px!important;}
+		#page .sf-contener{display: none;}
+		#menu .cs_mega_menu_cat {display: none;}
+		#footer .cs_lastest_new, #footer .block_various_links .block, #footer #block_contact_infos {height: 32px;width: 100%;margin-right: 0;border-bottom: none;position: relative;min-height: 20px;margin-bottom: 0;}
+		#footer .title_block, #footer h4 {padding: 8px 25px;}
+		#search_block_top {padding-top: 87px;}
+		#search_block_top #search_query_top {width: 85%;}
+		#nombreCarrito{display: none;}
+		#header_user #shopping_cart a { padding-top: 0px!important;  padding-left: 0px!important; 	}
+		#header_user span{position: relative;top: 33px;left: 3px;}
+		form#searchbox{width: 100%!important;}
+	}
+

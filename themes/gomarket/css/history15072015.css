@@ -1,0 +1,21 @@
+#block-history table#order-list thead th{text-align:left;}
+#block-history table#order-list tbody tr td{background-color:#FFF;}
+#block-history table#order-list td.history_link{text-align:left;white-space:nowrap}
+#block-history #block-order-detail{padding-top:10px}
+#block-history #block-order-detail  form.submit  h4 input.button{#line-height:22px;}
+#block-history table.detail_step_by_step th{text-align:left!important}
+#block-history #block-order-detail th{text-align:left}
+#block-history #block-order-detail p{padding-left:0;padding-right:0}
+#order-detail-content{clear:both;margin-top:1.5em}
+#order-detail-content tbody tr{height:3em}
+#order-detail-content tfoot tr td{text-align:right}
+#order-detail-content table td input.order_qte_input{display:none}
+#order-detail-content table td span.order_qte_span{background:none;display:block;width:100%}
+#block-history #block-order-detail h4{padding-bottom:5px}
+#block-history #block-order-detail #sendOrderMessage p{padding:5px 4px 5px 0 !important}
+#block-history #block-order-detail #sendOrderMessage p label{min-width:20%;float:left;text-align:left}
+#block-history #block-order-detail textarea{margin:0 auto;padding:10px;width:92%}
+#ordermsg textarea{margin:0;padding:0;width:92%}
+#order-detail-content tfoot td span{margin-left:15px}
+#block-history td.history_detail a img.icon{vertical-align:top}
+.cs_history_content{overflow-x:auto;padding-bottom:20px}

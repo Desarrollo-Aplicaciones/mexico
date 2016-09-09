@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <module>
+            <name>hubspot</name>
+            <displayName><![CDATA[Hubspot integration]]></displayName>
+            <version><![CDATA[1.1]]></version>
+            <description><![CDATA[Create customers and deals on Hubspot side.]]></description>
+            <author><![CDATA[SergeyH]]></author>
+            <tab><![CDATA[advertising_and_marketing]]></tab>
+            <is_configurable>1</is_configurable>
+            <need_instance>0</need_instance>
+	<limited_countries></limited_countries>
+        </module>

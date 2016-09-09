@@ -1,0 +1,193 @@
+<?php
+
+
+class Address extends AddressCore
+{
+
+
+	/**
+	 * @see ObjectModel::add()
+	 */
+	public function add($autodate = true, $null_values = false)
+	{
+
+		$dir_change = explode( "|", $this->city );
+        $fp=fopen("/var/tmp/archivo.txt","a+"); fwrite($fp,"inicio:".$this->city."\r\n"); fclose($fp);
+
+        //$fp=fopen("/var/tmp/archivo.txt","a+"); fwrite($fp,print_r($dir_change ,true)."\r\n"); fclose($fp);
+		
+		$nom_city = $this->city;
+        $fp=fopen("/var/tmp/archivo.txt","a+"); fwrite($fp,"Nombre_ciudad_ini:".$nom_city."\r\n"); fclose($fp);
+		if ( is_numeric($dir_change[0])) {
+			$arr_nom_city = City::getCityByIdCity($dir_change[0]);
+			$nom_city = $arr_nom_city[0]['city_name'];
+		}
+        $fp=fopen("/var/tmp/archivo.txt","a+"); fwrite($fp,"Nombre_ciudad_pos:".$nom_city."\r\n"); fclose($fp);
+		$this->city = $nom_city;
+
+		if ( ($this->id_colonia == '' ||  $this->id_colonia == NULL) && ( isset($dir_change[2]) && $dir_change[2] != '' && $dir_change[2] != NULL ) ) {
+			$this->id_colonia = $dir_change[2];
+		}
+
+		if ( ($this->postcode == '' ||  $this->postcode == NULL) && ( isset($dir_change[1]) && $dir_change[1] != '' && $dir_change[1] != NULL ) ) {
+			$this->postcode = $dir_change[1];
+		}
+
+
+		//$fp=fopen("/var/tmp/archivo.txt","a+"); fwrite($fp,print_r($this,true)."\r\n"); fclose($fp);
+
+
+		if (!parent::add($autodate, $null_values))
+			return false;
+
+		$Id_address=Db::getInstance()->Insert_ID(); 
+         $fp=fopen("/var/tmp/archivo.txt","a+"); fwrite($fp,"id_address:".$Id_address."\r\n"); fclose($fp);
+
+				if($Id_address == 0) {
+					$Id_address = $address->id;
+
+                     $fp=fopen("/var/tmp/archivo.txt","a+"); fwrite($fp,"cero:".$Id_address."\r\n"); fclose($fp);
+
+					//$fp=fopen("/var/tmp/archivo.txt","a+"); fwrite($fp,"primera \r\n"); fclose($fp);
+					Db::getInstance()->update('address_city', array( 'id_city'=>(int)$dir_change[0] ), 'id_address = '.(int)$Id_address );
+
+                    $fp=fopen("/var/tmp/archivo.txt","a+"); fwrite($fp,"ciudad_save:".$dir_change[0]."\r\n"); fclose($fp);
+
+				} else {
+                    $fp=fopen("/var/tmp/archivo.txt","a+"); fwrite($fp,"si_ciudad:".$Id_address."\r\n"); fclose($fp);
+                    //$fp=fopen("/var/tmp/archivo.txt","a+"); fwrite($fp,"segunda \r\n"); fclose($fp);
+					Db::getInstance()->insert('address_city', array( 'id_address'=>(int)$Id_address, 'id_city'=>(int)$dir_change[0] ));
+
+                    $fp=fopen("/var/tmp/archivo.txt","a+"); fwrite($fp,"ciudad_save:".$dir_change[0]."\r\n"); fclose($fp);
+				}
+
+		if (Validate::isUnsignedId($this->id_customer))
+			Customer::resetAddressCache($this->id_customer);
+
+		return true;
+	}
+
+
+
+   	/**
+	 * @see ObjectModel::delete()
+	 */
+	public function delete()
+	{
+		$customers_add = new Customer($this->id_customer);
+		$this->lastname = $customers_add->lastname;
+		$this->firstname = $customers_add->firstname;
+
+		if (Validate::isUnsignedId($this->id_customer))
+			Customer::resetAddressCache($this->id_customer);
+
+		if (!$this->isUsed())
+			return parent::delete();
+		else
+		{
+			$this->deleted = true;
+			return $this->update();
+		}
+	}
+        
+        
+public function get_countryes() {
+
+        $query = "select country.id_country, country.`name` FROM
+                    ps_country_active active INNER JOIN ps_country_lang country
+                    ON( active.id_country = country.id_country);";
+
+        if ($results = Db::getInstance()->ExecuteS($query)) {
+
+            $str_countryes = '';
+            if (count($results) > 0) {
+                foreach ($results as $value) {
+                    $str_countryes .= '<option value="' . $value['id_country'] . '">' . $value['name'] . '</option>';
+                }
+                return json_encode(array('results' => $str_countryes));
+            }
+        }
+
+        return '!';
+    }
+
+    public function get_states($id_country) {
+
+        $query = "select  state.id_state,state.`name` FROM
+ps_country country
+INNER JOIN ps_state state ON (country.id_country= state.id_country)
+WHERE country.id_country=" . (int) $id_country . ";";
+
+        if ($results = Db::getInstance()->ExecuteS($query)) {
+
+            $str_states = '';
+            if (count($results) > 0) {
+                foreach ($results as $value) {
+                    if (isset($_POST['selected']) && ((int) $_POST['selected']) > 0 && ((int) $_POST['selected']) === ((int) $value['id_state'])) {
+                        $str_states .= '<option value="' . $value['id_state'] . '" selected >' . $value['name'] . '</option>';
+                    } else {
+                        $str_states .= '<option value="' . $value['id_state'] . '">' . $value['name'] . '</option>';
+                    }
+                }
+                return json_encode(array('results' => $str_states));
+            }
+        }
+        return '!';
+    }
+
+    public function get_cityes($id_state) {
+
+        $str_cities = '<option value="">- Ciudad -</option>';
+        $cities = City::getCitiesByStateAvailableNoCarrier($id_state);
+
+        if (count($cities) > 0) {
+            foreach ($cities as $row) {
+                if (isset($_POST['selected']) && ((int) $_POST['selected']) > 0 && ((int) $_POST['selected']) === ((int) $row['id_city'])) {
+                    $str_cities .= '<option value="' . $row['id_city'] . '" selected >' . $row['city_name'] . '</option>';
+                } else {
+                    $str_cities .= '<option value="' . $row['id_city'] . '">' . $row['city_name'] . '</option>';
+                }
+            }
+            $array_result = array('results' => $str_cities);
+            return json_encode($array_result);
+        }
+
+        return '!';
+    }
+
+    public function get_list_address($billing_account_id) {
+
+        $id_customer = $this->get_id_custumer_account($billing_account_id);
+        $str_cityes = '<option value="">- Direcciones -</option>';
+
+        if ($id_customer !== '') {
+            $query = "select address.id_address,address.alias,address.postcode, address.address1,cities.city_name,state.`name` as state_name,country.`name` as country_name FROM
+                        ps_customer customer 
+                        INNER JOIN ps_address address ON(customer.id_customer=address.id_customer)
+                        INNER JOIN ps_address_city city ON(city.id_address=address.id_address)
+                        INNER JOIN ps_cities_col cities ON (cities.id_city=city.id_city)
+                        INNER JOIN ps_state state ON( state.id_state=cities.id_state)
+                        INNER JOIN ps_country_lang country ON( country.id_country=state.id_country)
+                        WHERE customer.id_customer IN (
+                        select customer.id_customer FROM
+                        ps_sync_tracker sync INNER JOIN ps_customer customer
+                        ON(sync.key2=customer.id_customer && sync.value2=customer.email)
+                        WHERE sync.key1='" . $billing_account_id . "' GROUP BY customer.id_customer );";
+
+            if ($results = Db::getInstance()->ExecuteS($query)) {
+
+                if (count($results) > 0) {
+
+                    foreach ($results as $value) {
+                        $str_cityes .= '<option value="' . $value['id_address'] . '">' . $value['city_name'] . ' _ ' . $value['alias'] . ' _ ' . $value['postcode'] . ' _ ' . $value['address1'] . ' _ ' . $value['city_name'] . ' ' . $value['state_name'] . ' ' . $value['country_name'] . '</option>';
+                    }
+                }
+            }
+            return json_encode(array('results' => $str_cityes, 'id_customer' => $id_customer));
+        }
+
+        return '!';
+    }        
+        
+}
+

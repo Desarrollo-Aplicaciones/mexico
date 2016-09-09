@@ -1,0 +1,59 @@
+#category h1,#search h1,#manufacturer h1{
+	font:700 13px/1.35 "Open Sans",Helvetica,arial;text-transform:uppercase;background:#f9f9f9 url(../img/bkg_feater.jpg) repeat-x bottom center;padding:5px 10px 7px;color:#3a3a3a;text-transform:uppercase;margin:0;border:1px solid #dddddd;border-bottom:none;border-radius:2px 2px 0 0;-moz-border-radius:2px 2px 0 0;}
+ul#product_list {overflow:hidden;padding:0 0 20px;border:0px solid #dddddd;box-shadow:0 0px 0px #eeeeee;border-radius:0 0 0px 0px;-moz-border-radius:0 0 2px 2px;margin-bottom:20px;}
+#category ul#product_list{border-top:none}
+/*ul#product_list.product_list{width:100%;margin-left:0!important}*/
+/*.accessories_block ul#product_list{margin-left:-15px;margin-bottom:0}*/
+ul#product_list.product_grid li.grid_3 .exclusive{padding:0 10px;}
+.accessories_block ul#product_list{padding-bottom:0;border:none;box-shadow:none;margin:0}
+.accessories_block{margin-bottom:0;}
+ul#product_list li,
+.accessories_block ul#product_list li{vertical-align:top;height:auto;padding:10px 0 30px;position:relative;/*float:none;*/display:inline-block;#display:inline;margin:0 5px;float:none;}
+.accessories_block ul#product_list li{margin:0}
+.grid_19 ul#product_list li.grid_5{margin:0 0 0 -1px}
+.one_column ul#product_list li.grid_4{margin:0 6px}
+.one_column ul#product_list li.grid_3{margin:0 7px}
+.two_column ul#product_list li.grid_8{margin:0 3px}
+ ul#product_list li.grid_3{margin:0 5px}
+.three_column ul#product_list li.grid_8{margin:0}
+.three_column ul#product_list li.grid_6{margin:0 3px}
+
+/*ul#product_list li.grid_5{margin:0 5px}
+.three_column .grid_12 ul#product_list li{margin:0 3px}
+.one_column ul#product_list li{margin:0 6px}
+ul#product_list li.grid_8{margin:0 2px}*
+.two_column ul#product_list li.grid_4{margin:0 5px}
+.accessories_block ul#product_list li{margin:0 5px;float:left}
+.three_column  .grid_8 ul#product_list li{margin:0}
+.two_column #center_column ul#product_list li.grid_3{margin:0 5px;}
+.two_column #center_column ul#product_list li.grid_3 .center_block{padding:0 10px}*/
+
+ul#product_list li .center_block{margin:0;vertical-align:middle;position:relative;text-align:left;padding:0 20px;}
+ul#product_list li .image,
+.accessories_block ul#product_list li .image{display:block;text-align:center;}
+ul#product_list li .image a.product_img_link{display:block\0}
+ul#product_list h3,
+.accessories_block ul#product_list .name_product{display:block;padding-bottom:5px;line-height:15px;}
+.product_desc{padding-bottom:10px;display:block;}
+.product_grid .product_desc{display:none}
+ul#product_list .content_price{display:block;margin-bottom:7px;}
+.price.old{color:#ed2f15}
+
+ul#product_list li .exclusive{}
+ul#product_list li.grid_3 .exclusive,ul#product_list li.grid_4 .exclusive{padding:0 10px}
+ul#product_list li p.compare input.comparator{margin:0 5px 0 0;vertical-align:-2px}
+@media screen and (-webkit-min-device-pixel-ratio:0)
+	{ ul#product_list li p.compare input.comparator {vertical-align:text-top;} }
+.product_list li{width:100%!important;margin:0!important;padding:20px 0!important;display:block!important;border-bottom:1px solid #dddddd;}
+.product_list li.last_item{border:none}
+.product_list li .center_block{margin:0!important;text-align:left!important;}
+.product_list li .image{width:150px;margin-right:20px;float:left;position:relative;}
+.product_list li .image .reduction{right:10px;}
+.product_list li .exclusive{margin-right:10px!important;float:left}
+ul#product_list li .on_sale{position:absolute;top:10px;left:10px;background:url(../img/bkg_on_sale.png) no-repeat 0 0;width:70px;height:70px;}
+ul#product_list li .on_sale span{display:table-cell;vertical-align:middle;border-radius:60px;-moz-border-radius:60px;font:400 12px/15px "Open Sans",Arial, Verdana, sans-serif;color:#fff;text-transform:uppercase;background:#505b85;width:40px;height:60px;padding:0 10px;display:none}
+.content_hide_show.block_hidden_only_for_screen ul#product_list li.last_item{padding-bottom:0}
+.product_list li p.compare {float:left}
+p.compare {color:#686868;font-size:11px;}
+p.compare  input.comparator{vertical-align:-2px;}
+.layered_ajax_loader_icon{padding-left:15px;text-align:center}

@@ -1,0 +1,5 @@
+#header_user_info {float:right;color:#FFF}
+#header_user span {font-weight:bold}
+#header_user_info a{color:#FFF;color:#FFF!important}
+.shopping_cart#shopping_cart a{float:left;text-transform:uppercase;font-size:12px;font-weight:700;color:#575757;}
+.shopping_cart#shopping_cart{float:right;clear:right; position:relative; top:35px;}

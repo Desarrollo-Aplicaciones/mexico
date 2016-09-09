@@ -1,0 +1,105 @@
+
+.bloque{
+    float: left;
+/*    display:inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    min-width:247px;
+    max-width: 100%;
+    height: auto;  
+    /* background-color: #3a9837; */
+   /* overflow: hidden;
+    border: none;
+    */
+}
+
+
+.texto-news{   
+    font-size: 9pt; 
+    display: block;
+    margin: auto;
+    text-align: center;   
+    line-height: 27px;    
+    position: relative;
+}
+
+.celda{
+    display:table-cell;
+    width: auto;
+    height: auto;
+   
+   }
+
+.celda input{
+    position: relative;
+    width: 110px; 
+    height: 43px; 
+    border: none;
+    
+}
+
+.celda input:hover{
+    cursor: pointer;
+}
+
+/* css Luis */
+
+.bloque1 {
+    display:inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    min-width:245px;
+    max-width: 100%;
+    height: 30px;   
+    background-color: #3a9837;
+    overflow: hidden;
+    border: none;
+}
+
+.bloque1 input[type="text"]{
+    width: 225px;
+    height: 18px;
+    text-align: center;
+    font-size: 9pt;
+    line-height: 14px;
+    border: none;
+    position: relative;
+    top: 5px;
+    left: 5px;
+    vertical-align: middle;
+}
+
+.texto-news1 {   
+    font-size: 9pt; 
+    display: block;
+    margin: auto;
+    text-align: center;   
+    line-height: 30px;    
+    position: relative;
+}
+
+.celda1 {
+    display:table-cell;
+    min-width:125px;
+    height: 100%;
+    border:none;
+}
+
+.celda1 input{
+    position: relative;
+    width: 100px; 
+    height: 18px; 
+    color: #fff; 
+    background-color: #ff9b28; 
+    text-align: center; 
+    line-height: 11px;
+    font-size: 9pt;
+    font-weight: bold;
+    border: none;
+    top: 5px;
+    left: 15px;
+}
+
+.celda1 input:hover{
+    cursor: pointer;
+}

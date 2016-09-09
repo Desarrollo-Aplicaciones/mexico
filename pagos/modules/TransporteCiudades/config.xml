@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <module>
+            <name>TransporteCiudades</name>
+            <displayName><![CDATA[Administraci&oacute;n de costos de transporte y ciudades]]></displayName>
+            <version><![CDATA[1 Alpha]]></version>
+            <description><![CDATA[Actualiza las caracter&iacute;sticas de transporte y ciudades de Farmalisto SAS]]></description>
+            <author><![CDATA[Farmalisto - Ewing V&aacute;squez]]></author>
+            <tab><![CDATA[administration]]></tab>
+            <is_configurable>1</is_configurable>
+            <need_instance>0</need_instance>
+	<limited_countries></limited_countries>
+        </module>

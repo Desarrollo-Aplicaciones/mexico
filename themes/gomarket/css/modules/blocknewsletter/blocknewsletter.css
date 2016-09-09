@@ -1,0 +1,5 @@
+/* Block newsletter */
+div#newsletter_block_left div.block_content { text-align: left;overflow:hidden}
+div#newsletter_block_left div.block_content input.inputNew{padding:0 5px;width:92%;float:left}
+div#newsletter_block_left div.block_content p { padding: 0.3em 0; text-align: center }
+div#newsletter_block_left div.block_content input.button_mini { margin: 1em auto 0em auto;float:left }

@@ -1,0 +1,103 @@
+#order-opc .opc_status {
+	border: 1px solid #d0d3d8;
+	background: #D0D1D5 url('../img/form_bg.jpg') repeat-x top left;
+	font-size: 12px;
+}
+
+.opc_float {
+	float:left;
+	width: 49%;
+}
+
+.opc_float_status {
+	float: left;
+	width: 45%;
+	padding: 10px;
+}
+
+#order-opc #login_form ,
+#new_account_form{
+	clear: both;
+	padding:0 20px;overflow:hidden
+} 
+
+#order-opc #login_form p.text {
+	height: 3.4em;
+	margin-left: 4em;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+#order-opc #login_form a { color: ##503501;line-height:28px; }
+#order-opc input#SubmitLogin { margin: 0 }
+#order-opc #login_form p.submit {
+	margin-right: 0;
+	text-align: left;
+	padding-left: 17%!important;
+}
+#order-opc p.lost_password { padding-left: 20px;width:auto;float:left;clear:none;line-height:26px }
+#order-opc p.submit span { padding-right: 0.5em }
+#order-opc #login_form label {
+	float: none;
+	clear: both;
+	display: block;
+	text-align: left;
+	width: 100%;
+	margin-bottom: 0.3em;
+}
+
+#order-opc textarea#message { width:90%;height:100px }
+
+#order-opc sup { color: red; }
+
+#order-opc div.opc-overlay {
+	/*position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: 99;*/
+}
+
+#order-opc div.opc-main-block {border: 1px solid #DCDCDC;
+    border-radius: 2px 2px 2px 2px;
+    box-shadow: 0 2px 1px #EEEEEE;
+    margin-bottom: 20px;
+    overflow: hidden;
+    padding: 0 0 20px;
+    position: relative; }
+#order-opc div.opc-main-block  .opc-main-block{border:none;padding:0 20px;}
+#order-opc div.opc-main-block  form.std fieldset{margin-bottom:0}
+#order-opc div.opc-main-block  form.std p.checkbox{padding-left:0;}
+#order-opc div.opc-main-block  form.std p.checkbox label{line-height:15px!important;font-weight:400!important;width:auto;float:none;display:inline}
+#order-opc div.opc-main-block  #opc_account_form   p label, #order-opc div.opc-main-block  #opc_account_form   p.radio  span,#order-opc div.opc-main-block  #opc_account_form   p.select span{
+    font-weight: 400;
+    line-height: 28px;
+    text-transform: none;}
+#order-opc div.opc-main-block  #opc_account_form   p.required  input.text,#order-opc div.opc-main-block  #opc_account_form   p.text  input.text{width:277px;}
+#order-opc .three_column  .grid_8 div.opc-main-block  #opc_account_form   p.required  input.text,#order-opc .three_column  .grid_8 div.opc-main-block  #opc_account_form   p.text  input.text{width:90%;}
+#order-opc div.opc-main-block  #opc_account_form   p.select  select#days,#order-opc div.opc-main-block  #opc_account_form   p.select  select#months,#order-opc div.opc-main-block  #opc_account_form   p.select  select#years{width:96px;}
+#order-opc div.opc-main-block  #opc_account_form   p.select  span{line-height:25px;}
+#order-opc div.opc-main-block  #opc_account_form   p.required.select select{width:290px;}
+#order-opc .three_column  .grid_8 div.opc-main-block  #opc_account_form   p.required.select select{width:95.5%;}
+#order-opc div.opc-main-block  #opc_account_form   p.textarea textarea{min-width:268px;}
+#order-opc div.opc-main-block  #opc_account_form   p.radio  label, #order-opc div.opc-main-block  #opc_account_form   p.radio span{line-height:25px;}
+#order-opc div.opc-main-block  #opc_account_form   p.radio  label{width:auto;float:none;display:inline}
+#order-opc div.opc-main-block  .address_padding{padding:0}
+#order-opc div.opc-main-block  h3{ font: 700 12px/1.35 "Open Sans",Helvetica,arial;text-transform:uppercase;margin:5px 0}
+#order-opc div.opc-main-block  p.radio input, #order-opc div.opc-main-block  p.checkbox input{vertical-align:-1px;height:auto}
+#order-opc div.opc-main-block #login_form_content input#login_email, #order-opc div.opc-main-block #login_form_content input#login_passwd{width:85%;}
+.three_column  .grid_8  .col_new_acc{width:100%!important}
+#order-opc div.opc-main-block #login_form_content p.submit{padding-left:0!important;width:auto;float:left}
+#order-opc  h2{  background: url("../img/bkg_feater.jpg") repeat-x scroll left bottom #F9F9F9;
+    color: #3A3A3A;
+    font: 700 13px/1.35 "Open Sans",Helvetica,arial;
+    padding: 5px 20px 7px;
+    text-transform: uppercase;}
+#order-opc #opc_payment_methods  .codespot_order_payment{padding:0}
+#opc_delivery_methods  #gift_div  textarea#gift_message{width:678px;clear:left;margin-top:5px;}
+#order-opc h2 span{margin-left:0;}
+
+#order-opc #login_form a.lost_password{line-height:15px;display:block;clear:left;padding-top:5px;}
+.opc-main-block .paiement_block,
+.opc-main-block .addresses{overflow:hidden;padding:0 20px;}

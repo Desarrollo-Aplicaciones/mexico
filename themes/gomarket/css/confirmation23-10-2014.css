@@ -1,0 +1,69 @@
+.bloque1{
+    display:none!important;
+}
+
+#header{
+    height: 176px;
+}
+
+#old_bc{
+    display:none;
+}
+
+.titulos
+{
+font-family: 'Open Sans', sans-serif;
+font-size:14pt;
+font-weight:600;
+}
+.imagen
+{
+padding:20px;
+display:table-cell;
+}
+.parrafo
+{
+text-align:left !important;
+font-family: 'Open Sans', sans-serif;
+font-size:14px;
+}
+.botones
+{
+width:106% !important;
+margin:13px -3%;
+text-align: center;
+overflow: hidden
+}
+input.botonconfirmar, .botonconfirmar
+{
+display:inline-table;
+vertical-align: middle;
+height: 41px;
+font-family: 'Open Sans', sans-serif;
+font-weight:600;
+
+color:#FFF !important;
+background-color:#FF9B28 !important;
+
+
+margin:0 1%;
+
+border:0 !important;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+padding:0 10px !important;
+
+}
+.botonconfirmar:hover
+{
+background-color:#EE8A17 !important;
+cursor:pointer;
+}
+.botonotras
+{
+display: table-cell;
+vertical-align: middle;
+color:#FFF;
+margin-top: 10px;
+}

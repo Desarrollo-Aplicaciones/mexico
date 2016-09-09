@@ -1,0 +1,98 @@
+.bloque1{
+    display:none!important;
+}
+
+#header{
+    height: 176px;
+}
+
+#old_bc{
+    display:none;
+}
+
+.titulos
+{
+font-family: 'Open Sans', sans-serif;
+font-size:14pt;
+font-weight:600;
+}
+.imagen
+{
+padding:20px;
+display:table-cell;
+}
+.parrafo
+{
+text-align:left !important;
+font-family: 'Open Sans', sans-serif;
+font-size:14px;
+}
+.botones
+{
+width:106% !important;
+margin:13px -3%;
+text-align: center;
+overflow: hidden
+}
+.botonotras
+{
+transition:none;
+display: inline-block;
+padding:9px;
+min-width:146px;
+color:#999;
+text-align:center;
+text-transform:none;
+font-size: 11pt;
+font-weight:600;
+font-family: 'Open Sans', sans-serif;
+background-image:none;
+background-color:#f0f0f0;
+border:#DCDCDC solid 1px;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+}
+.botonotras:hover
+{
+background-color:#C8C8C8 !important;
+background-image:none !important;
+color:#FFF;
+}
+.botonotras:active
+{
+background-color:#fff !important;
+color:#323232 !important;
+border-color:#323232;
+}
+.botonconfirmar
+{
+outline:none;
+padding:9px!important;
+height:41px!important;
+min-width:146px;
+color:#FFF !important;
+text-align:center;
+text-transform:none;
+font-size: 11pt;
+font-weight:600;
+border:0;
+font-family: 'Open Sans', sans-serif;
+background-image:none;
+background-color:#ff922E !important;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+}
+
+.botonconfirmar:hover
+{
+background-color:#D66A06 !important;
+background-image:none !important;
+}
+.botonconfirmar:active
+{
+background-color:#fff !important;
+color:#FF922E !important;
+border:#FF922E solid 1px;
+}

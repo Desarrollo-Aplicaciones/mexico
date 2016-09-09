@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <module>
+            <name>cspublicidadfl</name>
+            <displayName><![CDATA[Cs Publicidad Farmalisto]]></displayName>
+            <version><![CDATA[1 Theta]]></version>
+            <description><![CDATA[Colocar publicidad de Farmalisto o Google en las p&aacute;ginas de Producto, Home, Category y Search.]]></description>
+            <author><![CDATA[Ewing V&aacute;squez]]></author>
+            <tab><![CDATA[advertising_marketing]]></tab>
+            <is_configurable>1</is_configurable>
+            <need_instance>0</need_instance>
+	<limited_countries></limited_countries>
+        </module>

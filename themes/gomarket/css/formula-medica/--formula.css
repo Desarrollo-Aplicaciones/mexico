@@ -1,0 +1,169 @@
+ 
+  #formula{
+  width: 100%;
+  position: static;
+  float: none;
+
+    }
+  
+  
+/*  estilos caja de opciones */  
+
+#optios {
+
+/*display:inline-block; */
+
+min-width: 30%;
+max-width: 40%;
+
+  float: left;
+  border-radius: 10px;
+  border: 3px solid #E7E7E7;
+  margin: 5px auto;
+  padding: 5px 10px; 
+
+}
+
+#divs{
+/*display:inline-block; */
+
+float: right;
+min-width: 55%;
+max-width: 97%;
+}
+
+
+#editar{
+width: 100%;
+float:left;
+display: inline-block;
+margin: 5px;
+}
+
+#entrega{
+    width: 100%;
+    float:left;
+display: block;
+margin: 5px;
+}
+#llamada{
+    width: 100%;
+    float:left;
+display: block;
+margin: 5px;
+}
+#online{
+ width: 100%;
+float:left;
+display: block;
+margin: 5px;
+}
+
+.opcion{
+//width: 24%; 
+display: inline-block;
+min-width: 90px;
+max-width: 110px;
+
+height:auto;
+text-justify: auto;
+float: left;
+
+}
+
+.imgformula{
+//width: 25%;
+display: inline-block;
+min-width: 20%;
+max-width: 97%;
+
+height:auto;
+float:left;
+
+}
+
+.imgformula img{
+    display: inline-block;
+    min-width: 45px;
+    max-width: 91px;
+  width: 97%;
+ height: auto;
+}
+
+.textoayuda{
+display: inline-block;
+min-width: 70px;
+max-width: 132px;
+height:auto;
+float:left;
+text-justify: auto;
+
+}
+
+.textapoyo{
+/*
+min-width: 20%;
+max-width: 40%;
+*/
+width: 300px;
+height:auto;
+text-justify: auto;
+
+}
+
+#columna1
+{
+width:230px;
+float:left;
+}
+
+#columna2
+{
+width:230px;
+float:left;
+
+}
+#textapoyo
+{
+	color:#696969;
+	font-family:Arial;
+	font-size:13px;
+        min-height: 100px;
+	height: auto; 
+	
+}
+
+.labelform
+{
+color:#696969;
+	font-family:Arial;
+	font-size:16px;
+	text-justify:auto;
+	
+}
+.contendfrom
+{
+	/* width: 470px; */
+        width: 95%;
+	height: auto;
+	
+ border-radius: 10px;
+ border: 3px solid #E7E7E7;
+ margin: 10px -10px auto;
+ padding: 5px 10px;
+
+}
+
+.validacion{
+    display: inline;
+    float:right ! important;
+    margin-right: 10px;
+    font-size: 9pt;
+    color:red;
+    border: solid red 1px;
+    border-radius: 3px;
+    padding-left: 10px;
+    padding-right: 10px;   
+    background-color: lightyellow;
+}
+

@@ -1,0 +1,35 @@
+<?php
+
+global $_MODULE;
+$_MODULE = array();
+$_MODULE['<{cartabandonmentpro}gomarket>cartabandonmentpro_171486a99491d8d1dc6dcc13897c2573'] = 'Envía un email automático a los clientes que han abandonado su carrito  ';
+$_MODULE['<{cartabandonmentpro}gomarket>cartabandonmentpro_876f23178c29dc2552c0b48bf23cd9bd'] = '¿Estás seguro de que quieres desinstalarlo?';
+$_MODULE['<{cartabandonmentpro}gomarket>addons_2fa0a8c4d85619218224a8a88b76f165'] = 'Gracias por escoger un módulo desarrollado por el equipo Addons de PrestaShop.';
+$_MODULE['<{cartabandonmentpro}gomarket>addons_9886df5ae168c20c3926e7e9f41adb45'] = 'Si encuentras algún problema durante la utilización del módulo, pide ayuda a nuestro equipo a través del';
+$_MODULE['<{cartabandonmentpro}gomarket>addons_23372c0d3713719764670087006fc1b6'] = 'formulario de contacto';
+$_MODULE['<{cartabandonmentpro}gomarket>addons_7b3c61e9446620d8aa80f473a661254f'] = 'Tal vez puedas ganar tiempo, antes de contactarnos:';
+$_MODULE['<{cartabandonmentpro}gomarket>addons_47fad5151819f320629572659a9bb648'] = 'asegúrate de que has leído toda la documentación';
+$_MODULE['<{cartabandonmentpro}gomarket>addons_da771cda19f288952ad7816d268d2753'] = 'Cuando contactes a través del formulario, envíanos en tu primer mensaje todos los detalles sobre el problema y su origen (puedes adjuntar pantallazos, indicar acciones a hacer para poder reproducir el error, etc)';
+$_MODULE['<{cartabandonmentpro}gomarket>addons_1b9441f293cd7307b59296f616bb858a'] = 'Este módulo ha sido desarrollado por PrestaShop y sólo puede ser vendido por PrestaShop';
+$_MODULE['<{cartabandonmentpro}gomarket>configuration_5b6cf869265c13af8566f192b4ab3d2a'] = 'Documentación';
+$_MODULE['<{cartabandonmentpro}gomarket>configuration_254f642527b45bc260048e30704edb39'] = 'Configuración';
+$_MODULE['<{cartabandonmentpro}gomarket>configuration_c33e404a441c6ba9648f88af3c68a1ca'] = 'Estadísticas';
+$_MODULE['<{cartabandonmentpro}gomarket>configuration_bbaff12800505b22a853e8b7f4eb6a22'] = 'Contacto';
+$_MODULE['<{cartabandonmentpro}gomarket>header_f1206f9fadc5ce41694f69129aecac26'] = 'Configurar';
+$_MODULE['<{cartabandonmentpro}gomarket>header_0e133447a9b4c783e895c8fe1248e182'] = 'Recordatorio de Carrito abandonado';
+$_MODULE['<{cartabandonmentpro}gomarket>header_a27dfe771799a09fd55fea73286eb6ab'] = 'Desinstalar';
+$_MODULE['<{cartabandonmentpro}gomarket>header_526d688f37a86d3c3f27d0c5016eb71d'] = 'Reiniciar';
+$_MODULE['<{cartabandonmentpro}gomarket>header_0557fa923dcee4d0f86b1409f5c2167f'] = 'Volver';
+$_MODULE['<{cartabandonmentpro}gomarket>new_254f642527b45bc260048e30704edb39'] = 'Configuración';
+$_MODULE['<{cartabandonmentpro}gomarket>new_c33e404a441c6ba9648f88af3c68a1ca'] = 'Estadísticas';
+$_MODULE['<{cartabandonmentpro}gomarket>translations_1311e5ddedf25a4f6cd6059cbf04c21e'] = 'Gestionar traducciones';
+$_MODULE['<{cartabandonmentpro}gomarket>reminders_4d3d769b812b6faa6b76e1a8abaece2d'] = 'Activo';
+$_MODULE['<{cartabandonmentpro}gomarket>reminders_e807d3ccf8d24c8c1a3d86db5da78da8'] = 'Días';
+$_MODULE['<{cartabandonmentpro}gomarket>reminders_6a7e73161603d87b26a8eac49dab0a9c'] = 'Horas';
+$_MODULE['<{cartabandonmentpro}gomarket>reminders_6884fa26231e6627c759e1e4139f2c27'] = 'Recomendación';
+$_MODULE['<{cartabandonmentpro}gomarket>reminders_c819d5ba915adeedbeae5abd5e4e4761'] = 'Primera relanza';
+$_MODULE['<{cartabandonmentpro}gomarket>reminders_93cba07454f06a4a960172bbd6e2a435'] = 'Sí';
+$_MODULE['<{cartabandonmentpro}gomarket>reminders_bafd7322c6e97d25b6299b5d6fe8920b'] = 'No';
+$_MODULE['<{cartabandonmentpro}gomarket>reminders_fe60b6663f35dc2090dbf913be9c27b6'] = 'Segunda relanza';
+$_MODULE['<{cartabandonmentpro}gomarket>reminders_3c1af8cf0dc4a4c300f5b46481dc4bf4'] = 'Tercera relanza';
+$_MODULE['<{cartabandonmentpro}gomarket>reminders_6e35ee2798b4c3d9d750acc504872be2'] = 'Fecha máxima para las relanzas';

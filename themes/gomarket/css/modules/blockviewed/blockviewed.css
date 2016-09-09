@@ -1,0 +1,22 @@
+/* Block Viewed Products */
+#viewed-products_block_left .products li {
+	padding:10px 0;
+}
+#viewed-products_block_left .products li.last_item {
+	padding-bottom:0;
+	border:none;
+}
+
+#viewed-products_block_left .content_img {
+	float:left;margin-right:10px;
+}
+#viewed-products_block_left .text_desc {
+}
+#viewed-products_block_left h3 a:hover{color:#af0600;text-decoration:none}
+#viewed-products_block_left li .text_desc p,
+#viewed-products_block_left li .text_desc p a {
+	padding-bottom:0;
+	line-height:14px;
+	color:#808080
+}
+

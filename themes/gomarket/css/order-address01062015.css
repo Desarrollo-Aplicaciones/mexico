@@ -1,0 +1,318 @@
+.bloque1, .sf-contener, .cs_mega_menu, #megamenu-responsive, .manufacturerContainer
+{
+display:none!important;
+}
+::-webkit-input-placeholder { font-size: 8pt;}
+:-moz-placeholder { font-size: 8pt;}
+::-moz-placeholder { font-size: 8pt;}
+:-ms-input-placeholder { font-size: 8pt;}
+.cancelar{margin-right:20px;}
+.purpura{color:#A5689C;}
+#megamenu-responsive, .manufacturerContainer{display:none;}
+#sombreado{
+display:none;
+position: absolute;
+background-color: #646464;
+width: 100%;
+height: 100%;
+top: 0;
+left: 0;
+z-index: 99;
+opacity: 0.7;
+}
+.noAddress{
+font-size: 14px;
+font-family: 'Open Sans', sans-serif;
+padding: 15px;
+}
+#nueva-direccion{
+width: 96%;
+padding: 2%;
+display:none;
+background-color: #FFF;
+text-align: center;
+z-index: 100;
+}
+.titulo{
+display: inline-block;
+font-size: 10pt;
+color:#00817b;
+font-weight: 600;    
+font-family: 'Open Sans', sans-serif;
+padding:0 10px;
+}
+.agregaNueva{
+font-size: 14px;
+color:#39db98;
+font-weight: 600;    
+font-family: 'Open Sans', sans-serif;
+margin-left: 15px;
+}
+.agregaNueva span{font-size:18px;color:#90e26c;}
+.agregaNueva:hover{cursor:pointer;}
+.obliga{
+position: absolute;
+bottom: 15px;
+right: 30px;
+color: #9a9a9a;
+font-size: 7pt;
+font-family: 'Open Sans', sans-serif;
+}
+.campoCorto{
+width: 25%;
+min-height:69px;
+float:left;
+position:relative;
+}
+.campoLargo{
+vertical-align:top;
+display: inline-block;
+width: 100%;
+position: relative;
+margin-right: 1%;
+}
+
+.etiqueta{
+    font-size: 9pt !important;
+    font-family: 'Open Sans', sans-serif;
+    text-align: left !important;
+    color: #646464 ! important; 
+}
+
+.seleccion{
+    font-size: 9pt !important;
+    width: 95% !important;
+}
+
+.entrada{
+    width: 90% ! important;
+    font-size: 9pt ! important;
+}
+
+.larga{
+    width: 98% ! important;
+
+}
+
+
+.contenedor{
+width:100%;
+float:left;
+position: relative;
+background-color: transparent;
+margin-bottom:15px;
+}
+.titulo {
+color: #FFF;
+background: #3A9B37;
+background: -webkit-gradient(linear, 0 0, 0 bottom, from(#58AE55), to(#3A9B37));
+background: -moz-linear-gradient(#58AE55, #3A9B37);
+background: linear-gradient(#58AE55, #3A9B37);
+  -pie-background: linear-gradient(#58AE55, #3A9B37);
+font-weight: 600;
+font-size: 13px;
+font-family: 'Open Sans', sans-serif;
+padding: 7px 2%;
+width:96%;
+vertical-align:middle;
+}
+.direccion{
+float:left;
+display:table;
+width:100%;
+}
+.radio-direccion{
+display:table-cell;
+height: 60px;
+vertical-align:middle;
+width: 4%;
+text-align:center;
+}
+.nombre-direccion{
+font-family: 'Open Sans', sans-serif;
+font-weight: 600;
+color:#646464 !important;
+display:table-cell;
+text-align:center;
+vertical-align:middle;
+width:17%;
+}
+
+.detalle-direccion{
+display:table-cell;
+text-align:center;
+vertical-align:middle;
+font-family: 'Open Sans', sans-serif;
+font-size: 13px;
+color: #646464;
+width:32%;
+}
+.ciudad-direccion{
+display:table-cell;
+text-align:center;
+vertical-align:middle;
+font-family: 'Open Sans', sans-serif;
+font-size: 13px;
+color: #646464;
+width:24%;
+}
+.estado-direccion{
+display:table-cell;
+text-align:center;
+vertical-align:middle;
+font-family: 'Open Sans', sans-serif;
+font-size: 13px;
+color: #646464;
+width:21%;
+}
+.enviar-form, #new-address
+{
+outline:none;
+float:right;
+padding:9px 0;
+width:144px;
+color:#FFF;
+text-align:center;
+text-transform:none;
+font-size: 11pt;
+font-weight:600;
+border:solid 1px #ff922E;
+font-family: 'Open Sans', sans-serif;
+background-image:none;
+background-color:#ff922E;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+}
+
+.enviar-form:hover, #new-address:hover
+{
+background-color:#D66A06 !important;
+background-image:none !important;
+}
+.enviar-form:active, #new-address:active
+{
+background-color:#fff !important;
+color:#FF922E !important;
+border:#FF922E solid 1px;
+}
+#atras{
+    display: inline;
+    float: left;
+    background-color: transparent;
+    width: 109px;
+    height: 40px;
+    padding-left: 22px;
+    padding-top: 12px;
+}
+
+#atras a{
+    font-weight: bold;
+}
+
+.validacion{
+float: right;
+margin-right: 10px;
+font-size: 9pt;
+color: #A5689C;
+}
+
+#atras11, #atras12, .cancelar
+{
+transition:none;
+display: inline-block;
+padding:9px 0;
+width:144px;
+color:#646464;
+text-align:center;
+text-transform:none;
+font-size: 11pt;
+font-weight:600;
+font-family: 'Open Sans', sans-serif;
+background-image:none;
+background-color:#e5e5e5;
+border:#8c8c8c solid 1px;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+}
+#atras11:hover, #atras12:hover, .cancelar:hover
+{
+background-color:#C8C8C8 !important;
+background-image:none !important;
+color:#FFF;
+}
+#atras11:active, #atras12:active, .cancelar:active
+{
+background-color:#fff !important;
+color:#323232 !important;
+border-color:#323232;
+}
+
+
+.botones
+{
+width:303px;
+float:right;
+}
+select, option, .entrada
+{
+font-family: 'Open Sans', sans-serif !important;
+}
+#center_column{width:100%}
+
+.confirmExpress{
+width:100%;
+font-size:13px;
+font-family: 'Open Sans', sans-serif;
+position: absolute;
+top: 275px;
+z-index: 100;
+left:0;
+text-align: center;
+}
+.confirmxps{
+margin-top:-20px;
+position: relative;
+width: 312px;
+height:126px;
+background-color:#FFF;
+padding:20px;
+}
+#xpscancel, #xpsaccept{
+padding:10px;
+font-weight:600;
+width:124px;
+}
+#xpscancel{
+float:left;
+color:#646464;
+background-color:#e5e5e5;
+border:#8c8c8c solid 1px;
+
+}
+#xpsaccept{
+float:right;
+background-color: #ff922E;
+color:#FFF;
+border:#ff922e solid 1px;
+}
+#xpsaccept:hover{background-color:#D66A06;}
+#xpscancel:hover{background-color:#C8C8C8 !important;color:#FFF;}
+#xpscancel:active{background-color:#fff !important;color:#323232 !important;border-color:#323232;}
+#xpsaccept:active{background-color:#fff !important;color:#FF922E !important;border:#FF922E solid 1px;}
+.titleConf{
+font-weight:600;
+color:#FFF;
+background-color: #39CB98;
+width:106px;
+padding:10px 20px;
+}
+.visible{
+width: 0;
+height: 0;
+border-right: 73px solid transparent;
+border-left: 73px solid transparent;
+border-top: 10px solid #39CB98;
+}
+#xpsValue{color: #39CB98;font-weight: 600}

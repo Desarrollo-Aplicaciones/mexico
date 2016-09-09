@@ -1,0 +1,96 @@
+<?php
+
+class FrontController extends FrontControllerCore
+{
+	
+public function initContent() {
+        $ubucacion = '';
+        if (isset($this->context->controller->php_self)) {
+            $ubucacion = $this->context->controller->php_self;
+        }
+        if ($ubucacion === 'authentication' || $ubucacion === 'order') {
+            self::$smarty->assign('lightboxshow', 'no');
+        } else {
+            self::$smarty->assign('lightboxshow', 'si');
+        }
+        //(order,authentication,)
+        // validaciones para el control del ligthbox 
+        self::$smarty->assign('iexplorerold', FALSE);
+        self::$smarty->assign('lightbox1', FALSE);
+
+        preg_match('/MSIE (.*?);/', $_SERVER['HTTP_USER_AGENT'], $matches);
+        if (count($matches) > 1) {
+            $version = $matches[1];
+
+            if ($version < 11) {
+                if (!isset($_COOKIE['iexplorerOld'])) {
+                    setcookie("iexplorerOld", 'iexplorerOld', time() + 3600 * 24 * 30);
+                    self::$smarty->assign('iexplorerold', TRUE);
+                    self::$smarty->assign('lightbox1', TRUE);
+                }
+            }
+        }
+
+        self::$smarty->assign('newsletter', FALSE);
+        self::$smarty->assign('lightbox1', FALSE);
+
+        include(dirname(__FILE__) . '/../../../classes/Mobile_Detect.php');
+        $detect = new Mobile_Detect;
+        $deviceType = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer');
+
+        if ($deviceType != 'phone' && $deviceType != 'tablet') {
+// si el cliente no es un bot
+            if (!$this->is_bot()) {
+                // si la cookie no existe   
+                if (!isset($_COOKIE['newsletter'])) {
+                    setcookie("newsletter", 'newsletter', time() + 3600 * 24 * 5);
+                    self::$smarty->assign('newsletter', TRUE);
+                    self::$smarty->assign('lightbox1', TRUE);
+                }
+            }
+        }
+
+// Fin validaciones para el control del ligthbox      
+
+
+        $this->process();
+        if (!isset($this->context->cart))
+            $this->context->cart = new Cart();
+        if ($this->context->getMobileDevice() == false) {
+            // These hooks aren't used for the mobile theme.
+            // Needed hooks are called in the tpl files.
+            if (!isset($this->context->cart))
+                $this->context->cart = new Cart();
+            $this->context->smarty->assign(array(
+                'HOOK_HEADER' => Hook::exec('displayHeader'),
+                'HOOK_TOP' => Hook::exec('displayTop'),
+                'HOOK_LEFT_COLUMN' => ($this->display_column_left ? Hook::exec('displayLeftColumn') : ''),
+                'HOOK_RIGHT_COLUMN' => ($this->display_column_right ? Hook::exec('displayRightColumn', array('cart' => $this->context->cart)) : ''),
+            ));
+        }
+        else {
+            $this->context->smarty->assign(array(
+                'HOOK_MOBILE_HEADER' => Hook::exec('displayMobileHeader'),
+            ));
+        }
+    }
+    
+            
+function is_bot(){
+     
+        $bots = array(
+            'Googlebot', 'Baiduspider', 'ia_archiver',
+            'R6_FeedFetcher', 'NetcraftSurveyAgent', 'Sogou web spider',
+            'bingbot', 'Yahoo! Slurp', 'facebookexternalhit', 'PrintfulBot',
+            'msnbot', 'Twitterbot', 'UnwindFetchor',
+            'urlresolver', 'Butterfly', 'TweetmemeBot' );
+     
+        foreach($bots as $b){
+            if( stripos( $_SERVER['HTTP_USER_AGENT'], $b ) !== false ) return true;
+     
+        }
+        return false;
+    }
+	
+        
+}

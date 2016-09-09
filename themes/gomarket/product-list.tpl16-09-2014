@@ -1,0 +1,100 @@
+{*
+* 2007-2012 PrestaShop
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the Academic Free License (AFL 3.0)
+* that is bundled with this package in the file LICENSE.txt.
+* It is also available through the world-wide-web at this URL:
+* http://opensource.org/licenses/afl-3.0.php
+* If you did not receive a copy of the license and are unable to
+* obtain it through the world-wide-web, please send an email
+* to license@prestashop.com so we can send you a copy immediately.
+*
+* DISCLAIMER
+*
+* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+* versions in the future. If you wish to customize PrestaShop for your
+* needs please refer to http://www.prestashop.com for more information.
+*
+*  @author PrestaShop SA <contact@prestashop.com>
+*  @copyright  2007-2012 PrestaShop SA
+*  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+*  International Registered Trademark & Property of PrestaShop SA
+*{$smarty.cookies.display}
+*}
+
+{if isset($products)}
+<script type="text/javascript">
+//<![CDATA[
+$(document).ready(function()
+{
+	_csJnit(IS,n);
+});
+//]]>
+</script>
+	<div style="float:left;">
+		<ul id="product_list" class="product_grid">
+		{foreach from=$products item=product name=products}
+		<li class="{if isset($grid_product)}{$grid_product}{elseif isset($smarty.cookies.grid_product)}{$smarty.cookies.grid_product}{else}grid_6{/if} ajax_block_product {if $smarty.foreach.products.first}first_item{elseif $smarty.foreach.products.last}last_item{/if} {if $smarty.foreach.products.index % 2}alternate_item{else}item{/if} clearfix omega alpha">
+			<div class="center_block">				
+				<div class="image"><a href="{$product.link|escape:'htmlall':'UTF-8'}" class="product_img_link" title="{$product.name|escape:'htmlall':'UTF-8'}">
+					<img src="{$link->getImageLink($product.link_rewrite, $product.id_image, 'home_default')}" alt="{$product.legend|escape:'htmlall':'UTF-8'}" />
+				</a>
+				{if $product.specific_prices}
+        			{assign var='specific_prices' value=$product.specific_prices}
+        			{if $specific_prices.reduction_type == 'percentage' && ($specific_prices.from == $specific_prices.to OR ($smarty.now|date_format:'%Y-%m-%d %H:%M:%S' <= $specific_prices.to && $smarty.now|date_format:'%Y-%m-%d %H:%M:%S' >= $specific_prices.from))}
+	        			<p class="reduction">{l s='Save '}<span>{$specific_prices.reduction*100|floatval}</span>%</p>
+	            	{/if}
+					{/if}
+				</div>
+				<div class="name_product"><h3><a href="{$product.link|escape:'htmlall':'UTF-8'}" title="{$product.name|escape:'htmlall':'UTF-8'}">{$product.name|escape:'htmlall':'UTF-8'|truncate:45:'...'}</a></h3></div>
+				<p class="product_desc">{$product.description_short|strip_tags:'UTF-8'|truncate:200:'...'}</p>
+				{if (!$PS_CATALOG_MODE AND ((isset($product.show_price) && $product.show_price) || (isset($product.available_for_order) && $product.available_for_order)))}
+				<div class="content_price">
+					{if $product.reduction}<span class="price-discount">{displayWtPrice p=$product.price_without_reduction}</span>{/if}
+					{if isset($product.show_price) && $product.show_price && !isset($restricted_country_mode)}<span class="price{if $product.reduction} old{/if}" style="display: inline;">{if !$priceDisplay}{convertPrice price=$product.price}{else}{convertPrice price=$product.price_tax_exc}{/if}</span>{/if}
+				</div>
+				{/if}
+				
+			{if ($product.id_product_attribute == 0 || (isset($add_prod_display) && ($add_prod_display == 1))) && $product.available_for_order && !isset($restricted_country_mode) && $product.minimal_quantity <= 1 && $product.customizable != 2 && !$PS_CATALOG_MODE}
+					{if ($product.allow_oosp || $product.quantity > 0)}
+						{if isset($static_token)}
+							<a class="button ajax_add_to_cart_button exclusive" rel="ajax_id_product_{$product.id_product|intval}" href="{$link->getPageLink('cart',false, NULL, "add&amp;id_product={$product.id_product|intval}&amp;token={$static_token}", false)}" title="{l s='Agregar al Carrito'}">{l s='Agregar al Carrito'}</a>
+						{else}
+							<a class="button ajax_add_to_cart_button exclusive" rel="ajax_id_product_{$product.id_product|intval}" href="{$link->getPageLink('cart',false, NULL, "add&amp;id_product={$product.id_product|intval}", false)}" title="{l s='Agregar al carrito'}">{l s='Agregar al Carrito'}</a>
+						{/if}						
+					{else}
+						<span class="exclusive">{l s='Out of stock'}</span>
+					{/if}
+				{/if}	
+				{if isset($comparator_max_item) && $comparator_max_item}
+					<p class="compare">
+						<input type="checkbox" class="comparator" id="comparator_item_{$product.id_product}" value="comparator_item_{$product.id_product}" {if isset($compareProducts) && in_array($product.id_product, $compareProducts)}checked="checked"{/if} /> 
+						<label for="comparator_item_{$product.id_product}">{l s='Select to compare'}</label>
+					</p>
+				{/if}
+			</div>
+		</li>
+	{/foreach}
+	</ul>
+</div>
+	<!-- /Products list -->
+	 <div class="cclearfix" style="float:left;font-size: 7pt;padding: 0 0px 20px 0;text-align: justify;">Bienvenido a Farmalisto, tu droguería online, encontrarás productos de farmacia, salud, nutrición, cuidado personal y para la familia. Compra y haz tus pedidos fácilmente, servicio a domicilio en Bogotá, Antioquia, Valle del Cauca, Atlántico, Santander, Norte de Santander, Tolima, Risaralda, Magdalena, Córdoba, Caldas, Nariño, Cauca, Meta, quindío, Cesar, Huila, Sucre, Boyacá, Cundinamarca, Casanare, La Guajira, Arauca, Caquetá, Putumayo y demás ciudades y pueblos de Colombia, garantizamos el mejor precio. Acá te decimos para qué sirve<label id="tituloCategoryProd"></label>.
+
+A través de farmalisto puedes comprar con diversos medios de pago, tarjeta débito, tarjeta de crédito, baloto, cuenta de ahorros, efectivo, te brindamos seguridad en cada una de tus transacciones a través de nuestro sistema Symantec Powered by verisign un completo sistema de seguridad en tus compras. Puedes llamarnos a nuestra línea de atención y televentas en Bogotá al 2205249 y Nacionalmente en el 01800 9133830. o puedes escribirnos a nuestro correo de contacto, contacto@farmalisto.com.co. 
+
+Nuestros beneficios: Mejor precio garantizado, se trata de una garantía en la que podrás obtener el doble del valor de la diferencia del producto que encuentres a un menor precio en otro establecimiento que sea certificado para la venta de medicamentos, traes la factura o cotización y en tu próxima compra la podrás hacer efectiva, No más filas, con nosotros ya no tendrás que hacer filas al salir de tu médico, IPS o EPS, simplemente compras online y hasta puedes pagar en casa, simple y rápidamente. 
+
+Discreción en todas tus compras, total confidencialidad en todas tus transacciones, hay algunas ocasiones en las que quieres comprar algunos productos y no quieres que nadie se entere, con nosotros puedes mantenerte tranquilo, haces tu pedido y te entregamos en el lugar que nos indiques.
+
+Tu fórmula médica completa en un sólo lugar, ya no tendrás que pasar de farmacia en farmacia para conseguir tus medicamentos, nosotros lo hacemos por ti, simplemente haz tu pedido y nosotros nos encargamos de todo.
+
+Contamos con profesionales certificados de la farmacológia ofreciendo así garantía total en tu experiencia de compra, no somos un ecomerce común somos una droguería 100% online en donde encontrarás todo lo que necesitas.
+
+Sí vas a hacer una compra por más de $99.000 pesos puedes obtener un descuento de $10.000 usando el cupón con el código "AYUDASALUD" permamentemente, sí consumes o compras mensualmente tus medicamentos, con nosotros no olvidarás tomarlos, te cuidamos y nos esforzamos en recordártelo, nuestro interés es tu bienestar.
+
+No te automediques, nosotros somos responsables por la salud de nuestros clientes, por ello exigimos un soporte certificado (fórmula médica) por tú médico o EPS en el que autorice la venta del medicamento, la dósis, presentación del producto, fecha, advertencias, características, posología, indicaciones y contraindicaciones es responsabilidad de tú médico y no nos responsabilizamos por ello.</div> 
+
+	
+{/if}

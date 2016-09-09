@@ -1,0 +1,211 @@
+.bloque1{
+    display:none!important;
+}
+
+#header{
+    height: 176px;
+}
+
+a{transition:none;}
+#contenedor_total
+{
+margin-top: 185px;
+}
+.botones
+{
+
+width:303px;
+margin-top: -14px;
+float:right;
+}
+.seleccionPago{
+background-color: #ededed;
+height: 23px;
+width: 100%;
+margin: -10px 0 20px 0;
+padding: 8px 0 5px 0;
+font-weight: 600;
+font-family: 'Open Sans', sans-serif;
+color: #646464;
+float: left;
+text-align: center;
+}
+.resumen{
+background-color: #ededed;
+height: 23px;
+width: 100%;
+margin: -10px 0 20px 0;
+padding:8px 0 5px 0;
+font-weight: 600;
+font-size: 14px;
+font-family: 'Open Sans', sans-serif;
+color:	#1e817a ;
+text-align: center;
+float:right;
+}
+#resumen_total{float:right;}
+#opciones{
+display: block;
+width: 263px;
+margin: 10px 0 10px 24%;
+}
+#productos{margin:-5px -10px 0 -10px;text-align: center}
+.columna1,.columna2{width:49%;}
+
+.contenedorGris, #contenedorProducto
+{
+float:left;
+font-family: 'Open Sans', sans-serif !important;
+border-style: solid;
+border-width: 1px;
+border-color: #ededed;
+width:99.8%;
+}
+#contenedorProducto{background-color: #ededed; overflow:hidden;}
+
+	#botonArriba{
+		position: absolute;
+top: 0;
+	}
+
+	#botonAbajo{
+		position: absolute;
+top: 0;}
+
+#ResumenLabel{
+color: #1E807A ;
+font-weight: bold;
+font-size: 14pt;
+font-family: open sans;
+margin-left: 85px;
+top: 63px;
+position: absolute;
+}
+
+#botonesInferiores{
+float: left;
+width: 100%;
+}
+
+#order-detail-content5{
+	margin: -158px 0;
+
+}
+
+#textoseguridad{
+width: 180px;
+font-size: 12px;
+text-align: center;
+background-color: #FFF;
+padding: 0 10px;
+display: table-cell;
+vertical-align: middle;
+}
+#imagenseguridad{
+float:none;
+width:94px;
+}
+#divs{
+width: 100%;
+
+
+/* height: 438px; */
+}
+#div1, #div2, #div3, #div4, #div5
+{
+background-color: #efefef;
+}
+
+
+
+
+.separador
+{
+position:relative;
+top:-10px;
+width:100%;
+height:1px;
+z-index: 999;
+}
+.detalle
+{
+display:inline-table;
+border-style: solid;
+border-width: 5px;
+border-color: #ededed;
+background-color: #FFF;
+}
+.productoTamano{
+width:65px;
+height:43px;
+float:left;
+margin-right: 10px;
+}
+.cart_quantity
+{
+display:table-footer-group;
+width:100%;
+clear:left;
+padding:10px 0;
+}
+.cantidad{float:left;min-width: 40%}
+.subtotal{float:left;}
+#contenedorPrecio
+{
+font-family: 'Open Sans', sans-serif;
+margin: 0;
+width: 288px;
+background-color: #FFF;
+}
+.price
+{
+font-family: 'Open Sans', sans-serif;
+color: #676767;
+font-weight: 600;
+}
+.labels
+{
+color:	#1e817a ;
+font-weight: 600;
+}
+.descripcion, .price2 {display: inline-block;text-align: right}
+.price2, .price-discount
+{
+width:33%;
+font-weight:600;
+font-size:12px !important;
+display:inline-block;
+text-align: right;
+margin:0;
+}
+.descripcion{width:64%;font-size:12px;}
+.total_compra, .price3
+{
+display: inline-block;
+text-align: right;
+color: #1e817a ;
+font-weight: bold;
+font-size: 14pt;
+}
+.total_span
+{
+background-color:#ededed;
+text-align: right;
+padding:10px
+}
+.nombre
+{
+text-align: left
+}
+
+.nombre a:hover
+{
+color: #1e817a ;
+}
+#descuentos{text-decoration: line-through; color:#F00;}
+.labels
+{
+font-size:11px !important;
+font-weight: 600;
+}
+#descripcioNombre{float:none;text-align: left}

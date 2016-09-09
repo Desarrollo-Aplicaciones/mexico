@@ -1,0 +1,87 @@
+.ctn-global-exp {
+    display: inline-block;
+    height: auto;
+    margin: 20px 0;
+    text-align: center;
+    width: 100%;
+}
+
+.ctn-exp {
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.10),0 2px 10px 0 rgba(0,0,0,0.10);
+    display: inline-block;
+    height: 87px;
+    margin: 0 2px;
+    text-align: center;
+    width: 245px;
+}
+
+.ctn-exp .ctn-exp-sup {
+    display: inline-block;
+    height: 40px;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.ctn-exp .cont-exp-img {
+    display: inline-block;
+    float: left;
+    height: 100%;
+    line-height: 45px;
+    text-align: center;
+    width: 36%;
+}
+
+.ctn-exp .img-exp {
+	height: 100%;
+}
+
+.ctn-exp .img-exp2 {
+    height: 45%;
+    margin-left: 30px;
+}
+
+.ctn-exp .ctn-exp-number {
+    display: inline-block;
+    float: right;
+    height: 100%;
+    line-height: 40px;
+    width: 64%;
+}
+
+.ctn-exp .number-exp {
+    color: #3B8AB5;
+    font-family: 'Open Sans';
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.ctn-exp .ctn-exp-inf {
+    display: inline-block;
+    height: 33px;
+    line-height: 33px;
+    width: 100%;
+}
+
+.text-exp {
+    color: #999999;
+    font-family: 'Open Sans';
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+#img-exp-box {
+    margin: 0 0 0 18px;
+}
+
+#img-exp-stars {
+    margin: 0 0 0 26px;
+}
+
+#img-exp-map {
+    margin: 0 0 0 42px;
+}
+
+#img-exp-eyes {
+    margin: 0 0 0 12px;
+}

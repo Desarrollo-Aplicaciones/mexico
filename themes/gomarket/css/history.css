@@ -1,0 +1,38 @@
+#center_column .myaccount_lnk_list li#menu_history{background-color: #a5689c;}
+.myaccount_lnk_list #menu_history:after{border-color:transparent transparent transparent #a5689c ;}
+#menu_history .img_cont{border-color:#a5689c;}
+.myaccount_lnk_list #menu_history img.icon{opacity:1}
+a #menu_history{color:white;}
+#order-list{width:100%;}
+#order-list td{padding:5px 0;}
+#order-list th{padding:8px 0;}
+.price{margin-right:15%;}
+#block-history table#order-list thead{background-color: #f0f0f0}
+#block-history table#order-list thead th{text-align:center;color:#a5689c;font-weight:600;font-size: 13px;}
+#block-history table#order-list tbody tr td{background-color:#FFF;}
+#block-history table#order-list tbody tr td a{font-size: 13px;}
+td.history_date {width:11%;text-align: center;}
+td.history_price{width:11%;text-align: right;}
+td.history_state{width:17%;text-align: center;}
+td.history_invoice{width:6%;text-align: center;}
+td.history_detail{width:17%;text-align: center;}
+#order-list td.history_method{padding-left: 3%}
+#block-history table#order-list td.history_link{text-align:center;white-space:nowrap; width: 145px;}
+#block-history #block-order-detail{padding-top:10px}
+#block-history #block-order-detail  form.submit  h4 input.button{line-height:22px;}
+#block-history table.detail_step_by_step th{text-align:left!important}
+#block-history #block-order-detail th{text-align:left}
+#block-history #block-order-detail p{padding-left:0;padding-right:0}
+#order-detail-content{clear:both;margin-top:1.5em}
+#order-detail-content tbody tr{height:3em}
+#order-detail-content tfoot tr td{text-align:right}
+#order-detail-content table td input.order_qte_input{display:none}
+#order-detail-content table td span.order_qte_span{background:none;display:block;width:100%}
+#block-history #block-order-detail h4{padding-bottom:5px}
+#block-history #block-order-detail #sendOrderMessage p{padding:5px 4px 5px 0 !important}
+#block-history #block-order-detail #sendOrderMessage p label{min-width:20%;float:left;text-align:left}
+#block-history #block-order-detail textarea{margin:0 auto;padding:10px;width:92%}
+#ordermsg textarea{margin:0;padding:0;width:92%}
+#order-detail-content tfoot td span{margin-left:15px}
+#block-history td.history_detail a img.icon{vertical-align:top}
+.cs_history_content{overflow-x:auto;padding-bottom:20px}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <module>
+            <name>cshometab</name>
+            <displayName><![CDATA[CS Home Tab]]></displayName>
+            <version><![CDATA[1.0]]></version>
+            <description><![CDATA[Add Filter Products on the homepage]]></description>
+            <author><![CDATA[CodeSpot]]></author>
+            <tab><![CDATA[MyBlocks]]></tab>
+	<confirmUninstall>Are you sure that you want to delete your CSHomeTab?</confirmUninstall>
+            <is_configurable>1</is_configurable>
+            <need_instance>1</need_instance>
+	<limited_countries></limited_countries>
+        </module>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <module>
+            <name>importvoucher</name>
+            <displayName><![CDATA[Import Vouchers from CSV]]></displayName>
+            <version><![CDATA[1.5.2]]></version>
+            <description><![CDATA[This module imports voucher codes from CSV file. Supports PrestaShop in version 1.4.x - 1.5.x]]></description>
+            <author><![CDATA[MyPresta.eu]]></author>
+            <tab><![CDATA[advertising_marketing]]></tab>
+            <is_configurable>1</is_configurable>
+            <need_instance>1</need_instance>
+	<limited_countries></limited_countries>
+        </module>

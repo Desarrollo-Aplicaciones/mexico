@@ -1,0 +1,119 @@
+#addresses .myaccount_lnk_list li#menu_addresses{background-color: #39cb98;}
+#addresses .myaccount_lnk_list #menu_addresses:after{border-color:transparent transparent transparent #39cb98 ;}
+#addresses #menu_addresses .img_cont{border-color:#39cb98;}
+#addresses .myaccount_lnk_list #menu_addresses img.icon{opacity:1}
+#addresses a #menu_addresses{color:white;}
+#order .bloque1,#order .sf-contener, #order .sf-contener_small,#order .cs_mega_menu,#order #megamenu-responsive,#order .manufacturerContainer
+{
+    display:none!important;
+}
+.address_title{font-weight: 600;}
+div.addresses{position:relative;width:100%}
+div.addresses p{margin-bottom:10px;width:100%;clear:both;display:block}
+div.addresses p label{text-transform:none}
+div.addresses p.address_delivery label,div.addresses p#address_invoice_form label{float:none;font-weight:700;line-height:25px;width:100%;margin:0;display:block}
+div.addresses p select{width:236px;}
+div.addresses p.checkbox{width:auto;margin-bottom:20px}
+div.addresses #address_invoice_form{margin-left:0;margin-top:10px;padding-top:0!important;width:100%;overflow:hidden}
+div.addresses p.address_add, div.addresses p#address_invoice_form{padding-bottom:20px;margin-bottom:20px;}
+div.addresses #address_invoice_form a.button_large,div.addresses .address_add a.button_large{float:left;margin-left:0!important;}
+div.addresses h3{margin:0}
+div.addresses p.checkbox input{height:auto;margin-right:4px!important;vertical-align:-2px}
+div.addresses_list{display:table;margin:0;border-collapse: collapse;width:100%;}
+ul.address{display:table-row;border-bottom: 1px solid #c8c8c8;}
+#page #columns ul.address li{display:table-cell;padding:10px 1%;vertical-align: middle;font-size: 13px;max-width:250px;}
+ul#address_delivery.address{margin-right:30px}
+.three_column .grid_8 ul.address{width:100%;margin:0 0 20px!important;}
+li.address_name,li.address_firstname,li.address_lastname{font-weight:700;color:#3a3a3a}
+span.address_name,span.address_firstname,span.address_lastname,span.address_update a,span.address_delete a{}
+span.address_name,span.address_firstname,span.address_lastname,span.address_company{font-weight:700}
+li.address_update span:last-of-type{font-size: 18px!important;display:none;}
+li.address_update,li.address_delete{color:#39cb98;font-weight:600;}
+.addresses #ordermsg{float:left;padding-top:5px;width:100%}
+.addresses #ordermsg p{padding-left:0}
+.addresses #ordermsg .textarea textarea{height:100px;width:90%;}
+li.address_update a,li.address_delete a,l li.address_update a,li.address_delete a{font-weight:600;color:#39cb98}
+li.address_update a:hover,li.address_delete a:hover,l li.address_update a:hover,li.address_delete a:hover{color:#3a3a3a}
+p.cart_navigation.submit{float:left;margin:10px 0 !important ;width:100% !important}
+.title{color:#39cb98;font-weight:600;font-size:13;margin-bottom:0;background-color:#f0f0f0;padding: 5px 10px;}
+#nueva-direccion{display:none;text-align: left; position: relative;background-color: white;padding:20px 0;}
+.campoCorto, .campoLargo{vertical-align:top;display: inline-block;text-align: left;height:75px;}
+.campoCorto{width:23%;}
+.campoLargo{width:31%;}
+.campoCorto input, .campoCorto select, .campoLargo input, .campoLargo select{width:93%;}
+.purpura{color:#a5689C;}
+.add_address{
+	color:white;
+	font-weight:600;
+	width:100%;
+	border:1px solid transparent;
+	background-color: #39cb98;
+	padding:10px 20px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+.add_address:hover{background-color: #19ab78;}
+.add_address:active{background-color: white;border-color: #39cb98;color:#39cb98;}
+.obliga{position: absolute;bottom: 0; right: 0;margin: 20px;}
+#new-address
+{
+outline:none;
+height:38px;
+width:144px;
+color:#FFF;
+text-align:center;
+text-transform:none;
+font-size: 11pt;
+font-weight:600;
+border:solid 1px #ff922E;
+font-family: 'Open Sans', sans-serif;
+background-image:none;
+background-color:#ff922E;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+}
+
+#new-address:hover
+{
+background-color:#D66A06 !important;
+background-image:none !important;
+}
+#new-address:active
+{
+background-color:#fff !important;
+color:#FF922E !important;
+border:#FF922E solid 1px;
+}
+.cancelar
+{
+transition:none;
+display: inline-block;
+padding:9px 0;
+width:144px;
+color:#646464;
+text-align:center;
+text-transform:none;
+font-size: 11pt;
+font-weight:600;
+font-family: 'Open Sans', sans-serif;
+background-image:none;
+background-color:#e5e5e5;
+border:#8c8c8c solid 1px;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+}
+.cancelar:hover
+{
+background-color:#C8C8C8 !important;
+background-image:none !important;
+color:#FFF;
+}
+.cancelar:active
+{
+background-color:#fff !important;
+color:#323232 !important;
+border-color:#323232;
+}

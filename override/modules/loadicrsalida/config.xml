@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <module>
+            <name>loadicrsalida</name>
+            <displayName><![CDATA[Cague masivo salida ICR ]]></displayName>
+            <version><![CDATA[0.1 Beta]]></version>
+            <description><![CDATA[Actualiza las ordenes de salida asociando los ICR desde un archivo (CSV)]]></description>
+            <author><![CDATA[Farmalisto]]></author>
+            <tab><![CDATA[administration]]></tab>
+            <is_configurable>1</is_configurable>
+            <need_instance>0</need_instance>
+	<limited_countries></limited_countries>
+        </module>

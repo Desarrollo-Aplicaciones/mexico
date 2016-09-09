@@ -1,0 +1,56 @@
+
+/*** ESSENTIAL STYLES ***/
+.sf-contener {clear:both;margin:20px 0 10px;width:100%;float:left;background: #FD572B url(../img/bkg_menu.png) no-repeat left bottom;min-height:40px;border-radius:3px;-moz-border-radius:3px;}
+.sf-right {margin-right: 14px;float: right;width:7px;display:none;}
+.sf-menu, .sf-menu * {margin:0;padding:0;list-style:none;}
+.sf-menu{margin:0;position:relative;padding-left:230px;}
+.sf-menu li {border:none;float:left;padding:0;position:relative;margin:0;display:block;min-height:40px;line-height:40px;background: url(../img/bkg_menu_li.jpg) no-repeat right center;}
+.sf-menu li a{text-decoration:none;text-transform:uppercase;padding:0 15px;padding:0 10px\0;font:700 12px/40px "Open Sans",Arial, Verdana, sans-serif;cursor:pointer;display:block;color:#951b08}
+.sf-menu  li  a:hover,.sf-menu  li:hover a{color:#fff;}
+/*.sf-menu li:hover > a{text-shadow:0 0 2px #c12c13}*/
+.sf-menu li ul{background:#fff;border:1px solid #c7c7c7;display:none;left:0;position:absolute;top:auto;width:220px;padding:5px 0 10px;z-index:100}
+.sf-menu li ul li{display:block;padding:5px 15px;height:auto;line-height:15px;width:auto;background:none;margin:0;min-height:15px;float:none}
+.sf-menu li li a{color:#686868;text-transform:none;font:400 12px/15px Arial, Verdana, sans-serif;padding:0;height:auto;margin:0;}
+.sf-menu li:hover li a{color:#686868;}
+.sf-menu li li a:hover,.sf-menu li li:hover > a{color:#ee3d25;background:none;text-shadow:none}
+.sf-menu li ul li ul{left:100%;top:-6px;}
+.sf-menu li.sfHoverForce a{cursor:default}
+
+/*** arrows **/
+.sf-menu a.sf-with-ul {
+	padding-right:30px;
+}
+.sf-sub-indicator {
+	position:		absolute;
+	display:		block;
+	right:			10px;
+	top:			1.05em; /* IE6 only */
+	width:			10px;
+	height:			10px;
+	text-indent: 	-999em;
+	overflow:		hidden;
+	background:		url('../img/arrows-ffffff.png') no-repeat -10px -100px; /* 8-bit indexed alpha png. IE6 gets solid image only */
+}
+a > .sf-sub-indicator {  /* give all except IE6 the correct values */
+	top:13px;
+	background-position:0 100%; /* use translucent arrow for modern browsers*/
+}
+/* apply hovers to modern browsers */
+a:focus > .sf-sub-indicator,
+a:hover > .sf-sub-indicator,
+a:active > .sf-sub-indicator,
+li:hover > a > .sf-sub-indicator,
+li.sfHover > a > .sf-sub-indicator {
+}
+
+/* point right for anchors in subs */
+.sf-menu ul .sf-sub-indicator { background-position:  -10px 0; }
+.sf-menu ul a > .sf-sub-indicator { background-position:  0 0;top:8px; }
+/* apply hovers to modern browsers */
+.sf-menu ul a:focus > .sf-sub-indicator,
+.sf-menu ul a:hover > .sf-sub-indicator,
+.sf-menu ul a:active > .sf-sub-indicator,
+.sf-menu ul li:hover > a > .sf-sub-indicator,
+.sf-menu ul li.sfHover > a > .sf-sub-indicator {
+	background-position: -10px 0; /* arrow hovers for modern browsers*/
+}

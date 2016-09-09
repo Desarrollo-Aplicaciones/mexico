@@ -1,0 +1,18 @@
+.header_account_info, .shopping_cart#shopping_cart, .header_account_avatar, .header_account_avatar_small, .header_account_info_small{display: inline-block}
+#header_account_small{display:block;text-align: left;}
+.header_account_info_small{width:50%;border-style: solid;border-color: #c8c8c8; border-width: 0 1px;}
+.header_account_label_small{display: inline-block;}
+.menu-toggle{min-height: 18px;border-left:1px solid #c8c8c8;}
+.header_account_info_small{float:right;text-align: center}
+.shopping_cart#shopping_cart{vertical-align: top;text-align: center;}
+.header_account_avatar{margin:0 7px;}
+.header_account_avatar_small{margin-right: 7px;}
+.shopping_cart#shopping_cart a img{margin-bottom: -50%;}
+.shopping_cart#shopping_cart a span{top: 18px;position: relative;}
+p#header_user_info{margin:0;}
+.header_account_info{text-align:right;}
+.header_account_info a{color:#fff;}
+.shopping_cart4{display:none;}
+.shopping_cart#shopping_cart a{
+	font-size:12px;font-weight:600;color:#fff;}
+.header_account_info{vertical-align:middle;border-right:solid 1px #fff;padding-right: 10px;width:92px;}

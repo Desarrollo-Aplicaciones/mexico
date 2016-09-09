@@ -1,0 +1,18 @@
+/* Block tags */
+div.tags_block .block_content { margin:0}
+div.tags_block p {
+	text-justify: auto;
+	font-size: 10px
+}
+div.tags_block p a {
+	margin: 0 0.1em;
+	line-height: 1.5em;
+	padding:2px;
+}
+div.tags_block p a:hover {
+	text-decoration: none;
+	color:#e43d35; text-shadow:0px 2px 3px #cfcfcf;
+}
+a.tag_level3 { font-size: 1.8em; font-weight: bold }
+a.tag_level2 { font-size: 1.4em }
+a.tag_level1 { font-size: 1em; }

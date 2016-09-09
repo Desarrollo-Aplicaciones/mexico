@@ -1,0 +1,706 @@
+.bloque1, .manufacturerContainer{
+  display:none!important;
+}
+
+.contendfrom{float:left;}
+#megamenu-responsive{display:none;}
+.payment_module{float:left;width:100%;text-transform:capitalize;line-height: 26px;}
+.payment_module .image{
+  float: left;
+  display: inline-block;
+  width: 20% !important;
+  text-align: center;
+  margin: 0px 15px 0 10%;
+}
+
+#div4 {
+  text-align: center;
+  font-family: 'Open Sans';
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.boton_pagos {
+  width: 46% !important;
+  margin: 10px 1% 0px 1% !important;
+}
+
+.boton-pagos-excep {
+  width: 76% !important;
+  margin: 5px 8px 8px 0 !important;
+}
+
+.payment_module input[name="mediopago"] {
+    visibility: hidden;
+}
+
+
+#cuotas{width:95%;}
+.payment_module img {margin-right: auto;}
+p.contendfrom{width:55%}
+a{transition:none;}
+.celeste{color:#39CB98}
+.botones
+{
+
+  width:303px;
+  display:inline-block;
+  float:right;
+}
+.seleccionPago{
+  font-weight: 600;
+  font-family: 'Open Sans';
+  padding: 0;
+  margin: 0 0 10px 0px;
+  color: #646464;
+  font-size: 14pt;
+  width: 100%;
+}
+
+.cont_izquierdo{
+  height: auto;
+  width: 49%;
+  float: left;
+}
+
+.cont_derecho{
+  margin-left: 15px;
+  height: auto;
+  width: 49%;
+  float: left;
+}
+
+.resumen{
+  margin: 0 0 10px 0px; 
+  color: #646464;
+  font-weight: 600;
+  font-family: 'Open Sans';
+  font-size: 14pt;
+  width:50%;
+  /*vertical-align:middle;*/
+}
+
+.resumen2{
+  display: none;
+  padding: 4px 0px 5px 5%;
+  color: #646464;
+  float: left;
+  font-weight: 600;
+  font-family: 'Open Sans';
+  font-size: 14pt;
+  width: 75%;
+}
+
+#resumen_total{float:right;}
+#opciones{
+  position:relative;
+  width: 100% !important;
+  padding: 15px 0% !important;
+  overflow:auto;
+}
+#opciones[name=opcion1], #div7{border-color: #FF922E;}
+#opciones[name=opcion2], #div2{border-color: #FF922E;}
+#opciones[name=opcion9], #div9{border-color: #FF922E;}
+#opciones[name=opcion4], #div4{border-color: #FF922E;}
+#opciones[name=opcion5], #div5{border-color: #FF922E;}
+#opciones[name=payPal], #divPay, #divPayC{border-color: #FF922E;}
+#productos{text-align: center}
+.columna2,.columna1{width: 100%;}
+.columna1{float:left;}
+#contenedorProducto{border:0px solid #BABABA;}
+.contenedorGris, #contenedorProducto
+{
+  float:left;
+  font-family: 'Open Sans', sans-serif !important;
+  width:100%;
+}
+/*#opciones[name=opcion1], #opciones[name=opcion2], #opciones[name=opcion3], #opciones[name=opcion4], #opciones[name=opcion5], #opciones[name=opcion9], #opciones[name=payPal]{border-top:1px solid #c0c0c0}*/
+#credircard{display:table;width:100%}
+.tarjeta{display:table-cell;width:25%}
+.cardAttr{display: inline-block;width: 100%;height:auto;font-size:13px;margin: 8px 0px 8px 0px;}
+.arrow{float:right!important;width:100%}
+.textCard{width:100%;font-size:13px; color: #999999;font-family: 'Open Sans';margin-bottom: 5px;}
+.cardAttr input{font-family: 'Open Sans';font-size:13px;color:#999999;border: 1px solid #999999;width:95%;height: 40px; padding-left: 10px !important;}
+label.error{float:right; color:#A5689C; background-color:transparent; border:none;font-size:11px!Important; padding:0;margin:0;}
+input.error{margin:0;border-color:#A5689C;background-color:#FFFAFA;}
+select.error{margin:0;border-color:#A5689C;padding:0; background-color:#FFFAFA;color:initial;}
+span.purple{color:#A5689C;}
+#credircard{margin-bottom:10px;}
+.cardAttr select{font-family: 'Open Sans';font-size:13px;color:#999999;width:48%;height: 40px;border: 1px solid #999999;background: url(/themes/gomarket/img/authentication/select.png)  97%  no-repeat #fff;-webkit-appearance: none;
+   -moz-appearance: none;
+   appearance: none;
+  padding-left: 10px;
+ }
+#pse_tipoCliente{width:auto}
+.recordatorioPSE{display:inline-block;font-size:11px;width:53%}
+#pse_contend_form .paymentSubmit{margin-top:20px;}
+#formfiles .paymentSubmit{margin-right:0px;}
+.tipclien{width:100%;text-align:center;margin-top:5px;}
+#ResumenLabel{
+  color: #1E807A ;
+  font-weight: bold;
+  font-size: 14pt;
+  font-family: 'Open Sans';
+  margin-left: 85px;
+}
+.cont_select {
+  width: 100%;
+  display: table;
+}
+
+.cont-trust-img{
+  width: 100%;
+  text-align: center;
+  margin: 3px 0;
+}
+
+.select-fecha-tarjetas {
+  width: 48% !important;
+}
+
+.cont_select #mes{
+  margin-right: 3%;
+}
+
+.ctn-title-medio-pago {
+  display: inline-block;
+}
+
+.cont-trust-img #submit_btn {
+  margin: 3px 0 !important;
+}
+
+#textoseguridad{
+  width: 180px;
+  font-size: 12px;
+  text-align: center;
+  background-color: #FFF;
+  padding: 0 10px;
+  display: table-cell;
+  vertical-align: middle;
+}
+#imagenseguridad{
+  float:left;
+  width:100%;
+  text-align:center;
+  padding:20px 0;
+  border-top:1px solid #c0c0c0;
+}
+#divs{
+  width: 100%;
+}
+/*#div7, #div2, #div9, #div4, #div5, #divPay, #divPayC
+{
+  overflow: hidden;
+  width:100%;
+  border-style: none solid;
+  border-width: 10px;
+}*/
+
+/*div.contend-form#formfiles div div .error{color:#39cb98!important;background-color:transparent;padding:0;border:none}*/
+.contend-form {
+  width: 90%;
+}
+
+.contend-form2 {
+  height: 40px;
+  width: 100%;
+  text-align: center;
+  display: inline-block;
+  border: 2px solid #FF922E !important;
+  border-radius: 3px !important;
+}
+
+.ctn-flecha-desplegable, .ctn-flecha-desplegable2{
+  display: none;
+}
+
+.cont-form-btn {
+  float: left;
+  text-align: center;
+  height: 55px;
+  width: 43%;
+  margin: 0 3%;
+}
+
+#cont-form-btn-1 {
+  /*margin-right: 5%;*/
+}
+
+.ctn-toggle-payment {
+  width: 100%;
+  height: auto;
+  padding: 0 0;
+}
+
+.paymentSubmitim { 
+    border: none !important;
+    background: none !important;
+    height: 34px !important;
+    line-height: none !important;
+    padding: 0 !important;
+    margin-top: 3px !important;
+    color: none !important;
+}
+
+.ctn-vlr-total-pedido {
+  display: inline-block;
+  width: 100%;
+  font-weight: 500;
+  height:auto;
+  font-size:13px;
+  margin: 4px 0px;
+  text-align: center;
+  font-family: 'Open Sans';
+  color: #646464;
+}
+
+.ctn-vlr-total-pedido-semibold {
+  font-weight: 600;
+}
+
+.separador
+{
+  width:100%;
+  height:1px;
+  z-index: 999;
+}
+
+.detalle{
+  display: table;
+  width:100%;
+}
+
+.productoTamano{
+  width:15%;
+  height:43px;
+  float:left;
+  margin:0 5%;
+  display: inline-block;
+}
+
+.cont_cupon_txt {
+  font-family: 'Open Sans', sans-serif;
+  margin: 15px 6% 10px 30px;
+  color: #39CB98;
+  font-size: 18px;
+}
+
+.cont_cupon_txt .txt_green {
+  display: inline-block
+}
+
+.cont_cupon_txt .total_cupon {
+  float:right;
+  display:inline-block;
+  margin:0;
+}
+
+
+.cart_quantity
+{
+  float: right !important;
+  width: 43% !important;
+  margin-top: 13px;
+  display: inline-block;
+  padding: 0 !important;;
+}
+.cantidad{float:left;min-width: 40%;text-align:center}
+.subtotal{float:left;min-width: 60%;text-align:center}
+#contenedorPrecio
+{
+  font-family: 'Open Sans', sans-serif;
+  margin: 20px 0 5px 0;
+  display: inline-block;
+  width: 100%;
+  font-size: 14px;
+}
+.price
+{
+  font-family: 'Open Sans', sans-serif;
+  color: #646464;
+  font-weight: 400;
+  font-size:13px;
+}
+label.labels
+{
+  display:none !Important;
+}
+.descripcion, .price2 {display: inline-block}
+
+ .descripcion { 
+  color: #646464;
+  font-family: 'Open Sans';
+  font-size: 14px;
+  font-weight: semi-bold;
+  margin-left: 30px;  
+}
+
+.cart_total_price {margin-right: 5%;}
+
+.price2, .price-discount
+{
+	float:right;
+  font-family: 'Open Sans', sans-serif;
+  color: #646464;
+  font-weight: 400;
+  font-size:13px;
+  display:inline-block;
+  margin:0;
+}
+.price3{float:right;}
+.total_compra, .price3
+{
+  padding-top: 6px;
+  display: inline-block;
+  text-align: right;
+  color: #FF922E ;
+  font-weight: bold;
+  font-family: 'Open Sans';
+  font-size: 14pt;
+}
+.price3{
+  padding-right: 5%;
+  border-top: 1px solid #c8c8c8;
+  width: 74%;
+  margin: 0 0px 0 0;
+}
+.total_span{
+  padding: 0px 0px 10px 30px;
+  padding-top: 6px;
+}
+
+.ctn-desplegable-resumen2 {
+  width: 100%;
+  display: inline-block;
+}
+
+.columna1 .nombre
+{
+  float:left;
+  width: 57%;
+  font-family: 'Open Sans';
+  font-size: 13px;
+  color: #646464;
+  text-align: left;
+  margin-top:13px;
+  height:auto;
+}
+
+.cont-opc-pago-border{
+  box-shadow: 0px 1px 7px 1px #c8c8c8;
+  margin: 0 0 15px 0;
+  padding-bottom: 10px !important;
+  display: inline-block;
+}
+
+.cont-opc-pago {
+  margin: 5px 0 5px 0;
+  padding-bottom: 0px;
+  width: 100%;
+  display: inline-block;
+}
+
+
+.separador-medios-pago {
+  height: 1px;
+  background: #c8c8c8;
+  width: 90%;
+  float: right;
+  display: inline-block;
+}
+
+.cont-mas-menos {
+  width: 5%;
+  height: 5%;
+  position: relative;
+  display: inline-block;
+  float: right;
+  margin: 0px 2% 0px 0px;
+}
+
+.cont-mas-menos img{
+  width: 100%;
+  height: 100%;
+  transition-duration: 0.3s;
+}
+.columna_resumen {
+  box-shadow: 0px 1px 7px 1px #c8c8c8;
+  float: left;
+  width: 100%;
+}
+
+#paypal-express-checkout-form{
+  text-align: center;
+}
+
+.nombre a:hover
+{
+  color: #1e817a ;
+}
+#descuentos{color:#39CB98;}
+#descuentos a{color:#39CB98;}
+#descuentos span{text-decoration: line-through;}
+.labels
+{
+  font-size:11px !important;
+  font-weight: 600;
+}
+#descripcioNombre{float:none;text-align: left;}
+.label_cupon{font-family: 'Open Sans', sans-serif;line-height:200%; font-size: 13px; margin: 6px 0 15px 0;}
+.discount_name{
+  width:200px;
+}
+.botoncitosubmit1{display:none}
+.paymentSubmit{
+/*  margin:5px 0px 0px 0px;
+  width: 90%;*/
+  height: 40px !important;
+  outline:none !important;
+  /*padding:9px 50px !important;*/
+  text-align:center !important;
+  text-transform:none !important;
+  font-size: 14px !important;
+  font-weight:600 !important;
+  border: 2px solid #FF922E !important;
+  color: #FF922E !important;
+  font-family: 'Open Sans' !important;
+  font-weight: bold;
+  background-image:none !important;
+  background-color:#fff !important;
+  -webkit-border-radius: 3px !important;
+  -moz-border-radius: 3px !important;
+  border-radius: 3px !important;
+}
+.paymentSubmit:hover{
+  background-color:#FF922E !important;
+  color: white !important;
+  background-image:none !important;
+}
+.paymentSubmit:active{
+  background-color: #E17410 !important;
+  color: white !important;
+  border: #E17410 solid 1px;
+}
+.cont_cupones{
+  margin-top:20px;
+  width:100% !important;
+  box-shadow: 0px 1px 7px 1px #c8c8c8;
+  height: auto;
+  float: left;
+  min-width: 120px;
+  margin-bottom:5px;
+}
+.suc_dis
+{
+  color:#FFF;
+  text-align:center;
+  background-color:#39cb98;
+  font-size: 13px;
+  font-family: 'Open Sans', sans-serif;
+  text-transform:capitalize;
+  margin:10px;
+  padding: 5px 0;
+  font-weight:600;	
+}
+#addDiscount{margin:10px;text-align:center}
+
+
+#submitAddDiscount
+{
+  background-color: #39CB98;
+  background-image: none;
+  font-size: 13px;
+  font-family: 'Open Sans';
+  text-transform: capitalize;
+  font-weight: 600;
+  width: 20% !important;
+  height: 40px;
+}
+#submitAddDiscount:hover
+{
+  background-color:#399e98 !important;
+  background-image:none !important;
+  font-size: 13px;
+  font-family: 'Open Sans', sans-serif;
+}
+#submitAddDiscount:active
+{
+  background-color:#FFF !important;
+  border:1px #39cb98 solid;
+  color:#39cb98 !important;
+  font-size: 12px;
+  font-family: 'Open Sans', sans-serif;
+}
+#navegarAtras, #navegarAtras2
+{
+  border: 1.5px solid #FFFFFF;
+  width: 34%;
+  box-shadow: 0px 1px 5px 1px #c8c8c8;
+  transition: none;
+  display: inline-block;
+  padding: 9px 0;
+  color: #646464;
+  text-align: center;
+  text-transform: none;
+  font-size: 11pt;
+  font-weight: 600;
+  font-family: 'Open Sans';
+  background-image: none;
+  background-color: #F0F0F0;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+#navegarAtras:hover, #navegarAtras2:hover
+{
+  background-color:#C8C8C8 !important;
+  background-image:none !important;
+  color:#FFF;
+}
+#navegarAtras:active, #navegarAtras2:active
+{
+  background-color:#fff !important;
+  color:#323232 !important;
+  border-color:#323232;
+}
+#botonesInferiores{
+  margin-top:15px;
+  float: left;
+  width: 100%;
+  text-align: center;
+  margin: 30px 0 30px 0 !important;
+}
+
+.div_beneficio{
+ display: inline-block; width: 100%;
+}
+
+.div_img_beneficio{
+ min-width: 49%;
+ max-width: 100%;
+ width: 49%;
+ text-align: left;
+ float: left;
+ padding: 3px;
+}
+
+.div_txt_beneficio{
+ float: left;  
+ min-width: 49%;
+ max-width: 100%; 
+ margin: 28px 5px 0 0;
+ color: #009207;
+}
+.img_beneficio{
+
+  height: 80px;
+}
+/*--------------------flechas-------------*/
+.invisible{
+  position:absolute;
+  top:0;
+  left:0;
+  height:100%
+
+}
+.radioicon{
+  position:absolute;
+  top:15px;
+  right:15px;
+  height:10px;
+  width:10px;
+  background-color:#FFF;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  border:#999 1px solid;
+}
+.radio2{
+  position:absolute;
+  top:24%;
+  right:20%;
+  height:6px;
+  width:6px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  border:none;
+  background-color:#646464;
+}
+.visible{
+  width: 0;
+  height: 0;
+  border-top: 23px solid transparent;
+  border-bottom: 23px solid transparent;
+  float:left;
+}
+.visible2{
+  background: #F0F0F0;
+  width: 10px;
+  height: 47px;
+  float:left;
+}
+
+.ui-datepicker-calendar {display: none;}
+[name=opcion1] div.invisible div.visible{border-left: 10px solid #F0F0F0;}
+[name=opcion2] div.invisible div.visible{border-left: 10px solid #F0F0F0;}
+[name=opcion9] div.invisible div.visible{border-left: 10px solid #F0F0F0;}
+[name=opcion4] div.invisible div.visible{border-left: 10px solid #F0F0F0;}
+[name=opcion5] div.invisible div.visible{border-left: 10px solid #F0F0F0;;}
+[name=payPal] div.invisible div.visible{border-left: 10px solid #F0F0F0;}
+#divPayrb, #divPayCrb{height:47px; width:1px;float:left; background-color:#F0F0F0;}
+#div5rb{height:47px; width:1px;float:left; background-color:#F0F0F0;}
+#div4rb{height:47px; width:1px;float:left; background-color:#F0F0F0;}
+#div7rb{height:47px; width:1px;float:left; background-color:#F0F0F0;}
+#div2rb{height:47px; width:1px;float:left; background-color:#F0F0F0;}
+#div9rb{height:47px; width:1px;float:left; background-color:#F0F0F0;}
+/*----------------Fin Flechas--------------*/
+#opciones[name=opcion1],#opciones[name=opcion2],#opciones[name=opcion3],#opciones[name=opcion4],#opciones[name=opcion5],#opciones[name=opcion9], #opciones[name=payPal], #opciones[name=payPalC]{color: #999;}
+
+.contendfrom, .contendfromd{padding:0px; width: 100%;  margin: 5px 0;}
+#div7 .paymentSubmit, #div5 .paymentSubmit{margin:30px 4% 20px;margin-right:4%}
+#depostito_efectivo{margin:20px;}
+#text_mediop{margin:0 10px}
+#deposito_efectivo{display:none;}
+#div4 p{margin: auto 10px;}
+
+img.trust_img{margin:7px 0;}
+
+#ultimo-ctn-vlr-total-pedido{
+  margin: 20px 0;
+}
+
+
+.borde_bajo_gris {
+  border-bottom: 1px solid #c8c8c8;
+  height: 43px;
+  width: 74%;
+  float: right;
+}
+
+.image #img-tarjetas-farmalisto {
+  width: 100%;
+  height: 100%;
+}
+
+.cont_input_cupon{
+  background-color: #F0F0F0;
+  margin: 0 2% 4px 2%;
+  border-radius: 4px;
+}
+
+.cont_input_cupon .discount_name {
+  border: 0;
+  background: #F0F0F0 !important;
+  border-radius: 2px;
+  background: #fff;
+  height: 25px;
+  line-height: 25px;
+  padding: 0px 0px;
+  color: #646464;
+  width: 80%;
+  height: 40px;
+  float: left;
+  text-align: center;
+}

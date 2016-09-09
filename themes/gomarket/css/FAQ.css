@@ -1,0 +1,9 @@
+#center_column .myaccount_lnk_list li#menu_FAQ{background-color: #90e26c;}
+.myaccount_lnk_list #menu_FAQ:after{border-color:transparent transparent transparent #90e26c;}
+#menu_FAQ .img_cont{border-color:#90e26c;}
+.myaccount_lnk_list #menu_FAQ img.icon{opacity:1}
+a #menu_FAQ{color:white;}
+@media only screen and (max-width: 767px)
+{
+	a #menu_FAQ{color:#90e26c;}
+}
