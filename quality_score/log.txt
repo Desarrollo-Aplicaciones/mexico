@@ -3286,3 +3286,48 @@
  NO Recordatorio: 2016-09-09 13:00:01
  NO Recordatorio: 2016-09-09 15:00:01
  NO Recordatorio: 2016-09-09 17:00:02
+ Recordatorio: 2016-09-09 19:00:14
+ NO Recordatorio: 2016-09-09 21:00:01
+ NO Recordatorio: 2016-09-09 23:00:01
+ NO Recordatorio: 2016-09-10 01:00:02
+ NO Recordatorio: 2016-09-10 03:00:01
+ Recordatorio: 2016-09-10 05:00:02
+ NO Recordatorio: 2016-09-10 07:00:01
+ Recordatorio: 2016-09-10 09:00:04
+ NO Recordatorio: 2016-09-10 11:00:02
+ NO Recordatorio: 2016-09-10 13:00:01
+ NO Recordatorio: 2016-09-10 15:00:01
+ Recordatorio: 2016-09-10 17:00:04
+ Recordatorio: 2016-09-10 19:00:09
+ NO Recordatorio: 2016-09-10 21:00:01
+ NO Recordatorio: 2016-09-10 23:00:02
+ NO Recordatorio: 2016-09-11 01:00:02
+ NO Recordatorio: 2016-09-11 03:00:01
+ NO Recordatorio: 2016-09-11 05:00:01
+ Recordatorio: 2016-09-11 07:00:05
+ Recordatorio: 2016-09-11 09:00:06
+ NO Recordatorio: 2016-09-11 11:00:01
+ NO Recordatorio: 2016-09-11 13:00:01
+ NO Recordatorio: 2016-09-11 15:00:01
+ Recordatorio: 2016-09-11 17:00:01
+ Recordatorio: 2016-09-11 19:00:07
+ NO Recordatorio: 2016-09-11 21:00:01
+ NO Recordatorio: 2016-09-11 23:00:01
+ NO Recordatorio: 2016-09-12 01:00:01
+ NO Recordatorio: 2016-09-12 03:00:01
+ NO Recordatorio: 2016-09-12 05:00:01
+ NO Recordatorio: 2016-09-12 07:00:01
+ Recordatorio: 2016-09-12 09:00:08
+ NO Recordatorio: 2016-09-12 11:00:01
+ NO Recordatorio: 2016-09-12 13:00:01
+ NO Recordatorio: 2016-09-12 15:00:01
+ NO Recordatorio: 2016-09-12 17:00:02
+ Recordatorio: 2016-09-12 19:00:15
+ NO Recordatorio: 2016-09-12 21:00:02
+ NO Recordatorio: 2016-09-12 23:00:02
+ NO Recordatorio: 2016-09-13 01:00:01
+ NO Recordatorio: 2016-09-13 03:00:02
+ Recordatorio: 2016-09-13 05:00:03
+ NO Recordatorio: 2016-09-13 07:00:01
+ Recordatorio: 2016-09-13 09:00:04
+ NO Recordatorio: 2016-09-13 11:00:01
