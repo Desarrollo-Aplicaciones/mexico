@@ -18,8 +18,8 @@
 									<span class="txt-gray" id="txt-gray-two-lines">Línea de atención y ventas nacional <b>sin costo:</b></span>
 								</div>
 								<div class="ctn-phone-number">
-									<span class="txt-gray"><b>55 4170 8434</b></span>
-									<div class="ctn-btn-call"><a href="tel:5541708434"><span class="btn-call">Llamar</span></a></div>
+									<span class="txt-gray"><b>55 6732 1100</b></span>
+									<div class="ctn-btn-call"><a href="tel:+5567321100"><span class="btn-call">Llamar</span></a></div>
 								</div>
 								<div class="ctn-phone-number">
 									<span class="txt-gray"><b>contacto@farmalisto.com.mx</b></span>
