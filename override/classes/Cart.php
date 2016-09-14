@@ -4,11 +4,10 @@ class Cart extends CartCore {
 
 	public $discountOrder = 0;
 	public $removeRulesGroup = false;
-
 	public $CartRuleProgressiveDiscount = 0;
 	public $device = NULL;
-
-		/**
+    
+    /**
 	 * @see ObjectModel::$definition
 	 */
 	public static $definition = array(
@@ -37,11 +36,29 @@ class Cart extends CartCore {
 		),
 	);
 
+    public function __construct($id = null, $id_lang = null, $flagRemoveRuleGroup = false){
+		$this->removeRulesGroup = $flagRemoveRuleGroup;
+		parent::__construct($id, $id_lang);
+		if ($this->id_customer){
+            if (isset(Context::getContext()->customer) && Context::getContext()->customer->id == $this->id_customer){
+                $customer = Context::getContext()->customer;
+            }
+			else{
+				$customer = new Customer((int)$this->id_customer);
+            }
+			
+            if ((!$this->secure_key || $this->secure_key == '-1') && $customer->secure_key){
+				$this->secure_key = $customer->secure_key;
+				$this->save();
+			}
+		}
+		$this->_taxCalculationMethod = Group::getPriceDisplayMethod(Group::getCurrent()->id);
+	}
+    
 	public static function addCartMedico($id_cart, $id_medico){
 		if ($id_medico != 0){
 			$sql = 'DELETE FROM '._DB_PREFIX_.'doctor_cart WHERE id_cart = '.$id_cart;
-			$data = array('id_cart' => $id_cart,
-						  'id_doctor' => $id_medico);
+			$data = array('id_cart' => $id_cart, 'id_doctor' => $id_medico);
 			$error = array();
 			if (!Db::getInstance()->execute($sql) || !Db::getInstance()->insert('doctor_cart', $data)){
 				die($error['error'] = 'no se pudo agregar el médico');
@@ -50,35 +67,12 @@ class Cart extends CartCore {
 		return $error;
 	}
 
-	public function __construct($id = null, $id_lang = null, $flagRemoveRuleGroup = false)
-	{
-		$this->removeRulesGroup = $flagRemoveRuleGroup;
-		parent::__construct($id, $id_lang);
-		if ($this->id_customer)
-		{
-			if (isset(Context::getContext()->customer) && Context::getContext()->customer->id == $this->id_customer)
-				$customer = Context::getContext()->customer;
-			else
-				$customer = new Customer((int)$this->id_customer);
-
-			if ((!$this->secure_key || $this->secure_key == '-1') && $customer->secure_key)
-			{
-				$this->secure_key = $customer->secure_key;
-				$this->save();
-			}
-		}
-		$this->_taxCalculationMethod = Group::getPriceDisplayMethod(Group::getCurrent()->id);
-
-	}
-
-	public function getTotalShippingCost($delivery_option = null, $use_tax = true, Country $default_country = null, $express = false)
-	{
-		
+	public function getTotalShippingCost($delivery_option = null, $use_tax = true, Country $default_country = null, $express = false){
 		if ((isset(Context::getContext()->cookie->check_xps) && Context::getContext()->cookie->check_xps)
 			|| (isset(Context::getContext()->cart->check_xps) && Context::getContext()->cart->check_xps)
-			|| Tools::getValue('express'))
-		{
-			$a=Context::getContext()->cart->id_address_delivery;
+			|| Tools::getValue('express')){
+		
+            $a=Context::getContext()->cart->id_address_delivery;
 			//echo "<pre>";print_r(Context::getContext()->cart->check_xps); echo "</pre>"; exit();
 			$val_total=0;
 			if (Context::getContext()->cart->_products) {
@@ -90,71 +84,69 @@ class Cart extends CartCore {
 			return $this->valorExpress($a,$subtotal);
 		}
 
-                $parameters = NULL;
-                if( isset(Context::getContext()->cookie->entrega_nocturna) && Context::getContext()->cookie->entrega_nocturna === 'enabled' ){                   
-                    $parameters = Utilities::get_parameters();
-                }
+        $parameters = NULL;
+        
+        /* Valida si es entrega nocturna */
+        if( isset(Context::getContext()->cookie->entrega_nocturna) && Context::getContext()->cookie->entrega_nocturna === 'enabled' ){                   
+            $parameters = Utilities::get_parameters();
+        }
                 
-                /* validaciones para envio nocturno */
-                if ((!isset(Context::getContext()->cookie->check_xps) || !Context::getContext()->cookie->check_xps)
-                     && isset(Context::getContext()->cookie->entrega_nocturna) && Context::getContext()->cookie->entrega_nocturna === 'enabled' )
-		{
-                   // trigger_error(' -| envio nocturno solo |- ', E_USER_NOTICE);
-        		return   (int)($parameters['valor']);
+        /* validaciones para envio nocturno */
+        if ((!isset(Context::getContext()->cookie->check_xps) || !Context::getContext()->cookie->check_xps)
+            && isset(Context::getContext()->cookie->entrega_nocturna) && Context::getContext()->cookie->entrega_nocturna === 'enabled' ){
+            // trigger_error(' -| envio nocturno solo |- ', E_USER_NOTICE);
+            return   (int)($parameters['valor']);
 		}
-                /* validaciones envio Express y envio nocturno */
-                if (Context::getContext()->cookie->check_xps
-                    && isset(Context::getContext()->cookie->entrega_nocturna) 
-                    && Context::getContext()->cookie->entrega_nocturna === 'enabled')
-					{
-						$a = Context::getContext()->cart->id_address_delivery;
-						//echo "<pre>";print_r(Context::getContext()->cart->check_xps); echo "</pre>"; exit();
-						$val_total=0;
-						if (Context::getContext()->cart->_products) {
-							foreach (Context::getContext()->cart->_products as $key => $value) {
-								$val_total += $value['total_wt']; //valor total de la compra sin impuestos
-							}
-						}
+        
+        /* validaciones envio Express y envio nocturno */
+        if (Context::getContext()->cookie->check_xps
+            && isset(Context::getContext()->cookie->entrega_nocturna) 
+            && Context::getContext()->cookie->entrega_nocturna === 'enabled'){
+            $a = Context::getContext()->cart->id_address_delivery;
+            //echo "<pre>";print_r(Context::getContext()->cart->check_xps); echo "</pre>"; exit();
+            $val_total=0;
+            if (Context::getContext()->cart->_products) {
+                foreach (Context::getContext()->cart->_products as $key => $value) {
+                    $val_total += $value['total_wt']; //valor total de la compra sin impuestos
+                }
+            }
 					
-						$subtotal = (round( (round($val_total)/100) *2 , 0)/ 2 ) * 100;
+            $subtotal = (round( (round($val_total)/100) *2 , 0)/ 2 ) * 100;
 
-					if( isset($parameters['add_value_express']) && !$parameters['add_value_express'] ){
-						return (float) $this->valorExpress($a,$subtotal); 
-					}
-					return  (float)($this->valorExpress($a,$subtotal) + (float)($parameters['valor']));
+            if( isset($parameters['add_value_express']) && !$parameters['add_value_express'] ){
+                return (float) $this->valorExpress( $a, $subtotal ); 
+            }
+            return  (float)($this->valorExpress( $a, $subtotal ) + (float)( $parameters['valor'] ) );
 		}		
 
 		// calcular el precio de envio por tabla ps_carrier_city y codigo postal
-		
-		//echo "<br><br>CART: ".
 		$sql = 'SELECT cac.precio_kilo, car.id_carrier, crp.delimiter2, cac.tarifa, car2.id_carrier AS carrier_cp, 
 				adtrcp.precio AS precio_cp, crp2.delimiter2 AS delimiter2_cp
-			FROM '._DB_PREFIX_.'address adr 
-			LEFT JOIN '._DB_PREFIX_.'address_city adc ON ( adc.id_address = adr.id_address ) 
-			LEFT JOIN '._DB_PREFIX_.'carrier_city cac ON ( cac.id_city_des = adc.id_city ) 
-			LEFT JOIN '._DB_PREFIX_.'carrier car ON ( car.id_reference = cac.id_carrier AND car.deleted = 0 AND car.active=1 ) 
-			LEFT JOIN '._DB_PREFIX_.'range_price crp ON ( crp.id_carrier = car.id_carrier )
-			LEFT JOIN '._DB_PREFIX_.'cities_col cc ON ( cc.id_city = adc.id_city )
-			LEFT JOIN '._DB_PREFIX_.'state s ON ( s.id_state = cc.id_state AND s.id_country = '.(int)Configuration::get('PS_COUNTRY_DEFAULT').')
-			LEFT JOIN '._DB_PREFIX_.'precio_tr_codpos adtrcp ON ( adr.postcode = adtrcp.codigo_postal )
-			LEFT JOIN '._DB_PREFIX_.'carrier car2 ON (car2.id_reference = adtrcp.id_carrier AND car2.deleted = 0 AND car2.active=1)
-			LEFT JOIN '._DB_PREFIX_.'range_price crp2 ON ( crp2.id_carrier = car2.id_carrier )
-			WHERE adc.id_address='.Context::getContext()->cart->id_address_delivery.'
-			AND ( ( car.id_carrier IS NOT NULL AND crp.delimiter2 IS NOT NULL ) 
+            	FROM '._DB_PREFIX_.'address adr 
+                LEFT JOIN '._DB_PREFIX_.'address_city adc ON ( adc.id_address = adr.id_address ) 
+                LEFT JOIN '._DB_PREFIX_.'carrier_city cac ON ( cac.id_city_des = adc.id_city ) 
+                LEFT JOIN '._DB_PREFIX_.'carrier car ON ( car.id_reference = cac.id_carrier AND car.deleted = 0 AND car.active=1 ) 
+                LEFT JOIN '._DB_PREFIX_.'range_price crp ON ( crp.id_carrier = car.id_carrier )
+                LEFT JOIN '._DB_PREFIX_.'cities_col cc ON ( cc.id_city = adc.id_city )
+                LEFT JOIN '._DB_PREFIX_.'state s ON ( s.id_state = cc.id_state AND s.id_country = '.(int)Configuration::get('PS_COUNTRY_DEFAULT').')
+                LEFT JOIN '._DB_PREFIX_.'precio_tr_codpos adtrcp ON ( adr.postcode = adtrcp.codigo_postal )
+                LEFT JOIN '._DB_PREFIX_.'carrier car2 ON (car2.id_reference = adtrcp.id_carrier AND car2.deleted = 0 AND car2.active=1)
+                LEFT JOIN '._DB_PREFIX_.'range_price crp2 ON ( crp2.id_carrier = car2.id_carrier )
+                WHERE adc.id_address='.Context::getContext()->cart->id_address_delivery.'
+                AND ( ( car.id_carrier IS NOT NULL AND crp.delimiter2 IS NOT NULL ) 
 						OR ( car2.id_carrier IS NOT NULL AND crp2.delimiter2 IS NOT NULL ) 
 					)
-			GROUP BY car.id_carrier, car2.id_carrier
-			ORDER BY adtrcp.precio ASC, cac.precio_kilo ASC, crp.delimiter2 DESC, crp2.delimiter2 DESC';
+                GROUP BY car.id_carrier, car2.id_carrier
+                ORDER BY adtrcp.precio ASC, cac.precio_kilo ASC, crp.delimiter2 DESC, crp2.delimiter2 DESC';
 
-			$resultado=Db::getInstance()->executeS($sql);
-		if( count($resultado) > 0 ) {
+        $resultado=Db::getInstance()->executeS($sql);
+		
+        if( count($resultado) > 0 ) {
 
-			if ( !isset($resultado[0]['precio_kilo']) && !isset($resultado[0]['precio_cp']) )
-			{
-				//echo "<br>1:".
+			if ( !isset($resultado[0]['precio_kilo']) && !isset($resultado[0]['precio_cp']) ){
 				$val="Ciudad sin costo de envio";
-			} else {
-				//echo "<br>2:".
+			}
+            else {
 				$val = !empty($resultado[0]['precio_cp'])? $resultado[0]['precio_cp'] : $resultado[0]['precio_kilo'];
 			}
 
@@ -163,14 +155,12 @@ class Cart extends CartCore {
 			$delimitador_envio = 0;
 
 			if ( isset( $resultado[0]['carrier_cp']) && $resultado[0]['carrier_cp'] !=  NULL ) {
-
 				Context::getContext()->cart->id_carrier = $resultado[0]['carrier_cp'];
 				$delimitador_envio = $resultado[0]['delimiter2_cp'];
 				$found_carrier = 1;
 				$cobroenvio = $resultado[0]['tarifa']? $resultado[0]['tarifa'] : 0;
-
-			} elseif ( isset( $resultado[0]['id_carrier']) && $resultado[0]['id_carrier'] !=  NULL ) {
-
+			} 
+            elseif ( isset( $resultado[0]['id_carrier']) && $resultado[0]['id_carrier'] !=  NULL ) {
 				Context::getContext()->cart->id_carrier = $resultado[0]['id_carrier'];
 				$delimitador_envio = $resultado[0]['delimiter2'];
 				$found_carrier = 1;
@@ -178,12 +168,9 @@ class Cart extends CartCore {
 			}
 
 			if ( $found_carrier == 1 ) {
-
 				$val_total=0;
-							
-				if (Context::getContext()->cart->_products) {
-
-					foreach (Context::getContext()->cart->_products as $key => $value) {
+                if (Context::getContext()->cart->_products) {
+                    foreach (Context::getContext()->cart->_products as $key => $value) {
 						$val_total += $value['total_wt']; //valor total de la compra sin impuestos
 					}
 				}
@@ -195,7 +182,8 @@ class Cart extends CartCore {
 					$val=0;
 				}
 			}
-		} else {
+		}
+        else {
 			$val="Ciudad sin costo de envio";
 		}
 
@@ -217,9 +205,8 @@ class Cart extends CartCore {
 
 
 
-	public function getTotalShippingCostWS($cod_postal = NULL, $ids_products = array())
-	{
-              	/* validaciones envio Express */
+	public function getTotalShippingCostWS($cod_postal = NULL, $ids_products = array()){
+        /* validaciones envio Express */
 		if ((isset(Context::getContext()->cookie->check_xps) && Context::getContext()->cookie->check_xps)
 			 && (!isset(Context::getContext()->cookie->entrega_nocturna) || Context::getContext()->cookie->entrega_nocturna==='disabled')) {
 
@@ -233,38 +220,40 @@ class Cart extends CartCore {
 				}
 			}
 			$subtotal = (round( (round($val_total)/100) *2 , 0)/ 2 ) * 100;
-                        // trigger_error(' -| envio expres solo |- ', E_USER_NOTICE);
-                       	return $this->valorExpress($a,$subtotal);
+            // trigger_error(' -| envio expres solo |- ', E_USER_NOTICE);
+            return $this->valorExpress($a,$subtotal);
 		}
                 
         $parameters = NULL;
 
-             if (isset(Context::getContext()->cart->id_address_delivery)) {
-                        }
+        if (isset(Context::getContext()->cart->id_address_delivery)) {
+            //Validación vacia.
+        }
 
         if( isset(Context::getContext()->cookie->entrega_nocturna) && Context::getContext()->cookie->entrega_nocturna === 'enabled' ){   
             $parameters = Utilities::get_parameters();
         }
                 
-                /* validaciones para envio nocturno */
+        /* validaciones para envio nocturno */
         if ((!isset(Context::getContext()->cookie->check_xps) || !Context::getContext()->cookie->check_xps)
-                     && isset(Context::getContext()->cookie->entrega_nocturna) && Context::getContext()->cookie->entrega_nocturna === 'enabled' ) {
-                  //  trigger_error(' -| envio nocturno solo |- ', E_USER_NOTICE);
-        		return (int)($parameters['valor']);
+            && isset(Context::getContext()->cookie->entrega_nocturna) && Context::getContext()->cookie->entrega_nocturna === 'enabled' ) {
+            //  trigger_error(' -| envio nocturno solo |- ', E_USER_NOTICE);
+            return (int)($parameters['valor']);
 		}
-                /* validaciones envio Express y envio nocturno */
+            
+        /* validaciones envio Express y envio nocturno */
         if (Context::getContext()->cookie->check_xps && isset(Context::getContext()->cookie->entrega_nocturna)  && Context::getContext()->cookie->entrega_nocturna === 'enabled') {
-
 			$a=Context::getContext()->cart->id_address_delivery;
 			//echo "<pre>";print_r(Context::getContext()->cart->check_xps); echo "</pre>"; exit();
 			$val_total=0;
-			if (Context::getContext()->cart->_products) {
+			if (Context::getContext()->cart->_products){
 				foreach (Context::getContext()->cart->_products as $key => $value) {
 					$val_total += $value['total_wt']; //valor total de la compra sin impuestos
 				}
 			}
 			$subtotal = (round( (round($val_total)/100) *2 , 0)/ 2 ) * 100;
-                       // trigger_error(' -| envio nocturno y express |- ', E_USER_NOTICE);
+            
+            // trigger_error(' -| envio nocturno y express |- ', E_USER_NOTICE);
 			if( isset($parameters['add_value_express']) && !$parameters['add_value_express'] ){
 				return (float) $this->valorExpress($a,$subtotal); 
 			}
@@ -273,69 +262,68 @@ class Cart extends CartCore {
 
 		if(empty($cod_postal) || empty($ids_products))
 			return false;
-		// verifica si existe el código postal
+		
+        // verifica si existe el código postal
 		$sql = "SELECT COUNT(codigo_postal) total
 				FROM ps_cod_postal
 				WHERE codigo_postal = ".(int) $cod_postal;
 		$total = (int)Db::getInstance()->getValue($sql);		
 		if($total==0)
-		return array('STATUS'=>'ERROR', 'Message' => 'El código postal no existe.');
-		// calcular el precio de envió por tabla ps_carrier_city y código postal
+            return array('STATUS'=>'ERROR', 'Message' => 'El código postal no existe.');
+		
+        // calcular el precio de envió por tabla ps_carrier_city y código postal
 		$val = 0;	
 		
 		$sql = 'SELECT cac.precio_kilo, car.id_carrier, crp.delimiter2, cac.tarifa, car2.id_carrier AS carrier_cp, 
 				adtrcp.precio AS precio_cp, crp2.delimiter2 AS delimiter2_cp
-			FROM '._DB_PREFIX_.'cod_postal codpos 
-			LEFT JOIN '._DB_PREFIX_.'carrier_city cac ON (codpos.id_ciudad = cac.id_city_des ) 
-			LEFT JOIN '._DB_PREFIX_.'carrier car ON ( car.id_reference = cac.id_carrier AND car.deleted = 0 AND car.active=1 ) 
-			LEFT JOIN '._DB_PREFIX_.'range_price crp ON ( crp.id_carrier = car.id_carrier )
-			LEFT JOIN '._DB_PREFIX_.'cities_col cc ON ( cc.id_city = cac.id_city_des )
-			LEFT JOIN '._DB_PREFIX_.'state s ON ( s.id_state = cc.id_state AND s.id_country = '.(int)Configuration::get('PS_COUNTRY_DEFAULT').')
-			LEFT JOIN '._DB_PREFIX_.'precio_tr_codpos adtrcp ON ( codpos.codigo_postal = adtrcp.codigo_postal )
-			LEFT JOIN '._DB_PREFIX_.'carrier car2 ON (car2.id_reference = adtrcp.id_carrier AND car2.deleted = 0 AND car2.active=1)
-			LEFT JOIN '._DB_PREFIX_.'range_price crp2 ON ( crp2.id_carrier = car2.id_carrier )
-			WHERE codpos.codigo_postal = '.(int)$cod_postal.'
-			AND ( ( car.id_carrier IS NOT NULL AND crp.delimiter2 IS NOT NULL ) 
-						OR ( car2.id_carrier IS NOT NULL AND crp2.delimiter2 IS NOT NULL ) 
-					)
-			GROUP BY car.id_carrier, car2.id_carrier
-			ORDER BY adtrcp.precio ASC, cac.precio_kilo ASC, crp.delimiter2 DESC, crp2.delimiter2 DESC';
+                FROM '._DB_PREFIX_.'cod_postal codpos 
+                LEFT JOIN '._DB_PREFIX_.'carrier_city cac ON (codpos.id_ciudad = cac.id_city_des ) 
+                LEFT JOIN '._DB_PREFIX_.'carrier car ON ( car.id_reference = cac.id_carrier AND car.deleted = 0 AND car.active=1 ) 
+                LEFT JOIN '._DB_PREFIX_.'range_price crp ON ( crp.id_carrier = car.id_carrier )
+                LEFT JOIN '._DB_PREFIX_.'cities_col cc ON ( cc.id_city = cac.id_city_des )
+                LEFT JOIN '._DB_PREFIX_.'state s ON ( s.id_state = cc.id_state AND s.id_country = '.(int)Configuration::get('PS_COUNTRY_DEFAULT').')
+                LEFT JOIN '._DB_PREFIX_.'precio_tr_codpos adtrcp ON ( codpos.codigo_postal = adtrcp.codigo_postal )
+                LEFT JOIN '._DB_PREFIX_.'carrier car2 ON (car2.id_reference = adtrcp.id_carrier AND car2.deleted = 0 AND car2.active=1)
+                LEFT JOIN '._DB_PREFIX_.'range_price crp2 ON ( crp2.id_carrier = car2.id_carrier )
+                WHERE codpos.codigo_postal = '.(int)$cod_postal.'
+                AND ( ( car.id_carrier IS NOT NULL AND crp.delimiter2 IS NOT NULL ) 
+                            OR ( car2.id_carrier IS NOT NULL AND crp2.delimiter2 IS NOT NULL ) 
+                        )
+                GROUP BY car.id_carrier, car2.id_carrier
+                ORDER BY adtrcp.precio ASC, cac.precio_kilo ASC, crp.delimiter2 DESC, crp2.delimiter2 DESC';
 
-			$resultado=Db::getInstance()->executeS($sql);
-		if( count($resultado) > 0 ) {
-
-			if ( !isset($resultado[0]['precio_kilo']) && !isset($resultado[0]['precio_cp']) )
-			{
+        $resultado=Db::getInstance()->executeS($sql);
+		
+        if( count($resultado) > 0 ) {
+			if ( !isset($resultado[0]['precio_kilo']) && !isset($resultado[0]['precio_cp']) ){
 				$val=0;
-			} else {
+			}
+            else {
 				$val = $resultado[0]['precio_cp']? $resultado[0]['precio_cp'] : $resultado[0]['precio_kilo'];
 			}
 
-			$cobroenvio = 0; // 0 -> cobrar envió
+            $cobroenvio = 0; // 0 -> cobrar envió
 			$found_carrier = 0;
 			$delimitador_envio = 0;
 
 			if ( isset( $resultado[0]['carrier_cp']) && $resultado[0]['carrier_cp'] !=  NULL ) {
-
 				$delimitador_envio = $resultado[0]['delimiter2_cp'];
 				$found_carrier = 1;
 				$cobroenvio = $resultado[0]['tarifa']? $resultado[0]['tarifa'] : 0;
-
-			} elseif ( isset( $resultado[0]['id_carrier']) && $resultado[0]['id_carrier'] !=  NULL ) {
-
+			}
+            elseif ( isset( $resultado[0]['id_carrier']) && $resultado[0]['id_carrier'] !=  NULL ) {
 				$delimitador_envio = $resultado[0]['delimiter2'];
 				$found_carrier = 1;
 				$cobroenvio = $resultado[0]['tarifa']? $resultado[0]['tarifa'] : 0;
 			}
 
 			if ( $found_carrier == 1 ) {
-
 				$val_total=0;
-							
-				if (!empty($ids_products) && is_array($ids_products)) {
+
+                if (!empty($ids_products) && is_array($ids_products)) {
 					$ids = array();
 					foreach ($ids_products as $key => $value) {
-					$ids[] = $key;
+                        $ids[] = $key;
 					}
 
 					$sql = "SELECT id_product,price
@@ -345,17 +333,18 @@ class Cart extends CartCore {
 							ORDER BY id_product ASC;";
 					$resultado2 = Db::getInstance()->executeS($sql);
 					if( count($resultado2) > 0 ) {
-					foreach ($resultado2 as $key => $value) {
-						$val_total += ((float) $value['price'] * (int) $ids_products[$value['id_product']]); //valor total de la compra sin impuestos
-					}
-				}
+    					foreach ($resultado2 as $key => $value) {
+        					$val_total += ((float) $value['price'] * (int) $ids_products[$value['id_product']]); //valor total de la compra sin impuestos
+            			}
+                	}
 				}
 				$valtot_tax = (round( (round($val_total*1.16)/100) *2 , 0)/ 2 ) * 100; //valor con impuesto 16% y redondeado
 				if ( $val_total > $delimitador_envio && $cobroenvio == 1) { // si total de compra es mayor al valor para no cobrar envió
 					$val=0;
 				}
 			}
-		} else {
+		}
+        else {
 			$val=0;
 		}
 
@@ -363,11 +352,8 @@ class Cart extends CartCore {
 		return  $val; //$total_shipping; 
 	}
 
-
-
-	public function getPackageShippingCost($id_carrier = null, $use_tax = true, Country $default_country = null, $product_list = null, $id_zone = null, $express = false)
-	{   
-              	/* validaciones envio Express */
+	public function getPackageShippingCost($id_carrier = null, $use_tax = true, Country $default_country = null, $product_list = null, $id_zone = null, $express = false){
+        /* validaciones envio Express */
 		if ((isset(Context::getContext()->cookie->check_xps) && Context::getContext()->cookie->check_xps)
 			 && (!isset(Context::getContext()->cookie->entrega_nocturna) || Context::getContext()->cookie->entrega_nocturna==='disabled')) {
 
@@ -381,8 +367,8 @@ class Cart extends CartCore {
 				}
 			}
 			$subtotal = (round( (round($val_total)/100) *2 , 0)/ 2 ) * 100;
-                        // trigger_error(' -| envio expres solo |- ', E_USER_NOTICE);
-                       	return $this->valorExpress($a,$subtotal);
+                // trigger_error(' -| envio expres solo |- ', E_USER_NOTICE);
+                return $this->valorExpress($a,$subtotal);
 		}
                 
         $parameters = NULL;
@@ -391,15 +377,15 @@ class Cart extends CartCore {
             $parameters = Utilities::get_parameters();
         }
                 
-                /* validaciones para envio nocturno */
+        /* validaciones para envio nocturno */
         if ((!isset(Context::getContext()->cookie->check_xps) || !Context::getContext()->cookie->check_xps)
-                     && isset(Context::getContext()->cookie->entrega_nocturna) && Context::getContext()->cookie->entrega_nocturna === 'enabled' ) {
-                  //  trigger_error(' -| envio nocturno solo |- ', E_USER_NOTICE);
-        		return (int)($parameters['valor']);
+            && isset(Context::getContext()->cookie->entrega_nocturna) && Context::getContext()->cookie->entrega_nocturna === 'enabled' ) {
+            //  trigger_error(' -| envio nocturno solo |- ', E_USER_NOTICE);
+            return (int)($parameters['valor']);
 		}
-                /* validaciones envio Express y envio nocturno */
+        
+        /* validaciones envio Express y envio nocturno */
         if (Context::getContext()->cookie->check_xps && isset(Context::getContext()->cookie->entrega_nocturna)  && Context::getContext()->cookie->entrega_nocturna === 'enabled') {
-
 			$a=Context::getContext()->cart->id_address_delivery;
 			//echo "<pre>";print_r(Context::getContext()->cart->check_xps); echo "</pre>"; exit();
 			$val_total=0;
@@ -409,7 +395,7 @@ class Cart extends CartCore {
 				}
 			}
 			$subtotal = (round( (round($val_total)/100) *2 , 0)/ 2 ) * 100;
-                       // trigger_error(' -| envio nocturno y express |- ', E_USER_NOTICE);
+            // trigger_error(' -| envio nocturno y express |- ', E_USER_NOTICE);
 			if( isset($parameters['add_value_express']) && !$parameters['add_value_express'] ){
 				return (float) $this->valorExpress($a,$subtotal); 
 			}
@@ -419,31 +405,31 @@ class Cart extends CartCore {
 		//echo "<br>\n 2: ".
 		$sql = 'SELECT cac.precio_kilo, car.id_carrier, crp.delimiter2, cac.tarifa, car2.id_carrier AS carrier_cp, 
 				adtrcp.precio AS precio_cp, crp2.delimiter2 AS delimiter2_cp
-			FROM '._DB_PREFIX_.'address adr 
-			LEFT JOIN '._DB_PREFIX_.'address_city adc ON ( adc.id_address = adr.id_address ) 
-			LEFT JOIN '._DB_PREFIX_.'carrier_city cac ON ( cac.id_city_des = adc.id_city ) 
-			LEFT JOIN '._DB_PREFIX_.'carrier car ON ( car.id_reference = cac.id_carrier AND car.deleted = 0 AND car.active=1 ) 
-			LEFT JOIN '._DB_PREFIX_.'range_price crp ON ( crp.id_carrier = car.id_carrier )
-			LEFT JOIN '._DB_PREFIX_.'cities_col cc ON ( cc.id_city = adc.id_city )
-			LEFT JOIN '._DB_PREFIX_.'state s ON ( s.id_state = cc.id_state AND s.id_country = '.(int)Configuration::get('PS_COUNTRY_DEFAULT').')
-			LEFT JOIN '._DB_PREFIX_.'precio_tr_codpos adtrcp ON ( adr.postcode = adtrcp.codigo_postal )
-			LEFT JOIN '._DB_PREFIX_.'carrier car2 ON (car2.id_reference = adtrcp.id_carrier AND car2.deleted = 0 AND car2.active=1)
-			LEFT JOIN '._DB_PREFIX_.'range_price crp2 ON ( crp2.id_carrier = car2.id_carrier )
-			WHERE adc.id_address='.Context::getContext()->cart->id_address_delivery.'
-			AND ( ( car.id_carrier IS NOT NULL AND crp.delimiter2 IS NOT NULL ) 
-						OR ( car2.id_carrier IS NOT NULL AND crp2.delimiter2 IS NOT NULL ) 
-					)
-			GROUP BY car.id_carrier, car2.id_carrier
-			ORDER BY adtrcp.precio ASC, cac.precio_kilo ASC, crp.delimiter2 DESC, crp2.delimiter2 DESC';
+                FROM '._DB_PREFIX_.'address adr 
+                LEFT JOIN '._DB_PREFIX_.'address_city adc ON ( adc.id_address = adr.id_address ) 
+                LEFT JOIN '._DB_PREFIX_.'carrier_city cac ON ( cac.id_city_des = adc.id_city ) 
+                LEFT JOIN '._DB_PREFIX_.'carrier car ON ( car.id_reference = cac.id_carrier AND car.deleted = 0 AND car.active=1 ) 
+                LEFT JOIN '._DB_PREFIX_.'range_price crp ON ( crp.id_carrier = car.id_carrier )
+                LEFT JOIN '._DB_PREFIX_.'cities_col cc ON ( cc.id_city = adc.id_city )
+                LEFT JOIN '._DB_PREFIX_.'state s ON ( s.id_state = cc.id_state AND s.id_country = '.(int)Configuration::get('PS_COUNTRY_DEFAULT').')
+                LEFT JOIN '._DB_PREFIX_.'precio_tr_codpos adtrcp ON ( adr.postcode = adtrcp.codigo_postal )
+                LEFT JOIN '._DB_PREFIX_.'carrier car2 ON (car2.id_reference = adtrcp.id_carrier AND car2.deleted = 0 AND car2.active=1)
+                LEFT JOIN '._DB_PREFIX_.'range_price crp2 ON ( crp2.id_carrier = car2.id_carrier )
+                WHERE adc.id_address='.Context::getContext()->cart->id_address_delivery.'
+                AND ( ( car.id_carrier IS NOT NULL AND crp.delimiter2 IS NOT NULL ) 
+                            OR ( car2.id_carrier IS NOT NULL AND crp2.delimiter2 IS NOT NULL ) 
+                        )
+                GROUP BY car.id_carrier, car2.id_carrier
+                ORDER BY adtrcp.precio ASC, cac.precio_kilo ASC, crp.delimiter2 DESC, crp2.delimiter2 DESC';
 		
 		$resultado=Db::getInstance()->executeS($sql);
 
 		if( count($resultado) > 0 ) {
 
-			if ( !$resultado[0]['precio_kilo'] && !$resultado[0]['precio_cp'] )
-			{
+			if ( !$resultado[0]['precio_kilo'] && !$resultado[0]['precio_cp'] ){
 				$val="Ciudad sin costo de envio";
-			} else {
+			}
+            else {
 				$val = $resultado[0]['precio_cp']? $resultado[0]['precio_cp'] : $resultado[0]['precio_kilo'];
 			} 
 
@@ -453,40 +439,38 @@ class Cart extends CartCore {
 
 			$shipping_cost = (float)Tools::ps_round((float)$val, 2);
 				
-				if ( isset( $resultado[0]['carrier_cp']) && $resultado[0]['carrier_cp'] !=  NULL ) {
+            if ( isset( $resultado[0]['carrier_cp']) && $resultado[0]['carrier_cp'] !=  NULL ) {
+                Context::getContext()->cart->id_carrier = $resultado[0]['carrier_cp'];
+                $delimitador_envio = $resultado[0]['delimiter2_cp'];
+                $found_carrier = 1;
+                $cobroenvio = $resultado[0]['tarifa']? $resultado[0]['tarifa'] : 0;
 
-					Context::getContext()->cart->id_carrier = $resultado[0]['carrier_cp'];
-					$delimitador_envio = $resultado[0]['delimiter2_cp'];
-					$found_carrier = 1;
-					$cobroenvio = $resultado[0]['tarifa']? $resultado[0]['tarifa'] : 0;
-
-				} elseif ( isset( $resultado[0]['id_carrier']) && $resultado[0]['id_carrier'] !=  NULL ) {
-
-					Context::getContext()->cart->id_carrier = $resultado[0]['id_carrier'];
-					$delimitador_envio = $resultado[0]['delimiter2'];
-					$found_carrier = 1;
-					$cobroenvio = $resultado[0]['tarifa']? $resultado[0]['tarifa'] : 0;
-				}
+            }
+            elseif ( isset( $resultado[0]['id_carrier']) && $resultado[0]['id_carrier'] !=  NULL ) {
+                Context::getContext()->cart->id_carrier = $resultado[0]['id_carrier'];
+                $delimitador_envio = $resultado[0]['delimiter2'];
+                $found_carrier = 1;
+                $cobroenvio = $resultado[0]['tarifa']? $resultado[0]['tarifa'] : 0;
+            }
 				
-				$val_total=0;
+            $val_total=0;
 
-				if ( $found_carrier == 1 ) {				
-								
-					if (Context::getContext()->cart->_products) {
+            if ( $found_carrier == 1 ) {				
+				if (Context::getContext()->cart->_products) {
+                    foreach (Context::getContext()->cart->_products as $key => $value) {
+                        $val_total += $value['total_wt']; //valor total de la compra sin impuestos
+                    }
+                }
+                //echo "\n<br> val_total: ".$val_total." ? > delimiter2:".$delimitador_envio;
 
-						foreach (Context::getContext()->cart->_products as $key => $value) {
-							$val_total += $value['total_wt']; //valor total de la compra sin impuestos
-						}
-					}
-					//echo "\n<br> val_total: ".$val_total." ? > delimiter2:".$delimitador_envio;
+                $valtot_tax = (round( (round($val_total*1.16)/100) *2 , 0)/ 2 ) * 100; //valor con impuesto 16% y redondeado
 
-					$valtot_tax = (round( (round($val_total*1.16)/100) *2 , 0)/ 2 ) * 100; //valor con impuesto 16% y redondeado
-
-					if ( $val_total > $delimitador_envio && $cobroenvio == 1) { // si total de compra es mayor al valor para no cobrar envio
-						$shipping_cost=0;
-					}
-				}
-		} else {
+                if ( $val_total > $delimitador_envio && $cobroenvio == 1) { // si total de compra es mayor al valor para no cobrar envio
+                    $shipping_cost=0;
+                }
+            }
+		} 
+        else {
 			$shipping_cost="Ciudad sin costo de envio";
 		}
 		
@@ -506,83 +490,73 @@ class Cart extends CartCore {
 		return  $shipping_cost;
 	}
 		
-	public function removeCartRules()
-	{
+	public function removeCartRules(){
 		$cart_rules = $this->getCartRules();     
 		foreach ($cart_rules as $value) {
 			$this->removeCartRule((int) $value['id_cart_rule']); 
 		}
 
 		// se coloca la bandera removeRulesGroup en true, para que retire los descuentos de categoria de los productos de la orden en el metodo getProducts;
-
 		$this->removeRulesGroup = true;
     }
 
-	public function valorExpress($id,$subtotal)
-	{
+	public function valorExpress($id,$subtotal)	{
 		$sql="SELECT ac.id_address AS id ,
 					 express_abajo as abajo,
 					 express_arriba as arriba
-			FROM ps_carrier_city AS cc
-			Inner Join ps_address_city AS ac
-			ON ac.id_city=cc.id_city_des
-			WHERE id_address=".$id;
+                FROM ps_carrier_city AS cc
+                Inner Join ps_address_city AS ac
+                ON ac.id_city=cc.id_city_des
+    			WHERE id_address=".$id;
 		$express=Db::getInstance()->getRow($sql);
 		$sql2 = 'SELECT cac.precio_kilo,
 						car.id_carrier,
 						crp.delimiter2 as umbral
-			FROM '._DB_PREFIX_.'address adr
-			INNER JOIN '._DB_PREFIX_.'address_city adc ON (adc.id_address=adr.id_address)
-			INNER JOIN '._DB_PREFIX_.'carrier_city cac ON (cac.id_city_des = adc.id_city)
-			INNER JOIN '._DB_PREFIX_.'carrier car ON (car.id_reference = cac.id_carrier AND car.deleted = 0 AND car.active=1)
-			INNER JOIN '._DB_PREFIX_.'range_price crp ON (crp.id_carrier = car.id_carrier)
-			WHERE adc.id_address='.$id.'
-			ORDER BY cac.precio_kilo';
+                    FROM '._DB_PREFIX_.'address adr
+                    INNER JOIN '._DB_PREFIX_.'address_city adc ON (adc.id_address=adr.id_address)
+                    INNER JOIN '._DB_PREFIX_.'carrier_city cac ON (cac.id_city_des = adc.id_city)
+                    INNER JOIN '._DB_PREFIX_.'carrier car ON (car.id_reference = cac.id_carrier AND car.deleted = 0 AND car.active=1)
+                    INNER JOIN '._DB_PREFIX_.'range_price crp ON (crp.id_carrier = car.id_carrier)
+                    WHERE adc.id_address='.$id.'
+                    ORDER BY cac.precio_kilo';
 		$resultado=Db::getInstance()->getRow($sql2);
-		if($subtotal>$resultado['umbral'])
-		{
+		if($subtotal>$resultado['umbral']){
 			return $express['arriba'];
 		}
-		else
-		{
+		else{
 			return $express['abajo'];
 		}
 	}
-	public function expressProduct(){
+	
+    public function expressProduct(){
 		$compare = array();
 		$compare2 = array();
 		$lista = "(";
-		foreach($this->_products as $productos)
-		{
+		foreach($this->_products as $productos){
 			$compare[$productos["id_product"]]=$productos["cart_quantity"];
 			$lista = $lista.$productos["id_product"].",";
 		}
 		$lista = substr($lista, 0, -1).")";
 		$sql= 'SELECT sod.id_product AS id, COUNT(sod.id_product)AS cantidad
-			FROM `'._DB_PREFIX_.'supply_order_detail` AS sod
-			INNER JOIN `'._DB_PREFIX_.'supply_order_icr` AS soi
-			ON sod.id_supply_order_detail = soi.id_supply_order_detail
-			INNER JOIN `'._DB_PREFIX_.'icr` AS icr
-			ON soi.id_icr = icr.id_icr
-			WHERE icr.id_estado_icr = 2
-			AND sod.id_product IN '.$lista.' GROUP BY sod.id_product;';
+                FROM `'._DB_PREFIX_.'supply_order_detail` AS sod
+                INNER JOIN `'._DB_PREFIX_.'supply_order_icr` AS soi
+                ON sod.id_supply_order_detail = soi.id_supply_order_detail
+                INNER JOIN `'._DB_PREFIX_.'icr` AS icr
+                ON soi.id_icr = icr.id_icr
+                WHERE icr.id_estado_icr = 2
+                AND sod.id_product IN '.$lista.' GROUP BY sod.id_product;';
 		$resultado=Db::getInstance()->executeS($sql);
-		foreach($resultado as $res)
-		{
+		foreach($resultado as $res){
 			$compare2[$res["id"]]=$res["cantidad"];
 		}
 		unset($res);
-		if(array_diff_key($compare, $compare2))
-		{
+		if(array_diff_key($compare, $compare2)){
 			return false;
 		}
-		else
-		{
-			foreach($compare as $a => $valor)
-			{
+		else{
+			foreach($compare as $a => $valor){
 				$res[$a] = $compare2[$a]-$compare[$a];
-				if ($res[$a]<0)
-				{
+				if ($res[$a]<0){
 					return false;
 				}
 			}
@@ -590,8 +564,7 @@ class Cart extends CartCore {
 		}
 	}
 
-	public function getSummaryDetails($id_lang = null, $refresh = false)
-	{
+	public function getSummaryDetails($id_lang = null, $refresh = false){
 		$context = Context::getContext();
 		if (!$id_lang)
 			$id_lang = $context->language->id;
@@ -624,11 +597,9 @@ class Cart extends CartCore {
 		$total_discounts_tax_exc = $this->getOrderTotal(false, Cart::ONLY_DISCOUNTS);
 		
 		// The cart content is altered for display
-		foreach ($cart_rules as &$cart_rule)
-		{
+		foreach ($cart_rules as &$cart_rule){
 			// If the cart rule is automatic (wihtout any code) and include free shipping, it should not be displayed as a cart rule but only set the shipping cost to 0
-			if ($cart_rule['free_shipping'] && (empty($cart_rule['code']) || preg_match('/^'.CartRule::BO_ORDER_CODE_PREFIX.'[0-9]+/', $cart_rule['code'])))
-			{
+			if ($cart_rule['free_shipping'] && (empty($cart_rule['code']) || preg_match('/^'.CartRule::BO_ORDER_CODE_PREFIX.'[0-9]+/', $cart_rule['code']))){
 				$cart_rule['value_real'] -= $total_shipping;
 				$cart_rule['value_tax_exc'] -= $total_shipping_tax_exc;
 				$cart_rule['value_real'] = Tools::ps_round($cart_rule['value_real'], (int)$context->currency->decimals * _PS_PRICE_DISPLAY_PRECISION_);
@@ -642,11 +613,9 @@ class Cart extends CartCore {
 				$total_shipping = 0;
 				$total_shipping_tax_exc = 0;
 			}
-			if ($cart_rule['gift_product'])
-			{
-				foreach ($products as $key => &$product)
-					if (empty($product['gift']) && $product['id_product'] == $cart_rule['gift_product'] && $product['id_product_attribute'] == $cart_rule['gift_product_attribute'])
-					{
+			if ($cart_rule['gift_product']){
+				foreach ($products as $key => &$product){
+					if (empty($product['gift']) && $product['id_product'] == $cart_rule['gift_product'] && $product['id_product_attribute'] == $cart_rule['gift_product_attribute']){
 						// Update total products
 						$total_products_wt = Tools::ps_round($total_products_wt - $product['price_wt'], (int)$context->currency->decimals * _PS_PRICE_DISPLAY_PRECISION_);
 						$total_products = Tools::ps_round($total_products - $product['price'], (int)$context->currency->decimals * _PS_PRICE_DISPLAY_PRECISION_);
@@ -679,6 +648,7 @@ class Cart extends CartCore {
 						
 						break; // One gift product per cart rule
 					}
+                }
 			}
 		}
 
@@ -688,10 +658,10 @@ class Cart extends CartCore {
 				unset($cart_rules[$key]);
 		**************/
 
-/*echo "<pre>";
-print_r($cart_rules);
-echo "</pre>";
-echo "<hr>";*/
+        /*echo "<pre>";
+        print_r($cart_rules);
+        echo "</pre>";
+        echo "<hr>";*/
 
 		return array(
 			'delivery' => $delivery,
@@ -720,20 +690,19 @@ echo "<hr>";*/
 		);
 	}
 
-	public function getProducts($refresh = false, $id_product = false, $id_country = null)
-	{
+	public function getProducts($refresh = false, $id_product = false, $id_country = null){
 		if (!$this->id)
 			return array();
 		// Product cache must be strictly compared to NULL, or else an empty cart will add dozens of queries
-		if ($this->_products !== null && !$refresh)
-		{
+		if ($this->_products !== null && !$refresh){
 			// Return product row with specified ID if it exists
-			if (is_int($id_product))
-			{
-				foreach ($this->_products as $product)
-					if ($product['id_product'] == $id_product)
+			if (is_int($id_product)){
+				foreach ($this->_products as $product){
+					if ($product['id_product'] == $id_product){
 						return array($product);
-				return array();
+                    }
+                    return array();
+                }
 			}
 			return $this->_products;
 		}
@@ -757,19 +726,13 @@ echo "<hr>";*/
 		// Build JOIN
 		$sql->leftJoin('product', 'p', 'p.`id_product` = cp.`id_product`');
 		$sql->innerJoin('product_shop', 'product_shop', '(product_shop.id_shop=cp.id_shop AND product_shop.id_product = p.id_product)');
-		$sql->leftJoin('product_lang', 'pl', '
-			p.`id_product` = pl.`id_product`
-			AND pl.`id_lang` = '.(int)$this->id_lang.Shop::addSqlRestrictionOnLang('pl', 'cp.id_shop')
-		);
+		$sql->leftJoin('product_lang', 'pl', 'p.`id_product` = pl.`id_product` AND pl.`id_lang` = '.(int)$this->id_lang.Shop::addSqlRestrictionOnLang('pl', 'cp.id_shop') );
 
 		// Product RX
 		$sql->leftJoin('feature_product', 'fp', '( p.`id_product` = fp.`id_product` AND fp.`id_feature` = 4121 )');
 		$sql->leftJoin('feature_value_lang', 'fvl', 'fp.`id_feature_value` = fvl.`id_feature_value`');
 
-		$sql->leftJoin('category_lang', 'cl', '
-			product_shop.`id_category_default` = cl.`id_category`
-			AND cl.`id_lang` = '.(int)$this->id_lang.Shop::addSqlRestrictionOnLang('cl', 'cp.id_shop')
-		);
+		$sql->leftJoin('category_lang', 'cl', 'product_shop.`id_category_default` = cl.`id_category` AND cl.`id_lang` = '.(int)$this->id_lang.Shop::addSqlRestrictionOnLang('cl', 'cp.id_shop')	);
 
 		$sql->leftJoin('product_supplier', 'ps', 'ps.id_product=cp.id_product AND ps.id_product_attribute=cp.id_product_attribute AND ps.id_supplier=p.id_supplier');
 
@@ -788,8 +751,7 @@ echo "<hr>";*/
 		// Build ORDER BY
 		$sql->orderBy('p.id_product, cp.id_product_attribute, cp.date_add ASC');
 
-		if (Customization::isFeatureActive())
-		{
+		if (Customization::isFeatureActive()){
 			$sql->select('cu.`id_customization`, cu.`quantity` AS customization_quantity');
 			$sql->leftJoin('customization', 'cu',
 				'p.`id_product` = cu.`id_product` AND cp.`id_product_attribute` = cu.id_product_attribute AND cu.id_cart='.(int)$this->id);
@@ -797,8 +759,7 @@ echo "<hr>";*/
 		else
 			$sql->select('NULL AS customization_quantity, NULL AS id_customization');
 
-		if (Combination::isFeatureActive())
-		{
+		if (Combination::isFeatureActive()){
 			$sql->select('
 				product_attribute_shop.`price` AS price_attribute, product_attribute_shop.`ecotax` AS ecotax_attr,
 				IF (IFNULL(pa.`reference`, \'\') = \'\', p.`reference`, pa.`reference`) AS reference,
@@ -814,22 +775,23 @@ echo "<hr>";*/
 			$sql->leftJoin('product_attribute_image', 'pai', 'pai.`id_product_attribute` = pa.`id_product_attribute`');
 			$sql->leftJoin('image_lang', 'il', 'il.id_image = pai.id_image AND il.id_lang = '.(int)$this->id_lang);
 		}
-		else
+		else{
 			$sql->select(
 				'p.`reference` AS reference, p.`ean13`,
 				p.`upc` AS upc, product_shop.`minimal_quantity` AS minimal_quantity'
 			);
+        }
 		$result = Db::getInstance()->executeS($sql);
 
 		// Reset the cache before the following return, or else an empty cart will add dozens of queries
 		$products_ids = array();
 		$pa_ids = array();
-		if ($result)
-			foreach ($result as $row)
-			{
+		if ($result){
+			foreach ($result as $row){
 				$products_ids[] = $row['id_product'];
 				$pa_ids[] = $row['id_product_attribute'];
 			}
+        }
 		// Thus you can avoid one query per product, because there will be only one query for all the products of the cart
 		Product::cacheProductsFeatures($products_ids);
 		Cart::cacheSomeAttributesLists($pa_ids, $this->id_lang);
@@ -839,8 +801,7 @@ echo "<hr>";*/
 			return array();
 
 		$cart_shop_context = Context::getContext()->cloneContext();
-		foreach ($result as &$row)
-		{
+		foreach ($result as &$row){
 			if (isset($row['ecotax_attr']) && $row['ecotax_attr'] > 0)
 				$row['ecotax'] = (float)$row['ecotax_attr'];
 
@@ -855,14 +816,14 @@ echo "<hr>";*/
 				$address_id = (int)$this->id_address_invoice;
 			else
 				$address_id = (int)$row['id_address_delivery'];
+            
 			if (!Address::addressExists($address_id))
 				$address_id = null;
 
 			if ($cart_shop_context->shop->id != $row['id_shop'])
 				$cart_shop_context->shop = new Shop((int)$row['id_shop']);
 
-			if ($this->_taxCalculationMethod == PS_TAX_EXC)
-			{
+			if ($this->_taxCalculationMethod == PS_TAX_EXC){
 				$row['price'] = Product::getPriceStatic(
 					(int)$row['id_product'],
 					false,
@@ -906,8 +867,7 @@ echo "<hr>";*/
 				$row['total_wt'] = Tools::ps_round($row['price'] * (float)$row['cart_quantity'] * (1 + (float)$tax_rate / 100), 2);
 				$row['total'] = $row['price'] * (int)$row['cart_quantity'];
 			}
-			else
-			{
+			else {
 				$row['price'] = Product::getPriceStatic(
 					(int)$row['id_product'],
 					false,
@@ -967,7 +927,6 @@ echo "<hr>";*/
 			$CartRules = $this->getCartRules();
 
 			if ( !empty($CartRules) && $CartRules[0]['reduction_percent'] != 0 && $CartRules[0]['reduction_product'] > 0 && $CartRules[0]['reduction_product'] == $row['id_product'] ) {
-
 					// se toma el iva a aplicar del producto
 					$tax = Tax::getProductTaxRate((int)$row['id_product'], (int)$address_id);
 					$priceDiscount = $this->UnitPriceDiscountPercent( $row['price'], $tax, $CartRules[0]['reduction_percent'], true, $row['cart_quantity']);
@@ -975,21 +934,17 @@ echo "<hr>";*/
 					$row['price_wt'] = Tools::ps_round( $priceDiscount, 2);
 					$row['total_wt'] = $row['price_wt'] * (int)$row['cart_quantity'];
 
-			} elseif ( !empty($CartRules) && $CartRules[0]['reduction_percent'] != 0  && $CartRules[0]['reduction_product'] == 0 ) {
-
+			}
+            elseif ( !empty($CartRules) && $CartRules[0]['reduction_percent'] != 0  && $CartRules[0]['reduction_product'] == 0 ) {
 				// si existe un cupon de descuento por porcentaje, se recalculan los valores price_wt y total_wt aplicando el descuento a cada producto
-				
-				// se toma el iva a aplicar del producto
+                // se toma el iva a aplicar del producto
 				$tax = Tax::getProductTaxRate((int)$row['id_product'], (int)$address_id);
-
 				$priceDiscount = $this->UnitPriceDiscountPercent( $row['price'], $tax, $CartRules[0]['reduction_percent'], true, $row['cart_quantity']);
-
 				$row['price_wt'] = Tools::ps_round( $priceDiscount, 2);
 				$row['total_wt'] = $row['price_wt'] * (int)$row['cart_quantity'];
 			}	
 
-			if (!isset($row['pai_id_image']) || $row['pai_id_image'] == 0)
-			{
+			if (!isset($row['pai_id_image']) || $row['pai_id_image'] == 0){
 				$row2 = Db::getInstance()->getRow('
 					SELECT image_shop.`id_image` id_image, il.`legend`
 					FROM `'._DB_PREFIX_.'image` i
@@ -1003,8 +958,7 @@ echo "<hr>";*/
 				else
 					$row = array_merge($row, $row2);
 			}
-			else
-			{
+			else {
 				$row['id_image'] = $row['pai_id_image'];
 				$row['legend'] = $row['pai_legend'];
 			}
@@ -1026,9 +980,9 @@ echo "<hr>";*/
 		return $this->_products;
 	}
 
-	public function getOrderTotal($with_taxes = true, $type = Cart::BOTH, $products = null, $id_carrier = null, $use_cache = true)
-	{  
-		/************ Progressive Discounts ************/
+	public function getOrderTotal($with_taxes = true, $type = Cart::BOTH, $products = null, $id_carrier = null, $use_cache = true){  
+		
+        /************ Progressive Discounts ************/
 		$ProgressiveDiscounts = new Progressivediscounts();
 		$addProgressiveDiscounts = $ProgressiveDiscounts->addProgressiveDiscount( $this );
 		if ( !$addProgressiveDiscounts ) {
@@ -1055,20 +1009,15 @@ echo "<hr>";*/
 		$virtual_context = Context::getContext()->cloneContext();
 		$virtual_context->cart = $this;
 
-	
-
 		if (!in_array($type, $array_type))
 			die(Tools::displayError());
 
 		$with_shipping = in_array($type, array(Cart::BOTH, Cart::ONLY_SHIPPING));
-
-		
 		
 		// if cart rules are not used
 		if ($type == Cart::ONLY_DISCOUNTS && !CartRule::isFeatureActive()) {
 			return 0;
 		}
-
 
 		// no shipping cost if is a cart with only virtuals products
 		$virtual = $this->isVirtualCart();
@@ -1076,29 +1025,20 @@ echo "<hr>";*/
 			return 0;
 		}
 
-
-
 		if ($virtual && $type == Cart::BOTH)
 			$type = Cart::BOTH_WITHOUT_SHIPPING;
 
-		if ($with_shipping)
-		{ 
-			
+		if ($with_shipping){ 
 			if (is_null($products) && is_null($id_carrier)){
-
 				$shipping_fees = $this->getTotalShippingCost(null, (boolean)$with_taxes);
-			
-		
-			}else
+            }
+            else
 				$shipping_fees = $this->getPackageShippingCost($id_carrier, (int)$with_taxes, null, $products);
 		}
-
-		else{
+        else{
 			$shipping_fees = 0;
-			}
+        }
 	
-	
-
 		if ($type == Cart::ONLY_SHIPPING) {
 			return $shipping_fees;
 		}
@@ -1113,17 +1053,14 @@ echo "<hr>";*/
 			$products = $this->getProducts();
 		}
 
-		
-
-		if ($type == Cart::ONLY_PHYSICAL_PRODUCTS_WITHOUT_SHIPPING)
-		{
-			foreach ($products as $key => $product)
-				if ($product['is_virtual'])
+		if ($type == Cart::ONLY_PHYSICAL_PRODUCTS_WITHOUT_SHIPPING)	{
+			foreach ($products as $key => $product){
+				if ($product['is_virtual']){
 					unset($products[$key]);
+                }
+            }
 			$type = Cart::ONLY_PRODUCTS;
 		}
-
-
 
 		$order_total = 0;
 		if (Tax::excludeTaxeOption())
@@ -1143,8 +1080,7 @@ echo "<hr>";*/
 		$price = 0;
 
 		// se toman las reglas de carrito
-		if ( in_array($type, array(Cart::BOTH, Cart::ONLY_PRODUCTS_WITHOUT_SHIPPING, Cart::ONLY_DISCOUNTS)) )
-		{
+		if ( in_array($type, array(Cart::BOTH, Cart::ONLY_PRODUCTS_WITHOUT_SHIPPING, Cart::ONLY_DISCOUNTS)) ){
 			$CartRules = $this->getCartRules();
 
 			// se toman los valores de descuento
@@ -1158,28 +1094,25 @@ echo "<hr>";*/
 		if ( ( $ReductionPercent == 0 && $ReductionAmount == 0 ) || $ReductionAmount != 0 ) {
 			// bandera que indica que se aplique descuento monetario
 			$GenerateReduction = true;
-			foreach ($products as $product) // products refer to the cart details
-			{
+			foreach ($products as $product) {
+                // products refer to the cart details
+                
 				if ($virtual_context->shop->id != $product['id_shop']) {
 					$virtual_context->shop = new Shop((int)$product['id_shop']);
 				}
 
-				if (Configuration::get('PS_TAX_ADDRESS_TYPE') == 'id_address_invoice') 
-				{
+				if (Configuration::get('PS_TAX_ADDRESS_TYPE') == 'id_address_invoice') {
 					$address_id = (int)$this->id_address_invoice;
 				}
-				else
-				{
+				else{
 					$address_id = (int)$product['id_address_delivery']; // Get delivery address of the product from the cart
 				}
 
 				if (!Address::addressExists($address_id)) {
 					$address_id = null;
 				}
-
 				
-				if ($this->_taxCalculationMethod == PS_TAX_EXC)
-				{
+				if ($this->_taxCalculationMethod == PS_TAX_EXC){
 					// Here taxes are computed only once the quantity has been applied to the product price
 					$price = Product::getPriceStatic(
 						(int)$product['id_product'],
@@ -1203,8 +1136,7 @@ echo "<hr>";*/
 					$total_ecotax = $product['ecotax'] * (int)$product['cart_quantity'];
 					$total_price = $price * (int)$product['cart_quantity'];
 
-					if ($with_taxes)
-					{
+					if($with_taxes){
 						$product_tax_rate = (float)Tax::getProductTaxRate((int)$product['id_product'], (int)$address_id, $virtual_context);
 						$product_eco_tax_rate = Tax::getProductEcotaxRate((int)$address_id);
 
@@ -1212,12 +1144,9 @@ echo "<hr>";*/
 						$total_ecotax = $total_ecotax * (1 + $product_eco_tax_rate / 100);
 						$total_price = Tools::ps_round($total_price + $total_ecotax, 2);
 					}
-
 				}
-				else
-				{
-					if ($with_taxes) 
-					{
+				else{
+					if ($with_taxes){
 						$price = Product::getPriceStatic(
 							(int)$product['id_product'],
 							true,
@@ -1237,8 +1166,7 @@ echo "<hr>";*/
 							$virtual_context
 						);
 					}
-					else
-					{
+					else{
 						$price = Product::getPriceStatic(
 							(int)$product['id_product'],
 							true,
@@ -1260,14 +1188,14 @@ echo "<hr>";*/
 					}
 
 					// se acumulan los valores del iva de los productos para ser sumados al total de la orden, en caso de que el total de la orden sea 0 al apicar un descuento monetario
-					if ( $ReductionAmount != 0 ) {
+					if ( $ReductionAmount != 0 ){
 						$totalPriceIniProducts += $product['price'] * (int)$product['cart_quantity'];
 						$totalTaxProducts += ( ( $product['price'] * $product['rate'] ) / 100 ) * (int)$product['cart_quantity'];
 						$totalProductWT += $price * (int)$product['cart_quantity'];
 					}
 
 					// si removeRulesGroup es true, se remueven los descuentos de categoria, seteando sus precios a los valores originales
-					if ( $this->removeRulesGroup ) {
+					if ( $this->removeRulesGroup ){
 						$price = (int)$product['wholesale_price'];
 						$price += ( $price * $product['rate'] ) / 100;
 						$GenerateReduction = false;
@@ -1284,21 +1212,22 @@ echo "<hr>";*/
 				$this->add_total_tax($totalTax);
 			}
 		}
+        
 		// si existe cupon de descuento por porcentaje se genera calculo aplicando correctamente el descuento
-		elseif ( $ReductionPercent != 0 && $CartRules[0]['reduction_product'] > 0 )
-		{
-			foreach ($products as $product) // products refer to the cart details
-			{
+		elseif ( $ReductionPercent != 0 && $CartRules[0]['reduction_product'] > 0 ){
+			foreach ($products as $product) {
+                // products refer to the cart details
+                
 				if ( $CartRules[0]['reduction_product'] == $product['id_product'] ) {
-
 					if ( $type == Cart::ONLY_PRODUCTS_WITHOUT_SHIPPING ) {
 						$price = $this->UnitPriceDiscountPercent(  $product['price'], $product['rate'], $ReductionPercent, true, (int)$product['cart_quantity'] );
-					} else {
+					}
+                    else {
 						$price = $this->UnitPriceDiscountPercent(  $product['price'], $product['rate'], $ReductionPercent, false, (int)$product['cart_quantity'] );
 					}
-
 					$order_total_discount += $this->UnitPriceDiscountPercent( $product['price'],  $product['rate'], $ReductionPercent, false, (int)$product['cart_quantity'], true);
-				} else {
+				} 
+                else {
 					$price = $this->UnitPriceDiscountPercent(  $product['price'], $product['rate'], 0, false, (int)$product['cart_quantity'] );
 				}
 
@@ -1308,18 +1237,17 @@ echo "<hr>";*/
 				$totalTax += $this->UnitPriceDiscountPercent($product['price'],  $product['rate'], $ReductionPercent, false, (int)$product['cart_quantity'], false, true); 
 			}
 			if($type == 2){
-			$this->add_total_tax($totalTax);
+                $this->add_total_tax($totalTax);
+            }
 		}
-			
-		}
-		elseif ( $ReductionPercent != 0  && $CartRules[0]['reduction_product'] == 0 )
-		{
-			foreach ($products as $product) // products refer to the cart details
-			{
+		elseif ( $ReductionPercent != 0  && $CartRules[0]['reduction_product'] == 0 ){
+			foreach ($products as $product) {
+                // products refer to the cart details
 				// si el tipo de valor a retornar es ONLY_PRODUCTS se toman los valores como tipo show, si no, se toman los valores de del calculo para el total de la orden
 				if ( $type == Cart::ONLY_PRODUCTS_WITHOUT_SHIPPING ) {
 					$price = $this->UnitPriceDiscountPercent(  $product['price'], $product['rate'], $ReductionPercent, true, (int)$product['cart_quantity'] );
-				} else {
+				} 
+                else {
 					$price = $this->UnitPriceDiscountPercent(  $product['price'], $product['rate'], $ReductionPercent, false, (int)$product['cart_quantity'] );
 				}
 
@@ -1334,8 +1262,8 @@ echo "<hr>";*/
 			}
 
 			if($type == 2){
-			$this->add_total_tax($totalTax);
-		}
+                $this->add_total_tax($totalTax);
+            }
 		}
 
 		$order_total_products = $order_total;
@@ -1353,46 +1281,42 @@ echo "<hr>";*/
 
 		// se aplica el descuento normal si el cupon de descuento es 0, si no existe cupon o si el descuento amount es diferente de 0
 		if ( $GenerateReduction ) {
-
-			if (!in_array($type, array(Cart::ONLY_SHIPPING, Cart::ONLY_PRODUCTS)) && CartRule::isFeatureActive())
-			{
+			if (!in_array($type, array(Cart::ONLY_SHIPPING, Cart::ONLY_PRODUCTS)) && CartRule::isFeatureActive()){
 				// First, retrieve the cart rules associated to this "getOrderTotal"
 				if ($with_shipping || $type == Cart::ONLY_DISCOUNTS)
 					$cart_rules = $this->getCartRules(CartRule::FILTER_ACTION_ALL);
-				
-
-				else
-				{
+				else {
 					$cart_rules = $this->getCartRules(CartRule::FILTER_ACTION_REDUCTION);
 					// Cart Rules array are merged manually in order to avoid doubles
-					foreach ($this->getCartRules(CartRule::FILTER_ACTION_GIFT) as $tmp_cart_rule)
-					{
+					foreach ($this->getCartRules(CartRule::FILTER_ACTION_GIFT) as $tmp_cart_rule) {
 						$flag = false;
-						foreach ($cart_rules as $cart_rule)
-							if ($tmp_cart_rule['id_cart_rule'] == $cart_rule['id_cart_rule'])
+						foreach ($cart_rules as $cart_rule){
+							if ($tmp_cart_rule['id_cart_rule'] == $cart_rule['id_cart_rule']){
 								$flag = true;
-						if (!$flag)
+                            }
+                        }
+						if (!$flag){
 							$cart_rules[] = $tmp_cart_rule;
+                        }
 					}
 				}
 				
 				$id_address_delivery = 0;
-				if (isset($products[0]))
+				if (isset($products[0])) {
 					$id_address_delivery = (is_null($products) ? $this->id_address_delivery : $products[0]['id_address_delivery']);
+                }
 				$package = array('id_carrier' => $id_carrier, 'id_address' => $id_address_delivery, 'products' => $products);
 				
 
 				// Then, calculate the contextual value for each one
-				foreach ($cart_rules as $cart_rule)
-				{
+				foreach ($cart_rules as $cart_rule)	{
 					// If the cart rule offers free shipping, add the shipping cost
-					if (($with_shipping || $type == Cart::ONLY_DISCOUNTS) && $cart_rule['obj']->free_shipping)
+					if (($with_shipping || $type == Cart::ONLY_DISCOUNTS) && $cart_rule['obj']->free_shipping){
 						$order_total_discount += Tools::ps_round($cart_rule['obj']->getContextualValue($with_taxes, $virtual_context, CartRule::FILTER_ACTION_SHIPPING, ($param_product ? $package : null), $use_cache), 2);
-
+                    }
 				
 					// If the cart rule is a free gift, then add the free gift value only if the gift is in this package
-					if ((int)$cart_rule['obj']->gift_product)
-					{
+					if ((int)$cart_rule['obj']->gift_product){
 						$in_order = false;
 						if (is_null($products))
 							$in_order = true;
@@ -1419,7 +1343,6 @@ echo "<hr>";*/
 							$order_total_discount = $cart_rule['obj']->reduction_amount;
 						}
 					}
-
 				}
 
 				$order_total_discount = min(Tools::ps_round($order_total_discount, 2), $wrapping_fees + $order_total_products + $shipping_fees);
@@ -1441,12 +1364,10 @@ echo "<hr>";*/
 						$order_total += $totalTaxProducts;
 					}
 				}
-
 			}
 		}
 
 		if ($type == Cart::BOTH) {
-
 			if ( $order_total <= 0 ) {
 				$order_total = 0;
 			}
@@ -1467,22 +1388,19 @@ echo "<hr>";*/
 		return Tools::ps_round((float)$order_total, 2);
 	}
 
-
 	public function add_total_tax($totalTax){
-
-			$rs = Db::getInstance()->update('cart',
-		                   array(
-		                         'total_tax' => $totalTax,
-		                         ),
-		                   'id_cart = '.(int)$this->id);
+        $rs = Db::getInstance()->update('cart',
+            array(
+                'total_tax' => $totalTax,
+            ),
+            'id_cart = '.(int)$this->id);
 	}
     
     /**
-     * [getOrderTotalPaid Para devolver el valor pagado de la orden creada]
-     * @return [float] [retorna el valor de la tabla order]
-     */
-     public function getOrderTotalPaid() {
-
+    * [getOrderTotalPaid Para devolver el valor pagado de la orden creada]
+    * @return [float] [retorna el valor de la tabla order]
+    */
+    public function getOrderTotalPaid() {
 		if (!$this->id)
 			return 0;
 		
@@ -1490,27 +1408,26 @@ echo "<hr>";*/
 
 		if (!$row2) {
 			return 0;
-		} else {
+		}
+        else {
 			return $row2['total_paid'];
 		}
-
 	}
-/**
- * Lista de productos re-calculados 
- */
-public function get_products_rec(){
+    
+    /**
+    * Lista de productos re-calculados 
+    */
+    
+    public function get_products_rec(){
+        $productos = $this->getProducts();
+        $total_descuento =0;
+        $total_productos=0;
+        $total_iva=0;
 
-$productos = $this->getProducts();
-$total_descuento =0;
-$total_productos=0;
-$total_iva=0;
-
-
-///*** INICIO CALCULO COSTO TOTAL, CON CUPON DE DESCUENTO PORCENTAJE Y LISTADO DE IMPUESTOS DE PRODUCTOS ***///
+        ///*** INICIO CALCULO COSTO TOTAL, CON CUPON DE DESCUENTO PORCENTAJE Y LISTADO DE IMPUESTOS DE PRODUCTOS ***///
 		$cart_rules = $this->getCartRules();
 
 		if (!empty($cart_rules)) {  
-
 			$detailcartrule = $this->cartRuleDetail($cart_rules[0]['id_cart_rule']);
 			if ($cart_rules[0]['reduction_percent'] != 0 && $cart_rules[0]['reduction_amount'] == 0) {
 				// descuento por de porcentaje  
@@ -1540,16 +1457,17 @@ $total_iva=0;
 					$productos[$key]['iva_prod']=$iva_producto;
 					$productos[$key]['descuento_prod']=$descuento_producto;
 
-				   $recalculadoivaproducto = true;
+                    $recalculadoivaproducto = true;
 					if ( !isset($array_ivas[$iva_c]) ) {
 						$array_ivas[$iva_c] = 0;
 					}
 
 					$array_ivas[$iva_c] += $iva_subtotal;
 				}
-			}elseif ($cart_rules[0]['reduction_percent'] == 0  && $cart_rules[0]['reduction_amount'] != 0) {
+			}
+            elseif ($cart_rules[0]['reduction_percent'] == 0  && $cart_rules[0]['reduction_amount'] != 0) {
 				// descuento monetario
-				  foreach ($productos as $key => $product) {
+                foreach ($productos as $key => $product) {
 					$precio = $product['price'];
 					$iva_c = $product['rate'];
 
@@ -1558,73 +1476,66 @@ $total_iva=0;
 					$precio_venta = $precio + $iva_producto;
 					$productos[$key]['precio_venta'] = $precio_venta;
 
-				   $recalculadoivaproducto = true;
+                    $recalculadoivaproducto = true;
 					if ( !isset($array_ivas[$iva_c]) ) {
 						$array_ivas[$iva_c] = 0;
 					}
 
-					$array_ivas[$iva_c] += $iva_subtotal;
+                    $array_ivas[$iva_c] += $iva_subtotal;
 				}   
 				
-			}else{
 			}
+            else {}
+		}
+        else {
+            foreach ($productos as $key => $product) {
+                $precio = $product['price'];
+                $iva_c = $product['rate'];
+			
+                $iva_subtotal = ( $precio * $product['cart_quantity'] ) * ($iva_c / 100);
+                $iva_producto = (($precio * $iva_c) / 100);
+                $precio_venta = $precio + $iva_producto;
 
-		} else { 
-			 foreach ($productos as $key => $product) {
-					$precio = $product['price'];
-					$iva_c = $product['rate'];
+                $productos[$key]['precio_venta'] = $precio_venta;
+                $productos[$key]['iva_subtotal'] = $iva_subtotal;
+                $productos[$key]['iva_prod']=$iva_producto;
 				
-					$iva_subtotal = ( $precio * $product['cart_quantity'] ) * ($iva_c / 100);
-					$iva_producto = (($precio * $iva_c) / 100);
-					$precio_venta = $precio + $iva_producto;
-
-					$productos[$key]['precio_venta'] = $precio_venta;
-					$productos[$key]['iva_subtotal'] = $iva_subtotal;
-					$productos[$key]['iva_prod']=$iva_producto;
-				
-					if ( !isset($array_ivas[$iva_c]) ) {
-						$array_ivas[$iva_c] = 0;
-					}
+                if ( !isset($array_ivas[$iva_c]) ) {
+                    $array_ivas[$iva_c] = 0;
+                }
 
 				//echo "<br> iva si: ".$iva_c." - ".
 				$array_ivas[$iva_c] += number_format( $iva_subtotal ,2, '.', '');
 
-					$total_iva+=($iva_subtotal * $product['cart_quantity']);
-					$total_productos+= ($precio_venta*$product['cart_quantity']);
-				
-				}
-
+                $total_iva+=($iva_subtotal * $product['cart_quantity']);
+                $total_productos+= ($precio_venta*$product['cart_quantity']);	
+            }
 		}
 
-// $productos['total_productos'] = $total_productos;
-// $productos['total_iva'] = $total_iva;
-// $productos['total_descuento'] = $total_descuento;
-return $productos;
+        // $productos['total_productos'] = $total_productos;
+        // $productos['total_iva'] = $total_iva;
+        // $productos['total_descuento'] = $total_descuento;
+        return $productos;
+    }
 
-}
-
-/**
- * totales orden 
- */
-public function getOrderTotals(){
-
-$productos = $this->getProducts();
-$total_descuento =0;
-$total_productos=0;
-$total_iva=0;
-
-///*** INICIO CALCULO COSTO TOTAL, CON CUPON DE DESCUENTO PORCENTAJE Y LISTADO DE IMPUESTOS DE PRODUCTOS ***///
+    /**
+    * totales orden 
+    */
+    public function getOrderTotals(){
+        $productos = $this->getProducts();
+        $total_descuento =0;
+        $total_productos=0;
+        $total_iva=0;
+        ///*** INICIO CALCULO COSTO TOTAL, CON CUPON DE DESCUENTO PORCENTAJE Y LISTADO DE IMPUESTOS DE PRODUCTOS ***///
 		$cart_rules = $this->getCartRules();
 
-	//	exit('<pre>'.print_r($cart_rules,true));
+        //	exit('<pre>'.print_r($cart_rules,true));
 
 		if (!empty($cart_rules)) { 
-
 			$detailcartrule = $this->cartRuleDetail($cart_rules[0]['id_cart_rule']);
 			$porcentajedescuento = $detailcartrule[0]['reduction_percent'];
 			if ($cart_rules[0]['reduction_percent'] != 0 && $cart_rules[0]['reduction_amount'] == 0) {
 				foreach ($productos as $key => $product) {
-
 					$precio = $product['price'];
 					$iva_c = $product['rate'];
 				 
@@ -1648,22 +1559,23 @@ $total_iva=0;
 					$productos[$key]['iva_prod']=$iva_producto;
 					$productos[$key]['descuento_prod']=$descuento_producto;
 
-					 $total_descuento+=($descuento_subtotal * $product['cart_quantity']);
-					 $total_iva+=($iva_subtotal * $product['cart_quantity']);
-					 $total_productos+= ($precio_venta*$product['cart_quantity']);
+                    $total_descuento+=($descuento_subtotal * $product['cart_quantity']);
+                    $total_iva+=($iva_subtotal * $product['cart_quantity']);
+                    $total_productos+= ($precio_venta*$product['cart_quantity']);
 
-				   // echo "<br>Precio: ".$precio." || Antes ".$productos[$key]['price_wt']." || Calculo: ".(float) ($precio + (($precio * $iva_c) / 100)).' || Iva: '.$iva_c;
+                    // echo "<br>Precio: ".$precio." || Antes ".$productos[$key]['price_wt']." || Calculo: ".(float) ($precio + (($precio * $iva_c) / 100)).' || Iva: '.$iva_c;
 
-				   $recalculadoivaproducto = true;
+                    $recalculadoivaproducto = true;
 					if ( !isset($array_ivas[$iva_c]) ) {
 						$array_ivas[$iva_c] = 0;
 					}
 
 					$array_ivas[$iva_c] += $iva_subtotal;
 				}
-			} elseif ($cart_rules[0]['reduction_percent'] == 0  && $cart_rules[0]['reduction_amount'] != 0) {
+			}
+            elseif ($cart_rules[0]['reduction_percent'] == 0  && $cart_rules[0]['reduction_amount'] != 0) {
 				// descuento monetario
-				  foreach ($productos as $key => $product) {
+                foreach ($productos as $key => $product) {
 					$precio = $product['price'];
 					$iva_c = $product['rate'];
 
@@ -1672,7 +1584,7 @@ $total_iva=0;
 					$precio_venta = $precio + $iva_producto;
 					$productos[$key]['precio_venta'] = $precio_venta;
 
-				   $recalculadoivaproducto = true;
+                    $recalculadoivaproducto = true;
 					if ( !isset($array_ivas[$iva_c]) ) {
 						$array_ivas[$iva_c] = 0;
 					}
@@ -1683,56 +1595,48 @@ $total_iva=0;
 					$total_iva+=($iva_subtotal * $product['cart_quantity']);
 					$total_productos+= ($precio_venta*$product['cart_quantity']);  
 				}
-
 			}
-		} else { 
+		} 
+        else { 
+            foreach ($productos as $key => $product) {
+                $precio = $product['price'];
+                $iva_c = $product['rate'];
 
-			 foreach ($productos as $key => $product) {
 
-					$precio = $product['price'];
-					$iva_c = $product['rate'];
-				
-			 
-					$iva_subtotal = ( $precio * $product['cart_quantity'] ) * ($iva_c / 100);
-					$iva_producto = (($precio * $iva_c) / 100);
-					$precio_venta = $precio + $iva_producto;
+                $iva_subtotal = ( $precio * $product['cart_quantity'] ) * ($iva_c / 100);
+                $iva_producto = (($precio * $iva_c) / 100);
+                $precio_venta = $precio + $iva_producto;
 
-					$productos[$key]['precio_venta'] = $precio_venta;
-					$productos[$key]['iva_subtotal'] = $iva_subtotal;
-					$productos[$key]['iva_prod']=$iva_producto;
-				
-					if ( !isset($array_ivas[$iva_c]) ) {
-						$array_ivas[$iva_c] = 0;
-					}
+                $productos[$key]['precio_venta'] = $precio_venta;
+                $productos[$key]['iva_subtotal'] = $iva_subtotal;
+                $productos[$key]['iva_prod']=$iva_producto;
 
-					$array_ivas[$iva_c] += number_format( $iva_subtotal ,2, '.', '');
+                if ( !isset($array_ivas[$iva_c]) ) {
+                    $array_ivas[$iva_c] = 0;
+                }
 
-					$total_iva+=($iva_subtotal * $product['cart_quantity']);
-					$total_productos+= ($precio_venta*$product['cart_quantity']);
-				
-				}
+                $array_ivas[$iva_c] += number_format( $iva_subtotal ,2, '.', '');
 
+                $total_iva+=($iva_subtotal * $product['cart_quantity']);
+                $total_productos+= ($precio_venta*$product['cart_quantity']);
+            }
 		}
-
-return array('total_productos'=>number_format($total_productos, 2, '.', ''),'total_iva'=>number_format($total_iva, 2, '.', ''),'total_descuento'=>number_format($total_descuento, 2, '.', ''),'shipping'=>number_format($this->getTotalShippingCost(), 2, '.', ''),'productos'=>$productos,'total_orden'=>number_format( (float) ($total_productos+$this->getTotalShippingCost()), 2, '.', ''));
-
-}
+        return array('total_productos'=>number_format($total_productos, 2, '.', ''),'total_iva'=>number_format($total_iva, 2, '.', ''),'total_descuento'=>number_format($total_descuento, 2, '.', ''),'shipping'=>number_format($this->getTotalShippingCost(), 2, '.', ''),'productos'=>$productos,'total_orden'=>number_format( (float) ($total_productos+$this->getTotalShippingCost()), 2, '.', ''));
+    }
 
 	/*consulta para conocer los detalles del cupon agregado*/
-	public function cartRuleDetail($id_cart_rule)
-	{   
+	public function cartRuleDetail($id_cart_rule){   
 		return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
-		SELECT *
-		FROM `'._DB_PREFIX_.'cart_rule` cr
-		WHERE cr.`id_cart_rule` = '.$id_cart_rule);
+                                                            SELECT *
+                                                            FROM `'._DB_PREFIX_.'cart_rule` cr
+                                                            WHERE cr.`id_cart_rule` = '.$id_cart_rule);
 	}
 
-		/**
-	 * [validationaddressfarmalisto Para validar si la direccion de entrega, es la oficina de farmalisto]
-	 * @return [bool] $validateaddress [true si la direccion de entrega es la oficina de farmalisto, si no se retorna false]
-	 */
+    /**
+    * [validationaddressfarmalisto Para validar si la direccion de entrega, es la oficina de farmalisto]
+    * @return [bool] $validateaddress [true si la direccion de entrega es la oficina de farmalisto, si no se retorna false]
+    */
 	public function validationaddressfarmalisto(){
-
 		// se crea objeto address para tomar la dirección seleccionada de entrega
 		$address = new Address($this->id_address_delivery);
 		$cityact = strtoupper($address->city);
@@ -1750,13 +1654,10 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 
 		// valida que la ciudad de entrega sea bogota
 		if (trim(strtoupper($cityact)) == trim(strtoupper('CIUDAD DE MéXICO - MIGUEL HIDALGO'))) {
-
 			// se recorre arreglo de direcciones validas
 			foreach ($addressesoficina as $addresofi) {
-				
 				// se valida que la direccion de entrega, sea igual a la direccion del arreglo de direcciones validas
 				if (trim($addresofi) == trim(strtoupper($addressact))){
-
 					// si son iguales, se toma como true la variable a retornar
 					$validateaddress = true;
 				}
@@ -1766,16 +1667,16 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 	}
 	
 
-		/**
-	 * [UnitPriceDiscountPercent Para retornar el valor unitario del producto aplicando el respectivo descuento para facturaxion]
-	 * @param [int] $price		   [Valor inicial del producto]
-	 * @param [int] $tax			 [% IVA del producto]
-	 * @param [int] $discountPercent [% Descuento a aplicar]
-	 * @param [bool] $priceShow	  [flag para retornar precio a mostrar]
-	 * @param [bool] $quantity	   [cantidad de productos en carrito]
-	 * @param [bool] $showDiscount   [flag para retornar unicarmente el desucuento aplicado por producto]
-	 * @return [int] $unitPrice	  [valor final unitario del producto]
-	 */	
+    /**
+    * [UnitPriceDiscountPercent Para retornar el valor unitario del producto aplicando el respectivo descuento para facturaxion]
+    * @param [int] $price		   [Valor inicial del producto]
+    * @param [int] $tax			 [% IVA del producto]
+    * @param [int] $discountPercent [% Descuento a aplicar]
+    * @param [bool] $priceShow	  [flag para retornar precio a mostrar]
+    * @param [bool] $quantity	   [cantidad de productos en carrito]
+    * @param [bool] $showDiscount   [flag para retornar unicarmente el desucuento aplicado por producto]
+    * @return [int] $unitPrice	  [valor final unitario del producto]
+    */	
 
 	public static function StaticUnitPriceDiscountPercent( $price, $tax, $discountPercent, $priceShow, $quantity, $showDiscount = false, $showTaxDiscount = false) {
 
@@ -1816,19 +1717,18 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 		}
 
 		return $unitPrice;
-		
 	}
 
 	/**
-	 * [UnitPriceDiscountPercent Para retornar el valor unitario del producto aplicando el respectivo descuento]
-	 * @param [int] $price		   [Valor inicial del producto]
-	 * @param [int] $tax			 [% IVA del producto]
-	 * @param [int] $discountPercent [% Descuento a aplicar]
-	 * @param [bool] $priceShow	  [flag para retornar precio a mostrar]
-	 * @param [bool] $quantity	   [cantidad de productos en carrito]
-	 * @param [bool] $showDiscount   [flag para retornar unicarmente el desucuento aplicado por producto]
-	 * @return [int] $unitPrice	  [valor final unitario del producto]
-	 */
+    * [UnitPriceDiscountPercent Para retornar el valor unitario del producto aplicando el respectivo descuento]
+    * @param [int] $price		   [Valor inicial del producto]
+    * @param [int] $tax			 [% IVA del producto]
+    * @param [int] $discountPercent [% Descuento a aplicar]
+    * @param [bool] $priceShow	  [flag para retornar precio a mostrar]
+    * @param [bool] $quantity	   [cantidad de productos en carrito]
+    * @param [bool] $showDiscount   [flag para retornar unicarmente el desucuento aplicado por producto]
+    * @return [int] $unitPrice	  [valor final unitario del producto]
+    */
 	public function UnitPriceDiscountPercent( $price, $tax, $discountPercent, $priceShow, $quantity, $showDiscount = false, $showTaxDiscount = false) {
 
        // discount almacena descuento aplicado al precio inicial del producto
@@ -1859,14 +1759,13 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
        }
 
        return $unitPrice;
-   }
+    }
 
 	/**
-	 * [GetProductsCartReductionCategory Para retornar true si en el carrito se encuentra algun producto con cupon de descuento por categoria]
-	 * @return [bool] $validationReductionCategory [true si se encuentra un producto del carrito con cupon de descuento]
-	 */
+    * [GetProductsCartReductionCategory Para retornar true si en el carrito se encuentra algun producto con cupon de descuento por categoria]
+    * @return [bool] $validationReductionCategory [true si se encuentra un producto del carrito con cupon de descuento]
+    */
 	public function GetProductsCartReductionCategory( $ruleAdding ) {
-
 		$validationReductionCategory = false;
 
 		// se valida si el cupon a agregar es 0, si esto se cumple, se retorna como falso para que permita agregar el cupon en 0
@@ -1884,7 +1783,6 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 		
 		// se recorren los productos que se encuentran en el carrito
 		foreach ($products as $product) {
-
 			// se llama el metodo getByProductId para validar si el producto posee descuento por categoria
 			$productCategoryDiscount = $specificPrice->getByProductId( $product['id_product'], false, false, true );
 
@@ -1894,13 +1792,12 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 				break;
 			}
 		}
-
 		return $validationReductionCategory;
 	}
 
-			/**
-	 * [validateProgressiveDiscount Funcion para validar si se encuentra un cupon de descuento progresivo en el carrito]
-	 */
+    /**
+    * [validateProgressiveDiscount Funcion para validar si se encuentra un cupon de descuento progresivo en el carrito]
+    */
 	public function validateProgressiveDiscountInCart() {
 		
 		$queryProgressiveDiscountInCart = "
@@ -1916,17 +1813,18 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 
 		if ( $ProgressiveDiscountInCart[0]['ProgressiveDiscountInCart'] > 0 ) {
 			return true;
-		} else {
+		}
+        else {
 			return false;
 		}
 	}
 
 	/**
-	 * [DetailsFacturaxion consulta los detalles de la orden y genera los datos para el desglose de iva]
-	 * @param int $idOrder [id de la orden a consultar]
-	 * @param int $idCart  [id del carrito a consultar]
-	 * @return [array] [arreglo con los detalles de la orden]
-	 */
+    * [DetailsFacturaxion consulta los detalles de la orden y genera los datos para el desglose de iva]
+    * @param int $idOrder [id de la orden a consultar]
+    * @param int $idCart  [id del carrito a consultar]
+    * @return [array] [arreglo con los detalles de la orden]
+    */
 	public function DetailsFacturaxion( $idOrder = "", $idCart = "" ) {
 
 		$arrayDetailsFacturaxion = array();
@@ -1934,12 +1832,13 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 		// se consulta por la entidad que sea diferente a vacia, de ser ambas vacias, se retorna el array vacio
 		if ( $idOrder != "" ) {
 		   $searchFor = 'o.id_order = '.$idOrder;
-		} elseif ( $idCart != "" ) {
+		}
+        elseif ( $idCart != "" ) {
 		   $searchFor = 'o.id_cart = '.$idCart;
-		} else {
+		}
+        else {
 			return $arrayDetailsFacturaxion;
 		}
-
 
 		// query para consultar los detalles de la orden
 		$sql = new DbQuery();
@@ -1951,7 +1850,6 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 		$sql->where($searchFor);
 		// se almacena los resultados en la posicion DetailsOrder del arreglo a retornar
 		$arrayDetailsFacturaxion['DetailsOrder'] = Db::getInstance()->executeS($sql);
-
 		
 		// query para consultar los detalles de la orden
 		$sql = new DbQuery();
@@ -1964,7 +1862,6 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 		$sql->orderBy('od.tax_rate');
 		// se almacena los resultados en la posicion BreakdownTax del arreglo a retornar
 		$arrayDetailsFacturaxion['BreakdownTax'] = Db::getInstance()->executeS($sql);
-
 
 		// se retorna el arreglo con detalles de la orden y desglose de IVA
 		return $arrayDetailsFacturaxion;
@@ -2155,8 +2052,7 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 	}
 	///*** FIN CALCULO COSTO TOTAL, CON CUPON DE DESCUENTO MONETARIO***///
 
-	public function getPackageList($flush = false)
-	{
+	public function getPackageList($flush = false){
 		static $cache = array();
 		if (isset($cache[(int)$this->id]) && $cache[(int)$this->id] !== false && !$flush)
 			return $cache[(int)$this->id];
@@ -2170,8 +2066,7 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 
 		$stock_management_active = Configuration::get('PS_ADVANCED_STOCK_MANAGEMENT');
 
-		foreach ($product_list as &$product)
-		{
+		foreach ($product_list as &$product){
 			if ((int)$product['id_address_delivery'] == 0)
 				$product['id_address_delivery'] = (int)$this->id_address_delivery;
 
@@ -2181,19 +2076,18 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 			$product['warehouse_list'] = array();
 
 			if ($stock_management_active &&
-				((int)$product['advanced_stock_management'] == 1 || Pack::usesAdvancedStockManagement((int)$product['id_product'])) && Configuration::get('PS_SHIP_WHEN_AVAILABLE'))
-			{
+				((int)$product['advanced_stock_management'] == 1 || Pack::usesAdvancedStockManagement((int)$product['id_product'])) && Configuration::get('PS_SHIP_WHEN_AVAILABLE'))	{
 				$warehouse_list = Warehouse::getProductWarehouseList($product['id_product'], $product['id_product_attribute'], $this->id_shop);
 				if (count($warehouse_list) == 0)
 					$warehouse_list = Warehouse::getProductWarehouseList($product['id_product'], $product['id_product_attribute']);
-				// Does the product is in stock ?
+
+                // Does the product is in stock ?
 				// If yes, get only warehouse where the product is in stock
 
 				$warehouse_in_stock = array();
 				$manager = StockManagerFactory::getManager();
 
-				foreach ($warehouse_list as $key => $warehouse)
-				{
+				foreach ($warehouse_list as $key => $warehouse){
 					$product_real_quantities = $manager->getProductRealQuantities(
 						$product['id_product'],
 						$product['id_product_attribute'],
@@ -2205,25 +2099,21 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 						$warehouse_in_stock[] = $warehouse;
 				}
 
-				if (!empty($warehouse_in_stock))
-				{
+				if (!empty($warehouse_in_stock)){
 					$warehouse_list = $warehouse_in_stock;
 					$product['in_stock'] = true;
 				}
 				else
 					$product['in_stock'] = false;
 			}
-			else
-			{
+			else{
 				//simulate default warehouse
 				$warehouse_list = array(0);
 				$product['in_stock'] = StockAvailable::getQuantityAvailableByProduct($product['id_product'], $product['id_product_attribute']) > 0;
 			}
 
-			foreach ($warehouse_list as $warehouse)
-			{
-				if (!isset($warehouse_carrier_list[$warehouse['id_warehouse']]))
-				{
+			foreach ($warehouse_list as $warehouse)	{
+				if (!isset($warehouse_carrier_list[$warehouse['id_warehouse']])){
 					$warehouse_object = new Warehouse($warehouse['id_warehouse']);
 					$warehouse_carrier_list[$warehouse['id_warehouse']] = $warehouse_object->getCarriers();
 				}
@@ -2241,8 +2131,7 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 
 		// Step 2 : Group product by warehouse
 		$grouped_by_warehouse = array();
-		foreach ($product_list as &$product)
-		{
+		foreach ($product_list as &$product){
 			if (!isset($grouped_by_warehouse[$product['id_address_delivery']]))
 				$grouped_by_warehouse[$product['id_address_delivery']] = array(
 					'in_stock' => array(),
@@ -2251,18 +2140,15 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 			
 			$product['carrier_list'] = array();
 			$id_warehouse = 0;
-			foreach ($warehouse_count_by_address[$product['id_address_delivery']] as $id_war => $val)
-			{
-				if (in_array((int)$id_war, $product['warehouse_list']))
-				{
+			foreach ($warehouse_count_by_address[$product['id_address_delivery']] as $id_war => $val){
+				if (in_array((int)$id_war, $product['warehouse_list'])){
 					$product['carrier_list'] = array_merge($product['carrier_list'], Carrier::getAvailableCarrierList(new Product($product['id_product']), $id_war, $product['id_address_delivery'], null, $this));
 					if (!$id_warehouse)
 						$id_warehouse = (int)$id_war;
 				}
 			}
 
-			if (!isset($grouped_by_warehouse[$product['id_address_delivery']]['in_stock'][$id_warehouse]))
-			{
+			if (!isset($grouped_by_warehouse[$product['id_address_delivery']]['in_stock'][$id_warehouse])){
 				$grouped_by_warehouse[$product['id_address_delivery']]['in_stock'][$id_warehouse] = array();
 				$grouped_by_warehouse[$product['id_address_delivery']]['out_of_stock'][$id_warehouse] = array();
 			}
@@ -2281,23 +2167,19 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 
 		// Step 3 : grouped product from grouped_by_warehouse by available carriers
 		$grouped_by_carriers = array();
-		foreach ($grouped_by_warehouse as $id_address_delivery => $products_in_stock_list)
-		{
+		foreach ($grouped_by_warehouse as $id_address_delivery => $products_in_stock_list){
 			if (!isset($grouped_by_carriers[$id_address_delivery]))
 				$grouped_by_carriers[$id_address_delivery] = array(
 					'in_stock' => array(),
 					'out_of_stock' => array(),
 				);
-			foreach ($products_in_stock_list as $key => $warehouse_list)
-			{
+			foreach ($products_in_stock_list as $key => $warehouse_list){
 				if (!isset($grouped_by_carriers[$id_address_delivery][$key]))
 					$grouped_by_carriers[$id_address_delivery][$key] = array();
-				foreach ($warehouse_list as $id_warehouse => $product_list)
-				{
+				foreach ($warehouse_list as $id_warehouse => $product_list){
 					if (!isset($grouped_by_carriers[$id_address_delivery][$key][$id_warehouse]))
 						$grouped_by_carriers[$id_address_delivery][$key][$id_warehouse] = array();
-					foreach ($product_list as $product)
-					{
+					foreach ($product_list as $product){
 						$package_carriers_key = implode(',', $product['carrier_list']);
 
 						if (!isset($grouped_by_carriers[$id_address_delivery][$key][$id_warehouse][$package_carriers_key]))
@@ -2315,26 +2197,21 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 
 		$package_list = array();
 		// Step 4 : merge product from grouped_by_carriers into $package to minimize the number of package
-		foreach ($grouped_by_carriers as $id_address_delivery => $products_in_stock_list)
-		{
+		foreach ($grouped_by_carriers as $id_address_delivery => $products_in_stock_list){
 			if (!isset($package_list[$id_address_delivery]))
 				$package_list[$id_address_delivery] = array(
 					'in_stock' => array(),
 					'out_of_stock' => array(),
 				);
 
-			foreach ($products_in_stock_list as $key => $warehouse_list)
-			{
+			foreach ($products_in_stock_list as $key => $warehouse_list){
 				if (!isset($package_list[$id_address_delivery][$key]))
 					$package_list[$id_address_delivery][$key] = array();
 				// Count occurance of each carriers to minimize the number of packages
 				$carrier_count = array();
-				foreach ($warehouse_list as $id_warehouse => $products_grouped_by_carriers)
-				{
-					foreach ($products_grouped_by_carriers as $data)
-					{
-						foreach ($data['carrier_list'] as $id_carrier)
-						{
+				foreach ($warehouse_list as $id_warehouse => $products_grouped_by_carriers){
+					foreach ($products_grouped_by_carriers as $data){
+						foreach ($data['carrier_list'] as $id_carrier){
 							if (!isset($carrier_count[$id_carrier]))
 								$carrier_count[$id_carrier] = 0;
 							$carrier_count[$id_carrier]++;
@@ -2342,16 +2219,12 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 					}
 				}
 				arsort($carrier_count);
-				foreach ($warehouse_list as $id_warehouse => $products_grouped_by_carriers)
-				{
+				foreach ($warehouse_list as $id_warehouse => $products_grouped_by_carriers){
 					if (!isset($package_list[$id_address_delivery][$key][$id_warehouse]))
 						$package_list[$id_address_delivery][$key][$id_warehouse] = array();
-					foreach ($products_grouped_by_carriers as $data)
-					{
-						foreach ($carrier_count as $id_carrier => $rate)
-						{
-							if (in_array($id_carrier, $data['carrier_list']))
-							{
+					foreach ($products_grouped_by_carriers as $data){
+						foreach ($carrier_count as $id_carrier => $rate){
+							if (in_array($id_carrier, $data['carrier_list'])){
 								if (!isset($package_list[$id_address_delivery][$key][$id_warehouse][$id_carrier]))
 									$package_list[$id_address_delivery][$key][$id_warehouse][$id_carrier] = array(
 										'carrier_list' => $data['carrier_list'],
@@ -2373,15 +2246,13 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 
 		// Step 5 : Reduce depth of $package_list
 		$final_package_list = array();
-		foreach ($package_list as $id_address_delivery => $products_in_stock_list)
-		{
+		foreach ($package_list as $id_address_delivery => $products_in_stock_list){
 			if (!isset($final_package_list[$id_address_delivery]))
 				$final_package_list[$id_address_delivery] = array();
 
 			foreach ($products_in_stock_list as $key => $warehouse_list)
 				foreach ($warehouse_list as $id_warehouse => $products_grouped_by_carriers)
-					foreach ($products_grouped_by_carriers as $data)
-					{
+					foreach ($products_grouped_by_carriers as $data){
 						$final_package_list[$id_address_delivery][] = array(
 							'product_list' => $data['product_list'],
 							'carrier_list' => $data['carrier_list'],
@@ -2393,36 +2264,28 @@ return array('total_productos'=>number_format($total_productos, 2, '.', ''),'tot
 		$cache[(int)$this->id] = $final_package_list;
 		return $final_package_list;
 	}
-
-public function is_formula()
-{
-//Optener lista de productos del carrito    
- $pruducts = $this->getProducts();
-  // recorrer cada producto y validar si requiere formula medica    
-  foreach ($pruducts as &$valor) {
-     // crear un nuevo producto 
-    $product = new Product($valor['id_product'], true, $this->context->language->id, $this->context->shop->id);
-    // obtener las caracteristicas del producto
-    $features = $product->getFrontFeatures($this->context->language->id);
-    foreach($features as $value)
-    {
-    if($value['name'] === 'Requiere fórmula médica'&&isset($value['value']))
-      {
-       
-      if( strtoupper($value['value']) === 'SI') 
-      {
-         
-      return true;
-      }
-            
-      }
-    }
- } 
-return false;
-}	
+    
+    public function is_formula(){
+        //Optener lista de productos del carrito
+        $pruducts = $this->getProducts();
+        // recorrer cada producto y validar si requiere formula medica    
+        foreach ($pruducts as &$valor) {
+            // crear un nuevo producto 
+            $product = new Product($valor['id_product'], true, $this->context->language->id, $this->context->shop->id);
+            // obtener las caracteristicas del producto
+            $features = $product->getFrontFeatures($this->context->language->id);
+            foreach($features as $value){
+                if($value['name'] === 'Requiere fórmula médica'&&isset($value['value'])){
+                    if( strtoupper($value['value']) === 'SI'){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }	
 
 	public static function prodsHasFormula ($array_prods) {
-
 		$queryProdsFormula = " SELECT count(1) AS hasformula FROM 
 			ps_feature_product fpp 
 			INNER JOIN ps_feature_lang fll ON ( fpp.id_feature = fll.id_feature ) 
@@ -2433,10 +2296,9 @@ return false;
 
 		if ( $resultQueryProdsFormula && $resultQueryProdsFormula[0]['hasformula'] > 0 ) {
 			return true;
-		} else {
+		}
+        else {
 			return false;
 		}
-
 	}
-
 }
