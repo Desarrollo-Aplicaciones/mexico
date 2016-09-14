@@ -2301,4 +2301,87 @@ class Cart extends CartCore {
 			return false;
 		}
 	}
+    
+    public function staggeredDiscounts($type, $with_shipping, $products, $shipping_fees, $wrapping_fees, $virtual_context) {
+
+        // Calculate total tax and discounts
+        $products_total = 0;
+        $tax_total = 0;
+        $discounts_total = 0;
+        $order_total = 0;
+        $total_price_tax_exc = 0;
+
+        foreach ($products as $product) {
+            $price_tax_exc = Product::getPriceStatic(
+                (int) $product['id_product'], false, (int) $product['id_product_attribute'], 2, null, false, true, $product['cart_quantity'], false, ((int) $this->id_customer ? (int) $this->id_customer : null), (int) $this->id, ((int) $address_id ? (int) $address_id : null), $null, true, true, $virtual_context
+            );
+            $total_price_tax_exc = Tools::ps_round($price_tax_exc * (int) $product['cart_quantity'], 2);
+            $order_total_tax_exc += $total_price_tax_exc;
+        }
+
+        if (!in_array($type, array(Cart::ONLY_SHIPPING, Cart::ONLY_PRODUCTS)) && CartRule::isFeatureActive()) {
+            if ($with_shipping || $type == Cart::ONLY_DISCOUNTS) {
+                $count_prod = 0;
+                $cart_rules = $this->getCartRules(CartRule::FILTER_ACTION_ALL);
+
+                $aux = array();
+                // sort results cart_rules
+                foreach ($cart_rules as $key => $row) {
+                    $aux[$key] = (int) $row['reduction_percent'];
+                }
+                array_multisort($aux, SORT_ASC, $cart_rules);
+                unset($aux);
+                // Calculate total discounts
+                foreach ($products as $product) {
+                    $count_cart_rule = 0;
+                    foreach ($cart_rules as $cart_rule) {
+                        if (!isset($products[$count_prod]["price_new"])) {
+                            $cart_rules[$count_cart_rule]["total_discount_cart_rule"] += (($total_price_tax_exc * $cart_rule['reduction_percent']) / 100);
+                            $products[$count_prod]["price_new"] = ($total_price_tax_exc - (($total_price_tax_exc * $cart_rule['reduction_percent']) / 100));
+                        } else {
+                            $products[$count_prod]["price_new"] = ($products[$count_prod]["price_new"] - (($products[$count_prod]["price_new"] * $cart_rule['reduction_percent']) / 100));
+                            $cart_rules[$count_cart_rule]["total_discount_cart_rule"] += (($total_price_tax_exc * $cart_rule['reduction_percent']) / 100);
+                        }
+                        $count_cart_rule ++;
+                    }
+                    $count_prod ++;
+                }
+                // return total discounts
+                if ($type == Cart::ONLY_DISCOUNTS) {
+                    $totals_discounts = 0;
+                    $count_cart_rule = 0;
+                    foreach ($cart_rules as $cart_rule) {
+                        $totals_discounts += $cart_rules[$count_cart_rule]["total_discount_cart_rule"];
+                        $count_cart_rule ++;
+                    }
+                    return $totals_discounts;
+                }
+
+
+                // Calculate total tex whit new price // cart_quantity price
+                $count_prod = 0;
+                foreach ($products as $product) { // 
+                    $products[$count_prod]["total_tax"] = (($products[$count_prod]["price_new"] * $product['rate']) / 100);
+                    $count_prod ++;
+                }
+                // Calculate totals
+                $count_prod = 0;
+                foreach ($products as $product) { // 
+                    $products_total += $products[$count_prod]["price_new"];
+                    $tax_total += $products[$count_prod]["total_tax"];
+                    $count_prod ++;
+                    $this->products_discouts = $products;
+                    $this->cart_rules_discounts = $cart_rules;
+                }
+                // assigning new value discount applied
+                $count_cart_rule = 0;
+                foreach ($this->cart_rules_discounts as $cart_rule_d) {
+                    $this->cart_rules_discounts[$count_cart_rule]["value_real"] = $cart_rule_d["total_discount_cart_rule"];
+                    $count_cart_rule++;
+                }
+            }
+            $this->total_products_wt = $products_total + $tax_total;
+        }
+        return $this->total_products_wt;
+    }
 }
