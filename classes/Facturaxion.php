@@ -13,7 +13,7 @@ if (!class_exists('Facturaxion')) {
 		public $numero_certificado = '';
 		public $numero_certificadoS = '';
 		
-		public $dir_server = '/var/www/';
+		public $dir_server = '/var/www/mexico/';
 		public $sello_emisor = '';
 		public $certificado_emisor = '';
 		public $array_xml_a_timbrar = '';
