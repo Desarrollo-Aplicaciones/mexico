@@ -71,7 +71,7 @@ class fbloginblock extends Module
 					$this->_multiple_lang = 0;
 				}
 			}
-				
+            				
 		}
 		
 		//$this->bootstrap = true;
@@ -102,8 +102,8 @@ class fbloginblock extends Module
 				
 								     'amazon'=>$this->l('Error: Please fill Amazon Client ID and Amazon Allowed Return URL in the module settings'),
 									 );
-		
-		$this->initContext();
+
+        $this->initContext();
  	}
  	
  	
@@ -115,7 +115,10 @@ class fbloginblock extends Module
 	  } else {
 	  	$this->context->currentindex = $this->currentindex;
 	  }
-	}
+//           $ProgramaApego = new ProgramaApego();
+//           var_dump($ProgramaApego->setProgApegoWithCustomer($ProgramaApego->getIdProgApegoFromName('nadro'), $this->context->customer->id, 'cualquier cosa'));
+//           exit(0);
+        }
  	
 	public function install()
 	{
