@@ -19,8 +19,8 @@ class IdentityController extends IdentityControllerCore
                 $name_Apego_active = $prog_apego->getNameProgApegoActive();
 //                $id_prog_apego = $prog_apego->getIdProgApegoFromName('Prueba');
                 $id_customer = Context::getContext()->customer->id;
-                echo "Los programas apego activos son:  ";
-                var_dump($name_Apego_active);
+//                echo "Los programas apego activos son:  ";
+//                var_dump($name_Apego_active);
 //                var_dump($name_Apego_active);
 //                echo "<br>El id de customer es:  ";
 //                var_dump($id_customer);

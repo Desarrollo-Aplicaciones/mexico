@@ -18,7 +18,7 @@ class CirculoSalud{
 	public $_ActivateCardUser;                   /***RAPIDO*****/
 	public $_Create_Sales;                       /**************/
 	public $_Create_Sales_Folio_Receta;          /**CON RECETA**/
-	public $_GetBonusProduct;
+	public $_GetBonusProduct;                    /**************/
 	public $_GetBonusProductList;                /**************/
 	public $_GetInfoCard;                        /**************/
 	public $_GetInfoDevolucionProductos;
