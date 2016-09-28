@@ -56,281 +56,314 @@ class OrderController extends OrderControllerCore
 			$this->context->smarty->assign('address_list', $this->context->customer->getAddresses($this->context->language->id));
 		else
 			$this->context->smarty->assign('address_list', array());
+                
+                
+                //$this->circuloSaludFullProducts();
+
+		//////--echo "<hr>";
+		if ( $this->context->customer->id ) {
+			//////--echo "<br> Si cliente: ".$this->context->customer->id;
+
+			$programaApego = new ProgramaApego();
+			$tarjetaNadro = $programaApego->getAccesValueFromApegoCustomer( $programaApego->getIdProgApegoFromName( "Circulo_de_la_salud_oro"), $this->context->customer->id );
+
+			if ( $tarjetaNadro != '' && $tarjetaNadro != null ) {
+
+				//////--echo "<br>	tarjeta: ".$tarjetaNadro;
+
+				$cuponcirculo = new CuponCirculoSalud();
+				$cuponcirculo->circuloSalud( $this->context, $tarjetaNadro , true );
+
+			} else {
+			//////--echo "<br> no existe tarjeta nadro";
+		}
+
+		} else {
+			//////--echo "<br> no existe cliente";
+		}
+
+
+                /*
+                                $cuponcirculo = new CuponCirculoSalud();
+                                $cuponcirculo->circuloSalud( $this->context, true );
+                */
+                
 
 /*				if($this->step == 0 && !Context::getContext()->customer->isLogged()){
 					$back_url = $this->context->link->getPageLink('order', true, (int)$this->context->language->id, array('step' => $this->step, 'multi-shipping' => (int)Tools::getValue('multi-shipping')));
 					$params = array('multi-shipping' => (int)Tools::getValue('multi-shipping'), 'display_guest_checkout' => (int)Configuration::get('PS_GUEST_CHECKOUT_ENABLED'), 'back' => $back_url);
 					Tools::redirect($this->context->link->getPageLink('authentication', true, (int)$this->context->language->id, $params));
 				}*/
-			}
+        }
 
-			protected $parameters =NULL;
-			public function initContent()
-			{
-				parent::initContent();
+        protected $parameters =NULL;
+        
+        
+        public function initContent() {
+                            parent::initContent();
 
-				if($this->step == 0)
-					$this->context->smarty->tpl_vars['meta_title']->value = 'Mi Carrito';
-				if($this->step == 1)
-					$this->context->smarty->tpl_vars['meta_title']->value = 'Datos de entrega';
-				if(Tools::getValue('paso')){
-					$paso = Tools::getValue('paso');
-					if($paso  == 'formula')
-						$this->context->smarty->tpl_vars['meta_title']->value = 'Fórmula médica';
-					if($paso  == 'pagos')
-						$this->context->smarty->tpl_vars['meta_title']->value = 'Modos de Pago';
-				}
+                            if($this->step == 0)
+                                    $this->context->smarty->tpl_vars['meta_title']->value = 'Mi Carrito';
+                            if($this->step == 1)
+                                    $this->context->smarty->tpl_vars['meta_title']->value = 'Datos de entrega';
+                            if(Tools::getValue('paso')){
+                                    $paso = Tools::getValue('paso');
+                                    if($paso  == 'formula')
+                                            $this->context->smarty->tpl_vars['meta_title']->value = 'Fórmula médica';
+                                    if($paso  == 'pagos')
+                                            $this->context->smarty->tpl_vars['meta_title']->value = 'Modos de Pago';
+                            }
 
-				if($this->parameters === NULL){
-					$this->parameters = Utilities::get_parameters(); 
-				}
-               // echo 'paso 1<be><pre>'.  print_r($this->parameters,TRUE);
-				$this->context->smarty->assign('expressEnabled',Configuration::get('ENVIO_EXPRESS'));
-				if (Tools::isSubmit('ajax') && Tools::getValue('method') == 'updateExtraCarrier')
-				{
-			// Change virtualy the currents delivery options
-					$delivery_option = $this->context->cart->getDeliveryOption();
-					$delivery_option[(int)Tools::getValue('id_address')] = Tools::getValue('id_delivery_option');
-					$this->context->cart->setDeliveryOption($delivery_option);
-					$this->context->cart->save();
-					$return = array(
-					                'content' => Hook::exec(
-					                                        'displayCarrierList',
-					                                        array(
-					                                              'address' => new Address((int)Tools::getValue('id_address'))
-					                                              )
-					                                        )
-					                );
-					die(Tools::jsonEncode($return));
-				}
-				if ($this->nbProducts)
-					$this->context->smarty->assign('virtual_cart', $this->context->cart->isVirtualCart());
+                            if($this->parameters === NULL){
+                                    $this->parameters = Utilities::get_parameters(); 
+                            }
+           // echo 'paso 1<be><pre>'.  print_r($this->parameters,TRUE);
+                            $this->context->smarty->assign('expressEnabled',Configuration::get('ENVIO_EXPRESS'));
+                            if (Tools::isSubmit('ajax') && Tools::getValue('method') == 'updateExtraCarrier')
+                            {
+                    // Change virtualy the currents delivery options
+                                    $delivery_option = $this->context->cart->getDeliveryOption();
+                                    $delivery_option[(int)Tools::getValue('id_address')] = Tools::getValue('id_delivery_option');
+                                    $this->context->cart->setDeliveryOption($delivery_option);
+                                    $this->context->cart->save();
+                                    $return = array(
+                                                    'content' => Hook::exec(
+                                                                            'displayCarrierList',
+                                                                            array(
+                                                                                  'address' => new Address((int)Tools::getValue('id_address'))
+                                                                                  )
+                                                                            )
+                                                    );
+                                    die(Tools::jsonEncode($return));
+                            }
+                            if ($this->nbProducts)
+                                    $this->context->smarty->assign('virtual_cart', $this->context->cart->isVirtualCart());
 
-				if(isset($this->context->cookie->{'error_pay'}) && !empty($this->context->cookie->{'error_pay'}) ) {
-					$error_pay = json_decode($this->context->cookie->{'error_pay'},true);
-					$this->context->smarty->assign('errors_pay','true');
-					$this->context->smarty->assign('errors_msgs',$error_pay);
-					unset($this->context->cookie->{'error_pay'});
-				}else{
-					$this->context->smarty->assign('errors_pay','false');
-				}
+                            if(isset($this->context->cookie->{'error_pay'}) && !empty($this->context->cookie->{'error_pay'}) ) {
+                                    $error_pay = json_decode($this->context->cookie->{'error_pay'},true);
+                                    $this->context->smarty->assign('errors_pay','true');
+                                    $this->context->smarty->assign('errors_msgs',$error_pay);
+                                    unset($this->context->cookie->{'error_pay'});
+                            }else{
+                                    $this->context->smarty->assign('errors_pay','false');
+                            }
 
-				$this->context->smarty->assign('xps',Context::getContext()->cookie->check_xps);
-				$this->entrega_nocturna();
-				if(isset($this->parameters['express']) && $this->parameters['express']){
-					$this->context->smarty->assign('express_productos',$this->context->cart->expressProduct());
-				} else{
-					$this->context->smarty->assign('express_productos',FALSE);
-				} 
+                            $this->context->smarty->assign('xps',Context::getContext()->cookie->check_xps);
+                            $this->entrega_nocturna();
+                            if(isset($this->parameters['express']) && $this->parameters['express']){
+                                    $this->context->smarty->assign('express_productos',$this->context->cart->expressProduct());
+                            } else{
+                                    $this->context->smarty->assign('express_productos',FALSE);
+                            } 
 
-		// 4 steps to the order
-				switch ((int)$this->step)
-				{
-					case -1;
-					$this->context->smarty->assign('empty', 1);
-					$this->setTemplate(_PS_THEME_DIR_.'shopping-cart.tpl');
-					break;
-					
-					case 1:
-//###############################################    
-					if(!isset($_SESSION)) 
-					{ 
-						session_start(); 
-					}                            
-// si la varible sesión (formulamedica) se creo                            
-					if (isset($_SESSION['formulamedica'])){
-   // si la varible de seción (formulamedica) es igual a true
-						
-						if($_SESSION['formulamedica']==true) {
-							self::$smarty->assign('formula',true);
-						}
-						else {
-							self::$smarty->assign('formula',false);
-						}
-					}
-					else {
-						self::$smarty->assign('formula',false);
-					} 
+            // 4 steps to the order
+                            switch ((int)$this->step)
+                            {
+                                    case -1;
+                                    $this->context->smarty->assign('empty', 1);
+                                    $this->setTemplate(_PS_THEME_DIR_.'shopping-cart.tpl');
+                                    break;
+
+                                    case 1:
+        //###############################################    
+                                    if(!isset($_SESSION)) 
+                                    { 
+                                            session_start(); 
+                                    }                            
+        // si la varible sesión (formulamedica) se creo                            
+                                    if (isset($_SESSION['formulamedica'])){
+        // si la varible de seción (formulamedica) es igual a true
+
+                                            if($_SESSION['formulamedica']==true) {
+                                                    self::$smarty->assign('formula',true);
+                                            }
+                                            else {
+                                                    self::$smarty->assign('formula',false);
+                                            }
+                                    }
+                                    else {
+                                            self::$smarty->assign('formula',false);
+                                    } 
 
 
-					if(!$this->is_formula())
-					{
-						self::$smarty->assign('formula',true);    
-					}
-					
-					
-					
-					$this->_assignAddress();
-					$this->processAddressFormat();
-					if (Tools::getValue('multi-shipping') == 1)
-					{
-						$this->_assignSummaryInformations();
-						$this->context->smarty->assign('product_list', $this->context->cart->getProducts());
-						$this->setTemplate(_PS_THEME_DIR_.'order-address-multishipping.tpl');
-					}
-					else
-						/******* Codigo para Direcciones Ajax *******/
-					$idcliente = $this->context->customer->id;
-					$sql="SELECT ad.id_address,
-					ad.id_state,
-					st.name AS state,
-					ad.id_customer,
-					ad.alias,
-					ad.city,
-					ad.address1,
-					ad.address2,
-					ac.id_city,
-					cc.express_abajo AS express
-					FROM "._DB_PREFIX_."address AS ad
-					Inner Join "._DB_PREFIX_."state AS st
-					ON ad.id_state = st.id_state
-					INNER JOIN "._DB_PREFIX_."address_city AS ac
-					ON ad.id_address=ac.id_address
-					INNER JOIN "._DB_PREFIX_."carrier_city AS cc
-					ON ac.id_city=cc.id_city_des
-					WHERE ad.id_customer='".$idcliente."' AND ad.deleted=0";
-					$result=Db::getInstance()->ExecuteS($sql,FALSE);
-					$direcciones=array();
-					$total=0;
-					foreach($result as $row) {
-						$direcciones[]=$row;
-						$total+=1;
-					}
-					
-					
-					$pais = (int)Configuration::get('PS_COUNTRY_DEFAULT');
-					$sqlpais="SELECT ps_state.id_state, ps_state.name AS state
-					FROM ps_state
-					WHERE ps_state.id_country =  ".$pais." ORDER BY state ASC ;";
-					$rspais=Db::getInstance()->ExecuteS($sqlpais,FALSE);
-					$estados=array();
-					foreach($rspais as $estado) {
-						$estados[]=$estado;
-					}
-					$this->context->smarty->assign('cliente',$idcliente);
-					$this->context->smarty->assign('pais',$pais);
-					$this->context->smarty->assign('estados',$estados);
-					$this->context->smarty->assign('total',$total);
-					$this->context->smarty->assign('direcciones',$direcciones);
-					/******* Fin Codigo para Direcciones Ajax *******/
-					
-					$this->setTemplate(_PS_THEME_DIR_.'order-address.tpl');
-					break;
-					
-				//			case 2:
-				//				if (Tools::isSubmit('processAddress'))
-					//					$this->processAddress();
-				//				$this->autoStep();
-				//				$this->_assignCarrier();
-				//				$this->setTemplate(_PS_THEME_DIR_.'order-carrier.tpl');
-				//			break;
-					
-					
-					case 2:
-				// varible utilizada para validar si se requiere formula medica
-					$formula=false;
-					
-					
-					$formula=$this->is_formula();
-					
-					
-				// Si $formula es verdadera se muestra la pantalla para que el cliente registre su formula medica.
-					if($formula)
-					{
-						if (Tools::isSubmit('processAddress'))
-							$this->processAddress();
-						$this->autoStep();
-						$this->_assignCarrier();
-						$this->setTemplate(_PS_THEME_DIR_.'order-carrier.tpl');
-					//$this->setTemplate(_PS_THEME_DIR_.'order-carrier-test.tpl');
-					//$this->setTemplate(_PS_THEME_DIR_.'order-carrier-org.tpl');
-						
-					}
-					else{
-						
-						
-						$this->list_medios_de_pago();
-						
-						if (Tools::isSubmit('processAddress'))
-							$this->processAddress();
-						$this->autoStep();
-						$this->_assignCarrier();
-						$this->_assignPayment();
-					//assign some informations to display cart
-						$this->_assignSummaryInformations();
-						$this->setTemplate(_PS_THEME_DIR_.'order-payment.tpl');
-					}
-					
-					break;
-					
-					case 3:
-				// Check that the conditions (so active) were accepted by the customer
-					$cgv = Tools::getValue('cgv') || $this->context->cookie->check_cgv;
-					if (Configuration::get('PS_CONDITIONS') && (!Validate::isBool($cgv) || $cgv == false))
-						Tools::redirect('index.php?controller=order&step=2&paso=pagos');
-					Context::getContext()->cookie->check_cgv = true;
-					
-				// Check the delivery option is set
-					if (!$this->context->cart->isVirtualCart())
-					{
-						if (!Tools::getValue('delivery_option') && !Tools::getValue('id_carrier') && !$this->context->cart->delivery_option && !$this->context->cart->id_carrier)
-							Tools::redirect('index.php?controller=order&step=2&paso=pagos');
-						elseif (!Tools::getValue('id_carrier') && !$this->context->cart->id_carrier)
-						{
-							$deliveries_options = Tools::getValue('delivery_option');
-							if (!$deliveries_options) {
-								$deliveries_options = $this->context->cart->delivery_option;
-							}
-							foreach ($deliveries_options as $delivery_option)
-								if (empty($delivery_option))
-									Tools::redirect('index.php?controller=order&step=2&paso=pagos');
-							}
-						}
-						
-						$this->autoStep();
-						
-				// Bypass payment step if total is 0
-						if (($id_order = $this->_checkFreeOrder()) && $id_order)
-						{
-							if ($this->context->customer->is_guest)
-							{
-								$order = new Order((int)$id_order);
-								$email = $this->context->customer->email;
-						$this->context->customer->mylogout(); // If guest we clear the cookie for security reason
-						Tools::redirect('index.php?controller=guest-tracking&id_order='.urlencode($order->reference).'&email='.urlencode($email));
-					}
-					else
-						Tools::redirect('index.php?controller=history');
-				}
-				$this->_assignPayment();
-				// assign some informations to display cart
-				$this->_assignSummaryInformations();
-				$this->setTemplate(_PS_THEME_DIR_.'order-payment.tpl');
-				
-				
-				break;
-				
-				default:
-				$this->_assignSummaryInformations();
-				$this->setTemplate(_PS_THEME_DIR_.'shopping-cart.tpl');
-				break;
-			}
+                                    if(!$this->is_formula())
+                                    {
+                                            self::$smarty->assign('formula',true);    
+                                    }
 
-		// datos tipos de documentos
-			$this->context->smarty->assign('document_types', Utilities::data_type_documents() );
-		// datos customer
-			if(isset($idcliente))
-				$this->context->smarty->assign('datacustomer', Utilities::data_customer_billing( $idcliente ) );
-			
-		// datos address RFC
-			$this->context->smarty->assign('dataaddressrfc', Utilities::data_address_RFC( $idcliente ) );
 
-			$this->context->smarty->assign(array(
-			                               'currencySign' => $this->context->currency->sign,
-			                               'currencyRate' => $this->context->currency->conversion_rate,
-			                               'currencyFormat' => $this->context->currency->format,
-			                               'currencyBlank' => $this->context->currency->blank,
-			                               ));
+
+                                    $this->_assignAddress();
+                                    $this->processAddressFormat();
+                                    if (Tools::getValue('multi-shipping') == 1)
+                                    {
+                                            $this->_assignSummaryInformations();
+                                            $this->context->smarty->assign('product_list', $this->context->cart->getProducts());
+                                            $this->setTemplate(_PS_THEME_DIR_.'order-address-multishipping.tpl');
+                                    }
+                                    else
+                                            /******* Codigo para Direcciones Ajax *******/
+                                    $idcliente = $this->context->customer->id;
+                                    $sql="SELECT ad.id_address,
+                                    ad.id_state,
+                                    st.name AS state,
+                                    ad.id_customer,
+                                    ad.alias,
+                                    ad.city,
+                                    ad.address1,
+                                    ad.address2,
+                                    ac.id_city,
+                                    cc.express_abajo AS express
+                                    FROM "._DB_PREFIX_."address AS ad
+                                    Inner Join "._DB_PREFIX_."state AS st
+                                    ON ad.id_state = st.id_state
+                                    INNER JOIN "._DB_PREFIX_."address_city AS ac
+                                    ON ad.id_address=ac.id_address
+                                    INNER JOIN "._DB_PREFIX_."carrier_city AS cc
+                                    ON ac.id_city=cc.id_city_des
+                                    WHERE ad.id_customer='".$idcliente."' AND ad.deleted=0";
+                                    $result=Db::getInstance()->ExecuteS($sql,FALSE);
+                                    $direcciones=array();
+                                    $total=0;
+                                    foreach($result as $row) {
+                                            $direcciones[]=$row;
+                                            $total+=1;
+                                    }
+
+
+                                    $pais = (int)Configuration::get('PS_COUNTRY_DEFAULT');
+                                    $sqlpais="SELECT ps_state.id_state, ps_state.name AS state
+                                    FROM ps_state
+                                    WHERE ps_state.id_country =  ".$pais." ORDER BY state ASC ;";
+                                    $rspais=Db::getInstance()->ExecuteS($sqlpais,FALSE);
+                                    $estados=array();
+                                    foreach($rspais as $estado) {
+                                            $estados[]=$estado;
+                                    }
+                                    $this->context->smarty->assign('cliente',$idcliente);
+                                    $this->context->smarty->assign('pais',$pais);
+                                    $this->context->smarty->assign('estados',$estados);
+                                    $this->context->smarty->assign('total',$total);
+                                    $this->context->smarty->assign('direcciones',$direcciones);
+                                    /******* Fin Codigo para Direcciones Ajax *******/
+
+                                    $this->setTemplate(_PS_THEME_DIR_.'order-address.tpl');
+                                    break;
+
+                            //			case 2:
+                            //				if (Tools::isSubmit('processAddress'))
+                                    //					$this->processAddress();
+                            //				$this->autoStep();
+                            //				$this->_assignCarrier();
+                            //				$this->setTemplate(_PS_THEME_DIR_.'order-carrier.tpl');
+                            //			break;
+
+
+                                    case 2:
+                            // varible utilizada para validar si se requiere formula medica
+                                    $formula=false;
+
+
+                                    $formula=$this->is_formula();
+
+
+                            // Si $formula es verdadera se muestra la pantalla para que el cliente registre su formula medica.
+                                    if($formula)
+                                    {
+                                            if (Tools::isSubmit('processAddress'))
+                                                    $this->processAddress();
+                                            $this->autoStep();
+                                            $this->_assignCarrier();
+                                            $this->setTemplate(_PS_THEME_DIR_.'order-carrier.tpl');
+                                    //$this->setTemplate(_PS_THEME_DIR_.'order-carrier-test.tpl');
+                                    //$this->setTemplate(_PS_THEME_DIR_.'order-carrier-org.tpl');
+
+                                    }
+                                    else{
+
+
+                                            $this->list_medios_de_pago();
+
+                                            if (Tools::isSubmit('processAddress'))
+                                                    $this->processAddress();
+                                            $this->autoStep();
+                                            $this->_assignCarrier();
+                                            $this->_assignPayment();
+                                    //assign some informations to display cart
+                                            $this->_assignSummaryInformations();
+                                            $this->setTemplate(_PS_THEME_DIR_.'order-payment.tpl');
+                                    }
+
+                                    break;
+
+                                    case 3:
+                            // Check that the conditions (so active) were accepted by the customer
+                                    $cgv = Tools::getValue('cgv') || $this->context->cookie->check_cgv;
+                                    if (Configuration::get('PS_CONDITIONS') && (!Validate::isBool($cgv) || $cgv == false))
+                                            Tools::redirect('index.php?controller=order&step=2&paso=pagos');
+                                    Context::getContext()->cookie->check_cgv = true;
+
+                            // Check the delivery option is set
+                                    if (!$this->context->cart->isVirtualCart())
+                                    {
+                                            if (!Tools::getValue('delivery_option') && !Tools::getValue('id_carrier') && !$this->context->cart->delivery_option && !$this->context->cart->id_carrier)
+                                                    Tools::redirect('index.php?controller=order&step=2&paso=pagos');
+                                            elseif (!Tools::getValue('id_carrier') && !$this->context->cart->id_carrier)
+                                            {
+                                                    $deliveries_options = Tools::getValue('delivery_option');
+                                                    if (!$deliveries_options) {
+                                                            $deliveries_options = $this->context->cart->delivery_option;
+                                                    }
+                                                    foreach ($deliveries_options as $delivery_option)
+                                                            if (empty($delivery_option))
+                                                                    Tools::redirect('index.php?controller=order&step=2&paso=pagos');
+                                                    }
+                                            }
+
+                                            $this->autoStep();
+
+                            // Bypass payment step if total is 0
+                                            if (($id_order = $this->_checkFreeOrder()) && $id_order)
+                                            {
+                                                    if ($this->context->customer->is_guest)
+                                                    {
+                                                            $order = new Order((int)$id_order);
+                                                            $email = $this->context->customer->email;
+                                            $this->context->customer->mylogout(); // If guest we clear the cookie for security reason
+                                            Tools::redirect('index.php?controller=guest-tracking&id_order='.urlencode($order->reference).'&email='.urlencode($email));
+                                    }
+                                    else
+                                            Tools::redirect('index.php?controller=history');
+                            }
+                            $this->_assignPayment();
+                            // assign some informations to display cart
+                            $this->_assignSummaryInformations();
+                            $this->setTemplate(_PS_THEME_DIR_.'order-payment.tpl');
+
+
+                            break;
+
+                            default:
+                            $this->_assignSummaryInformations();
+                            $this->setTemplate(_PS_THEME_DIR_.'shopping-cart.tpl');
+                            break;
+                    }
+
+            // datos tipos de documentos
+                    $this->context->smarty->assign('document_types', Utilities::data_type_documents() );
+            // datos customer
+                    if(isset($idcliente))
+                            $this->context->smarty->assign('datacustomer', Utilities::data_customer_billing( $idcliente ) );
+
+            // datos address RFC
+                    $this->context->smarty->assign('dataaddressrfc', Utilities::data_address_RFC( $idcliente ) );
+
+                    $this->context->smarty->assign(array(
+                                                   'currencySign' => $this->context->currency->sign,
+                                                   'currencyRate' => $this->context->currency->conversion_rate,
+                                                   'currencyFormat' => $this->context->currency->format,
+                                                   'currencyBlank' => $this->context->currency->blank,
+                                                   ));
 			
 		}
 	/**
