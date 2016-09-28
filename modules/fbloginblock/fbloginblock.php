@@ -115,7 +115,10 @@ class fbloginblock extends Module
 	  } else {
 	  	$this->context->currentindex = $this->currentindex;
 	  }
-	}
+//           $ProgramaApego = new ProgramaApego();
+//           var_dump($ProgramaApego->setProgApegoWithCustomer($ProgramaApego->getIdProgApegoFromName('nadro'), $this->context->customer->id, 'cualquier cosa'));
+//           exit(0);
+        }
  	
 	public function install()
 	{

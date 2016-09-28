@@ -114,3 +114,7 @@ bottom: 0;
 color:#A5689C;
 }
 .rfc_container table td:first-of-type{font-weight: 600}
+
+.circulo_de_salud{margin-top: 25px; font-size: 13px; width: 100%; float: left; pdding-right: 1%; border-right: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; display: inline-block;}
+.circulo_de_salud .line{ display: inline-block; padding: 5px 10px;}
+.circulo_de_salud .float{ float: right; color: #3a9b37; font-weight: bold; }

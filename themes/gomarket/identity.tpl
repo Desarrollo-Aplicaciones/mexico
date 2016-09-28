@@ -134,7 +134,7 @@
 				<td><a href="javascript:void(0);" class="edit" ><span>Editar</span><span class="hidden">&#x270E;</span></a></td>
 			</tr>
 			{/if}
-		</table>
+                </table>
 			<div class="save_changes">
 				<input type="password" name="old_passwd" id="old_passwd" /><br />
 				<label for="old_passwd">{l s='Current Password'}</label>
@@ -144,7 +144,23 @@
 				<input type="submit" class="button" name="submitIdentity" id="submitIdentity" value="{l s='Save'}" />
 			</div>
 	</form>
+        <div class="circulo_de_salud">
+            <div class="line"><b>Circulo de la salud</b></div>
+            <div class="line">
+                {if isset($access_value) && $access_value != false}
+                    {$access_value}
+                {else}
+                    <span id="comment-value-access">Ingresa tu tarjeta</span>
+                {/if}
+                <input type="text" name="nadro" id="input-access-value" autocomplete="off" style="display: none;"/>
+            </div>
+            {if $access_value == false}
+                <span class="float line" id="btn-edit-access-value">Editar</span>
+                <span class="float line" id="btn-save-access-value" style="display: none;">Guardar</span>
+            {/if}
+        </div>
 </div>
+                        
 <div class="more_options">
 	<div class="identity_title">
 		Datos de facturación
@@ -382,48 +398,75 @@
 }
 	{/literal}
 	function enviar(){
-		if(requerir('#rfc_name') && requerir('#rfc_address') && isCodPostal('#postcode') && ValidaRfc($('#rfc').val()) && isTelefono('#rfc_phone')){
-			var id_customer={$cart->id_customer};
-			var alias=$('#rfc_name').val();
-			var address1=$('#rfc_address').val();
-			var postcode = $('#postcode').val();
-			var id_state = $('#estado').val();
-			var id_city = $('#id_city').val();
-			var ciudad = $( "#ciudad option:selected" ).text();
-			var id_colonia = $('#id_colonia').val();
-			var phone=$('#rfc_phone').val();
-			var rfc= $('#rfc').val();
-			var is_rfc = 1;
-			$.ajax({
-				type:"post",
-				url:"{$base_dir}ajax_address_order.php",
-				data:{
-					"id_customer":id_customer,
-					"alias":alias,
-					"address1":address1,
-					"postcode":postcode,
-					"city_id":id_city,
-					"id_state":id_state,
-					"city":ciudad,
-					"id_colonia": id_colonia,
-					"phone":phone,
-					"rfc":rfc,
-					"is_rfc":is_rfc,
-				},
-				beforeSend: function(ev) {
-					//beforeSend
-				},
-				success: function(response){
-					location.reload();
-				}
-			});
-		}
-		return false;
+            if(requerir('#rfc_name') && requerir('#rfc_address') && isCodPostal('#postcode') && ValidaRfc($('#rfc').val()) && isTelefono('#rfc_phone')){
+                var id_customer={$cart->id_customer};
+                var alias=$('#rfc_name').val();
+                var address1=$('#rfc_address').val();
+                var postcode = $('#postcode').val();
+                var id_state = $('#estado').val();
+                var id_city = $('#id_city').val();
+                var ciudad = $( "#ciudad option:selected" ).text();
+                var id_colonia = $('#id_colonia').val();
+                var phone=$('#rfc_phone').val();
+                var rfc= $('#rfc').val();
+                var is_rfc = 1;
+                $.ajax({
+                        type:"post",
+                        url:"{$base_dir}ajax_address_order.php",
+                        data:{
+                                "id_customer":id_customer,
+                                "alias":alias,
+                                "address1":address1,
+                                "postcode":postcode,
+                                "city_id":id_city,
+                                "id_state":id_state,
+                                "city":ciudad,
+                                "id_colonia": id_colonia,
+                                "phone":phone,
+                                "rfc":rfc,
+                                "is_rfc":is_rfc,
+                        },
+                        beforeSend: function(ev) {
+                                //beforeSend
+                        },
+                        success: function(response){
+                                location.reload();
+                        }
+                });
+            }
+            return false;
 	}
-$('#postcode').focusout(function() {
-	asignarPostcode();
-});
-$('#rfc_save').click(function(){
-	enviar();
-});
+        
+        
+    function ajaxAddProgramaApego(){
+        var nombre_apego = $('#input-access-value').attr("name");
+        var access_value = $('#input-access-value').val();
+        
+        $.post( "{$base_dir}ajaxs/ajax_programa_apego.php", { nombre_apego: nombre_apego, access_value: access_value })
+            .done(function( data ) {
+                console.log(data);
+                var jsonObject = JSON.parse(data);
+                location.reload();
+            }, "json");
+    }
+
+    $('#postcode').focusout(function() {
+            asignarPostcode();
+    });
+    
+    $('#rfc_save').click(function(){
+            enviar();
+    });
+
+    $('#btn-edit-access-value').click(function(){
+        $('#comment-value-access, #btn-edit-access-value').hide();
+        $('#btn-save-access-value, #input-access-value').show();
+    });
+    
+    $('#btn-save-access-value').click(function(){
+        if ( $('#input-access-value').val() ) {
+            ajaxAddProgramaApego();
+        }
+    });
 </script>
+

@@ -9,7 +9,7 @@
 class ProgramaApegoCore extends ObjectModel {
     
     public $id_customer;
-    public $name_apego = 'Prueba';
+    public $name_apego;
     public $priority = 1;
     public $status_apego = true;
     
@@ -28,25 +28,25 @@ class ProgramaApegoCore extends ObjectModel {
         echo "<br>Voy a agregar esto: ".$this->name_apego." - ".$this->priority." - ".$this->status_apego;
         $r = parent::add($autodate);
         echo "<br>Se supone que ya agregó".$r."<br><br>";
-		return $r;
+            return $r;
 	}
     
-    public function subscribeCirculoSalud(){
+    public function subscribeCirculoSalud($name_apego, $access_value){
         $this->context = Context::getContext();
         $this->id_customer = $this->context->customer->id;
+        $this->name_apego = $name_apego;
         if(isset($this->id_customer)){
-            /* @var $name_apego String */
-            $name_apego = Tools::getValue('name_apego', $this->name_apego);
             /* @var $id_prod_apego INT */
-            $id_prod_apego = $this->getIdProgApegoFromName($name_apego);
-            $result = $this->setProgApegoWithCustomer((int)$id_prod_apego, $this->id_customer, 'acesodeprueba');
-            $r = $this->getAccesValueFromApegoCustomer((int)$id_prod_apego, $this->id_customer);
+            $id_prod_apego = $this->getIdProgApegoFromName();
+            $result = $this->setProgApegoWithCustomer((int)$id_prod_apego, $this->id_customer, $access_value);
+//            var_dump($result);            
         }
-        
+//        return $name_apego;
+        return $result;
     }
     
-    public function getIdProgApegoFromName($name_apego) {
-        $sql = "SELECT ps_prog_apego.id_prog_apego FROM ps_prog_apego WHERE ps_prog_apego.name_apego = '".$name_apego."'";
+    public function getIdProgApegoFromName() {
+        $sql = "SELECT ps_prog_apego.id_prog_apego FROM ps_prog_apego WHERE ps_prog_apego.name_apego = '".$this->name_apego."'";
         $result = DB::getInstance()->getValue($sql);
         return $result;
     }
@@ -58,8 +58,16 @@ class ProgramaApegoCore extends ObjectModel {
     }
     
     public function getAccesValueFromApegoCustomer($id_prog_apego, $id_customer) {
-        $sql = "SELECT ps_apego_customer.access_value FROM ps_apego_customer WHERE ps_apego_customer.id_prog_apego=".$id_prog_apego." and ps_apego_customer.id_customer=".$id_customer.";";
+        $sql = "SELECT ps_apego_customer.access_value FROM ps_apego_customer WHERE ps_apego_customer.id_prog_apego=".(int)$id_prog_apego." and ps_apego_customer.id_customer=".(int)$id_customer.";";
         $result = DB::getInstance()->getValue($sql);
+        return $result;
+    }
+    
+    public function getNameProgApegoActive() {
+        $sql = "SELECT ps_prog_apego.name_apego FROM ps_prog_apego WHERE ps_prog_apego.status_apego = 1 ORDER BY ps_prog_apego.priority ASC;";
+        $result = array(DB::getInstance()->executeS($sql));
+        var_dump($result);
+        exit(0);
         return $result;
     }
 }
