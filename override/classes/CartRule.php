@@ -737,4 +737,42 @@ public function getAssociatedRestrictions($type, $active_only, $i18n)
         // Db::getInstance()->execute('DELETE FROM `'._DB_PREFIX_.'cart_rule_product_rule_value` WHERE `id_product_rule` NOT IN (SELECT `id_product_rule` FROM `'._DB_PREFIX_.'cart_rule_product_rule`)');
     }
 
+    
+    
+     /**
+     * [getCartRulesByNameLang devueve informacion de las reglas respecto al texto hallado en el lang del cupon y id_cliente si se ingresa ]
+     * @param  [type] $lang_cart_rule [description]
+     * @param  string $id_customer    [description]
+     * @return [type]                 [description]
+     */
+    
+    public static function getCartRulesByNameLang( $lang_cart_rule, $id_lang, $id_customer = '') {
+
+        $query = "SELECT cr.id_customer, cr.date_from, cr.date_to, cr.description, cr.quantity, cr.quantity_per_user, cr.priority, 
+            cr.partial_use, cr.minimum_amount, cr.minimum_amount_tax, 
+            cr.minimum_amount_currency, cr.minimum_amount_shipping, cr.country_restriction, cr.carrier_restriction, cr.group_restriction, 
+            cr.cart_rule_restriction, cr.product_restriction, cr.shop_restriction, cr.free_shipping, cr.reduction_percent, cr.reduction_amount, 
+            cr.reduction_tax, cr.reduction_currency, cr.reduction_product, cr.gift_product, cr.active, 
+            cr.date_add, cr.date_upd, crl.id_cart_rule, crl.id_lang
+            FROM "._DB_PREFIX_."cart_rule cr
+            LEFT JOIN "._DB_PREFIX_."cart_rule_lang crl ON (cr.id_cart_rule = crl.id_cart_rule AND crl.id_lang = ".(int)$id_lang.")
+            LEFT JOIN "._DB_PREFIX_."order_cart_rule ocr ON ( cr.id_cart_rule = ocr.id_cart_rule ) ";
+            $customer_add = '';
+
+        if ( $id_customer != '' ) {
+            $customer_add = " cr.id_customer = ".$id_customer." AND " ;
+        }
+            $query .= " WHERE ".$customer_add." ocr.id_order IS NULL AND crl.name like '" . $lang_cart_rule . "%'";
+
+
+        if ( $id_customer != '' ) {
+            $query.=" AND  cr.id_customer = ". $id_customer ; 
+        }
+        
+        //$query.=" GROUP BY med.id_medico ORDER BY med.nombre ASC LIMIT 0,10";
+
+        //echo "<br> query: ".$query;
+        return Db::getInstance()->executeS($query);
+    }
+    
 }  

@@ -28,7 +28,7 @@ class ProgramaApegoCore extends ObjectModel {
         echo "<br>Voy a agregar esto: ".$this->name_apego." - ".$this->priority." - ".$this->status_apego;
         $r = parent::add($autodate);
         echo "<br>Se supone que ya agregó".$r."<br><br>";
-            return $r;
+		return $r;
 	}
     
     public function subscribeCirculoSalud($name_apego, $access_value){
@@ -37,14 +37,16 @@ class ProgramaApegoCore extends ObjectModel {
         $this->name_apego = $name_apego;
         if(isset($this->id_customer)){
             /* @var $id_prod_apego INT */
-            $id_prod_apego = $this->getIdProgApegoFromName();
+            $id_prod_apego = $this->getIdProgApegoFromName( $name_apego );
             $result = $this->setProgApegoWithCustomer((int)$id_prod_apego, $this->id_customer, $access_value);
+
         }
-        return $result;
+        
     }
     
-    public function getIdProgApegoFromName() {
-        $sql = "SELECT ps_prog_apego.id_prog_apego FROM ps_prog_apego WHERE ps_prog_apego.name_apego = '".$this->name_apego."'";
+    public function getIdProgApegoFromName( $name_apego ) {
+        $sql = "SELECT id_prog_apego FROM ps_prog_apego WHERE name_apego = '".$name_apego."'";
+
         $result = DB::getInstance()->getValue($sql);
         return $result;
     }
@@ -56,13 +58,13 @@ class ProgramaApegoCore extends ObjectModel {
     }
     
     public function getAccesValueFromApegoCustomer($id_prog_apego, $id_customer) {
-        $sql = "SELECT ps_apego_customer.access_value FROM ps_apego_customer WHERE ps_apego_customer.id_prog_apego=".(int)$id_prog_apego." and ps_apego_customer.id_customer=".(int)$id_customer.";";
+        $sql = "SELECT ps_apego_customer.access_value FROM ps_apego_customer WHERE ps_apego_customer.id_prog_apego=".$id_prog_apego." and ps_apego_customer.id_customer=".$id_customer.";";
         $result = DB::getInstance()->getValue($sql);
         return $result;
     }
     
     public function getNameProgApegoActive() {
-        $sql = "SELECT ps_prog_apego.name_apego FROM ps_prog_apego WHERE ps_prog_apego.status_apego = 1 ORDER BY ps_prog_apego.priority ASC;";
+        $sql = "SELECT name_apego FROM ps_prog_apego WHERE status_apego = 1 ORDER BY priority ASC;";
         $result = array(DB::getInstance()->executeS($sql));
         return $result[0];
     }

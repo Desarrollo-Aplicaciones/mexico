@@ -69,7 +69,7 @@ class OrderController extends OrderControllerCore
 
 			if ( $tarjetaNadro != '' && $tarjetaNadro != null ) {
 
-				//////--echo "<br>	tarjeta: ".$tarjetaNadro;
+				echo "<br>	tarjeta: ".$tarjetaNadro;
 
 				$cuponcirculo = new CuponCirculoSalud();
 				$cuponcirculo->circuloSalud( $this->context, $tarjetaNadro , true );
