@@ -39,9 +39,7 @@ class ProgramaApegoCore extends ObjectModel {
             /* @var $id_prod_apego INT */
             $id_prod_apego = $this->getIdProgApegoFromName();
             $result = $this->setProgApegoWithCustomer((int)$id_prod_apego, $this->id_customer, $access_value);
-//            var_dump($result);            
         }
-//        return $name_apego;
         return $result;
     }
     
@@ -66,8 +64,16 @@ class ProgramaApegoCore extends ObjectModel {
     public function getNameProgApegoActive() {
         $sql = "SELECT ps_prog_apego.name_apego FROM ps_prog_apego WHERE ps_prog_apego.status_apego = 1 ORDER BY ps_prog_apego.priority ASC;";
         $result = array(DB::getInstance()->executeS($sql));
-        var_dump($result);
-        exit(0);
-        return $result;
+        return $result[0];
+    }
+    
+    public function getAccessValueFromNameApegoAndIdCustomer( $id_customer ){
+        $sql = "SELECT ps_prog_apego.name_apego, ps_apego_customer.access_value
+                FROM ps_prog_apego
+                LEFT JOIN ps_apego_customer
+                ON ps_prog_apego.id_prog_apego = ps_apego_customer.id_prog_apego and ps_apego_customer.id_customer = ".$id_customer."
+                WHERE ps_prog_apego.status_apego = 1;";
+        $result = array(DB::getInstance()->executeS($sql));
+        return $result[0];
     }
 }

@@ -144,21 +144,25 @@
 				<input type="submit" class="button" name="submitIdentity" id="submitIdentity" value="{l s='Save'}" />
 			</div>
 	</form>
-        <div class="circulo_de_salud">
-            <div class="line"><b>Circulo de la salud</b></div>
-            <div class="line">
-                {if isset($access_value) && $access_value != false}
-                    {$access_value}
-                {else}
-                    <span id="comment-value-access">Ingresa tu tarjeta</span>
-                {/if}
-                <input type="text" name="nadro" id="input-access-value" autocomplete="off" style="display: none;"/>
-            </div>
-            {if $access_value == false}
-                <span class="float line" id="btn-edit-access-value">Editar</span>
-                <span class="float line" id="btn-save-access-value" style="display: none;">Guardar</span>
-            {/if}
-        </div>
+        {if isset($set_prog_apego) && $set_prog_apego}
+            {foreach item=obj from=$prog_apego}
+                <div class="programas_apego">
+                    <div class="line"><b>{$obj['name_apego']}</b></div>
+                    <div class="line">
+                        {if isset($obj['access_value']) && !empty($obj['access_value'])}
+                            {$obj['access_value']}
+                        {else}
+                            <span class="comment-value-access">Ingresa tu tarjeta</span>
+                        {/if}
+                        <input type="text" name="pa_{$obj['name_apego']}" id="pa_{$obj['name_apego']}" class="input-access-value" autocomplete="off" style="display: none;"/>
+                    </div>
+                    {if $obj['access_value'] == false}
+                        <span class="float line btn-access-value-edit">Editar</span>
+                        <span class="float line btn-access-value-save" style="display: none;" name="{$obj['name_apego']}" id="{$obj['name_apego']}">Guardar</span>
+                    {/if}
+                </div>                     
+            {/foreach}
+        {/if}                
 </div>
                         
 <div class="more_options">
@@ -438,13 +442,14 @@
 	}
         
         
-    function ajaxAddProgramaApego(){
-        var nombre_apego = $('#input-access-value').attr("name");
-        var access_value = $('#input-access-value').val();
+    function ajaxAddProgramaApego( programa ) {
         
-        $.post( "{$base_dir}ajaxs/ajax_programa_apego.php", { nombre_apego: nombre_apego, access_value: access_value })
+        var access_value = $('#pa_' + programa).val();       
+        console.log('val acceso:' + access_value);
+        
+        $.post( "{$base_dir}ajaxs/ajax_programa_apego.php", { nombre_apego: programa, access_value: access_value })
             .done(function( data ) {
-                console.log(data);
+                console.log("Respuesta del ajax:   "+data);
                 var jsonObject = JSON.parse(data);
                 location.reload();
             }, "json");
@@ -457,16 +462,30 @@
     $('#rfc_save').click(function(){
             enviar();
     });
+    
+    // Editar Inputs programa apego
+    $('.btn-access-value-edit').click(function(){
+        // Reinicia configuración inicial
+        $(".programas_apego").find(".btn-access-value-edit, .comment-value-access").show();
+        $(".programas_apego").find('.btn-access-value-save, .input-access-value').hide();
 
-    $('#btn-edit-access-value').click(function(){
-        $('#comment-value-access, #btn-edit-access-value').hide();
-        $('#btn-save-access-value, #input-access-value').show();
+        $this = $(this);
+        $thisProgramaApego = $this.parent();
+        $this.hide();
+        $thisProgramaApego.find(".comment-value-access").hide();
+        $thisProgramaApego.find('.btn-access-value-save, .input-access-value').show();
     });
     
-    $('#btn-save-access-value').click(function(){
-        if ( $('#input-access-value').val() ) {
-            ajaxAddProgramaApego();
-        }
+    // Envia ajax
+    $('.btn-access-value-save').click(function() {
+        
+        var id = $(this).attr('id');
+
+        console.log( "id: "+id ) ;
+        //$thisProgramaApego = $(this).parent();
+        //if ( $thisProgramaApego.find('.input-access-value').val() ) {
+            ajaxAddProgramaApego( id );
+        //}
     });
 </script>
 
