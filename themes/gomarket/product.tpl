@@ -276,7 +276,7 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 				<div class="ctn-img-manufacturer">
 					{if $url_manufacturer neq "" AND $url_manufacturer neq 0}
 						<a href="{$base_dir}{$url_manufacturer}">
-							<img src="{$base_dir}{$img_manufacturer}">
+							<img class="img-manufacturer" src="{$base_dir}{$img_manufacturer}">
 						</a>
 					{/if}
 				</div>
