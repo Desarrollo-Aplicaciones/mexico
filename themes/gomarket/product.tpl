@@ -254,6 +254,7 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 {include file="$tpl_dir./breadcrumb.tpl"}
 
 <!--Campo de fórmula médica-->
+{if isset($isformula) && $isformula}
     <div id="formula_medica">
 		<div class="arrow_formula"><img src="{$img_dir}pdp/Rx.png" alt="{l s='Subtract'}" width="100%" /></div>
 		<div class="legend_formula">
@@ -262,6 +263,8 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 			<span class="only2">, Sin fórmula médica no es posible la compra de este medicamento.</span>
 		</div>
 	</div>
+{/if}
+<!--fin campo formula medica-->
 
 <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 
