@@ -253,6 +253,18 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 
 {include file="$tpl_dir./breadcrumb.tpl"}
 
+<!--Campo de fórmula médica-->
+{if isset($isformula) && $isformula}
+    <div id="formula_medica">
+		<div class="arrow_formula"><img src="{$img_dir}pdp/Rx.png" alt="{l s='Subtract'}" width="100%" /></div>
+		<div class="legend_formula">
+			<span class="only1">Consultar al médico, </span>
+			Producto de venta con fórmula médica 
+			<span class="only2">, Sin fórmula médica no es posible la compra de este medicamento.</span>
+		</div>
+	</div>
+{/if}
+<!--fin campo formula medica-->
 
 <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 
@@ -260,14 +272,14 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 <div class="contenido_producto">
 	<!-- thumbnails -->
 	<div class="ctn-product-imgs">
-		{if isset($images) && count($images) > 1}
+		{if isset($images) && count($images) >= 1}
 			<div id="views_block">
 
 				<!--Imagen labotratorio-->
 				<div class="ctn-img-manufacturer">
 					{if $url_manufacturer neq "" AND $url_manufacturer neq 0}
 						<a href="{$base_dir}{$url_manufacturer}">
-							<img src="{$base_dir}{$img_manufacturer}">
+							<img class="img-manufacturer" src="{$base_dir}{$img_manufacturer}">
 						</a>
 					{/if}
 				</div>
