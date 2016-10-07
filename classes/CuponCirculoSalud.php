@@ -74,6 +74,9 @@ class CuponCirculoSalud  {
         // circuloSalud()(Cart.php:995); updateQty()(CartController.php:257); processChangeProductInCart()(CartController.php:72); postProcess()(Controller.php:158); run()(Dispatcher.php:348); dispatch()(index.php:26); 
 		
         $this->context = $contexto;
+        var_dump($this->context->id_cart);
+        exit(0);
+        
 
         /**
         * si cliente esta logueado y tiene tarjeta vinculada
@@ -91,17 +94,27 @@ class CuponCirculoSalud  {
             print_r($prods_a_circulo);
             echo "<br> : prods enviar </pre>";
             exit();*/
-
-            if( isset($this->context->sessionApego) ){
-                var_dump($this->context->sessionApego);
-                exit(0);
-            }
-
-            $obj_cirsalud = new CirculoSalud();
+            
             $obj_cirsalud->debug_mode = false;
-
-            if ( $obj_cirsalud -> Login() ) {
-
+            $flagLoginApego = 0;
+            if( isset($this->context->cart->sessionApego) ){
+                $obj_cirsalud->session_load = ($this->context->cart->sessionApego);
+                $flagLoginApego = 1;
+            }
+            else{
+                if($obj_cirsalud -> Login()){
+                    $flagLoginApego = 1;
+                    $this->context->cart->sessionApego = $obj_cirsalud->session_load;
+                    $sql = 'UPDATE ps_cart
+                            SET ps_cart.sessionApego = '.$obj_cirsalud->session_load.'
+                            WHERE ps_cart.id_cart = '.$this->context->id_cart.';';
+                    DB::getInstance()->execute($sql);
+                }
+            }
+            
+            if ( $flagLoginApego == 1 ) {
+                
+                
                 // para borrar carritos: $cart_rule->delete();
                 $rules_prev_created = CartRule::getCartRulesByNameLang( 'CIRSAN_C'.$customer_id.'CI'.$this->context->cart->id, 1 );
 

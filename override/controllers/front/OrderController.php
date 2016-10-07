@@ -62,38 +62,35 @@ class OrderController extends OrderControllerCore
 
 		//////--echo "<hr>";
 		if ( $this->context->customer->id ) {
-			//////--echo "<br> Si cliente: ".$this->context->customer->id;
+                    //////--echo "<br> Si cliente: ".$this->context->customer->id;
+                    $programaApego = new ProgramaApego();
+                    $tarjetaNadro = $programaApego->getAccesValueFromApegoCustomer( $programaApego->getIdProgApegoFromName( "Circulo_de_la_salud_oro"), $this->context->customer->id );
 
-			$programaApego = new ProgramaApego();
-			$tarjetaNadro = $programaApego->getAccesValueFromApegoCustomer( $programaApego->getIdProgApegoFromName( "Circulo_de_la_salud_oro"), $this->context->customer->id );
-
-			if ( $tarjetaNadro != '' && $tarjetaNadro != null ) {
-
-				//////--echo "<br>	tarjeta: ".$tarjetaNadro;
-
-				$cuponcirculo = new CuponCirculoSalud();
-				$cuponcirculo->circuloSalud( $this->context, $tarjetaNadro , true );
-
-			} else {
-			//////--echo "<br> no existe tarjeta nadro";
+                    if ( $tarjetaNadro != '' && $tarjetaNadro != null ) {
+                        //////--echo "<br>	tarjeta: ".$tarjetaNadro;
+                        $cuponcirculo = new CuponCirculoSalud();
+                        $cuponcirculo->circuloSalud( $this->context, $tarjetaNadro , true );
+                    }
+                    else {
+                        //////--echo "<br> no existe tarjeta nadro";
+                    }
 		}
-
-		} else {
-			//////--echo "<br> no existe cliente";
+                else {
+                    //////--echo "<br> no existe cliente";
 		}
-
 
                 /*
-                                $cuponcirculo = new CuponCirculoSalud();
-                                $cuponcirculo->circuloSalud( $this->context, true );
+                $cuponcirculo = new CuponCirculoSalud();
+                $cuponcirculo->circuloSalud( $this->context, true );
                 */
-                
 
-/*				if($this->step == 0 && !Context::getContext()->customer->isLogged()){
-					$back_url = $this->context->link->getPageLink('order', true, (int)$this->context->language->id, array('step' => $this->step, 'multi-shipping' => (int)Tools::getValue('multi-shipping')));
-					$params = array('multi-shipping' => (int)Tools::getValue('multi-shipping'), 'display_guest_checkout' => (int)Configuration::get('PS_GUEST_CHECKOUT_ENABLED'), 'back' => $back_url);
-					Tools::redirect($this->context->link->getPageLink('authentication', true, (int)$this->context->language->id, $params));
-				}*/
+                /*
+                if($this->step == 0 && !Context::getContext()->customer->isLogged()){
+                    $back_url = $this->context->link->getPageLink('order', true, (int)$this->context->language->id, array('step' => $this->step, 'multi-shipping' => (int)Tools::getValue('multi-shipping')));
+                    $params = array('multi-shipping' => (int)Tools::getValue('multi-shipping'), 'display_guest_checkout' => (int)Configuration::get('PS_GUEST_CHECKOUT_ENABLED'), 'back' => $back_url);
+                    Tools::redirect($this->context->link->getPageLink('authentication', true, (int)$this->context->language->id, $params));
+                }
+                */
         }
 
         protected $parameters =NULL;

@@ -182,7 +182,6 @@ class CirculoSalud{
         }
     }
 
-
     public function ActivateCardUser() {
 			
         $xml_method = '<?xml version="1.0" encoding="utf-8"?>
@@ -209,26 +208,21 @@ class CirculoSalud{
     }
     
     public function ProductsForXml($id_order){
-        $sql = 'SELECT 
-                    od.product_reference, 
-                    od.original_product_price, 
-                    od.unit_price_tax_incl,  
-                    cr.reduction_percent, 
-                    ocr.reduction_amount, 
-                    od.product_quantity, 
-                    ocr.reduction_product
+        $sql = 'SELECT o.id_order, ac.access_value, o.total_paid_tax_incl, od.product_reference, od.original_product_price, od.unit_price_tax_incl,  cr.reduction_percent, ocr.reduction_amount, od.product_quantity, ocr.reduction_product
                 FROM ps_order_detail od 
                 LEFT JOIN ps_order_cart_rule ocr ON ( od.id_order = ocr.id_order )
                 LEFT JOIN ps_cart_rule cr ON ( ocr.id_cart_rule = cr.id_cart_rule AND od.product_id = cr.reduction_product )
+                LEFT JOIN ps_orders o ON ( o.id_order = od.id_order ) 
+                LEFT JOIN ps_apego_customer ac ON ( o.id_customer = ac.id_customer )
                 WHERE od.id_order = '.$id_order.';'; 
         $result = array(DB::getInstance()->executeS($sql));
         return $result[0];
     }
 
-    public function Create_Sales() {
+    public function Create_Sales($id_order) {
         
-        $id_order = 18186;
         $result = $this->ProductsForXml($id_order);
+        
         foreach ($result as $product) {
             $ProductsXml = $ProductsXml.'
                 <PedidoArticulos>
@@ -244,9 +238,6 @@ class CirculoSalud{
                     <PorcentajeIVA>0</PorcentajeIVA>
                 </PedidoArticulos>';
         }
-        
-        echo $ProductsXml;
-        echo '<br><br><br><br><br><br><br>';
 			
         $xml_method = '<?xml version="1.0" encoding="utf-8"?>
                         <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -254,11 +245,11 @@ class CirculoSalud{
                             <Create_Sales xmlns="http://tempuri.org/">
                               <Sesion>'.$this->session_load.'</Sesion>
                               <Pedido>
-                                <NoTarjeta>string</NoTarjeta>
-                                <CedulaProfesionalMedico>string</CedulaProfesionalMedico>
-                                <Usuario>string</Usuario>
-                                <Total>decimal</Total>
-                                <NoTicket>string</NoTicket>
+                                <NoTarjeta>'.$result[0]['access_value'].'</NoTarjeta>
+                                <CedulaProfesionalMedico></CedulaProfesionalMedico>
+                                <Usuario>Farmalisto</Usuario>
+                                <Total>'.$result[0]['total_paid_tax_incl'].'</Total>
+                                <NoTicket>'.$result[0]['id_order'].'</NoTicket>
                               </Pedido>
                               <Articulos>'.
                                 $ProductsXml
@@ -266,17 +257,31 @@ class CirculoSalud{
                             </Create_Sales>
                           </soap:Body>
                         </soap:Envelope>';
-        
-        
-        echo $xml_method;
-        exit(0);
-        
+                
         $xmlobj=/*new SimpleXMLElement(*/$xml_method;
         return $xmlobj;
     }
 
 
-    public function Create_Sales_Folio_Receta() {
+    public function Create_Sales_Folio_Receta($id_order) {
+        
+        $result = $this->ProductsForXml($id_order);
+        
+        foreach ($result as $product) {
+            $ProductsXml = $ProductsXml.'
+                <PedidoArticulos>
+                    <Sku>'.$product['product_reference'].'</Sku>
+                    <Precio>'.$product['original_product_price'].'</Precio>
+                    <PrecioPOS>'.$product['unit_price_tax_incl'].'</PrecioPOS>
+                    <PrecioFijo>0</PrecioFijo>
+                    <PorcentajeDescuento>'.$product['reduction_percent'].'</PorcentajeDescuento>
+                    <MontoDescuento>'.$product['reduction_amount'].'</MontoDescuento>
+                    <PiezasPagadas>'.$product['product_quantity'].'</PiezasPagadas>
+                    <PiezasGratis>'.$product['reduction_product'].'</PiezasGratis>
+                    <IVA>0</IVA>
+                    <PorcentajeIVA>0</PorcentajeIVA>
+                </PedidoArticulos>';
+        }
         		
         $xml_method = '<?xml version="1.0" encoding="utf-8"?>
                         <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -284,42 +289,16 @@ class CirculoSalud{
                             <Create_Sales_Folio_Receta xmlns="http://tempuri.org/">
                               <Sesion>'.$this->session_load.'</Sesion>
                               <Pedido>
-                                <NoTarjeta>string</NoTarjeta>
-                                <CedulaProfesionalMedico>string</CedulaProfesionalMedico>
-                                <Usuario>string</Usuario>
-                                <Total>decimal</Total>
-                                <NoTicket>string</NoTicket>
+                                <NoTarjeta>'.$result[0]['access_value'].'</NoTarjeta>
+                                <CedulaProfesionalMedico></CedulaProfesionalMedico>
+                                <Usuario>Farmalisto</Usuario>
+                                <Total>'.$result[0]['total_paid_tax_incl'].'</Total>
+                                <NoTicket>'.$result[0]['id_order'].'</NoTicket>
                               </Pedido>
-                              <Articulos>
-                              
-                                <PedidoArticulos>
-                                  <Sku>string</Sku>
-                                  <Precio>decimal</Precio>
-                                  <PrecioPOS>decimal</PrecioPOS>
-                                  <PrecioFijo>decimal</PrecioFijo>
-                                  <PorcentajeDescuento>decimal</PorcentajeDescuento>
-                                  <MontoDescuento>decimal</MontoDescuento>
-                                  <PiezasPagadas>long</PiezasPagadas>
-                                  <PiezasGratis>long</PiezasGratis>
-                                  <IVA>decimal</IVA>
-                                  <PorcentajeIVA>double</PorcentajeIVA>
-                                </PedidoArticulos>
-                                
-                                <PedidoArticulos>
-                                  <Sku>string</Sku>
-                                  <Precio>decimal</Precio>
-                                  <PrecioPOS>decimal</PrecioPOS>
-                                  <PrecioFijo>decimal</PrecioFijo>
-                                  <PorcentajeDescuento>decimal</PorcentajeDescuento>
-                                  <MontoDescuento>decimal</MontoDescuento>
-                                  <PiezasPagadas>long</PiezasPagadas>
-                                  <PiezasGratis>long</PiezasGratis>
-                                  <IVA>decimal</IVA>
-                                  <PorcentajeIVA>double</PorcentajeIVA>
-                                </PedidoArticulos>
-                                
-                              </Articulos>
-                              <FolioReceta>string</FolioReceta>
+                              <Articulos>'.
+                                $ProductsXml
+                              .'</Articulos>
+                              <FolioReceta></FolioReceta>
                             </Create_Sales_Folio_Receta>
                           </soap:Body>
                         </soap:Envelope>';

@@ -115,9 +115,10 @@ class fbloginblock extends Module
 	  } else {
 	  	$this->context->currentindex = $this->currentindex;
           }
-//          
-//          $order = new Order(18188);
+          
+          
 //          echo "<pre>";
+//          $order = new Order(18189);
 //          echo '<br><br><br><h1><b>Aquí va cart_rules</b></h1><br><br><br>';
 //          var_dump($order->getCartRules());
 //          $order_products = $order->getProducts();
