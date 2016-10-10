@@ -206,52 +206,5 @@ class Product extends ProductCore {
 
 		return $sql;
 	}
-        
-	/**
-	* Buscar producto por referencia
-	*
-	* @param integer $id_lang Language id
-	* @param string $query Search query
-	* @return array Matching products
-	*/
-	public static function searchByReference( $reference, $proveedor = null, $active = 1)
-	{
-
-		$sql = new DbQuery();
-		$sql->select('p.`id_product`, p.`active`, p.`reference`, ps.advanced_stock_management');
-		$sql->from('product', 'p');
-		$sql->innerJoin('product_shop', 'ps', 'ps.`id_product` = p.`id_product`');
-
-		if ( $proveedor != null) {
-
-			$sql->innerJoin('product_supplier', 'pss', 'pss.`id_product`  =  p.`id_product`');
-			$sql->innerJoin('supplier', 'sup', 'sup.`id_supplier` = pss.`id_supplier`');
-			$compl_supplier = ' AND sup.name LIKE \''.pSQL($proveedor).'\' ';
-
-		} else {
-			$compl_supplier = '';
-		}
-
-        	$sql->leftJoin('product_black_list', 'prod_black', 'prod_black.`reference`  =  p.`reference`');
-		
-		if($active == 1) {
-			$compl_active = ' p.active = 1 AND ps.active = 1 AND ';
-		} else {
-			$compl_active = '';
-		}
-
-		$where = $compl_active.' prod_black.`reference` IS NULL AND ( p.`reference` LIKE \''.pSQL($reference).'\' ) '.$compl_supplier;
-		$sql->groupBy('`id_product`');
-		$sql->orderBy('p.`id_product` ASC');
-
-		$sql->where($where);
-		
-		$result = Db::getInstance()->executeS($sql);
-
-		if (!$result)
-			return false;
-
-		return $result[0];
-	}
 
 }
