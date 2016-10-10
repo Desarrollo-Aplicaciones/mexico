@@ -5,15 +5,14 @@ class CuponCirculoSalud  {
 
 	public $context = '';
 
-	public function objectToArray($data) 
-	{
+    public function objectToArray($data){
+        
 		if ( ( !is_array($data) ) and ( !is_object($data) ) ) return 'xxx'; //$data;
 
 		$result = array();
+        $data = (array) $data;
 
-		$data = (array) $data;
 		foreach ($data as $key => $value) {
-
 		    if (is_object($value)) $value = (array) $value;
 		    
 		    if (is_array($value)) 
@@ -21,12 +20,8 @@ class CuponCirculoSalud  {
 		    else
 	        $result[$key] = $value;
 		}
-
 		return $result;
 	}
-
-
-
 
 /*
 
@@ -72,6 +67,12 @@ ajax=1&token=19225e33468dc97d7f8f3ca8e79b6f74&tab=AdminCarts&action=addVoucher&i
 
 		// back|
 		// circuloSalud()(Cart.php:993); updateQty()(AdminCartsController.php:372); ajaxProcessUpdateQty()(AdminController.php:562); postProcess()(Controller.php:158); run()(Dispatcher.php:348); dispatch()(index.php:53);
+		
+        // front
+        // 1ra vez agrega
+        // circuloSalud()(Cart.php:995); updateQty()(CartController.php:257); processChangeProductInCart()(CartController.php:72); postProcess()(Controller.php:158); run()(Dispatcher.php:348); dispatch()(index.php:26); 
+        // cambia cantidad
+        // circuloSalud()(Cart.php:995); updateQty()(CartController.php:257); processChangeProductInCart()(CartController.php:72); postProcess()(Controller.php:158); run()(Dispatcher.php:348); dispatch()(index.php:26); 
 		
         $this->context = $contexto;
         
