@@ -57,7 +57,7 @@ ajax=1&token=19225e33468dc97d7f8f3ca8e79b6f74&tab=AdminCarts&action=addVoucher&i
 */
 
 
-	public function circuloSalud( $contexto, $tajetacirculo = '9981417497861' , $add_carrito = false ) {
+	public function circuloSalud( $contexto, $tajetacirculo , $add_carrito = false ) {
 
 		//ini_set("log_errors", 1);
 		//ini_set("error_reporting", E_ALL);
