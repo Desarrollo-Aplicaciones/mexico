@@ -74,8 +74,7 @@ class CuponCirculoSalud  {
         // circuloSalud()(Cart.php:995); updateQty()(CartController.php:257); processChangeProductInCart()(CartController.php:72); postProcess()(Controller.php:158); run()(Dispatcher.php:348); dispatch()(index.php:26); 
 		
         $this->context = $contexto;
-        var_dump($this->context->id_cart);
-        exit(0);
+        
         
 
         /**
