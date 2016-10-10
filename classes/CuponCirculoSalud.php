@@ -3,25 +3,25 @@
 
 class CuponCirculoSalud  {
 
-	public $context = '';
+    public $context = '';
 
     public function objectToArray($data){
-        
-		if ( ( !is_array($data) ) and ( !is_object($data) ) ) return 'xxx'; //$data;
 
-		$result = array();
+        if ( ( !is_array($data) ) and ( !is_object($data) ) ) return 'xxx'; //$data;
+
+        $result = array();
         $data = (array) $data;
 
-		foreach ($data as $key => $value) {
-		    if (is_object($value)) $value = (array) $value;
-		    
-		    if (is_array($value)) 
-		    $result[$key] = $this->objectToArray($value);
-		    else
-	        $result[$key] = $value;
-		}
-		return $result;
-	}
+        foreach ($data as $key => $value) {
+            if (is_object($value)) $value = (array) $value;
+
+            if (is_array($value)) 
+                $result[$key] = $this->objectToArray($value);
+            else
+                $result[$key] = $value;
+        }
+        return $result;
+    }
 
 /*
 
@@ -57,16 +57,16 @@ ajax=1&token=19225e33468dc97d7f8f3ca8e79b6f74&tab=AdminCarts&action=addVoucher&i
 */
 
 
-	public function circuloSalud( $contexto, $tajetacirculo , $add_carrito = false ) {
+    public function circuloSalud( $contexto, $tajetacirculo , $add_carrito = false ) {
 
-		//ini_set("log_errors", 1);
-		//ini_set("error_reporting", E_ALL);
-		/*array_walk(debug_backtrace(),create_function('$a,$b','print "{$a[\'function\']}()(".basename($a[\'file\']).":{$a[\'line\']}); ";'));
-		exit;*/
-		//error_log( array_walk(debug_backtrace(),create_function('$a,$b','print "{$a[\'function\']}()(".basename($a[\'file\']).":{$a[\'line\']}); ";')) , 3, "c:/tmp/cirsalog.log");
+        //ini_set("log_errors", 1);
+        //ini_set("error_reporting", E_ALL);
+        /*array_walk(debug_backtrace(),create_function('$a,$b','print "{$a[\'function\']}()(".basename($a[\'file\']).":{$a[\'line\']}); ";'));
+        exit;*/
+        //error_log( array_walk(debug_backtrace(),create_function('$a,$b','print "{$a[\'function\']}()(".basename($a[\'file\']).":{$a[\'line\']}); ";')) , 3, "c:/tmp/cirsalog.log");
 
-		// back|
-		// circuloSalud()(Cart.php:993); updateQty()(AdminCartsController.php:372); ajaxProcessUpdateQty()(AdminController.php:562); postProcess()(Controller.php:158); run()(Dispatcher.php:348); dispatch()(index.php:53);
+        // back|
+        // circuloSalud()(Cart.php:993); updateQty()(AdminCartsController.php:372); ajaxProcessUpdateQty()(AdminController.php:562); postProcess()(Controller.php:158); run()(Dispatcher.php:348); dispatch()(index.php:53);
 		
         // front
         // 1ra vez agrega
@@ -340,7 +340,7 @@ ajax=1&token=19225e33468dc97d7f8f3ca8e79b6f74&tab=AdminCarts&action=addVoucher&i
 			//print_r($this->context->cart->getProducts());
 			//echo "</pre>";
 
-			$prods_cart = array();
+                                        $prods_cart = array();
 
 					
 					/****************  ASOCIAR PRODUCTOS  DE CARRITO A UN ARRAY ****************************/
@@ -642,9 +642,10 @@ ajax=1&token=19225e33468dc97d7f8f3ca8e79b6f74&tab=AdminCarts&action=addVoucher&i
 											}
 										}
 
-								} catch (Exception $e) {
+								} 
+                                                                catch (Exception $e) {
 									print_r($e);
-								}
+                                                                }
 								
 							
 						
@@ -696,8 +697,10 @@ ajax=1&token=19225e33468dc97d7f8f3ca8e79b6f74&tab=AdminCarts&action=addVoucher&i
 				}
 		}
 
-	}
+            }
 
+        }
+    }
 }
 
 ?>
