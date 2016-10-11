@@ -114,7 +114,7 @@ class fbloginblock extends Module
 	 	 $this->context->currentindex = AdminController::$currentIndex;
 	  } else {
 	  	$this->context->currentindex = $this->currentindex;
-	  }
+          }
         }
  	
 	public function install()
