@@ -114,30 +114,7 @@ class fbloginblock extends Module
 	 	 $this->context->currentindex = AdminController::$currentIndex;
 	  } else {
 	  	$this->context->currentindex = $this->currentindex;
-          }
-          
-          
-//          echo "<pre>";
-//          $order = new Order(18189);
-//          echo '<br><br><br><h1><b>Aquí va cart_rules</b></h1><br><br><br>';
-//          var_dump($order->getCartRules());
-//          $order_products = $order->getProducts();
-//          $order_detail = new OrderDetail($id);
-//          $cart = new Cart($order->id_cart);
-//          echo "<pre>";
-//          echo '<br><br><br><h1><b>Aquí va order_products</b></h1><br><br><br>';
-//          var_dump($order_products);
-//          echo '<br><br><br><h1><b>Aquí va $OrderCartRule</b></h1><br><br><br>';
-//          var_dump($OrderCartRule);
-//          echo '<br><br><br><h1><b>Aquí va order</b></h1><br><br><br>';
-//          var_dump($order);
-//          echo '<br><br><br><h1><b>Aquí va cart</b></h1><br><br><br>';
-//          var_dump($cart);
-//          $id_order = 18186;
-//          $cdso = new CirculoSalud();
-//          $cdso->Create_Sales();
-//          $cdso->ProductsForXml($id_order);
-//          exit(0);
+	  }
         }
  	
 	public function install()
