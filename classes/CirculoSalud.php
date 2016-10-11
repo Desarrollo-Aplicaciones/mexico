@@ -11,7 +11,7 @@ class CirculoSalud{
     private $Id_Cadena = "0000000238";
     private $Id_Sucursal = "0000000001";
     private $URL = "http://189.202.202.107/nadro_pruebas/WSCirculodelaSalud.asmx";
-    private $session_load = '';
+    public $session_load = '';
     public $error = array();
 
     public $_ActivateCard;                       /****-----*****/
