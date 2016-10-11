@@ -94,6 +94,7 @@ class CuponCirculoSalud  {
             echo "<br> : prods enviar </pre>";
             exit();*/
             
+            $obj_cirsalud = new CirculoSalud();
             $obj_cirsalud->debug_mode = false;
             $flagLoginApego = 0;
             if( isset($this->context->cart->sessionApego) ){
@@ -101,7 +102,7 @@ class CuponCirculoSalud  {
                 $flagLoginApego = 1;
             }
             else{
-                if($obj_cirsalud -> Login()){
+                if($obj_cirsalud->Login()){
                     $flagLoginApego = 1;
                     $this->context->cart->sessionApego = $obj_cirsalud->session_load;
                     $sql = 'UPDATE ps_cart
