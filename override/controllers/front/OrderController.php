@@ -62,14 +62,16 @@ class OrderController extends OrderControllerCore
 
 		//////--echo "<hr>";
 		if ( $this->context->customer->id ) {
-                    //////--echo "<br> Si cliente: ".$this->context->customer->id;
+//                    echo "<br> Si cliente: ".$this->context->customer->id;
                     $programaApego = new ProgramaApego();
                     $tarjetaNadro = $programaApego->getAccesValueFromApegoCustomer( $programaApego->getIdProgApegoFromName( "Circulo_de_la_salud_oro"), $this->context->customer->id );
+//                        echo "<br>	tarjeta: ".$tarjetaNadro;
 
                     if ( $tarjetaNadro != '' && $tarjetaNadro != null ) {
-                        //////--echo "<br>	tarjeta: ".$tarjetaNadro;
+//                        echo "<br>	tarjeta: ".$tarjetaNadro;
                         $cuponcirculo = new CuponCirculoSalud();
                         $cuponcirculo->circuloSalud( $this->context, $tarjetaNadro , true );
+                        
                     }
                     else {
                         //////--echo "<br> no existe tarjeta nadro";

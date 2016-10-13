@@ -9,7 +9,6 @@
 class ProgramaApegoCore extends ObjectModel {
     
     public $id_customer;
-    public $name_apego;
     public $priority = 1;
     public $status_apego = true;
     
@@ -43,8 +42,8 @@ class ProgramaApegoCore extends ObjectModel {
         return $result;
     }
     
-    public function getIdProgApegoFromName() {
-        $sql = "SELECT ps_prog_apego.id_prog_apego FROM ps_prog_apego WHERE ps_prog_apego.name_apego = '".$this->name_apego."'";
+    public function getIdProgApegoFromName($name_apego) {
+        $sql = "SELECT ps_prog_apego.id_prog_apego FROM ps_prog_apego WHERE ps_prog_apego.name_apego = '".$name_apego."'";
         $result = DB::getInstance()->getValue($sql);
         return $result;
     }

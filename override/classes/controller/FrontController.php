@@ -219,6 +219,7 @@ public function init(){
 
 		$this->context->smarty->assign(array(
 			// Usefull for layout.tpl
+                        'is_https' => (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS'] == "on"?1:0),
 			'mobile_device' => $this->context->getMobileDevice(),
 			'link' => $link,
 			'cart' => $cart,
