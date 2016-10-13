@@ -9,7 +9,6 @@
 class ProgramaApegoCore extends ObjectModel {
     
     public $id_customer;
-    public $name_apego;
     public $priority = 1;
     public $status_apego = true;
     
