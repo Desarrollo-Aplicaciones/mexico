@@ -170,8 +170,8 @@ if ( isset( $_REQUEST['creacupon'] ) && $_REQUEST['creacupon'] == 'ok' ) {
 
                                     //////echo "<br> paso3";
                                     $cart_rule->reduction_tax = false;
-                                    $cart_rule->minimum_amount_currency = 1;
-                                    $cart_rule->reduction_currency = 1;
+                                    $cart_rule->minimum_amount_currency = $this->context->cart->id_currency;
+                                    $cart_rule->reduction_currency = $this->context->cart->id_currency;
 
                                     //////echo "<br> paso4";
                                     try {
@@ -207,13 +207,20 @@ if ( isset( $_REQUEST['creacupon'] ) && $_REQUEST['creacupon'] == 'ok' ) {
                                             //////echo "<br> Cupon creado id: ".$cart_rule->id;
                                             // Update the voucher code and name
                                             foreach ($languages as $language)
-                                                    $cart_rule->name[$language['id_lang']] = sprintf('SERVIER');
+                                                    $cart_rule->name[$language['id_lang']] = sprintf('CIRSAN_C%1$dCI%2$dV%3$d', $customer_id, $this->context->cart->id, $cart_rule->id);
                                             if ($codigo == 1 ) { 
                                                 $cart_rule->code =  str_replace(array(' ','$','#','%'), array('','','',''), $cart_rule->description).$add_desc_name; // sprintf('CIRSA_C%1$d_O%2$d', $cart_rule->id, $this->context->customer, $this->context->cart->id);
                                             } else {
                                                 $cart_rule->code =  '';
                                             }
 
+                                            if ( $add_carrito ) { 
+                                                //////--echo "<br>Adicionando regla a carrito: ".
+                                                $this->context->cart->addCartRule($cart_rule->id);
+                                                //////--echo "<br> sin adicionar a carrito ";                                            
+                                            }
+                                            //////--echo "<br> update for : ".
+                                            $this->context->cart->update();
                                             //////exit;
                                             if (!$cart_rule->update()) {
                                                 $this->errors[] = Tools::displayError('You cannot update a voucher.');
