@@ -6,6 +6,9 @@ include_once(dirname(__FILE__)."/../../config/config.inc.php");
  //**Script para creación automatica de cupones restringidos a producto
  */
 
+
+$this->context = Context::getContext();
+        
 if ( isset( $_REQUEST['creacupon'] ) && $_REQUEST['creacupon'] == 'ok' ) {
 
 
