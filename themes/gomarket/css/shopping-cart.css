@@ -617,3 +617,7 @@ p.label_cupon{font-size:13px !important}
   color: #FF922E;
   font-size: 18px;
 }
+
+.ctn-servier { display: inline-block; padding: 16px; width: 300px; }
+.ctn-servier select { margin-left: 10px; width: 40%; float: right; }
+.ctn-servier span { line-height: 28px; }
