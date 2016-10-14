@@ -610,6 +610,26 @@
 	{$addresses_style.alias = 'address_title'}
 {/if}
 
+<div class="ctn-servier">
+    <span>Seleccione un representante:</span>
+    <select name="servier" id="servier">
+        {foreach item=item from=$rep_servier}
+            <option value="{$item['id_asociado']}">{$item['nombre']}</option>
+        {/foreach}
+    </select>
+    
+</div>
+    
+    <script>
+        $( "#servier" ).change(function() {
+            var id_rep = $(this).val();
+            $.post( "{$base_dir}ajaxs/ajax_servier.php", { id_rep: id_rep })
+                .done(function( data ) {
+                    console.log("Respuesta del ajax:   "+data);
+                }, "json");
+        
+        });
+    </script>
 
 <div class="cart_navigation">
    {* <a  id="atras1" href="{if (isset($smarty.server.HTTP_REFERER) && strstr($smarty.server.HTTP_REFERER, 'order.php')) || isset($smarty.server.HTTP_REFERER) && strstr($smarty.server.HTTP_REFERER, 'order-opc') || !isset($smarty.server.HTTP_REFERER)}{$link->getPageLink('index')}{else}{$smarty.server.HTTP_REFERER|escape:'htmlall':'UTF-8'|secureReferrer}{/if}" class="button_large" title="{l s='Continue shopping'}">
