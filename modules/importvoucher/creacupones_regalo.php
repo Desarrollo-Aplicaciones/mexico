@@ -2,12 +2,12 @@
 
 include_once(dirname(__FILE__)."/../../config/config.inc.php");
 
+$errores = array();
+
 /**
  //**Script para creación automatica de cupones restringidos a producto
  */
 
-
-$this->context = Context::getContext();
         
 if ( isset( $_REQUEST['creacupon'] ) && $_REQUEST['creacupon'] == 'ok' ) {
 
@@ -21,24 +21,35 @@ if ( isset( $_REQUEST['creacupon'] ) && $_REQUEST['creacupon'] == 'ok' ) {
         $codigo = 1;
 
     }
+    
+    if ( isset( $_REQUEST['valor'] ) ) {
 
-    $total_prods['3594450400093'] = 30;
-    $total_prods['5391189200776'] = 30;
-    $total_prods['5391189200851'] = 30;
-    $total_prods['5391189220767'] = 30;
-    $total_prods['5391189230797'] = 30;
-    $total_prods['5391189230759'] = 30;
-    $total_prods['3594452600958'] = 30;
-    $total_prods['3594456400646'] = 30;
-    $total_prods['3594456400653'] = 30;
-    $total_prods['3594455800232'] = 30;
-    $total_prods['3594455200162'] = 30;
-    $total_prods['3594453800432'] = 30;
-    $total_prods['3594454400648'] = 30;
-    $total_prods['3594451300422'] = 30;
-    $total_prods['3594451400412'] = 30;
-    $total_prods['3594450700438'] = 30;
-    $total_prods['3594450700421'] = 30;
+        $valdto = $_REQUEST['valor'];
+
+    } else {
+
+        $valdto = 30;
+
+    }
+    
+
+    $total_prods['3594450400093'] = '';
+    $total_prods['5391189200776'] = '';
+    $total_prods['5391189200851'] = '';
+    $total_prods['5391189220767'] = '';
+    $total_prods['5391189230797'] = '';
+    $total_prods['5391189230759'] = '';
+    $total_prods['3594452600958'] = '';
+    $total_prods['3594456400646'] = '';
+    $total_prods['3594456400653'] = '';
+    $total_prods['3594455800232'] = '';
+    $total_prods['3594455200162'] = '';
+    $total_prods['3594453800432'] = '';
+    $total_prods['3594454400648'] = '';
+    $total_prods['3594451300422'] = '';
+    $total_prods['3594451400412'] = '';
+    $total_prods['3594450700438'] = '';
+    $total_prods['3594450700421'] = '';
 
     //3594456400103
 
@@ -50,12 +61,12 @@ if ( isset( $_REQUEST['creacupon'] ) && $_REQUEST['creacupon'] == 'ok' ) {
                             $porc_dto = 0;
                             $mone_dto = 0;
                             $product_restriction = 0;
-                            $prods = Product::searchByReference( $key, 'nadro', 1); //cambiar [para cualquiera]
+                            $prods = Product::searchByReference( $key, null, 1); //cambiar [para cualquiera]
                             //////--echo "<br> REF: ". $key ;
                             // si el producto está asociado al proveedor nadro, está activo y 
 
                             if ( isset( $prods['id_product'] ) && $prods['id_product'] != '' && $prods['id_product'] != 0 ) {
-                                //////--echo "<br> si prod: ". $key ;
+                                echo "<br> si prod: ". $key ;
 
                                     //////--echo "<br> ** REf: ".$key." - - ".$prods_cart[ $key ]['name']." Iguales ";
                                     //////--echo "<br> -- Compradas cart = ".$prods_cart[ $key ]['PiezasPorComprar'];
@@ -69,7 +80,7 @@ if ( isset( $_REQUEST['creacupon'] ) && $_REQUEST['creacupon'] == 'ok' ) {
                                     if (  $prods_ret_array[ $key ]['PorcentajeDescuento'] != 0 ) {
                                 */
                                         //////--echo "<br> -- PorcentajeDescuento = ".$prods_ret_array[ $key ]['PorcentajeDescuento'];
-                                        $porc_dto =  $value ;
+                                        $porc_dto =  $valdto ;
                                         $dto_regalo_applicar = 2;
                                     /*}
                                     elseif (  $prods_ret_array[ $key ]['MontoDescuento'] != 0 ) {
@@ -83,7 +94,7 @@ if ( isset( $_REQUEST['creacupon'] ) && $_REQUEST['creacupon'] == 'ok' ) {
 
                                 /*elseif ( isset( $total_prods[ $key ]['cart'] ) && $total_prods[ $key ]['cart'] == 1 &&  !isset( $total_prods[ $key ]['ws'] )  ) {
                                 }*/
-                                /***************** CREACION DE CUPONES ********************/
+                                 /***************** CREACION DE CUPONES ********************/
                                 /*echo "<pre> this object : ";
                                 print_r( $this->context );
                                 echo "</pre>";*/
@@ -93,8 +104,8 @@ if ( isset( $_REQUEST['creacupon'] ) && $_REQUEST['creacupon'] == 'ok' ) {
                                 echo "<br> id_cart: ".$this->context->cart->id;
                                 */
                                 if ( $dto_regalo_applicar != 0 ) {
-                                    //////--echo "<br><hr> aplicar dto --".$this->context->cart->id;						
-                                    /*					
+                                    //////--echo "<br><hr> aplicar dto --".$this->context->cart->id;
+                                    /*
                                     $cart_rule = new CartRule(25);
                                     $cart_rule->reduction_amount = 88;
                                     if (!$cart_rule->update())
@@ -109,14 +120,15 @@ if ( isset( $_REQUEST['creacupon'] ) && $_REQUEST['creacupon'] == 'ok' ) {
                                     print_r( $cart_rule );
                                     echo "<br></pre><hr> ";
                                     */
-                                    $cart_rule = new CartRule();							
+                                    $cart_rule = new CartRule();
                                     $languages = Language::getLanguages(false);
                                     /*echo "<pre> orden: ";
                                     print_r($this);
                                     exit();*/
-                                    foreach ($languages as $language)
+                                    foreach ($languages as $language) {
                                         // Define a temporary name
                                         $cart_rule->name[$language['id_lang']] = sprintf( 'SERVIER%d', $prods['id_product'] );
+                                    }
 
                                     // Define a temporary code
                                     //$cart_rule->code = ''; //sprintf('CIRSA_C%1$d_O%2$d', $customer_id, $this->context->cart->id);
@@ -168,17 +180,18 @@ if ( isset( $_REQUEST['creacupon'] ) && $_REQUEST['creacupon'] == 'ok' ) {
                                             break;
                                     }
 
+
                                     //////echo "<br> paso3";
                                     $cart_rule->reduction_tax = false;
-                                    $cart_rule->minimum_amount_currency = $this->context->cart->id_currency;
-                                    $cart_rule->reduction_currency = $this->context->cart->id_currency;
+                                    $cart_rule->minimum_amount_currency = 1;
+                                    $cart_rule->reduction_currency = 1;
 
                                     //////echo "<br> paso4";
                                     try {
                                         if ( !$cart_rule->add() ) {
                                             //////echo "<br> paso5";
                                             //////--echo "<br> Cupon NOOOOOOOOOOO creado-";
-                                            $this->errors[] = Tools::displayError('You cannot generate a voucher.');
+                                            $errores[] = Tools::displayError('You cannot generate a voucher.');
                                         }
                                         else {
                                             //////echo "<br> paso6";
@@ -198,7 +211,8 @@ if ( isset( $_REQUEST['creacupon'] ) && $_REQUEST['creacupon'] == 'ok' ) {
                                                 $id_product_rule = Db::getInstance()->Insert_ID();
 
                                                 //////echo "<br> ins 3: ".
-                                                Db::getInstance()->execute('INSERT INTO `'._DB_PREFIX_.'cart_rule_product_rule_value` (`id_product_rule`, `id_item`) VALUES ('.$id_product_rule.', '.$value_psend['id_product'].' ) ');
+                                                 Db::getInstance()->execute('INSERT INTO `'._DB_PREFIX_.'cart_rule_product_rule_value` (`id_product_rule`, `id_item`) VALUES ('.$id_product_rule.', '.$prods['id_product'].' ) ');
+
 
                                             /******************** FIN PARA ATAR EL DECUENDO X UN PRODUCTO PARA UN PRODUCTO EN ESPECIFICO ************************/
 
@@ -207,23 +221,16 @@ if ( isset( $_REQUEST['creacupon'] ) && $_REQUEST['creacupon'] == 'ok' ) {
                                             //////echo "<br> Cupon creado id: ".$cart_rule->id;
                                             // Update the voucher code and name
                                             foreach ($languages as $language)
-                                                    $cart_rule->name[$language['id_lang']] = sprintf('CIRSAN_C%1$dCI%2$dV%3$d', $customer_id, $this->context->cart->id, $cart_rule->id);
+                                                    $cart_rule->name[$language['id_lang']] = sprintf('SERVIER');
                                             if ($codigo == 1 ) { 
-                                                $cart_rule->code =  str_replace(array(' ','$','#','%'), array('','','',''), $cart_rule->description).$add_desc_name; // sprintf('CIRSA_C%1$d_O%2$d', $cart_rule->id, $this->context->customer, $this->context->cart->id);
+                                                $cart_rule->code =  str_replace(array(' ','$','#','%'), array('','','',''), $cart_rule->description).$add_desc_name; // sprintf('CIRSA_C%1$d_O%2$d', $cart_rule->id, $this->c$
                                             } else {
                                                 $cart_rule->code =  '';
                                             }
 
-                                            if ( $add_carrito ) { 
-                                                //////--echo "<br>Adicionando regla a carrito: ".
-                                                $this->context->cart->addCartRule($cart_rule->id);
-                                                //////--echo "<br> sin adicionar a carrito ";                                            
-                                            }
-                                            //////--echo "<br> update for : ".
-                                            $this->context->cart->update();
                                             //////exit;
                                             if (!$cart_rule->update()) {
-                                                $this->errors[] = Tools::displayError('You cannot update a voucher.');
+                                                $errores[] = Tools::displayError('You cannot update a voucher.');
                                             }
                                             else {
                                                 //////--echo "<br> Cupon actualizado : ".implode(', ', $cart_rule->name );
@@ -241,7 +248,7 @@ if ( isset( $_REQUEST['creacupon'] ) && $_REQUEST['creacupon'] == 'ok' ) {
                             }
                         }
   
-                    print_r($this->errors);
+                    print_r($errores);
 }
-?>
+
 
