@@ -722,3 +722,17 @@ img.trust_img{margin:7px 0;}
   float: left;
   text-align: center;
 }
+
+.ctn-medicos {
+    display: inline-block;
+    width: 100%;    
+}
+
+.ctn-medicos .span-medicos{
+    width: 30%;
+    line-height: 24px;
+}
+
+.ctn-medicos #input-medicos {
+    float: right; width: 70%;
+}

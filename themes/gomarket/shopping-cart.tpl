@@ -611,24 +611,50 @@
 {/if}
 
 <div class="ctn-servier">
-    <span>Seleccione un representante:</span>
-    <select name="servier" id="servier">
+    <span>Ingrese un representante:</span>
+    {*<select name="servier" id="servier">
         {foreach item=item from=$rep_servier}
             <option value="{$item['id_asociado']}">{$item['nombre']}</option>
         {/foreach}
-    </select>
-    
+    </select>*}
+    <input type="text" id="servier">
+    <span id="error-label" style="display: none;"><br><b>Error: Representante no valido</b></span>
 </div>
     
     <script>
-        $( "#servier" ).change(function() {
+        {*$( "#servier" ).change(function() {
             var id_rep = $(this).val();
             $.post( "{$base_dir}ajaxs/ajax_servier.php", { id_rep: id_rep })
                 .done(function( data ) {
                     console.log("Respuesta del ajax:   "+data);
                 }, "json");
         
+        });*}
+        
+        $( "#servier" ).focusout(function() {
+            var id_rep = $(this).val();
+            {*console.log(id_rep);
+            var reg = /^[a-zA-Z]{3}\s[0-9]{2}/;
+            if ( !(id_rep.match(reg)) ){ // reg.test(id_rep) ) { 
+                console.log("si:" + id_rep);
+                $("#error-label").hide();*}
+                        
+                        
+                        
+                $.post( "{$base_dir}ajaxs/ajax_servier.php", { id_rep: id_rep })
+                    .done(function( data ) {
+                        console.log("Respuesta del ajax:   "+data);
+                    }, "json");
+                    
+                    
+                    
+            {*}
+            else {
+                console.log("No: "+id_rep);
+                $("#error-label").show();
+            }*}
         });
+        
     </script>
 
 <div class="cart_navigation">

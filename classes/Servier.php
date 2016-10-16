@@ -8,7 +8,6 @@
 
 class ServierCore extends ObjectModel {
     public $id;
-    public $id_cart;
     public $id_asociado_servier;
     
     
@@ -16,36 +15,41 @@ class ServierCore extends ObjectModel {
 		'table' => 'cart_asociado_servier',
 		'primary' => 'id_cart',
 		'fields' => array(
-			'id_asociado_servier'   => array('type' => self::TYPE_STRING, 'validate' => 'isGenericName', 'required' => true),
+                    'id_cart'               => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId'),
+                    'id_asociado_servier'   => array('type' => self::TYPE_STRING, 'validate' => 'isGenericName', 'required' => true),
 		),
 	);
     
-    public function add($autodate = true, $nullValues = null){
-        echo "<br>Voy a agregar esto: ".$this->id." - ".$this->id_asociado_servier;
-        $r = parent::add($autodate);
-        echo "<br>Se supone que ya agregó".$r."<br><br>";
-        return $r;
-    }
-        
-    public function update($null_values = false){
-            Cache::clean('getContextualValue_'.$this->id.'_*');
-            return parent::update($null_values);	
-    }
-        
+//    public function add($autodate = true, $nullValues = null){
+//        echo "<br>Voy a agregar esto: ".(int)$this->id." - ".$this->id_asociado_servier;
+//        $r = parent::add($autodate);
+//        echo "<br>Se supone que ya agregó".$r."<br><br>";
+//        return $r;
+//    }
+//        
+//    public function update($null_values = false){
+//            Cache::clean('getContextualValue_'.(int)$this->id.'_*');
+//            return parent::update($null_values);	
+//    }
+//        
         
         
     
-    public function validateIdCartOnServier(){
-        if( isset($this->id) && $this->id != Null ){
-            $sql = 'SELECT COUNT(id_cart) 
+    public function validateIdCartOnServier( $id, $id_rep ){
+        if( isset($id) && $id != Null ){
+            $sql = "SELECT COUNT(id_cart) 
                     FROM ps_cart_asociado_servier
-                    WHERE id_cart = '.$this->id.';';
+                    WHERE id_cart = '".$id."'";
             $result = DB::getInstance()->getValue($sql);
+            echo '<br>result<br>'.$result;
             if( isset($result) && $result == 0 ){
-                $return = $this->add();
+//                $return = $this->add();
+                $return = $this->insertOnServier( $id_rep, (int)$id );
+                
             }
             elseif( $result >= 1 ){
-                $return = $this->update();
+//                $return = $this->update();
+                $return = $this->updateOnServier( $id_rep, (int)$id );
             }
             else {}
         }
@@ -54,21 +58,29 @@ class ServierCore extends ObjectModel {
         }
         return " ".$return;
     }
-//
-//    public function insertOnServier($id_rep, $id_cart){
-//        $sql = 'INSERT INTO ps_cart_asociado_servier (id_cart, id_asociado_servier)
-//                VALUES ('.$id_cart.', "'.$id_rep.'");';
-//        $result =  Db::getInstance()->execute($sql);
-//        return $result;
-//    }
-//    
-//    public function updateOnServier($id_rep, $id_cart){
-//        $sql = 'UPDATE ps_cart_asociado_servier 
-//                SET id_asociado_servier = "'.$id_rep.'"
-//                WHERE id_cart = '.$id_cart.';';
-//        $result =  Db::getInstance()->execute($sql);
-//        return $result;
-//    }
+
+    public function insertOnServier($id_rep, $id_cart){
+        $sql = "INSERT INTO ps_cart_asociado_servier (id_cart, id_asociado_servier)
+                VALUES (".(int)$id_cart.", '".$id_rep."')";
+        $result =  Db::getInstance()->execute($sql);
+        return $result;
+    }
+    
+    public function updateOnServier($id_rep, $id_cart){
+        $sql = "UPDATE ps_cart_asociado_servier 
+                SET id_asociado_servier = '".$id_rep."'
+                WHERE id_cart = ".(int)$id_cart;
+        $result =  Db::getInstance()->execute($sql);
+        return $result;
+    }
+    
+    public function validateReg($id_rep){
+        $sql = "SELECT COUNT(id_asociado)
+                FROM ps_asociado_servier
+                WHERE id_asociado = '".(String)$id_rep."' && estado = 1;";
+        $result = DB::getInstance()->getValue($sql);
+        return $result;
+    }
     
     
 }

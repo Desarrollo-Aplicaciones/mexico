@@ -4,26 +4,18 @@ require_once(dirname(__FILE__) . '/../config/config.inc.php');
 require_once(dirname(__FILE__) . '/../init.php');
 
     $context = Context::getContext();
-    $servier = new Servier();
-    echo "<br>rep:".
-    $id_rep = Tools::getValue('id_rep');
+    $medico = Tools::getValue('medico');
     
-    $id_cart = $context->cart->id;
-//    echo json_encode(array('id_rep'=>$id_rep, 'id_cart'=>$id_cart));
+    $servierMedico = new servierMedicos();
+    $result = $servierMedico->explodeMedico( $medico );
     
-    $validateReg = $servier->validateReg($id_rep);
-    
-    if( $validateReg != 0 ){
-        $result = $servier->validateIdCartOnServier( $id_cart, $id_rep );
-    }
-    
-    
-    if ( isset($result) && $result ){
+    if ( isset($result) && $result != NULL ){
         echo json_encode(
             array(
-                'success'=>true, 
-                'mesage'=>'Todo Ok', 
-                'resultado'=> $result,
+//                'success'=>true, 
+//                'mesage'=>'Todo Ok', 
+//                'resultado'=> $result,
+                $result,
             ) 
         );        
     }
@@ -36,4 +28,5 @@ require_once(dirname(__FILE__) . '/../init.php');
             ) 
         );
     }
+    
 ?>
