@@ -777,21 +777,19 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
                                                                                 <div class="ctn-medicos">
                                                                                     <br><span class="span-medicos">Ingrese un médico:</span>
                                                                                     <input type="text" id="input-medicos">
-                                                                                    <input type="hidden" id="input-medicos-id">
-                                                                                    <div id="suggestions"></div>
+                                                                                    {*<input type="hidden" id="input-medicos-id">
+                                                                                    <div id="suggestions"></div>*}
                                                                                 </div>
                                                                                 
                                                                                 <script>
-                                                                                    {*var availableTags;
-                                                                                    $('#input-medicos').keyup(function(){
-                                                                                        if( this.value.length >= 3 ){
-                                                                                            var medico = $(this).val();
-                                                                                            $.post( "{$base_dir}ajaxs/ajax_servier_medicos.php", { medico: medico })
-                                                                                                .done(function( data ) {
-                                                                                                    console.log("Respuesta del ajax: "+data);
-                                                                                                }, "json");
-                                                                                        }
-                                                                                    });*}
+                                                                                    var availableTags;
+                                                                                    $('#input-medicos').focusout(function(){
+                                                                                        var medico = $(this).val();
+                                                                                        $.post( "{$base_dir}ajaxs/ajax_servier_medicos.php", { medico: medico })
+                                                                                            .done(function( data ) {
+                                                                                                console.log("Respuesta del ajax: "+data);
+                                                                                            }, "json");
+                                                                                    });
                                                                                 </script>
   <style>
 .suggest-element{
@@ -810,22 +808,18 @@ overflow: auto;
                                                                                 
                                                                                 <script type="text/javascript">
                                                                                 // <![CDATA[
-                                                                                $('document').ready( function() {
+                                                                                {*$('document').ready( function() {
                                                                                     $("#input-medicos")
                                                                                         .autocomplete(
                                                                                             '{$base_dir}ajaxs/ajax_servier_medicos.php', {
                                                                                                 minChars: 3,
-                                                                                                max: 10,
-                                                                                                width: 500,
-                                                                                                selectFirst: false,
-                                                                                                scroll: false,
                                                                                                 dataType: "dataString",
                                                                                                 formatItem: function(data, i, max, value, term) {
                                                                                                     return value;
                                                                                                 },
                                                                                                 parse: function(data) {
                                                                                                     console.log(data);
-                $('#suggestions').fadeIn(1000).html(data);
+                $('#suggestions').html(data);
                 //Al hacer click en algua de las sugerencias
                 $('.suggest-element').live('click', function(){
                     //Obtenemos la id unica de la sugerencia pulsada
@@ -835,33 +829,10 @@ overflow: auto;
                     //Hacemos desaparecer el resto de sugerencias
                     $('#suggestions').fadeOut(1000);
                 });
-                {*             var mytab = new Array();
-                                                                                                    if(data == "") {
-                                                                                                        var vacio = new Array();
-                                                                                                        
-                                                                                                        mytab[mytab.length] = { data: vacio,value: ''};
-                                                                                                    } 
-                                                                                                    else {
-                                                                                                        for (var i = 0; i < data[0].length; i++) {
-                                                                                                            mytab[mytab.length] = { data: data[0][i], value: '<div>'+data[0][i].nombres+' '+data[0][i].apellidos+'</div>'};
-                                                                                                        }
-                                                                                                    }
-                                                                                                    return mytab;*}
-                                                                                                },
-                                                                                                {*
-                                                                                                [[{"id_servier":"326","nombres":"ROBERTO","apellidos":"BARBA PADILLA"},{"id_servier":"327","nombres"
-:"ALFONSO CARLOS","apellidos":"CASTILLO ALARCON"},{"id_servier":"334","nombres":"FRANCISCO DANIEL","apellidos"
-:"GIL SANCHEZ"},{"id_servier":"335","nombres":"FERNANDO ARTURO","apellidos":"GO\u00d1I FLORES"},{"id_servier"
-:"339","nombres":"CARLOS","apellidos":"MEDINA MARIN"},{"id_servier":"346","nombres":"JOSE","apellidos"
-:"ESQUIVEL PINEDA"},{"id_servier":"347","nombres":"LILIA","apellidos":"AGUILERA RIOS"},{"id_servier"
-:"350","nombres":"JES\u00daS","apellidos":"ALC\u00c1NTAR RAM\u00cdREZ"},{"id_servier":"353","nombres"
-:"CECILIO","apellidos":"ENRIQUEZ CERVANTES"},{"id_servier":"356","nombres":"JOSE FERMIN","apellidos"
-:"PEREZ CORONEL"}]]
 
-                                                                                                }*}
                                                                                             }
                                                                                         )
-                                                                                });
+                                                                                });*}
                                                                                 // ]]>
                                                                                 </script>
                                                                                 
