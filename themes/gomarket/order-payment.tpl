@@ -773,6 +773,69 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
 											{/if}
 										</div>
 										<!--fin cupones-->
+                                                                                
+                                                                                <div class="ctn-medicos">
+                                                                                    <br><span class="span-medicos">Ingrese un médico:</span>
+                                                                                    <input type="text" id="input-medicos">
+                                                                                </div>
+                                                                                
+                                                                                <script>
+                                                                                    {*var availableTags;
+                                                                                    $('#input-medicos').keyup(function(){
+                                                                                        if( this.value.length >= 3 ){
+                                                                                            var medico = $(this).val();
+                                                                                            $.post( "{$base_dir}ajaxs/ajax_servier_medicos.php", { medico: medico })
+                                                                                                .done(function( data ) {
+                                                                                                    console.log("Respuesta del ajax: "+data);
+                                                                                                }, "json");
+                                                                                        }
+                                                                                    });*}
+                                                                                </script>
+                                                                                
+                                                                                <script type="text/javascript">
+                                                                                // <![CDATA[
+                                                                                $('document').ready( function() {
+                                                                                    $("#input-medicos")
+                                                                                        .autocomplete(
+                                                                                            '{$base_dir}ajaxs/ajax_servier_medicos.php', {
+                                                                                                minChars: 3,
+                                                                                                max: 10,
+                                                                                                width: 500,
+                                                                                                selectFirst: false,
+                                                                                                scroll: false,
+                                                                                                dataType: "json",
+                                                                                                formatItem: function(data, i, max, value, term) {
+                                                                                                    return value;
+                                                                                                },
+                                                                                                parse: function(data) {
+                                                                                                    console.log(data[0]);
+                                                                                                    var mytab = new Array();
+                                                                                                    if(data == "") {
+                                                                                                        var vacio = new Array();
+                                                                                                        {*vacio['product_link']='#';*}
+                                                                                                        mytab[mytab.length] = { data: vacio,value: ''};
+                                                                                                    } 
+                                                                                                    else {
+                                                                                                        for (var i = 0; i < data[0].length; i++) {
+                                                                                                            mytab[mytab.length] = { data: data[0][i], value: '<div><div>nombre</div><div>apellido</div></div>'};
+                                                                                                        }
+                                                                                                    }
+                                                                                                    return mytab;
+                                                                                                },
+                                                                                                {*extraParams: {
+                                                                                                    ajaxSearch: 1,
+                                                                                                    id_lang: {$cookie->id_lang}
+                                                                                                }*}
+                                                                                            }
+                                                                                        )
+                                                                                        .result(function(event, data[0], formatted) {
+                                                                                            $('#input-medicos').val( data[0].nombres, data[0].apellidos );
+                                                                                        })
+                                                                                });
+                                                                                // ]]>
+                                                                                </script>
+                                                                                
+                                                                                
 
 									</div>
 	                        	</div>
