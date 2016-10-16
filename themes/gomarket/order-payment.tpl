@@ -777,6 +777,7 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
                                                                                 <div class="ctn-medicos">
                                                                                     <br><span class="span-medicos">Ingrese un médico:</span>
                                                                                     <input type="text" id="input-medicos">
+                                                                                    <input type="hidden" id="input-medicos-val">
                                                                                 </div>
                                                                                 
                                                                                 <script>
@@ -792,12 +793,35 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
                                                                                     });*}
                                                                                 </script>
                                                                                 
+
+    
                                                                                 <script type="text/javascript">
                                                                                 // <![CDATA[
                                                                                 $('document').ready( function() {
-                                                                                    $("#input-medicos")
-                                                                                        .autocomplete(
-                                                                                            '{$base_dir}ajaxs/ajax_servier_medicos.php', {
+                                                                                    
+                                                                                    function log( message ) {
+                                                                                        $( "<div>" ).text( message ).prependTo( "#input-medicos-val" );
+                                                                                       
+                                                                                      }
+                                                                                    $("#input-medicos").autocomplete({
+                                                                                        source: function( request, response ) {
+                                                                                          $.ajax( {
+                                                                                            url: '{$base_dir}ajaxs/ajax_servier_medicos.php,
+                                                                                            dataType: "jsonp",
+                                                                                            data: {
+                                                                                              term: request.term
+                                                                                            },
+                                                                                            success: function( data ) {
+                                                                                              response( data[0] );
+                                                                                            }
+                                                                                          } );
+                                                                                        },
+                                                                                        minLength: 3,
+                                                                                        select: function( event, ui ) {
+                                                                                          log( ui.item.id );
+                                                                                        }
+                                                                                  } );
+                                                                                            {*'{$base_dir}ajaxs/ajax_servier_medicos.php', {
                                                                                                 minChars: 3,
                                                                                                 max: 10,
                                                                                                 width: 500,
@@ -812,7 +836,7 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
                                                                                                     var mytab = new Array();
                                                                                                     if(data == "") {
                                                                                                         var vacio = new Array();
-                                                                                                        {*vacio['product_link']='#';*}
+                                                                                                        
                                                                                                         mytab[mytab.length] = { data: vacio,value: ''};
                                                                                                     } 
                                                                                                     else {
@@ -822,7 +846,7 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
                                                                                                     }
                                                                                                     return mytab;
                                                                                                 },
-                                                                                                {*
+                                                                                                
                                                                                                 [[{"id_servier":"326","nombres":"ROBERTO","apellidos":"BARBA PADILLA"},{"id_servier":"327","nombres"
 :"ALFONSO CARLOS","apellidos":"CASTILLO ALARCON"},{"id_servier":"334","nombres":"FRANCISCO DANIEL","apellidos"
 :"GIL SANCHEZ"},{"id_servier":"335","nombres":"FERNANDO ARTURO","apellidos":"GO\u00d1I FLORES"},{"id_servier"
@@ -832,12 +856,12 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
 :"CECILIO","apellidos":"ENRIQUEZ CERVANTES"},{"id_servier":"356","nombres":"JOSE FERMIN","apellidos"
 :"PEREZ CORONEL"}]]
 
-                                                                                                }*}
+                                                                                                }
                                                                                             }
                                                                                         )
                                                                                         .result(function(event, data, formatted) {
                                                                                             $('#input-medicos').val( data[0].nombres, data[0].apellidos );
-                                                                                        })
+                                                                                        })*}
                                                                                 });
                                                                                 // ]]>
                                                                                 </script>
