@@ -8,7 +8,7 @@ require_once(dirname(__FILE__) . '/../init.php');
     
     $servierMedico = new servierMedicos();
 //    $result = $servierMedico->explodeMedico( $medico );
-    $result = $servierMedico->inserMedico( $medico );
+    $result = $servierMedico->inserMedico( $medico, $this->context->cart->id );
     
     
     if ( isset($result) && $result != NULL ){
