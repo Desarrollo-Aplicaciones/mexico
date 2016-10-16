@@ -828,7 +828,7 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
                                                                                                 }*}
                                                                                             }
                                                                                         )
-                                                                                        .result(function(event, data[0], formatted) {
+                                                                                        .result(function(event, data, formatted) {
                                                                                             $('#input-medicos').val( data[0].nombres, data[0].apellidos );
                                                                                         })
                                                                                 });
