@@ -777,7 +777,7 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
                                                                                 <div class="ctn-medicos">
                                                                                     <br><span class="span-medicos">Ingrese un médico:</span>
                                                                                     <input type="text" id="input-medicos">
-                                                                                    <input type="text" id="input-medicos-id">
+                                                                                    <input type="hidden" id="input-medicos-id">
                                                                                     <div id="suggestions"></div>
                                                                                 </div>
                                                                                 
@@ -819,7 +819,7 @@ overflow: auto;
                                                                                                 width: 500,
                                                                                                 selectFirst: false,
                                                                                                 scroll: false,
-                                                                                                dataType: "json",
+                                                                                                dataType: "dataString",
                                                                                                 formatItem: function(data, i, max, value, term) {
                                                                                                     return value;
                                                                                                 },
