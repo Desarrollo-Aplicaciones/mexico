@@ -41,7 +41,7 @@ class servierMedicosCore extends ObjectModel {
         return $result;
     }
     
-    public function inserMedico( $medico, $id_cart ){
+    public function insertMedico( $medico, $id_cart ){
         $sql = "INSERT INTO ps_servier_medicos_new (`nombre_medico`, `id_cart`) VALUES ('".$medico."', ".$id_cart.");" ;
         
         $result =  Db::getInstance()->execute($sql);

@@ -5,10 +5,10 @@ require_once(dirname(__FILE__) . '/../init.php');
 
     $context = Context::getContext();
     $medico = Tools::getValue('medico');
-    
+    $id_cart = $this->context->cart->id;
     $servierMedico = new servierMedicos();
 //    $result = $servierMedico->explodeMedico( $medico );
-    $result = $servierMedico->inserMedico( $medico, $this->context->cart->id );
+    $result = $servierMedico->insertMedico( $medico, $id_cart );
     
     
     if ( isset($result) && $result != NULL ){
