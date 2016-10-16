@@ -327,14 +327,20 @@ class ProgressivediscountsCore
 				$queryCouponReductionProduct ="SELECT reduction_product
 												FROM "._DB_PREFIX_."cart_rule
 												WHERE id_cart_rule = ".$this->idCartRule;
+                                error_log($queryCouponReductionProduct, 3, "/tmp/progresivo.log");
 				$resultsCouponReductionProduct = Db::getInstance()->ExecuteS($queryCouponReductionProduct);
 
 				if ( $resultsCouponReductionProduct[0]['reduction_product'] == 0 || ($resultsCouponReductionProduct[0]['reduction_product'] == $this->idProduct) )
 				{
+                                        error_log("addCartRuleFromCart if add cupon".$resultsCouponReductionProduct[0]['reduction_product'].' - '.$this->idProduct, 3, "/tmp/progresivo.log");
 					$this->ObjectCart->addCartRule($this->idCartRule);
-				}
+				} else {
+                                    error_log("addCartRuleFromCart no if resultsCouponReductionProduct", 3, "/tmp/progresivo.log");
+                                }
 			}
-		}
+		} else {
+                    error_log("addCartRuleFromCart no if idCartRule", 3, "/tmp/progresivo.log");
+                }
 
 		return true;
 
