@@ -12,7 +12,7 @@ require_once(dirname(__FILE__) . '/../init.php');
     
     
     if ( isset($result) && $result != NULL ){
-        foreach ($results as $value) {
+        foreach ($result as $value) {
             echo '<div class="suggest-element"><a data="'.$value['nombres'].' '.$value['apellidos'].'" id="'.$value['id_servier'].'">'.utf8_encode($value['nombres']).' '.utf8_encode($value['apellidos']).'</a></div>';
         }
     
