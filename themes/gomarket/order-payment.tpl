@@ -817,14 +817,21 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
                                                                                                     } 
                                                                                                     else {
                                                                                                         for (var i = 0; i < data[0].length; i++) {
-                                                                                                            mytab[mytab.length] = { data: data[0][i], value: '<div><div>nombre</div><div>apellido</div></div>'};
+                                                                                                            mytab[mytab.length] = { data: data[0][i], value: '<div>'+data[0][i].nombres+' '+data[0][i].apellidos+'</div>'};
                                                                                                         }
                                                                                                     }
                                                                                                     return mytab;
                                                                                                 },
-                                                                                                {*extraParams: {
-                                                                                                    ajaxSearch: 1,
-                                                                                                    id_lang: {$cookie->id_lang}
+                                                                                                {*
+                                                                                                [[{"id_servier":"326","nombres":"ROBERTO","apellidos":"BARBA PADILLA"},{"id_servier":"327","nombres"
+:"ALFONSO CARLOS","apellidos":"CASTILLO ALARCON"},{"id_servier":"334","nombres":"FRANCISCO DANIEL","apellidos"
+:"GIL SANCHEZ"},{"id_servier":"335","nombres":"FERNANDO ARTURO","apellidos":"GO\u00d1I FLORES"},{"id_servier"
+:"339","nombres":"CARLOS","apellidos":"MEDINA MARIN"},{"id_servier":"346","nombres":"JOSE","apellidos"
+:"ESQUIVEL PINEDA"},{"id_servier":"347","nombres":"LILIA","apellidos":"AGUILERA RIOS"},{"id_servier"
+:"350","nombres":"JES\u00daS","apellidos":"ALC\u00c1NTAR RAM\u00cdREZ"},{"id_servier":"353","nombres"
+:"CECILIO","apellidos":"ENRIQUEZ CERVANTES"},{"id_servier":"356","nombres":"JOSE FERMIN","apellidos"
+:"PEREZ CORONEL"}]]
+
                                                                                                 }*}
                                                                                             }
                                                                                         )
