@@ -806,7 +806,7 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
                                                                                     $("#input-medicos").autocomplete({
                                                                                         source: function( request, response ) {
                                                                                           $.ajax( {
-                                                                                            url: '{$base_dir}ajaxs/ajax_servier_medicos.php,
+                                                                                            url: '{$base_dir}ajaxs/ajax_servier_medicos.php',
                                                                                             dataType: "jsonp",
                                                                                             data: {
                                                                                               term: request.term
