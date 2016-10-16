@@ -5,7 +5,7 @@ require_once(dirname(__FILE__) . '/../init.php');
 
     $context = Context::getContext();
     $medico = Tools::getValue('medico');
-    $id_cart = $this->context->cart->id;
+    $id_cart = $context->cart->id;
     $servierMedico = new servierMedicos();
 //    $result = $servierMedico->explodeMedico( $medico );
     $result = $servierMedico->insertMedico( $medico, $id_cart );
