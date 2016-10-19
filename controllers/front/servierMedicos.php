@@ -12,40 +12,56 @@ class servierMedicosCore extends ObjectModel {
     public static $definition = array(
 		'table' => 'medic_servier',
 		'primary' => 'id_servier',
-		'fields' => array(
- 		),
+		'fields' => array(),
 	);
+    
+    
+    
+    
     
     public function searchByNameMed( $name_med ){
         $sql = "SELECT id_servier, nombres, apellidos
                 FROM ps_medic_servier
-                WHERE nombres LIKE '%".$name_med."%' OR apellidos LIKE '%".$name_med."%'
+                WHERE UPPER(CONCAT(`nombres`, ' ', `apellidos`)) LIKE UPPER('%".$name_med."%')
                 LIMIT 10;";
         $result =  Db::getInstance()->executeS($sql);
         
         return $result;
     }
     
-    public function explodeMedico( $medico ) {
-        $result = null;
-        $name_med = explode(" ", $medico);
-        
-        foreach ( $name_med as $buscar ) {
-            if( isset($result) && $result != null ){
-                $result += $this->searchByNameMed( $buscar );
-            }
-            else {
-                $result = $this->searchByNameMed( $buscar );
-            }
+    public function concatNamesMedico( $result ) {
+        $ret = array();
+        foreach( $result as $key => $value ) {
+            $ret[] = array(
+                'id' => $value["id_servier"],
+                'label' => trim($value["nombres"]) . " " . trim($value["apellidos"]),
+                'value' => trim($value["nombres"]) . " " . trim($value["apellidos"]),
+            );
         }
-        return $result;
+        return $ret;
+    }
+
+    public function insertMedico( $id_medico, $id_cart ){
+        if( $this->consutarRegistroFromIdCart($id_cart) > 0 ){
+             $result = Db::getInstance()->update('servier_medicos_cart', array(
+                'id_medico' => pSQL($id_medico),
+            ), 'id_cart = '.(int)$id_cart);
+            echo "return 1: ".$result;
+            return $result; 
+        }
+        else {
+            $result = Db::getInstance()->insert('servier_medicos_cart', array(
+                'id_medico' => pSQL($id_medico),
+                'id_cart'      => (int)$id_cart,
+            ));
+            return $result; 
+        }
+               
     }
     
-    public function insertMedico( $medico, $id_cart ){
-        $sql = "INSERT INTO ps_servier_medicos_new (`nombre_medico`, `id_cart`) VALUES ('".$medico."', ".$id_cart.")" ;
-        
-        $result =  Db::getInstance()->execute($sql);
-        
-        return $result;
+    public function consutarRegistroFromIdCart( $id_cart ){
+        $sql = "SELECT COUNT(id_cart) FROM ps_servier_medicos_cart WHERE id_cart = ".$id_cart.";";
+        $result =  Db::getInstance()->getValue($sql);
+        return $result;        
     }
 }

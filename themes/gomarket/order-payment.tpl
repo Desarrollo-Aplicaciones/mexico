@@ -774,67 +774,57 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
 										</div>
 										<!--fin cupones-->
                                                                                 
-                                                                                <div class="ctn-medicos">
-                                                                                    <br><span class="span-medicos">Ingrese un médico:</span>
-                                                                                    <input type="text" id="input-medicos">
-                                                                                    {*<input type="hidden" id="input-medicos-id">
-                                                                                    <div id="suggestions"></div>*}
-                                                                                </div>
-                                                                                
-                                                                                <script>
-                                                                                    var availableTags;
-                                                                                    $('#input-medicos').focusout(function(){
-                                                                                        var medico = $(this).val();
-                                                                                        $.post( "{$base_dir}ajaxs/ajax_servier_medicos.php", { medico: medico })
-                                                                                            .done(function( data ) {
-                                                                                                console.log("Respuesta del ajax: "+data);
-                                                                                            }, "json");
-                                                                                    });
-                                                                                </script>
-  <style>
-.suggest-element{
-margin-left:5px;
-margin-top:5px;
-width:350px;
-cursor:pointer;
-}
-#suggestions {
-width:350px;
-height:150px;
-overflow: auto;
-}
-</style>                                                                              
-                                                                                
-                                                                                
-                                                                                <script type="text/javascript">
-                                                                                // <![CDATA[
-                                                                                {*$('document').ready( function() {
-                                                                                    $("#input-medicos")
-                                                                                        .autocomplete(
-                                                                                            '{$base_dir}ajaxs/ajax_servier_medicos.php', {
-                                                                                                minChars: 3,
-                                                                                                dataType: "dataString",
-                                                                                                formatItem: function(data, i, max, value, term) {
-                                                                                                    return value;
-                                                                                                },
-                                                                                                parse: function(data) {
-                                                                                                    console.log(data);
-                $('#suggestions').html(data);
-                //Al hacer click en algua de las sugerencias
-                $('.suggest-element').live('click', function(){
-                    //Obtenemos la id unica de la sugerencia pulsada
-                    var id = $(this).attr('id');
-                    //Editamos el valor del input con data de la sugerencia pulsada
-                    $('#input-medicos-id').val($('#'+id).attr('data'));
-                    //Hacemos desaparecer el resto de sugerencias
-                    $('#suggestions').fadeOut(1000);
-                });
+    
 
-                                                                                            }
-                                                                                        )
-                                                                                });*}
-                                                                                // ]]>
-                                                                                </script>
+{*    <script>
+        var availableTags;
+        $('#input-medicos').focusout(function(){
+            var medico = $(this).val();
+            $.post( "{$base_dir}ajaxs/ajax_servier_medicos.php", { medico: medico })
+                .done(function( data ) {
+                    console.log("Respuesta del ajax: "+data);
+                }, "json");
+        });
+    </script>*}
+    
+    <style>
+        .ui-autocomplete-loading {
+            background: white url("images/ui-anim_basic_16x16.gif") right center no-repeat;
+        }
+    </style>
+    
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $( function() {
+            $( "#input-medico" ).autocomplete({
+                source: '{$base_dir}ajaxs/ajax_servier_medicos.php',
+                minLength: 2,
+                select: function( event, ui ) {
+                    $.post( "{$base_dir}ajaxs/ajax_servier_medicos.php", { id_medico: ui.item.id })
+                    .done(function( data ) {
+                        console.log("Respuesta del ajax: "+data);
+                    }, "json");
+                }
+            });
+        });
+    </script>
+    
+    <div class="ui-widget ctn-medicos">
+        <br><span class="span-medicos">Ingrese un médico:</span>
+        <input id="input-medico" >
+        <!--input id="input-medico-val" type="hidden"-->
+    </div>
+
+    <!--<div class="ui-widget" style="margin-top:2em; font-family:Arial">
+      Result:
+      <div id="log" style="height: 200px; width: 300px; overflow: auto;" class="ui-widget-content"></div>
+    </div>-->
+
+                                                                            
+                                                                                
+                                                                                
                                                                                 
                                                                                 
 

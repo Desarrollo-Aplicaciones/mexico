@@ -3,36 +3,46 @@ require_once(dirname(__FILE__) . '/../config/config.inc.php');
 //require_once(dirname(__FILE__) . '/../config/defines.inc.php');
 require_once(dirname(__FILE__) . '/../init.php');
 
+    //Id del carro para asociar el Medico
     $context = Context::getContext();
-    $medico = Tools::getValue('medico');
     $id_cart = $context->cart->id;
+    
+    //Consulta del autocomplete
+    $medico = Tools::getValue('term');
+    
+    //Medico seleccionado.
+    $id_medico = Tools::getValue('id_medico');
+ 
+    
     $servierMedico = new servierMedicos();
-//    $result = $servierMedico->explodeMedico( $medico );
-    $result = $servierMedico->insertMedico( $medico, $id_cart );
     
-    
-    if ( isset($result) && $result != NULL ){
-//        foreach ($result as $value) {
-//            echo '<div class="suggest-element"><a data="'.$value['nombres'].' '.$value['apellidos'].'" id="'.$value['id_servier'].'">'.utf8_encode($value['nombres']).' '.utf8_encode($value['apellidos']).'</a></div>';
-//        }
-    
+    if( $id_medico ){
+        $result = $servierMedico->insertMedico( $id_medico, $id_cart );
         echo json_encode(
-            array(
-                'success'=>true, 
-                'mesage'=>'Todo Ok', 
-                'resultado'=> $result,
-//                $result,
-            ) 
-        );      
-    }
-    else{
-        echo json_encode(
-            array(
-                'success'=>false, 
-                'mesage'=>'Todo Paila',
-                'resultado'=> $result,
-            ) 
+            $result
         );
     }
+    else {
+        //Consulta los medicos por nombre y apellido
+        $result = $servierMedico->searchByNameMed( str_replace(" ", "%", $medico) );
+        if ( isset($result) && $result != NULL ){
+            //Los concatena para mostarlos en pantalla correctamente
+            $ret = $servierMedico->concatNamesMedico($result);
+            //los retorna.
+            echo json_encode(
+                $ret
+            );
+        }
+        else{
+            echo json_encode(
+                array(
+                    'success'=>false, 
+                    'mesage'=>'No hay resultados',
+                    'resultado'=> $ret,
+                ) 
+            );
+        }
+    }
+     
     
 ?>
