@@ -775,21 +775,10 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
 										<!--fin cupones-->
                                                                                 
     
-
-{*    <script>
-        var availableTags;
-        $('#input-medicos').focusout(function(){
-            var medico = $(this).val();
-            $.post( "{$base_dir}ajaxs/ajax_servier_medicos.php", { medico: medico })
-                .done(function( data ) {
-                    console.log("Respuesta del ajax: "+data);
-                }, "json");
-        });
-    </script>*}
     
     <style>
         .ui-autocomplete-loading {
-            background: white url("images/ui-anim_basic_16x16.gif") right center no-repeat;
+            background: white url("{$base_dir}img/ui-anim_basic_16x16.gif") right center no-repeat;
         }
     </style>
     
@@ -814,13 +803,9 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
     <div class="ui-widget ctn-medicos">
         <br><span class="span-medicos">Ingrese un médico:</span>
         <input id="input-medico" >
-        <!--input id="input-medico-val" type="hidden"-->
     </div>
 
-    <!--<div class="ui-widget" style="margin-top:2em; font-family:Arial">
-      Result:
-      <div id="log" style="height: 200px; width: 300px; overflow: auto;" class="ui-widget-content"></div>
-    </div>-->
+
 
                                                                             
                                                                                 

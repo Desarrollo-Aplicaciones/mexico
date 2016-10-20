@@ -35,28 +35,19 @@ class ServierCore extends ObjectModel {
         
         
     
-    public function validateIdCartOnServier( $id, $id_rep ){
-        if( isset($id) && $id != Null ){
-            $sql = "SELECT COUNT(id_cart) 
-                    FROM ps_cart_asociado_servier
-                    WHERE id_cart = '".$id."'";
-            $result = DB::getInstance()->getValue($sql);
-            echo '<br>result<br>'.$result;
-            if( isset($result) && $result == 0 ){
-//                $return = $this->add();
-                $return = $this->insertOnServier( $id_rep, (int)$id );
-                
-            }
-            elseif( $result >= 1 ){
-//                $return = $this->update();
-                $return = $this->updateOnServier( $id_rep, (int)$id );
-            }
-            else {}
+    public function validateIdCartOnServier( $id_cart, $id_rep ){
+        $sql = "SELECT COUNT(id_cart) 
+                FROM ps_cart_asociado_servier
+                WHERE id_cart = '".$id_cart."'";
+        $result = DB::getInstance()->getValue($sql);
+        
+        if( isset($result) && $result == 0 ){
+            $return = $this->insertOnServier( $id_rep, (int)$id_cart );
         }
-        else{
-            $return = 'yucas';
+        elseif( $result >= 1 ){
+            $return = $this->updateOnServier( $id_rep, (int)$id_cart );
         }
-        return " ".$return;
+        return $return;
     }
 
     public function insertOnServier($id_rep, $id_cart){
@@ -74,13 +65,25 @@ class ServierCore extends ObjectModel {
         return $result;
     }
     
-    public function validateReg($id_rep){
-        $sql = "SELECT COUNT(id_asociado)
+    public function searchRep( $id ){
+        $sql = "SELECT id_asociado
                 FROM ps_asociado_servier
-                WHERE id_asociado = '".(String)$id_rep."' && estado = 1;";
-        $result = DB::getInstance()->getValue($sql);
+                WHERE id_asociado LIKE '".(String)$id."%' && estado = 1
+                LIMIT 10;";
+        $result = DB::getInstance()->executeS($sql);
         return $result;
     }
     
+    public function setResultFront( $result ) {
+        $ret = array();
+        foreach( $result as $key => $value ) {
+            $ret[] = array(
+                'id' => $value["id_asociado"],
+                'label' => trim($value["id_asociado"]),
+                'value' => trim($value["id_asociado"]),
+            );
+        }
+        return $ret;
+    }
     
 }
