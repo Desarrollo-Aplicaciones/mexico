@@ -158,23 +158,21 @@ class UtilitiesCore extends ObjectModel {
  */
 public static function is_rules_entrega_nocturna($id_rule = 0){
 
-  $query="SELECT regla.id_regla_entrga_nocturna
-  FROM
-  "._DB_PREFIX_."regla_entrga_nocturna regla
-  WHERE ((regla.".Utilities::get_day_str_es()." = 1 
-         AND '".Utilities::get_dateTime(2)."' BETWEEN regla.hora_inicio AND '23:59:59') OR
-('".Utilities::get_dateTime(2)."' BETWEEN '00:00:00' AND regla.hora_fin)) AND regla.id_regla_entrga_nocturna = ".$id_rule.";";
+    if(isset( $id_rule ) && $id_rule != null && $id_rule != ""){
+        $query="SELECT regla.id_regla_entrga_nocturna
+                FROM
+                "._DB_PREFIX_."regla_entrga_nocturna regla
+                WHERE ((regla.".Utilities::get_day_str_es()." = 1 
+                AND '".Utilities::get_dateTime(2)."' BETWEEN regla.hora_inicio AND '23:59:59') OR
+                ('".Utilities::get_dateTime(2)."' BETWEEN '00:00:00' AND regla.hora_fin)) AND regla.id_regla_entrga_nocturna = ".$id_rule.";";
 
-$result = Db::getInstance()->executeS($query);
+        $result = Db::getInstance()->executeS($query);
 
-
-
-if(isset($result) && !empty($result) && count($result)>0){
-
- return TRUE;
-}
-
-return FALSE;
+        if(isset($result) && !empty($result) && count($result)>0){
+         return TRUE;
+        }
+    }
+    return FALSE;
 }
 
 /**

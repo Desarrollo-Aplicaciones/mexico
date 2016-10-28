@@ -106,21 +106,21 @@ class CuponCirculoSalud  {
                 // remover reglas asociadas al carrito				
                 foreach ($rules_prev_created as $key => $value) {
 
-                    $debug .= "<br> remover reglas: ".
-                    $this->context->cart->removeCartRule($value['id_cart_rule'])."  --  ".$value['id_cart_rule'];
-                    $debug .= "<br> update for removed: ".
+//                    $debug .= "<br> remover reglas: ".
+//                    $this->context->cart->removeCartRule($value['id_cart_rule'])."  --  ".$value['id_cart_rule'];
+//                    $debug .= "<br> update for removed: ".
                     $this->context->cart->update();
-                    $debug .= "<br> -- ".$value['id_cart_rule'] ." -- removida : ".
+//                    $debug .= "<br> -- ".$value['id_cart_rule'] ." -- removida : ".
                     $this->context->cart->removeCartRule($value['id_cart_rule']);
                     $newdel = new CartRule($value['id_cart_rule']);
-                    $debug .= "<br> objeto cartrule  borrar regla ---- borrada : ".
+//                    $debug .= "<br> objeto cartrule  borrar regla ---- borrada : ".
                     $newdel->delete();
                 }
                 
-                $debug .= "<br>remover reglas: ".
+//                $debug .= "<br>remover reglas: ".
                 $this->context->cart->removeCartRules();
                 $debug .= "</pre>";
-                $debug .= "<br> update for removed: ".
+//                $debug .= "<br> update for removed: ".
                 $this->context->cart->update();
 	        $rules_prev_created_customer = CartRule::deleteByIdCustomer(  $customer_id );
                 $debug .= "<pre> reglas return rules_prev_created_customer: ";
@@ -194,7 +194,7 @@ class CuponCirculoSalud  {
                     $debug .= "<hr><pre> RESPUESTA PRODS ASOCIADO: ";
                     $debug .= print_r($prods_ret_array,true);
                     $debug .= "<br></pre><hr> ";
-                    $debug .= print_r($this->isLogged,true);
+//                    $debug .= print_r($this->isLogged,true);
                     //$this->context->cart->getProducts()[0]['reduction_applies'] = '1';
                     //$this->context->cart->getProducts()[0]['quantity_discount_applies'] ='10';
                     /*
@@ -331,8 +331,8 @@ class CuponCirculoSalud  {
                             /*elseif ( isset( $total_prods[ $key ]['cart'] ) && $total_prods[ $key ]['cart'] == 1 &&  !isset( $total_prods[ $key ]['ws'] )  ) {
                             }*/
                             /***************** CREACION DE CUPONES ********************/
-                            $debug .= "<pre> this object : ";
-                            $debug .= print_r($this->context,true);
+//                            $debug .= "<pre> this object : ";
+//                            $debug .= print_r($this->context,true);
                             $debug .= "</pre>";
                             $debug .= "<br> dto: ".$dto_regalo_applicar;
                             $debug .= "<br> id_cliente: ".$customer_id;
@@ -358,7 +358,7 @@ class CuponCirculoSalud  {
                                 $cart_rule = new CartRule();							
                                 $languages = Language::getLanguages(false);
                                 $debug .= "<pre> orden: ";
-                                $debug .= print_r($this, true);
+//                                $debug .= print_r($this, true);
                                 
                                 foreach ($languages as $language)
                                     // Define a temporary name
@@ -509,6 +509,8 @@ class CuponCirculoSalud  {
         }
         if( Configuration::get('PS_DEBUG_CIRCULO_DE_LA_SALUD') == 1 && $this->context->customer->id == 8910 ){
 //            echo "<br><h1><b>Usted esta en modo Debug de Circulo de salud</b></h1><br><br>".$debug;
+            error_log("\n\n\n\n\n\nModo debug: \n\n".str_replace("<br>","\n\n",$debug)."\n\n\n\n\n\n\n\n", 3, "/var/www/errors.log");
+            
         }
     }
 }
