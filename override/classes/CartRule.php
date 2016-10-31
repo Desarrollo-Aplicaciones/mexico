@@ -745,7 +745,7 @@ public function getAssociatedRestrictions($type, $active_only, $i18n)
      * @param  string $id_customer    [description]
      * @return [type]                 [description]
      */
-    
+//    Deberia traer las reglas de carrito que tine e el carrito actualmente..
     public static function getCartRulesByNameLang( $lang_cart_rule, $id_lang, $id_customer = '') {
 
         $query = "SELECT cr.id_customer, cr.date_from, cr.date_to, cr.description, cr.quantity, cr.quantity_per_user, cr.priority, 
@@ -758,17 +758,20 @@ public function getAssociatedRestrictions($type, $active_only, $i18n)
             LEFT JOIN "._DB_PREFIX_."cart_rule_lang crl ON (cr.id_cart_rule = crl.id_cart_rule AND crl.id_lang = ".(int)$id_lang.")
             LEFT JOIN "._DB_PREFIX_."order_cart_rule ocr ON ( cr.id_cart_rule = ocr.id_cart_rule ) ";
             $customer_add = '';
+            
+        error_log("\n\n\n\nPrimer Query: \n\n".$query, 3, "/var/www/errors.log");
 
         if ( $id_customer != '' ) {
             $customer_add = " cr.id_customer = ".$id_customer." AND " ;
         }
             $query .= " WHERE ".$customer_add." ocr.id_order IS NULL AND crl.name like '" . $lang_cart_rule . "%'";
 
-
+            
         if ( $id_customer != '' ) {
             $query.=" AND  cr.id_customer = ". $id_customer ; 
         }
         
+        error_log("\n\n\nSegundo query: \n\n".$query, 3, "/var/www/errors.log");
         //$query.=" GROUP BY med.id_medico ORDER BY med.nombre ASC LIMIT 0,10";
 
         //echo "<br> query: ".$query;

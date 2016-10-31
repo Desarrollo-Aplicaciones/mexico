@@ -1134,17 +1134,22 @@ class CartCore extends ObjectModel
 
 	public function removeCartRule($id_cart_rule)
 	{
+                error_log("\n\nEntre a remove cart Rule\n\n", 3, "/var/www/errors.log");
+                
 		Cache::clean('Cart::getCartRules'.$this->id.'-'.CartRule::FILTER_ACTION_ALL);
 		Cache::clean('Cart::getCartRules'.$this->id.'-'.CartRule::FILTER_ACTION_SHIPPING);
 		Cache::clean('Cart::getCartRules'.$this->id.'-'.CartRule::FILTER_ACTION_REDUCTION);
 		Cache::clean('Cart::getCartRules'.$this->id.'-'.CartRule::FILTER_ACTION_GIFT);
-
-		$result = Db::getInstance()->execute('
+                $sql = '
 		DELETE FROM `'._DB_PREFIX_.'cart_cart_rule`
 		WHERE `id_cart_rule` = '.(int)$id_cart_rule.'
 		AND `id_cart` = '.(int)$this->id.'
-		LIMIT 1');
+		LIMIT 1';
+                
+                error_log("\n\n\nQuery DELETE de clases/cart.php->removeCartRule:\n\n".$sql, 3, "/var/www/errors.log");
+		$result = Db::getInstance()->execute($sql);
 		
+                
 		$cart_rule = new CartRule($id_cart_rule, Configuration::get('PS_LANG_DEFAULT'));
 		if ((int)$cart_rule->gift_product)
 			$this->updateQty(1, $cart_rule->gift_product, $cart_rule->gift_product_attribute, null, 'down', 0, null, false);

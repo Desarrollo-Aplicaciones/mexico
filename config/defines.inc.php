@@ -25,11 +25,18 @@
 */
 
 /* Debug only */
+//if ( isset($_GET) && isset($_GET['modo_debug']) && $_GET['modo_debug'] == 'md_col_09374' ) {
+//	error_log("\n modo debug si md_col_09374", 3, "/home/ubuntu/nevera_error.log");
+//	define('_PS_MODE_DEV_', true);
+//} else {
 define('_PS_MODE_DEV_', false);
+//}
+
+
 if (_PS_MODE_DEV_)
 {
 	@ini_set('display_errors', 'on');
-	@error_reporting(E_ALL | E_STRICT);
+	@error_reporting(E_ALL ^ E_NOTICE);
 	define('_PS_DEBUG_SQL_', true);
 	/* Compatibility warning */
 	define('_PS_DISPLAY_COMPATIBILITY_WARNING_', true);

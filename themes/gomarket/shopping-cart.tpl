@@ -609,35 +609,52 @@
 	{$addresses_style.phone_mobile = 'address_phone_mobile'}
 	{$addresses_style.alias = 'address_title'}
 {/if}
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<style>
-    .ui-autocomplete-loading {
-        background: white url("{$base_dir}img/ui-anim_basic_16x16.gif") right center no-repeat;
-    }
-</style>
-<div class="ui-widget ctn-servier">
-    <label for="input-medico">Seleccione representante:  </label>
-    <input id="servier" placeholder="Ingrese y seleccione">
+
+<div class="ctn-servier">
+    <span>Ingrese un representante:</span>
+    {*<select name="servier" id="servier">
+        {foreach item=item from=$rep_servier}
+            <option value="{$item['id_asociado']}">{$item['nombre']}</option>
+        {/foreach}
+    </select>*}
+    <input type="text" id="servier">
     <span id="error-label" style="display: none;"><br><b>Error: Representante no valido</b></span>
 </div>
-
     
-    <script>               
-        $( function() {
-            $( "#servier" ).autocomplete({
-                source: '{$base_dir}ajaxs/ajax_servier.php',
-                minLength: 2,
-                select: function( event, ui ) {
-                    $.post( "{$base_dir}ajaxs/ajax_servier.php", { value: ui.item.id })
+    <script>
+        {*$( "#servier" ).change(function() {
+            var id_rep = $(this).val();
+            $.post( "{$base_dir}ajaxs/ajax_servier.php", { id_rep: id_rep })
+                .done(function( data ) {
+                    console.log("Respuesta del ajax:   "+data);
+                }, "json");
+        
+        });*}
+        
+        $( "#servier" ).focusout(function() {
+            var id_rep = $(this).val();
+            {*console.log(id_rep);
+            var reg = /^[a-zA-Z]{3}\s[0-9]{2}/;
+            if ( !(id_rep.match(reg)) ){ // reg.test(id_rep) ) { 
+                console.log("si:" + id_rep);
+                $("#error-label").hide();*}
+                        
+                        
+                        
+                $.post( "{$base_dir}ajaxs/ajax_servier.php", { id_rep: id_rep })
                     .done(function( data ) {
-    //                    console.log("Respuesta del ajax: "+data);
+                        console.log("Respuesta del ajax:   "+data);
                     }, "json");
-    //                console.log( ui.item.id );
-                }
-            });
-        });        
+                    
+                    
+                    
+            {*}
+            else {
+                console.log("No: "+id_rep);
+                $("#error-label").show();
+            }*}
+        });
+        
     </script>
 
 <div class="cart_navigation">
