@@ -89,8 +89,9 @@ class Utilities extends UtilitiesCore {
 	}
 
 	// datos address RFC
-	public static function data_address_RFC ( $idcliente )
-	{
+	public static function data_address_RFC ( $idcliente ){
+            
+            if(isset( $idcliente ) && $idcliente != null && $idcliente != ""){
 		$sql = "SELECT
 					a.id_address, a.dni, a.firstname, a.address1, a.postcode, a.phone, ac.id_city, a.id_state, a.id_colonia, a.alias
 				FROM "._DB_PREFIX_."address a
@@ -100,5 +101,7 @@ class Utilities extends UtilitiesCore {
 		$dataaddressrfc = Db::getInstance()->ExecuteS($sql);
 
 		return $dataaddressrfc[0];
+            }
+            return array();
 	}
 }

@@ -221,7 +221,7 @@ class CirculoSalud{
 
     public function Create_Sales($id_order) {
         
-        $result = $this->ProductsForXml($id_order);
+        $result = $this->ProductsForXml( $id_order, $sessionApego );
         
         foreach ($result as $product) {
             $ProductsXml = $ProductsXml.'
@@ -243,7 +243,7 @@ class CirculoSalud{
                         <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
                           <soap:Body>
                             <Create_Sales xmlns="http://tempuri.org/">
-                              <Sesion>'.$this->session_load.'</Sesion>
+                              <Sesion>'.$sessionApego.'</Sesion>
                               <Pedido>
                                 <NoTarjeta>'.$result[0]['access_value'].'</NoTarjeta>
                                 <CedulaProfesionalMedico></CedulaProfesionalMedico>
@@ -263,7 +263,7 @@ class CirculoSalud{
     }
 
 
-    public function Create_Sales_Folio_Receta($id_order) {
+    public function Create_Sales_Folio_Receta( $id_order, $sessionApego ) {
         
         $result = $this->ProductsForXml($id_order);
         
@@ -287,7 +287,7 @@ class CirculoSalud{
                         <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
                           <soap:Body>
                             <Create_Sales_Folio_Receta xmlns="http://tempuri.org/">
-                              <Sesion>'.$this->session_load.'</Sesion>
+                              <Sesion>'.$sessionApego.'</Sesion>
                               <Pedido>
                                 <NoTarjeta>'.$result[0]['access_value'].'</NoTarjeta>
                                 <CedulaProfesionalMedico></CedulaProfesionalMedico>
@@ -303,8 +303,33 @@ class CirculoSalud{
                           </soap:Body>
                         </soap:Envelope>';
 
-        $xmlobj=/*new SimpleXMLElement(*/$xml_method;
-        return $xmlobj;
+//        $xmlobj=/*new SimpleXMLElement(*/$xml_method;
+//        var_dump($xml_method);
+//        exit(0);
+        
+        $parser = $this->WebService(__FUNCTION__, $xml_method);
+
+        echo ($this->debug_mode == true ) ?  "<br><pre> Function: ".__FUNCTION__: '';
+        ($this->debug_mode == true ) ? print_r($parser): print_r('');
+        echo ($this->debug_mode == true ) ?  "<br></pre> Function " : '';
+
+
+        ($this->debug_mode == true ) ?  print_r($parser) : print_r('');
+        // user $parser to get your data out of XML response and to display it.
+            
+        if ( $parser->Create_Sales_Folio_RecetaResponse->Create_Sales_Folio_RecetaResult->HuboError == 'true' ) {
+              
+            $this->error[] = 'Ocurrio un error al momento de crear el folio de la orden. '.$parser->Create_Sales_Folio_RecetaResponse->Create_Sales_Folio_RecetaResult->MensajeError;
+            ($this->debug_mode == true ) ?  print_r($this->error) : print_r('');
+            return false;
+
+        }
+        else {
+              
+            $this->Create_Sales_Folio_Receta = $parser->Create_Sales_Folio_RecetaResponse->Create_Sales_Folio_RecetaResult;
+            return true;
+
+        }
     }
 
 

@@ -722,8 +722,33 @@ WHERE o.id_order = ' . (int) $this->order->id;
 
 //}
 
+        $CirculoSalud = new CirculoSalud();
+        $data = $CirculoSalud->ProductsForXml( $this->order->id );
+        $sql = 'SELECT c.sessionApego
+                FROM ps_orders o
+                inner JOIN ps_cart c
+                ON o.id_cart = c.id_cart
+                WHERE o.id_order = '.$this->order->id.';';
+        $sessionApego = DB::getInstance()->getValue($sql);
+        
+        $xml = $CirculoSalud->Create_Sales_Folio_Receta( $this->order->id, $sessionApego );
+//        error_log("El resultado es: ".$xml,3,"/var/www/errors.log");
+//        
+//        $c_rule = new CartRule();
+//        $sqlCartRule = $c_rule->getCartRulesByNameLang( 'CIRSAN_C8910CI27', 1 );
+//        echo 'Este es el fucking $sqlCartRule:  <br><br><pre>';
+//        var_dump( $sqlCartRule );
+//        
+//        echo 'Este es el fucking DATA:  <br><br><pre>';
+//        var_dump($data);
+//        echo '<br><br>Este es el sessionApego <br><br><pre>';
+//        var_dump($sessionApego);
+//        echo '<br><br>este es el xml<br><br><pre>';
+//        var_dump($xml);
+//        exit(0);
 
-         $this->smarty->assign(array(
+        
+        $this->smarty->assign(array(
             'order' => $this->order,
             'order_details' => $list_products,
             'cart_rules' => $cart_rules,
@@ -749,7 +774,7 @@ WHERE o.id_order = ' . (int) $this->order->id;
             'rfcreceptor' => $rfcReceptor,
             'rfcemisor' => $rfcEmisor
         ));
-       
+          
 ///////////////////////////////////////////////////////////////////////
   //sirve para mostrar la factura sin imprimir.
  //   echo '<pre>array<br>...';
