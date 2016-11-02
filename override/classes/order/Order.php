@@ -54,6 +54,9 @@ class Order extends OrderCore {
 
 	public function addCartRule($id_cart_rule, $name, $values, $id_order_invoice = 0, $free_shipping = null)
 	{
+		error_log("la orden ".$this->id." adiciono la regla: ".$id_cart_rule,0);
+		error_log(print_r(debug_backtrace(2), TRUE),0);
+		
 		$order_cart_rule = new OrderCartRule();
 		$cart_rule = new CartRule($id_cart_rule);
 

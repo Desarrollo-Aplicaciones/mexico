@@ -77,27 +77,52 @@ class PaymentModule extends PaymentModuleCore {
             // Make sure CarRule caches are empty
             CartRule::cleanCache();
 
+            $cart_rules = $this->context->cart->getCartRules();
+            foreach ($cart_rules as $cart_rule)
+            {
+                if (($rule = new CartRule((int)$cart_rule['obj']->id)) && Validate::isLoadedObject($rule))
+                {
+                    if ($error = $rule->checkValidity($this->context, true, true))
+                    {
+                        $this->context->cart->removeCartRule((int)$rule->id);
+                        if (isset($this->context->cookie) && isset($this->context->cookie->id_customer) && $this->context->cookie->id_customer)
+                        {
+                            if (Configuration::get('PS_ORDER_PROCESS_TYPE') == 1)
+                                Tools::redirect('index.php?controller=order-opc&submitAddDiscount=1&discount_name='.urlencode($rule->code));
+                            Tools::redirect('index.php?controller=order&submitAddDiscount=1&discount_name='.urlencode($rule->code));
+                        }
+                        else
+                        {
+                            $rule_name = isset($rule->name[(int)$this->context->cart->id_lang]) ? $rule->name[(int)$this->context->cart->id_lang] : $rule->code;
+                            $error = Tools::displayError(sprintf('CartRule ID %1s (%2s) used in this cart is not valid and has been withdrawn from cart', (int)$rule->id, $rule_name));
+                            PrestaShopLogger::addLog($error, 3, '0000002', 'Cart', (int)$this->context->cart->id);
+                        }
+                    }
+                }
+            }
 
             $contador = 0;
             foreach ($package_list as $id_address => $packageByAddress)
-                foreach ($packageByAddress as $id_package => $package) {
-
-
-
+                foreach ($packageByAddress as $id_package => $package) 
+                {
                     $order = new Order();
                     $order->product_list = $package['product_list'];
 
-                    if (Configuration::get('PS_TAX_ADDRESS_TYPE') == 'id_address_delivery') {
+                    if (Configuration::get('PS_TAX_ADDRESS_TYPE') == 'id_address_delivery') 
+                    {
                         $address = new Address($id_address);
                         $this->context->country = new Country($address->id_country, $this->context->cart->id_lang);
                     }
 
                     $carrier = null;
-                    if (!$this->context->cart->isVirtualCart() && isset($package['id_carrier'])) {
+                    if (!$this->context->cart->isVirtualCart() && isset($package['id_carrier'])) 
+                    {
                         $carrier = new Carrier($package['id_carrier'], $this->context->cart->id_lang);
                         $order->id_carrier = (int) $carrier->id;
                         $id_carrier = (int) $carrier->id;
-                    } else {
+                    } 
+                    else 
+                    {
                         $order->id_carrier = 0;
                         $id_carrier = 0;
                     }
@@ -128,17 +153,11 @@ class PaymentModule extends PaymentModuleCore {
                     $order->total_products_wt = (float) $this->context->cart->getOrderTotal(true, Cart::ONLY_PRODUCTS_WITHOUT_SHIPPING, $order->product_list, $id_carrier);
 
                     $order->total_discounts_tax_excl = (float) abs($this->context->cart->getOrderTotal(false, Cart::ONLY_DISCOUNTS, $order->product_list, $id_carrier));
-
                     $order->total_discounts_tax_incl = (float) abs($this->context->cart->getOrderTotal(false, Cart::ONLY_DISCOUNTS, $order->product_list, $id_carrier));
-
                     $order->total_discounts = $order->total_discounts_tax_incl;
 
                     $order->total_shipping_tax_excl = (float) $this->context->cart->getPackageShippingCost((int) $id_carrier, false, null, $order->product_list);
                     $order->total_shipping_tax_incl = (float) $this->context->cart->getPackageShippingCost((int) $id_carrier, false, null, $order->product_list);
-
-                    // $contador++;
-                    // echo $contador."<br>";
-
                     $order->total_shipping = $order->total_shipping_tax_incl;
 
                     if (!is_null($carrier) && Validate::isLoadedObject($carrier))
@@ -149,23 +168,14 @@ class PaymentModule extends PaymentModuleCore {
                     $order->total_wrapping = $order->total_wrapping_tax_incl;
 
                     $order->total_paid_tax_excl = (float) Tools::ps_round((float) $this->context->cart->getOrderTotal(true, Cart::BOTH, $order->product_list, $id_carrier), 2);
-
-
-
-
                     $order->total_paid_tax_incl = (float) Tools::ps_round((float) $this->context->cart->getOrderTotal(true, Cart::BOTH, $order->product_list, $id_carrier), 2);
                     $order->total_paid = $amount_paid = $order->total_paid_tax_incl;
                     
-
                     $order->invoice_date = '0000-00-00 00:00:00';
                     $order->delivery_date = '0000-00-00 00:00:00';
-
 
                     $order->total_paid_tax_incl = (float) Tools::ps_round((float) $this->context->cart->getOrderTotal(false, Cart::BOTH, $order->product_list, $id_carrier), 2);
                     $order->total_paid = $order->total_paid_tax_incl;
-
-                    $order->invoice_date = '0000-00-00 00:00:00';
-                    $order->delivery_date = '0000-00-00 00:00:00';
 
                     $order->private_message = str_replace( "\n", " - ",  str_replace( "\r", " - ", $private_message ) );
 

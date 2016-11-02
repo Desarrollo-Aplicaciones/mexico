@@ -114,7 +114,7 @@ public  function __construct($id_address = null, $id_lang = null)
 	public function add($autodate = true, $null_values = false)
 	{
 
-        $dir_change = explode( "|", $this->city );
+		$dir_change = explode( "|", $this->city );
 		
 		$nom_city = $this->city;
 
@@ -141,23 +141,17 @@ public  function __construct($id_address = null, $id_lang = null)
        if (!parent::add($autodate, $null_values))
            return false;
 
-       $Id_address=Db::getInstance()->Insert_ID();
-       error_log("Id_address1 : " . $Id_address);
-
-       if ($this->id_colonia 
-            && (!isset($val_cityid) || !is_numeric($dir_change[0]))) {
-          $val_cityid = $this->getIdCityFromIdColony($this->id_colonia);
-       }
+       $Id_address=Db::getInstance()->Insert_ID(); 
 
        if($Id_address == 0) {
-         $Id_address = $this->id;
-          error_log("Id_address2 : " . $Id_address);
-      }
+         $Id_address = $address->id;
 
-      if ( !Db::getInstance()->insert('address_city', array('id_address' => (int)$Id_address, 'id_city' => (int)$val_cityid ))) {
-        Db::getInstance()->update('address_city', array( 'id_city'=>(int)$val_cityid ), 'id_address = '.(int)$Id_address );
-      }
-     
+         Db::getInstance()->update('address_city', array( 'id_city'=>(int)$val_cityid ), 'id_address = '.(int)$Id_address );
+
+     } else {
+
+         Db::getInstance()->insert('address_city', array( 'id_address'=>(int)$Id_address, 'id_city'=>(int)$dir_change[0] ));
+     }
 
      if (Validate::isUnsignedId($this->id_customer))
        Customer::resetAddressCache($this->id_customer);
@@ -165,11 +159,7 @@ public  function __construct($id_address = null, $id_lang = null)
    return true;
 }
 
-    public function getIdCityFromIdColony($idPostCode = 0)
-    {
-        $sql = "SELECT id_ciudad FROM "._DB_PREFIX_."cod_postal WHERE id_codigo_postal = " . (int)$idPostCode;
-        return Db::getInstance()->getValue($sql);
-    }
+
 
 public function update($null_values = false)
 {
@@ -194,12 +184,7 @@ public function update($null_values = false)
     }
 
     $Id_address = $this->id;
-
-    if ($this->id_colonia 
-        && (!isset($val_cityid) || !is_numeric($dir_change[0]))) {
-        $val_cityid = $this->getIdCityFromIdColony($this->id_colonia);
-    }
-
+    
     Db::getInstance()->update('address_city', array( 'id_city'=>(int)$val_cityid ), 'id_address = '.(int)$Id_address );
     
         // Empty related caches

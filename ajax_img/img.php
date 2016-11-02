@@ -25,7 +25,7 @@ if(isset($_GET['image']) && !empty($_GET['image'])){
                       "xbm" => IMAGETYPE_XBM,
                       "ico" => IMAGETYPE_ICO
                       );
-  $ruta_img = _PS_ROOT_DIR_.'/KWE54O31MDORBOJRFRPLMM8C7H24LQQR/';
+  $ruta_base = _PS_ROOT_DIR_.'/KWE54O31MDORBOJRFRPLMM8C7H24LQQR/';
 
   $sql = "SELECT formula.nombre_archivo_original as imagen,formula.nombre_archivo as fuente
   FROM "._DB_PREFIX_."formula_medica formula 
@@ -37,26 +37,40 @@ if(isset($_GET['image']) && !empty($_GET['image'])){
    FROM
    "._DB_PREFIX_."customer 
    WHERE id_customer = ".(int) $id_formula_medica .";";
-   $ruta_img = _PS_ROOT_DIR_.'/img/customers/profile/';
+   $ruta_base = _PS_ROOT_DIR_.'/img/customers/profile/';
+
  }
 
 
+ $full_name = '';
+ $ruta_img = '';
 
  if($row = Db::getInstance()->getRow($sql)){
   if(isset($row['fuente']) && !empty($row['fuente'])){
-    $ruta_img .= $row['fuente'];
-    if(!file_exists($ruta_img)){
-      $ruta_img .= 'img_default'; 
+    $ruta_img = $row['fuente'];
+    if(!file_exists($ruta_base.$ruta_img)){
+      $ruta_img = 'img_default'; 
     }
   }else{
-   $ruta_img .= 'img_default'; 
+   $ruta_img = 'img_default'; 
  }  
 }else{
-  $ruta_img .= 'img_default'; 
+  $ruta_img = 'img_default'; 
 }
+
+//supplier_icon
+if($array_img[0] == 'supplier_icon'){
+ $ruta_base = _PS_ROOT_DIR_.'/img/app/supplier/';
+ $ruta_img = $array_img[1].'.jpg';
+ if(!file_exists($ruta_base.$ruta_img)){
+  $ruta_img = '0.jpg'; 
+}
+}
+
+$full_name = $ruta_base.$ruta_img;
 header("Content-Type: ".image_type_to_mime_type($extensions[strtolower($array_img[2])])); 
 header("Content-Transfer-Encoding: binary");
-header("Content-Length: ".filesize($ruta_img));
-readfile($ruta_img);
+header("Content-Length: ".filesize($full_name));
+readfile($full_name);
 exit();
 }
