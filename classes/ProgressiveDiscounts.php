@@ -67,7 +67,7 @@ class ProgressivediscountsCore
 	 * [addProgressiveDiscount Funcion con el que se aplicara el descuento progresivo]
 	 */
 	public function addProgressiveDiscount( $Cart = null ) {
-
+		//error_log(print_r(debug_backtrace(2), TRUE), 3, "/tmp/progresivo.log");
 		// cargar objeto con las caracteristicas del carrito
 		if ( !empty($Cart) && !is_null($Cart) ) {
 			$this->ObjectCart = $Cart;
@@ -259,7 +259,10 @@ class ProgressivediscountsCore
 	 */
 	public function addCartRuleFromCart() {
 
+		//////--error_log("\r\n addCartRuleFromCart", 3, "/tmp/progresivo.log");
+
 		if ( empty($this->idCartRule) ) {
+			//////--error_log(" - - 1 addCartRuleFromCart empty(this->idCartRule) ", 3, "/tmp/progresivo.log");
 			// si el anterior cupon agregado es 0 (compra inicial) toma el primer cupon de la escala, si no es 0, toma el cupon agregado y calcula el siguiente a agregar
 			$queryCartRuleAdd = "SELECT
 									crpd1.id_cart_rule_progressive_discount AS keycartrule,
@@ -272,8 +275,10 @@ class ProgressivediscountsCore
 								WHERE crpd1.id_progressive_discount = ".$this->idProgressiveDiscount;
 
 			if ( $this->beforeProgressiveDiscount['id_cart_rule_progressive_disscount'] == 0 ) {
+				//////--error_log(" - - 2 beforeProgressiveDiscount['id_cart_rule_progressive_disscount'] == 0 ", 3, "/tmp/progresivo.log");
 				$queryCartRuleAdd .= " AND crpd1.priority = 1";
 			} else {
+				//////--error_log(" - - 3 beforeProgressiveDiscount['id_cart_rule_progressive_disscount'] != 0 ", 3, "/tmp/progresivo.log");
 				// para tomar el siguiente cupon de la escala del descuento progresivo
 				$queryCartRuleAdd .= " AND crpd1.id_cart_rule_progressive_discount = ".$this->beforeProgressiveDiscount['id_cart_rule_progressive_disscount'];
 			}
@@ -283,9 +288,11 @@ class ProgressivediscountsCore
 			$resultsCartRuleAdd = $resultsCartRuleAdd[0];
 			
 			if ( ($resultsCartRuleAdd['Nextkeycartrule'] == "" && $resultsCartRuleAdd['Nextidcartrule'] == "") || $this->beforeProgressiveDiscount['id_cart_rule_progressive_disscount'] == 0 ) {
+				//////--error_log(" - - 4 Nextkeycartrule beforeProgressiveDiscount['id_cart_rule_progressive_disscount'] == 0 ", 3, "/tmp/progresivo.log");
 				$this->KeyCartRule = $resultsCartRuleAdd['keycartrule'];
 				$this->idCartRule = $resultsCartRuleAdd['idcartrule'];
 			} else {
+				//////--error_log(" - - 5 Nextkeycartrule beforeProgressiveDiscount['id_cart_rule_progressive_disscount'] != 0 ", 3, "/tmp/progresivo.log");
 				$this->KeyCartRule = $resultsCartRuleAdd['Nextkeycartrule'];
 				$this->idCartRule = $resultsCartRuleAdd['Nextidcartrule'];
 			}
@@ -305,7 +312,7 @@ class ProgressivediscountsCore
 			$this->removeCartRuleFromCart();
 
 			if ( $resultsValidateExistCouponInCart['QuantityCartRules'] <= 0 ) {
-				
+				//////--error_log(" - - 6 resultsValidateExistCouponInCart['QuantityCartRules'] <= 0 ", 3, "/tmp/progresivo.log");
 				// remover relaciones antiguas carrito<->cupones<->descuento progresivo
 				Db::getInstance()->execute('
 					DELETE FROM '._DB_PREFIX_.'cart_cartrule_progressive_discounts
@@ -327,19 +334,19 @@ class ProgressivediscountsCore
 				$queryCouponReductionProduct ="SELECT reduction_product
 												FROM "._DB_PREFIX_."cart_rule
 												WHERE id_cart_rule = ".$this->idCartRule;
-                                error_log($queryCouponReductionProduct, 3, "/tmp/progresivo.log");
+                                //////--error_log(" - - 7 ".$queryCouponReductionProduct, 3, "/tmp/progresivo.log");
 				$resultsCouponReductionProduct = Db::getInstance()->ExecuteS($queryCouponReductionProduct);
 
 				if ( $resultsCouponReductionProduct[0]['reduction_product'] == 0 || ($resultsCouponReductionProduct[0]['reduction_product'] == $this->idProduct) )
 				{
-                                        error_log("addCartRuleFromCart if add cupon".$resultsCouponReductionProduct[0]['reduction_product'].' - '.$this->idProduct, 3, "/tmp/progresivo.log");
+                                        //////--error_log(" - - 8 addCartRuleFromCart if add cupon".$resultsCouponReductionProduct[0]['reduction_product'].' - '.$this->idProduct, 3, "/tmp/progresivo.log");
 					$this->ObjectCart->addCartRule($this->idCartRule);
 				} else {
-                                    error_log("addCartRuleFromCart no if resultsCouponReductionProduct", 3, "/tmp/progresivo.log");
+                                    //////--error_log(" - - 9 addCartRuleFromCart no if resultsCouponReductionProduct", 3, "/tmp/progresivo.log");
                                 }
 			}
 		} else {
-                    error_log("addCartRuleFromCart no if idCartRule", 3, "/tmp/progresivo.log");
+                    //////--error_log(" - -10 addCartRuleFromCart no if idCartRule", 3, "/tmp/progresivo.log");
                 }
 
 		return true;
@@ -351,27 +358,76 @@ class ProgressivediscountsCore
 	 * [removeCartRuleFromCart Funcion para remover las reglas del carrito ]
 	 */
 	public function removeCartRuleFromCart() {
+		//////error_log("\r\n  removeCartRuleFromCart: ".$this->ObjectCart->id, 3, "/tmp/progresivo.log");
 
-		// remover cupones
-		$queryRemoveCartRules = '
-			DELETE FROM '._DB_PREFIX_.'cart_cart_rule
-			WHERE id_cart = '.(int)$this->ObjectCart->id;
+		$QueryReglasCarritoEliminar = " SELECT /*'a' AS d1, */cr.id_cart_rule AS reglasdesassoc FROM ps_cart_cart_rule ccr
+					INNER JOIN ps_cart_rule cr ON ( ccr.id_cart_rule = cr.id_cart_rule )
+					LEFT JOIN ps_cart_rule_progressive_discounts crpd ON ( crpd.id_cart_rule = ccr.id_cart_rule )
+					WHERE ccr.id_cart = ".$this->ObjectCart->id."
+					AND ( cr.reduction_product = 0 
+					OR cr.code != '' )
+					AND crpd.id_cart_rule IS NULL 
 
-		// remover productos regalados
-		$queryRemoveGiftProduct = '
-			DELETE cp.*
-			FROM '._DB_PREFIX_.'cart_product cp
-			INNER JOIN '._DB_PREFIX_.'cart_rule cr
-			ON ( cp.id_product = cr.gift_product )
-			WHERE cp.id_cart = '.(int)$this->ObjectCart->id;
+					UNION
 
-		if ( !empty($this->idCartRule) ) {
-			$queryRemoveCartRules .= ' AND id_cart_rule != '.$this->idCartRule;
-			$queryRemoveGiftProduct .= ' AND cr.id_cart_rule != '.$this->idCartRule;
+
+					SELECT /*'b' AS d1, */cr.id_cart_rule AS reglasdesassoc FROM ps_cart_cart_rule ccr
+					INNER JOIN ps_cart_rule cr ON ( ccr.id_cart_rule = cr.id_cart_rule )
+					LEFT JOIN ps_cart_rule_progressive_discounts crpd ON ( crpd.id_cart_rule = ccr.id_cart_rule )
+					INNER JOIN ( 
+							SELECT cr.reduction_product AS product_del, MAX( crpd.priority) AS prioridad 
+								FROM ps_cart_cart_rule ccr
+								INNER JOIN ps_cart_rule cr ON ( ccr.id_cart_rule = cr.id_cart_rule )
+								LEFT JOIN ps_cart_rule_progressive_discounts crpd ON ( crpd.id_cart_rule = ccr.id_cart_rule )
+								WHERE ccr.id_cart = ".$this->ObjectCart->id." -- AND cr.reduction_product = 0
+								GROUP BY cr.reduction_product
+								HAVING COUNT(cr.reduction_product) > 1 
+										) crcd ON ( crcd.product_del = cr.reduction_product AND ( crcd.prioridad < crpd.priority OR crpd.priority IS NULL ) )
+					WHERE ccr.id_cart = ".$this->ObjectCart->id;
+
+		$result_QueryReglasCarritoEliminar = Db::getInstance()->ExecuteS($QueryReglasCarritoEliminar);
+		
+		$ReglasCarritoEliminar = array();
+
+		foreach ($result_QueryReglasCarritoEliminar[0] as $key => $value) {
+			$ReglasCarritoEliminar[] = $value;
+			error_log("\r\n  ReglasCarritoEliminar: ".$value." - ".count($ReglasCarritoEliminar), 3, "/tmp/progresivo.log");
 		}
 
-		Db::getInstance()->execute($queryRemoveCartRules);
-		Db::getInstance()->execute($queryRemoveGiftProduct);
+		////////error_log("\r\n  removeCartRuleFromCart query \r\n : ".$reglasCarritoElminar, 3, "/tmp/progresivo.log");
+		if ( count($ReglasCarritoEliminar) == 0 ) {
+			error_log("\r\n  no reglas a desasociar ", 3, "/tmp/progresivo.log");
+			return true;
+		} else {
+			error_log("\r\n  SI reglas a desasociar ", 3, "/tmp/progresivo.log");
+			// remover cupones
+			$queryRemoveCartRules = '
+				DELETE FROM '._DB_PREFIX_.'cart_cart_rule
+				WHERE id_cart = '.(int)$this->ObjectCart->id.' AND id_cart_rule IN ( '.implode(',', $ReglasCarritoEliminar ).' ) ' ;
+
+			////////error_log("\r\n  queryRemoveCartRules: ".$queryRemoveCartRules, 3, "/tmp/progresivo.log");
+			//return true;
+			// remover productos regalados
+			$queryRemoveGiftProduct = '
+				DELETE cp.*
+				FROM '._DB_PREFIX_.'cart_product cp
+				INNER JOIN '._DB_PREFIX_.'cart_rule cr
+				ON ( cp.id_product = cr.gift_product )
+				WHERE cp.id_cart = '.(int)$this->ObjectCart->id;
+
+			if ( !empty($this->idCartRule) ) {
+				// $queryRemoveCartRules .= ' AND id_cart_rule != '.$this->idCartRule;
+				$queryRemoveGiftProduct .= ' AND cr.id_cart_rule != '.$this->idCartRule;
+			}
+			
+			////////error_log("\r\n  queryRemoveCartRules: ".$queryRemoveCartRules, 3, "/tmp/progresivo.log");
+			////////error_log("\r\n  queryRemoveGiftProduct: ".$queryRemoveGiftProduct, 3, "/tmp/progresivo.log");
+
+			$res_query1 = Db::getInstance()->execute($queryRemoveCartRules);
+			$res_query2 = Db::getInstance()->execute($queryRemoveGiftProduct);
+
+			//////error_log(" borrar y desasociar reglas q1: ".$res_query1." -  q2: ".$res_query2, 3, "/tmp/progresivo.log");
+		}
 
 		return true;
 	}
