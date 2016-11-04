@@ -2303,7 +2303,7 @@ class Cart extends CartCore {
 
 				$cart_rules = $this->getCartRules(CartRule::FILTER_ACTION_ALL);
 
-			/*	error_log("\r\n cart : \r\n  ".print_r($cart_rules,true ), 3, "/tmp/progresivo.log");
+				/*error_log("\r\n cart : \r\n  ".print_r($cart_rules,true ), 3, "/tmp/progresivo.log");
 				exit;*/
 				
 				$aux =  array();
@@ -2341,16 +2341,33 @@ class Cart extends CartCore {
 							if (!isset($products[$key_p]["price_new"])) {
 
 								//--//--//error_log("\r\n NO products[count_prod][price_new] ".$products[$key_p]["price_new"], 3, "/tmp/progresivo.log");
+								if( $cart_rules[$key_c]['reduction_percent'] > 0 && $cart_rules[$key_c]['reduction_amount'] == 0 ){
 
-								$cart_rules[$key_c]["total_discount_cart_rule"] +=  Tools::ps_round( (($products[$key_p]['precio_base'] * $cart_rules[$key_c]['reduction_percent'])/100) * $products[$key_p]['cart_quantity'] ,2);
-								$products[$key_p]["price_new"] =  Tools::ps_round( ($products[$key_p]['precio_base'] - (($products[$key_p]['precio_base'] * $cart_rules[$key_c]['reduction_percent'])/100))* $products[$key_p]['cart_quantity'], 2);
+									$cart_rules[$key_c]["total_discount_cart_rule"] +=  Tools::ps_round( (($products[$key_p]['precio_base'] * $cart_rules[$key_c]['reduction_percent'])/100) * $products[$key_p]['cart_quantity'] ,2);
+									$products[$key_p]["price_new"] =  Tools::ps_round( ($products[$key_p]['precio_base'] - (($products[$key_p]['precio_base'] * $cart_rules[$key_c]['reduction_percent'])/100))* $products[$key_p]['cart_quantity'], 2);
+
+								}
+								else{
+
+									$cart_rules[$key_c]["total_discount_cart_rule"] +=  Tools::ps_round( ( $products[$key_p]['precio_base'] - $cart_rules[$key_c]['reduction_amount']) * $products[$key_p]['cart_quantity'] ,2);
+									$products[$key_p]["price_new"] =  Tools::ps_round( ($products[$key_p]['precio_base'] - $cart_rules[$key_c]['reduction_amount']) * $products[$key_p]['cart_quantity'], 2);	
+
+								}
 
 							} else {
 
 								//--//--//error_log("\r\n SI products[count_prod][price_new] ".$products[$key_p]["price_new"], 3, "/tmp/progresivo.log");
 
-								$products[$key_p]["price_new"]  =  Tools::ps_round( ($products[$key_p]["price_new"] - (($products[$key_p]["price_new"] * $cart_rules[$key_c]['reduction_percent'])/100))* $products[$key_p]['cart_quantity'], 2);
-								$cart_rules[$key_c]["total_discount_cart_rule"] +=  Tools::ps_round( (($products[$key_p]['precio_base'] * $cart_rules[$key_c]['reduction_percent'])/100)* $products[$key_p]['cart_quantity'], 2);
+								if( $cart_rules[$key_c]['reduction_percent'] > 0 && $cart_rules[$key_c]['reduction_amount'] == 0 ){
+
+									$products[$key_p]["price_new"]  =  Tools::ps_round( ($products[$key_p]["price_new"] - (($products[$key_p]["price_new"] * $cart_rules[$key_c]['reduction_percent'])/100))* $products[$key_p]['cart_quantity'], 2);
+									$cart_rules[$key_c]["total_discount_cart_rule"] +=  Tools::ps_round( (($products[$key_p]['precio_base'] * $cart_rules[$key_c]['reduction_percent'])/100)* $products[$key_p]['cart_quantity'], 2);
+								}
+								else{
+
+									$products[$key_p]["price_new"]  =  Tools::ps_round( ($products[$key_p]["price_new"] - $cart_rules[$key_c]['reduction_amount'] )* $products[$key_p]['cart_quantity'], 2);
+									$cart_rules[$key_c]["total_discount_cart_rule"] +=  Tools::ps_round( $cart_rules[$key_c]['reduction_amount'] * $products[$key_p]['cart_quantity'], 2);
+								}
 							}
 
 						error_log(" - cart_rule[total_discount_cart_rule]: ".$cart_rules[$key_c]["total_discount_cart_rule"], 3, "/tmp/progresivo.log");
