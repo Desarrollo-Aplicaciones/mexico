@@ -5,9 +5,9 @@ class PaymentModule extends PaymentModuleCore {
         public function logtxt ($text="")
             {
                 //$contenido="-- lo que quieras escribir en el archivo -- \r\n";
-                $fp=fopen("/home/ubuntu/log_payu/estado_payment_module.txt","a+");
-                fwrite($fp,$text."\r\n");
-                fclose($fp) ;
+//                $fp=fopen("/home/ubuntu/log_payu/estado_payment_module.txt","a+");
+//                fwrite($fp,$text."\r\n");
+//                fclose($fp) ;
             }
 
     public function validateOrder($id_cart, $id_order_state, $amount_paid, $payment_method = 'Unknown', $message = null, $extra_vars = array(), $currency_special = null, $dont_touch_amount = false, $secure_key = false, Shop $shop = null, $private_message = null) {
@@ -285,7 +285,7 @@ die();*/
                     /************ Progressive Discounts ************/
                     $ProgressiveDiscounts = new Progressivediscounts();
                     $ProgressiveDiscounts->idOrder = $order->id;
-                    $addProgressiveDiscounts = $ProgressiveDiscounts->addProgressiveDiscount( $this->context->cart );
+                    $addProgressiveDiscounts = $ProgressiveDiscounts->getProductsFromCartWithProgressiveDiscount( $this->context->cart );
 
                     $this->logtxt('2) id_cart: '.$id_cart.',  id_order_state: '.$id_order_state.", payment_method: ".$payment_method);
                     $opera = 0;
