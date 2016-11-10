@@ -983,12 +983,19 @@ class Cart extends CartCore {
 	}
 
 	public function getOrderTotal($with_taxes = true, $type = Cart::BOTH, $products = null, $id_carrier = null, $use_cache = true){  
-		
         /************ Progressive Discounts ************/
 		$ProgressiveDiscounts = new Progressivediscounts();
-		$addProgressiveDiscounts = $ProgressiveDiscounts->addProgressiveDiscount( $this );
+                error_log("\n\n\n\n\n\n\n\nEsto hace el addProgressiveDiscounts: ".print_r($ProgressiveDiscounts, true)."\n\n\n\n\n\n\n\n");
+//                error_log("\n\n\n\n\n\n\n\nse supone que es lo que le envia a esa damier: ".print_r($this, true)."\n\n\n\n\n\n\n\n");
+                
+		$addProgressiveDiscounts = $ProgressiveDiscounts->getProductsFromCartWithProgressiveDiscount( $this );
+//		$addProgressiveDiscounts = $ProgressiveDiscounts->addProgressiveDiscount( $this );
+//                error_log("\n\n\n\n\n\n\n\nEsto hace el addProgressiveDiscounts: ".$addProgressiveDiscounts."\n\n\n\n\n\n\n\n");
+//                var_dump($addProgressiveDiscounts);
+//                exit(0);
 		if ( !$addProgressiveDiscounts ) {
 			$ProgressiveDiscounts->removeResidueProgressiveDiscount();
+//                        error_log("\n\n\n\n\n\n\n\nEntro a Eliminar descuentos progresivos..\n\n\n\n\n\n\n\n" );
 		}
 
 		if (!$this->id) {
@@ -1010,6 +1017,7 @@ class Cart extends CartCore {
 		// Define virtual context to prevent case where the cart is not the in the global context
 		$virtual_context = Context::getContext()->cloneContext();
 		$virtual_context->cart = $this;
+//		error_log("\r\n\n\n\n\n\t id cart : \r\n\n\n\n\n\n  ".$virtual_context->cart->id, 3, "/tmp/progresivo.log");
 		
 		if (!in_array($type, $array_type))
 			die(Tools::displayError());
@@ -2259,7 +2267,7 @@ class Cart extends CartCore {
 
 		// Calculate total tax and discounts
     	/*error_log("\r\n\n\n\n \t\tEmpiezan los productos: \n\n\n ".print_r( $products, true )."\n\n\n\n\n\n", 3, "/tmp/progresivo.log");*/
-
+                
 		$products_total = 0;
 		$tax_total = 0;
 		$discounts_total = 0;
