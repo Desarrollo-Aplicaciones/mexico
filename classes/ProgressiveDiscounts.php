@@ -236,8 +236,8 @@ class ProgressivediscountsCore
                                     $this->dataHistoryProgressiveDiscount();
                                     $this->addHistoryProgressiveDiscount();
                                     return true;
-                                } else {
-error_log("\n\n\t\tContinuo...\n\n",3,"/tmp/progresivo.log");
+                                } 
+                                else {
                                     // valida si el contador de ordenes por periodo es mayor al numero de limite de compras por cliente
                                     $validateCounterOrdersPeriod = $this->validateCounterOrdersPeriodProgressiveDiscount();
                                     if ( $validateCounterOrdersPeriod ) {
@@ -245,6 +245,7 @@ error_log("\n\n\t\tContinuo...\n\n",3,"/tmp/progresivo.log");
                                         return true;
                                     } else {
                                         $this->addCartRuleFromCart();
+//                                        error_log("\n\n\t\tConasdasdasdastinuo...\n\n",3,"/tmp/progresivo.log");
                                         $this->data = "5";
                                         $this->dataHistoryProgressiveDiscount();
                                         $this->addHistoryProgressiveDiscount();
