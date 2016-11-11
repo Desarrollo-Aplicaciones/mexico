@@ -83,10 +83,11 @@ class ProgressivediscountsCore
         
         public function getProductsFromCartWithProgressiveDiscount( $Cart = null ){
             
+		// cargar objeto con las caracteristicas del carrito
 		if ( !empty($Cart) && !is_null($Cart) ) {
-			$this->ObjectCart = $Cart;
+                    $this->ObjectCart = $Cart;
 		} else {
-			$this->ObjectCart = Context::getContext()->cart;
+                    $this->ObjectCart = Context::getContext()->cart;
 		}
                 
                 // valida si se encuentra un usuario logeado en el sistema
@@ -94,34 +95,33 @@ class ProgressivediscountsCore
                 
                 // valida si se encuentra como minimo un producto con descuento progresivo en el carrito
 		$productIn = $this->validateProductInProgressiveDiscount();
+                
                 if ( $isLogged && $productIn ) {
-                    foreach ($this->idProducts as $key => $value ) {
-                            $this->idProduct = $this->idProducts[$key];
-                            $this->currentProgressiveDiscount = $this->currentProgressiveDiscounts[$key];
-                            $this->idProgressiveDiscount = $this->idProgressiveDiscounts[$key];
-                            if ( $this->addProgressiveDiscount() ){
-//                                echo 'Se aplico descuento a: '.$this->idProduct."<br><br><br><br>";
-                            }
+                    $result = true;
+                    foreach ( $this->idProducts as $key => $value ) {
+                        $this->idProduct = $this->idProducts[$key];
+                        $this->currentProgressiveDiscount = $this->currentProgressiveDiscounts[$key];
+                        $this->idProgressiveDiscount = $this->idProgressiveDiscounts[$key];
+                        $result = $this->addProgressiveDiscount() ? $result : false;
                     }
-                    return true;
+//                    error_log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n en get order total: ".$result."\n\n\n\n\n\n\n\n\n\n" , 3, "/tmp/progresivo.log");
+                    return $result;
                 }
                 else {
                     return false;
                 }
                 
         }
+        
         /**
-	 * [addProgressiveDiscount Funcion con el que se aplicara el descuento progresivo]
+	 * [addProgressiveDiscount Funcion con la que se aplicara el descuento progresivo]
 	 */
 	public function addProgressiveDiscount() {
 //		error_log(print_r(debug_backtrace(2), TRUE), 3, "/tmp/progresivo.log");
 //		error_log("\n\n\n\n\n\n\n\n\n\n\n\t   Este es el carruito que entra a add de dcts prog:  ".print_r($Cart, TRUE)."\n\n\n\n\n\n\n\n\n\n\n", 3, "/tmp/progresivo.log");
-		// cargar objeto con las caracteristicas del carrito
-                
-//                echo '<pre>';
-//                var_dump(Context::getContext()->cart);
-//                exit(0);
-
+//              echo '<pre>';
+//              var_dump(Context::getContext()->cart);
+//              exit(0);
 		// tomar la fecha actual
 		$date = getdate();
 		$this->currentDate = $date[0];
@@ -140,82 +140,120 @@ class ProgressivediscountsCore
 			$inHistoryProgressiveDiscount = $this->validateHistoryProgressiveDiscount();
 			if ( $inHistoryProgressiveDiscount ) {
 
-				// si la orden anterior no se encuentra en el estado valido para aplicar el descuento progresivo, no aplicara ningun descuento ni registrara en historial de descuento progresivo
-				$states_orders = explode(",", $this->currentProgressiveDiscount['states_orders']);
-				if ( !in_array($this->beforeProgressiveDiscount['current_state'], $states_orders) ) {
-					return false;
-				}
+                            // si la orden anterior no se encuentra en el estado valido para aplicar el descuento progresivo, no aplicara ningun descuento ni registrara en historial de descuento progresivo
+                            $states_orders = explode(",", $this->currentProgressiveDiscount['states_orders']);
+//                                    error_log("\n\n\tcurrentProgressiveDiscount: ".print_r($this->currentProgressiveDiscount,true),3,"/tmp/progresivo.log");
+//                                    error_log("\n\n\tcurrentProgressiveDiscount: ".print_r($states_orders,true),3,"/tmp/progresivo.log");
+                            if ( !in_array($this->beforeProgressiveDiscount['current_state'], $states_orders) ) {
+//                                    error_log("\n\n\t\tPaila 1\n\n".print_r($this->beforeProgressiveDiscount['current_state'],true),3,"/tmp/progresivo.log");
+                                    return false;
+                            }
+//                                    error_log("\n\n\t\tContinuo...\n\n",3,"/tmp/progresivo.log");
 
-				// valida si el contador de ciclos es mayor a la cantidd de cilos del descuento progresivo
-				$validateCounterCycles = $this->validateCounterCyclesProgressiveDiscount();
-				if ( !$validateCounterCycles ) {
-					return false;
-				} else {
-					// valida si la fecha actual es mayor a la fecha final del descuento progresivo
-					$validateRangeDateFinish = $this->validateRangeDateFinishProgressiveDiscount();
 
-					// valida si el contador de reinicio es mayor al reinicio del descuento progresivo
-					$validateCounterReset = $this->validateCounterResetProgressiveDiscount();
+                            // valida si el contador de ciclos es mayor a la cantidd de cilos del descuento progresivo
+                            $validateCounterCycles = $this->validateCounterCyclesProgressiveDiscount();
+                            if ( !$validateCounterCycles ) {
+//                                    error_log("\n\n\t\tPaila 2\n\n",3,"/tmp/progresivo.log");
+                                    return false;
+                            }
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            // valida si la fecha actual es mayor a la fecha final del descuento progresivo
+                            $validateRangeDateFinish = $this->validateRangeDateFinishProgressiveDiscount();
 
-					if ( $validateRangeDateFinish || $validateCounterReset ) {
-						$this->addHistoryProgressiveDiscount();
-						return true;
-					} else {
+                            // valida si el contador de reinicio es mayor al reinicio del descuento progresivo
+                            $validateCounterReset = $this->validateCounterResetProgressiveDiscount();
 
-						// valida si la fecha actual es mayor a la fecha final del periodo vigente
-						$validateRangeDateFinishPeriod = $this->validateRangeDateFinishPeriod();
-						if ( $validateRangeDateFinishPeriod ) {
-							
-							// valida si el contador de periodos es mayor al numero de periodos del descuento progresivo
-							$validateCounterPeriod = $this->validateCounterPeriodProgressiveDiscount();
-							if ( $validateCounterPeriod ) {
-								$this->addHistoryProgressiveDiscount();
-								return true;
-							} else {
+//                                        error_log("\n\n\t\t DEBEN ESTAR EN TRUE AMBAS    ".print_r($validateRangeDateFinish)." - ".print_r($validateCounterReset),3,"/tmp/progresivo.log");
+//                                        echo '<pre>';
+//                                        var_dump($validateRangeDateFinish);
+//                                        echo '<br>';
+//                                        var_dump($validateCounterReset);
+//                                        
+                            if ( $validateRangeDateFinish || $validateCounterReset ) {
+                                    $this->addHistoryProgressiveDiscount();
+                                    return true;
+                            } 
 
-								// valida si la fecha actual no sobrepasa la fecha final del proximo periodo
-								$validateEndDateNextPeriod = $this->validateEndDateNextPeriod();
-								if ( $validateEndDateNextPeriod ) {
-									$this->addHistoryProgressiveDiscount();
-									return true;
-								} else {
+                            // valida si la fecha actual es mayor a la fecha final del periodo vigente
+                            $validateRangeDateFinishPeriod = $this->validateRangeDateFinishPeriod();
+//                            var_dump($validateRangeDateFinishPeriod);
+//                             error_log("\n\n\t\tContinuo...\n\n",3,"/tmp/progresivo.log");
+                            if ( $validateRangeDateFinishPeriod ) {
+                                // valida si el contador de periodos es mayor al numero de periodos del descuento progresivo
+                                $validateCounterPeriod = $this->validateCounterPeriodProgressiveDiscount();
+                                if ( $validateCounterPeriod ) {
+                                    $this->addHistoryProgressiveDiscount();
+                                    return true;
+                                } else {
 
-									// toma y aplica el cupon a aplicar del listado de descuento progresivo
-									$this->addCartRuleFromCart();
-									$this->data = "2";
-									$this->dataHistoryProgressiveDiscount();
-									$this->addHistoryProgressiveDiscount();
-									return true;
-								}
-							}
-						} else {
+                                    // valida si la fecha actual no sobrepasa la fecha final del proximo periodo
+                                    $validateEndDateNextPeriod = $this->validateEndDateNextPeriod();
+                                    if ( $validateEndDateNextPeriod ) {
+                                        $this->addHistoryProgressiveDiscount();
+                                        return true;
+                                    }
+                                    else {
 
-							// valida si la ultima compra con descuento progresivo es una compra inicial
-							if ( $this->beforeProgressiveDiscount['initial_shopping'] == 1 ) {
-								$this->addCartRuleFromCart();
-								$this->data = "3";
-								$this->dataHistoryProgressiveDiscount();
-								$this->addHistoryProgressiveDiscount();
-								return true;
-							} else {
-
-								// valida si el contador de ordenes por periodo es mayor al numero de limite de compras por cliente
-								$validateCounterOrdersPeriod = $this->validateCounterOrdersPeriodProgressiveDiscount();
-								if ( $validateCounterOrdersPeriod ) {
-									$this->addHistoryProgressiveDiscount();
-									return true;
-								} else {
-									$this->addCartRuleFromCart();
-									$this->data = "5";
-									$this->dataHistoryProgressiveDiscount();
-									$this->addHistoryProgressiveDiscount();
-									return true;
-								}
-							}
-						}
-					}
-				}
-			} else {
+                                        // toma y aplica el cupon a aplicar del listado de descuento progresivo
+                                        $this->addCartRuleFromCart();
+                                        $this->data = "2";
+                                        $this->dataHistoryProgressiveDiscount();
+                                        $this->addHistoryProgressiveDiscount();
+                                        return true;
+                                    }
+                                }
+                            } 
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            else {
+                                 
+                                // valida si la ultima compra con descuento progresivo es una compra inicial
+                                if ( $this->beforeProgressiveDiscount['initial_shopping'] == 1 ) {
+//                                    error_log("\n\n\t\tContinuo...\n\n",3,"/tmp/progresivo.log");
+                                    $this->addCartRuleFromCart();
+                                    $this->data = "3";
+                                    $this->dataHistoryProgressiveDiscount();
+                                    $this->addHistoryProgressiveDiscount();
+                                    return true;
+                                } else {
+error_log("\n\n\t\tContinuo...\n\n",3,"/tmp/progresivo.log");
+                                    // valida si el contador de ordenes por periodo es mayor al numero de limite de compras por cliente
+                                    $validateCounterOrdersPeriod = $this->validateCounterOrdersPeriodProgressiveDiscount();
+                                    if ( $validateCounterOrdersPeriod ) {
+                                        $this->addHistoryProgressiveDiscount();
+                                        return true;
+                                    } else {
+                                        $this->addCartRuleFromCart();
+                                        $this->data = "5";
+                                        $this->dataHistoryProgressiveDiscount();
+                                        $this->addHistoryProgressiveDiscount();
+                                        return true;
+                                    }
+                                }
+                            }
+			}
+                        else {
                             $this->addHistoryProgressiveDiscount();
                             return true;
                         }
@@ -302,12 +340,13 @@ class ProgressivediscountsCore
                                         AND ohpd.id_progressive_discount = ".$this->idProgressiveDiscount."
                                         ORDER BY ohpd.date_order DESC , ohpd.id_order_history_progressive_discount DESC";
                 
-//                error_log("\n\n\n\n\n\n\n\n SQL consulta History progresivos:".$querySearchHistory." \n\n\n\n\n\n\n\n" );
-//        echo '<pre><br><br>'.$querySearchHistory;
-//        exit(0);
+//                error_log("\n\n\n\n\n\n\n\n SQL consulta History progresivos:".$querySearchHistory." \n\n\n\n\n\n\n\n",3, "/tmp/progresivo.log");
+//                $resultsSearchHistory = Db::getInstance()->ExecuteS($querySearchHistory);
+//                error_log("\n\n\n\n\n\n\n\n respuesta sql resultsSearchHistory:".print_r($resultsSearchHistory, true)." \n\n\n\n\n\n\n\n",3, "/tmp/progresivo.log");
 		if ( $resultsSearchHistory = Db::getInstance()->ExecuteS($querySearchHistory) ) {
-			$this->beforeProgressiveDiscount = $resultsSearchHistory[0];
-			return true;
+                    $this->beforeProgressiveDiscount = $resultsSearchHistory[0];
+//                    error_log("\n\n\n\n\n\n\n\n respuesta sql this->beforeProgressiveDiscount:".print_r($this->beforeProgressiveDiscount, true)." \n\n\n\n\n\n\n\n",3, "/tmp/progresivo.log");
+                    return true;
 		} else {
 			$this->data = "1";
 			$this->dataHistoryProgressiveDiscount();
@@ -320,96 +359,121 @@ class ProgressivediscountsCore
 	 * [addCartRuleFromCart Funcion para agregar el cupon a la orden ]
 	 */
 	public function addCartRuleFromCart() {
-
 //		error_log("\r\n addCartRuleFromCart", 3, "/tmp/progresivo.log");
-
-		if ( empty($this->idCartRule) ) {
+//                error_log("\n\n\n\n\n\nEste es this->idProgressiveDiscount\n\n\t".print_r($this->idProgressiveDiscount,true)."\n\n\n\n\n\n\n\n\n\n", 3, "/tmp/progresivo.log");
+//                error_log("\n\n\n\n\n\nEste es this->beforeProgressiveDiscount\n\n\t".print_r($this->beforeProgressiveDiscount,true)."\n\n\n\n\n\n\n\n\n\n", 3, "/tmp/progresivo.log");
+                
+//		if ( empty($this->idCartRule) ) {
+//                error_log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n idxcvxcvxcvxcvxcvnt: ".$this->idProgressiveDiscount."\n\n\n\n\n\n\n\n\n\n" , 3, "/tmp/progresivo.log");
 //			error_log(" - - 1 addCartRuleFromCart empty(this->idCartRule) ", 3, "/tmp/progresivo.log");
-			// si el anterior cupon agregado es 0 (compra inicial) toma el primer cupon de la escala, si no es 0, toma el cupon agregado y calcula el siguiente a agregar
-			$queryCartRuleAdd = "SELECT
-                                                crpd1.id_cart_rule_progressive_discount AS keycartrule,
-                                                crpd1.id_cart_rule AS idcartrule,
-                                                crpd2.id_cart_rule_progressive_discount AS Nextkeycartrule,
-                                                crpd2.id_cart_rule AS Nextidcartrule
-                                            FROM "._DB_PREFIX_."cart_rule_progressive_discounts crpd1
-                                            LEFT JOIN "._DB_PREFIX_."cart_rule_progressive_discounts crpd2
-                                            ON ( crpd2.priority = crpd1.priority+1 )
-                                            WHERE crpd1.id_progressive_discount = ".$this->idProgressiveDiscount;
+                    // si el anterior cupon agregado es 0 (compra inicial) toma el primer cupon de la escala, si no es 0, toma el cupon agregado y calcula el siguiente a agregar
+                    $queryCartRuleAdd = "SELECT
+                                            crpd1.id_cart_rule_progressive_discount AS keycartrule,
+                                            crpd1.id_cart_rule AS idcartrule,
+                                            crpd2.id_cart_rule_progressive_discount AS Nextkeycartrule,
+                                            crpd2.id_cart_rule AS Nextidcartrule
+                                        FROM "._DB_PREFIX_."cart_rule_progressive_discounts crpd1
+                                        LEFT JOIN "._DB_PREFIX_."cart_rule_progressive_discounts crpd2
+                                        ON ( crpd2.priority = crpd1.priority+1 )
+                                        WHERE crpd1.id_progressive_discount = ".$this->idProgressiveDiscount;
+                    
+//                    error_log(" Query de addCartRuleFromCart ".$queryCartRuleAdd, 3, "/tmp/progresivo.log");
 
-			if ( $this->beforeProgressiveDiscount['id_cart_rule_progressive_disscount'] == 0 ) {
+                    if ( $this->beforeProgressiveDiscount['id_cart_rule_progressive_disscount'] == 0 ) {
 //				error_log(" - - 2 beforeProgressiveDiscount['id_cart_rule_progressive_disscount'] == 0 ", 3, "/tmp/progresivo.log");
-				$queryCartRuleAdd .= " AND crpd1.priority = 1";
-			} else {
+                            $queryCartRuleAdd .= " AND crpd1.priority = 1";
+                    } else {
 //				error_log(" - - 3 beforeProgressiveDiscount['id_cart_rule_progressive_disscount'] != 0 ", 3, "/tmp/progresivo.log");
-				// para tomar el siguiente cupon de la escala del descuento progresivo
-				$queryCartRuleAdd .= " AND crpd1.id_cart_rule_progressive_discount = ".$this->beforeProgressiveDiscount['id_cart_rule_progressive_disscount'];
-			}
+                            // para tomar el siguiente cupon de la escala del descuento progresivo
+                            $queryCartRuleAdd .= " AND crpd1.id_cart_rule_progressive_discount = ".$this->beforeProgressiveDiscount['id_cart_rule_progressive_disscount'];
+                    }
+//                    error_log("\n\n\n\n\n\nEste es el query loco de addcartrulefromcart: \n\n\t".$queryCartRuleAdd."\n\n\n\n\n\n\n\n\n\n", 3, "/tmp/progresivo.log");
 
-			$resultsCartRuleAdd = Db::getInstance()->ExecuteS($queryCartRuleAdd);
+                    $resultsCartRuleAdd = Db::getInstance()->ExecuteS($queryCartRuleAdd);
+//                    error_log("\n\n\n\n\n\n resultsCartRuleAdd: \n\n\t".print_r($resultsCartRuleAdd, true)."\n\n\n\n\n\n\n\n\n\n", 3, "/tmp/progresivo.log");
 
-			$resultsCartRuleAdd = $resultsCartRuleAdd[0];
-			
-			if ( ($resultsCartRuleAdd['Nextkeycartrule'] == "" && $resultsCartRuleAdd['Nextidcartrule'] == "") || $this->beforeProgressiveDiscount['id_cart_rule_progressive_disscount'] == 0 ) {
+                    $resultsCartRuleAdd = $resultsCartRuleAdd[0];
+                    
+//                    error_log("\n\n\n\n\n\nEste es resultsCartRuleAdd\n\n\t".print_r($resultsCartRuleAdd,true)."\n\n\n\n\n\n\n\n\n\n", 3, "/tmp/progresivo.log");
+//                    error_log("\n\n\n Este es this->beforeProgressiveDiscount['id_cart_rule_progressive_disscount']\n\n\t".print_r($this->beforeProgressiveDiscount['id_cart_rule_progressive_disscount'],true)."\n", 3, "/tmp/progresivo.log");
+//                    error_log("\n\n\n Este es resultsCartRuleAdd['Nextkeycartrule']\n\n\t".print_r($resultsCartRuleAdd['Nextkeycartrule'],true)."\n", 3, "/tmp/progresivo.log");
+//                    error_log("\n\n\n Este es resultsCartRuleAdd['Nextidcartrule']\n\n\t".print_r($resultsCartRuleAdd['Nextidcartrule'],true)."\n", 3, "/tmp/progresivo.log");
+
+                    if ( ($resultsCartRuleAdd['Nextkeycartrule'] == "" && $resultsCartRuleAdd['Nextidcartrule'] == "") || $this->beforeProgressiveDiscount['id_cart_rule_progressive_disscount'] == 0 ) {
 //				error_log(" - - 4 Nextkeycartrule beforeProgressiveDiscount['id_cart_rule_progressive_disscount'] == 0 ", 3, "/tmp/progresivo.log");
-				$this->KeyCartRule = $resultsCartRuleAdd['keycartrule'];
-				$this->idCartRule = $resultsCartRuleAdd['idcartrule'];
-			} else {
+                            $this->KeyCartRule = $resultsCartRuleAdd['keycartrule'];
+                            $this->idCartRule = $resultsCartRuleAdd['idcartrule'];
+                            
+                    } else {
 //				error_log(" - - 5 Nextkeycartrule beforeProgressiveDiscount['id_cart_rule_progressive_disscount'] != 0 ", 3, "/tmp/progresivo.log");
-				$this->KeyCartRule = $resultsCartRuleAdd['Nextkeycartrule'];
-				$this->idCartRule = $resultsCartRuleAdd['Nextidcartrule'];
-			}
+                            $this->KeyCartRule = $resultsCartRuleAdd['Nextkeycartrule'];
+                            $this->idCartRule = $resultsCartRuleAdd['Nextidcartrule'];
+                    }
+//                    error_log("\n\n\n\n idCartRule: ".$this->idCartRule,3,"/tmp/progresivo.log");
+//                    error_log("\n\n\n\n 379 - this->idCartRule \n\n\n\n\n".$this->idCartRule , 3, "/tmp/progresivo.log");
+                       
+                    $queryValidateExistCouponInCart = "SELECT COUNT(*) AS QuantityCartRules
+                                                        FROM "._DB_PREFIX_."cart_cart_rule cr
+                                                        INNER JOIN "._DB_PREFIX_."cart_rule_progressive_discounts crpd
+                                                        ON cr.id_cart_rule = crpd.id_cart_rule
+                                                        INNER JOIN "._DB_PREFIX_."progressive_discounts pd
+                                                        ON crpd.id_progressive_discount = pd.id_progressive_discount
+                                                        WHERE cr.id_cart = ".(int)$this->ObjectCart->id."
+                                                        AND pd.id_progressive_discount = ".$this->idProgressiveDiscount;
+                    
+//                    error_log("\n\n\n\n\t\t\tthis->idProgressiveDiscount\n\t\t\t".print_r($this->idProgressiveDiscount,true), 3, "/tmp/progresivo.log");
+//                    error_log("\n\n\n\n\t\t\tqueryValidateExistCouponInCart\n\t\t\t".print_r($queryValidateExistCouponInCart,true), 3, "/tmp/progresivo.log");
 
-			$queryValidateExistCouponInCart = "SELECT COUNT(*) AS QuantityCartRules
-												FROM "._DB_PREFIX_."cart_cart_rule cr
-												INNER JOIN "._DB_PREFIX_."cart_rule_progressive_discounts crpd
-												ON cr.id_cart_rule = crpd.id_cart_rule
-												INNER JOIN "._DB_PREFIX_."progressive_discounts pd
-												ON crpd.id_progressive_discount = pd.id_progressive_discount
-												WHERE cr.id_cart = ".(int)$this->ObjectCart->id."
-												AND pd.id_progressive_discount = ".$this->idProgressiveDiscount;
+                    $resultsValidateExistCouponInCart = Db::getInstance()->ExecuteS($queryValidateExistCouponInCart);
+//                    error_log("\n\n\n\n\t\t\tresultsValidateExistCouponInCart\n\t\t\t".print_r($resultsValidateExistCouponInCart,true), 3, "/tmp/progresivo.log");
 
-			$resultsValidateExistCouponInCart = Db::getInstance()->ExecuteS($queryValidateExistCouponInCart);
-			$resultsValidateExistCouponInCart = $resultsValidateExistCouponInCart[0];
+                    $resultsValidateExistCouponInCart = $resultsValidateExistCouponInCart[0];
+//                    error_log("\n\n\n\n\t\t\tresultsValidateExistCouponInCart\n\t\t\t".print_r($resultsValidateExistCouponInCart,true), 3, "/tmp/progresivo.log");
+                    $this->removeCartRuleFromCart();
 
-			$this->removeCartRuleFromCart();
+                    if ( $resultsValidateExistCouponInCart['QuantityCartRules'] <= 0 ) {
+//                	error_log(" - - 6 resultsValidateExistCouponInCart['QuantityCartRules'] <= 0 ", 3, "/tmp/progresivo.log");
+                        // remover relaciones antiguas carrito<->cupones<->descuento progresivo
+                        Db::getInstance()->execute('
+                            DELETE FROM '._DB_PREFIX_.'cart_cartrule_progressive_discounts
+                            WHERE id_cart = '.(int)$this->ObjectCart->id);
 
-			if ( $resultsValidateExistCouponInCart['QuantityCartRules'] <= 0 ) {
-//				error_log(" - - 6 resultsValidateExistCouponInCart['QuantityCartRules'] <= 0 ", 3, "/tmp/progresivo.log");
-				// remover relaciones antiguas carrito<->cupones<->descuento progresivo
-				Db::getInstance()->execute('
-					DELETE FROM '._DB_PREFIX_.'cart_cartrule_progressive_discounts
-					WHERE id_cart = '.(int)$this->ObjectCart->id);
 
-				$queryInsertCartCartRulePD = "INSERT INTO "._DB_PREFIX_."cart_cartrule_progressive_discounts (
-												id_cart,
-												id_cart_rule,
-												id_progressive_discount
-											) VALUES (
-												".(int)$this->ObjectCart->id.",
-												".$this->idCartRule.",
-												".$this->idProgressiveDiscount."
-											)";
-				$resultsInsertCartCartRulePD = Db::getInstance()->ExecuteS($queryInsertCartCartRulePD);
+                        $queryInsertCartCartRulePD = "INSERT INTO "._DB_PREFIX_."cart_cartrule_progressive_discounts (
+                                                            id_cart,
+                                                            id_cart_rule,
+                                                            id_progressive_discount
+                                                        ) VALUES (
+                                                            ".(int)$this->ObjectCart->id.",
+                                                            ".$this->idCartRule.",
+                                                            ".$this->idProgressiveDiscount."
+                                                        )";
+                        
+//                        error_log("\n\n\n\n\n\n\nInserción de cart_cartrule_progressive_discounts:".$queryInsertCartCartRulePD, 3, "/tmp/progresivo.log");
+                        
+                        $resultsInsertCartCartRulePD = Db::getInstance()->ExecuteS($queryInsertCartCartRulePD);
+//                        error_log("\n\n\n\ resultsInsertCartCartRulePD:".$resultsInsertCartCartRulePD, 3, "/tmp/progresivo.log");
 				
-				// valida si el cupon a agregar tiene restriccion a producto especifico
-				// En caso de contar con la restriccion, se agregara el cupon al carrito solo si el producto del descuento progresivo es el mismo de la restriccion del cupon
-				$queryCouponReductionProduct ="SELECT reduction_product
-												FROM "._DB_PREFIX_."cart_rule
-												WHERE id_cart_rule = ".$this->idCartRule;
+                        // valida si el cupon a agregar tiene restriccion a producto especifico
+                        // En caso de contar con la restriccion, se agregara el cupon al carrito solo si el producto del descuento progresivo es el mismo de la restriccion del cupon
+                        $queryCouponReductionProduct ="SELECT reduction_product
+                                                                                        FROM "._DB_PREFIX_."cart_rule
+                                                                                        WHERE id_cart_rule = ".$this->idCartRule;
 //                                error_log(" - - 7 ".$queryCouponReductionProduct, 3, "/tmp/progresivo.log");
-				$resultsCouponReductionProduct = Db::getInstance()->ExecuteS($queryCouponReductionProduct);
+                        $resultsCouponReductionProduct = Db::getInstance()->ExecuteS($queryCouponReductionProduct);
 
-				if ( $resultsCouponReductionProduct[0]['reduction_product'] == 0 || ($resultsCouponReductionProduct[0]['reduction_product'] == $this->idProduct) )
-				{
+                        if ( $resultsCouponReductionProduct[0]['reduction_product'] == 0 || ($resultsCouponReductionProduct[0]['reduction_product'] == $this->idProduct) )
+                        {
 //                                        error_log(" - - 8 addCartRuleFromCart if add cupon".$resultsCouponReductionProduct[0]['reduction_product'].' - '.$this->idProduct, 3, "/tmp/progresivo.log");
-					$this->ObjectCart->addCartRule($this->idCartRule);
-				} else {
+                                $this->ObjectCart->addCartRule($this->idCartRule);
+                        }
+                        else {
 //                                    error_log(" - - 9 addCartRuleFromCart no if resultsCouponReductionProduct", 3, "/tmp/progresivo.log");
-                                }
-			}
-		} else {
-//                    error_log(" - -10 addCartRuleFromCart no if idCartRule", 3, "/tmp/progresivo.log");
-                }
+                        }
+                    }
+//		} else {
+////                    error_log(" - -10 addCartRuleFromCart no if idCartRule", 3, "/tmp/progresivo.log");
+//                }
 
 		return true;
 
@@ -547,17 +611,30 @@ class ProgressivediscountsCore
 	 * [validateRangeDateFinishProgressiveDiscount Funcion para validar si la fecha actual es menor a la fecha final del descuento progresivo]
 	 */
 	public function validateRangeDateFinishProgressiveDiscount() {
-		$endDateProgressivediscount = strtotime( $this->beforeProgressiveDiscount['date_final_progressive_disscount'] );
+            $endDateProgressivediscount = strtotime( $this->beforeProgressiveDiscount['date_final_progressive_disscount'] );
 
-		if ( $this->currentDate > $endDateProgressivediscount ) {
-			$this->data = "1";
-			$this->dataHistoryProgressiveDiscount();
-			return true;
-		} else {
-			return false;
-		}
+            if ( $this->currentDate > $endDateProgressivediscount ) {
+                $this->data = "1";
+                $this->dataHistoryProgressiveDiscount();
+                return true;
+            }
+            return false;		
 	}
 
+	/**
+	 * [validateCounterResetProgressiveDiscount Funcion para validar si el contador de reinicio es menor al reinicio del descuento progresivo]
+	 */
+	public function validateCounterResetProgressiveDiscount() {
+            $counterResetProgressiveDiscount = $this->beforeProgressiveDiscount['counter_reset'];
+            $reset = $this->currentProgressiveDiscount['shopping_reset'];
+            
+            if ( $counterResetProgressiveDiscount >= $reset ) {
+                $this->data = "1";
+                $this->dataHistoryProgressiveDiscount();
+                return true;
+            }
+            return false;
+	}
 
 	/**
 	 * [validateEndDateNextPeriod Funcion para validar si la fecha actual no sobrepasa la fecha final del proximo periodo]
@@ -575,20 +652,6 @@ class ProgressivediscountsCore
 	}
 
 
-	/**
-	 * [validateCounterResetProgressiveDiscount Funcion para validar si el contador de reinicio es menor al reinicio del descuento progresivo]
-	 */
-	public function validateCounterResetProgressiveDiscount() {
-		$counterResetProgressiveDiscount = $this->beforeProgressiveDiscount['counter_reset'];
-		$reset = $this->currentProgressiveDiscount['shopping_reset'];
-		if ( $counterResetProgressiveDiscount >= $reset ) {
-			$this->data = "1";
-			$this->dataHistoryProgressiveDiscount();
-			return true;
-		} else {
-			return false;
-		}
-	}
 
 
 	/**
@@ -638,18 +701,12 @@ class ProgressivediscountsCore
 		}
 	}
 
-
 	/**
 	 * [validateRangeDateFinishPeriod Funcion para validar si la fecha actual es menor a la fecha final del periodo vigente]
 	 */
 	public function validateRangeDateFinishPeriod() {
-		$endDateProgressivediscount = strtotime( $this->beforeProgressiveDiscount['date_final_period'] );
-
-		if ( $this->currentDate > $endDateProgressivediscount ) {
-			return true;
-		} else {
-			return false;
-		}
+            $endDateProgressivediscount = strtotime( $this->beforeProgressiveDiscount['date_final_period'] );
+            return $this->currentDate > $endDateProgressivediscount ? true : false;
 	}
 
 
@@ -718,6 +775,8 @@ class ProgressivediscountsCore
 				$this->dateEndProgressiveDiscount = "'".$this->beforeProgressiveDiscount['date_final_progressive_disscount']."'";
 				break;
 		}
+//                error_log("\n\n 751 - this->data ".$this->data, 3 , "/tmp/progresivo.log");
+//                error_log("\n\n 751 - this->idCartRule ".$this->idCartRule , 3 , "/tmp/progresivo.log");
 
 		return true;
 	}
@@ -727,20 +786,12 @@ class ProgressivediscountsCore
 	 * [addHistoryProgressiveDiscount Funcion para agregar la orden al historial de descuentos progresivos ]
 	 */
 	public function addHistoryProgressiveDiscount() {
-            
                         
-//            $validate = $this->validateProductInProgressiveDiscount();
-//            error_log("\n\n\**********************************\n ** Entro al fucking addhistory **\ validate: ".$validate, 3, "/tmp/progresivo.log");
-//            error_log("\n\n\idOrder: ".$this->idOrder, 3, "/tmp/progresivo.log");
-            
             if ( isset($this->idOrder) && !empty($this->idOrder) ) {
-//                foreach ($this->idProducts as $key => $value ) {                
-//                    $this->idProgressiveDiscount = $this->idProgressiveDiscounts[$key];
-//                    $this->idCustomer = $this->ObjectCart->id_customer;
-//                    $this->idProduct = $this->idProducts[$key];                
-//                    
-//                    error_log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n El id order: ".$this->idOrder, 3, "/tmp/progresivo.log");
 
+//                    error_log("\r\n idCartRule: ".print_r($this->idCartRule,true), 3, "/tmp/progresivo.log");
+//                    error_log("\r\n KeyCartRule: ".print_r($this->KeyCartRule,true), 3, "/tmp/progresivo.log");
+                    
                     $queryInsertHistoryProgressiveDiscount = "INSERT INTO "._DB_PREFIX_."order_history_progressive_discounts (
                                                     id_progressive_discount,
                                                     id_order,
@@ -773,9 +824,8 @@ class ProgressivediscountsCore
                                                     ".$this->counterReset.",
                                                     ".$this->counterCycles."
                                             )";
-
-//                    error_log("\n\n\n\n\n\n\n\n\n\nEste es el query loco de add history de dcts prog: \n\n\ŧ".$queryInsertHistoryProgressiveDiscount."\n\n\n\n\n\n\n\n\n\n", 3, "/tmp/progresivo.log");
-
+                    
+//                    error_log("\r\n queryInsertHistoryProgressiveDiscount: ".print_r($queryInsertHistoryProgressiveDiscount,true), 3, "/tmp/progresivo.log");
                     $resultsProgressiveDiscount = Db::getInstance()->Execute($queryInsertHistoryProgressiveDiscount);
 
                     $queryDeleteRelationCartCoupon = "DELETE FROM "._DB_PREFIX_."cart_cartrule_progressive_discounts WHERE id_cart = ".(int)$this->ObjectCart->id;
