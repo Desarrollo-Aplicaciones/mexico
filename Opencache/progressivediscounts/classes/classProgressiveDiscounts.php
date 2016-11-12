@@ -117,6 +117,7 @@ class classProgressiveDiscounts {
 											".$detailcartrule[0].",
 											".($keyCartRules+1)."
 										)";
+                                        error_log("\n\n\n\n\t\t\t QueryCartRules\n\t\t\t".print_r($queryCartRules,true), 3, "/tmp/progresivo.log");
 					$resultsCartRules = Db::getInstance()->ExecuteS($queryCartRules);
 				}
 

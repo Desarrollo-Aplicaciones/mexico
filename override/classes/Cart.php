@@ -983,21 +983,21 @@ class Cart extends CartCore {
 	}
 
 	public function getOrderTotal($with_taxes = true, $type = Cart::BOTH, $products = null, $id_carrier = null, $use_cache = true){  
-        /************ Progressive Discounts ************/
-		$ProgressiveDiscounts = new Progressivediscounts();
-		$addProgressiveDiscounts = $ProgressiveDiscounts->getProductsFromCartWithProgressiveDiscount( $this );
-//                error_log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n en get order total: ".$addProgressiveDiscounts."\n\n\n\n\n\n\n\n\n\n" , 3, "/tmp/progresivo.log");
+            /************ Progressive Discounts ************/
+            $ProgressiveDiscounts = new Progressivediscounts();
+            $addProgressiveDiscounts = $ProgressiveDiscounts->getProductsFromCartWithProgressiveDiscount( $this );
+            //error_log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n en get order total: ".$addProgressiveDiscounts."\n\n\n\n\n\n\n\n\n\n" , 3, "/tmp/progresivo.log");
                 
-		if ( !$addProgressiveDiscounts ) {
-                    $ProgressiveDiscounts->removeResidueProgressiveDiscount();
-		}
+            if ( !$addProgressiveDiscounts ) {
+                $ProgressiveDiscounts->removeResidueProgressiveDiscount();
+            }
 
-		if (!$this->id) {
-                    return 0;
-		}
+            if (!$this->id) {
+                return 0;
+            }
 
-		$type = (int)$type;
-		$array_type = array(
+            $type = (int)$type;
+            $array_type = array(
 			Cart::ONLY_PRODUCTS,
 			Cart::ONLY_DISCOUNTS,
 			Cart::BOTH,
@@ -1006,283 +1006,302 @@ class Cart extends CartCore {
 			Cart::ONLY_WRAPPING,
 			Cart::ONLY_PRODUCTS_WITHOUT_SHIPPING,
 			Cart::ONLY_PHYSICAL_PRODUCTS_WITHOUT_SHIPPING,
-		);
-		
-		// Define virtual context to prevent case where the cart is not the in the global context
-		$virtual_context = Context::getContext()->cloneContext();
-		$virtual_context->cart = $this;
-//		error_log("\r\n\n\n\n\n\t id cart : \r\n\n\n\n\n\n  ".$virtual_context->cart->id, 3, "/tmp/progresivo.log");
-		
-		if (!in_array($type, $array_type))
-			die(Tools::displayError());
-
-		$with_shipping = in_array($type, array(Cart::BOTH, Cart::ONLY_SHIPPING));
-		
-		// if cart rules are not used
-		if ($type == Cart::ONLY_DISCOUNTS && !CartRule::isFeatureActive()) {
-			return 0;
-		}
-
-		// no shipping cost if is a cart with only virtuals products
-		$virtual = $this->isVirtualCart();
-		if ($virtual && $type == Cart::ONLY_SHIPPING) {
-			return 0;
-		}
-
-		if ($virtual && $type == Cart::BOTH)
-			$type = Cart::BOTH_WITHOUT_SHIPPING;
-
-		if ($with_shipping){ 
-			if (is_null($products) && is_null($id_carrier)){
-				$shipping_fees = $this->getTotalShippingCost(null, (boolean)$with_taxes);
-            }
-            else
-				$shipping_fees = $this->getPackageShippingCost($id_carrier, (int)$with_taxes, null, $products);
-		}
-        else{
-			$shipping_fees = 0;
-        }
+            );
 	
-		if ($type == Cart::ONLY_SHIPPING) {
-			return $shipping_fees;
-		}
+            //error_log("\n\n type : ".print_r($type,true), 3, "/tmp/progresivo.log");
+            //error_log("\n\n array_type : ".print_r($array_type,true), 3, "/tmp/progresivo.log");
+            
+            
+            // Define virtual context to prevent case where the cart is not the in the global context
+            $virtual_context = Context::getContext()->cloneContext();
+            $virtual_context->cart = $this;
+            //error_log("\r\n\n\n\n\n\t id cart : \r\n\n\n\n\n\n  ".$virtual_context->cart->id, 3, "/tmp/progresivo.log");
+		
+            if (!in_array($type, $array_type)){
+                die(Tools::displayError());
+            }
 
-		/*if ($type == Cart::ONLY_PRODUCTS_WITHOUT_SHIPPING){
-			$type = Cart::ONLY_PRODUCTS;}*/
+            $with_shipping = in_array($type, array(Cart::BOTH, Cart::ONLY_SHIPPING));
+		
+            // if cart rules are not used
+            if ($type == Cart::ONLY_DISCOUNTS && !CartRule::isFeatureActive()) {
+                return 0;
+            }
 
-		$param_product = true;
-		if (is_null($products))
-		{
-			$param_product = false;
-			$products = $this->getProducts();
-		}
+            // no shipping cost if is a cart with only virtuals products
+            $virtual = $this->isVirtualCart();
+            if ($virtual && $type == Cart::ONLY_SHIPPING) {
+                return 0;
+            }
 
-		if ($type == Cart::ONLY_PHYSICAL_PRODUCTS_WITHOUT_SHIPPING)
-		{
-			foreach ($products as $key => $product)
-				if ($product['is_virtual'])
-					unset($products[$key]);
-				$type = Cart::ONLY_PRODUCTS;
-			}
+            if ($virtual && $type == Cart::BOTH){
+                $type = Cart::BOTH_WITHOUT_SHIPPING;
+            }
 
-			$order_total = 0;
-			if (Tax::excludeTaxeOption())
-				$with_taxes = false;
-			$count_prod = 0;
-		foreach ($products as $product) // products refer to the cart details
-		{
-			if ($virtual_context->shop->id != $product['id_shop'])
-				$virtual_context->shop = new Shop((int)$product['id_shop']);
+            if ($with_shipping){ 
+                if (is_null($products) && is_null($id_carrier)){
+                    $shipping_fees = $this->getTotalShippingCost(null, (boolean)$with_taxes);
+                }
+                else {
+                    $shipping_fees = $this->getPackageShippingCost($id_carrier, (int)$with_taxes, null, $products);
+                }
+            }
+            else {
+                $shipping_fees = 0;
+            }
+            
+            if ($type == Cart::ONLY_SHIPPING) {
+                return $shipping_fees;
+            }
+	
+            /*if ($type == Cart::ONLY_PRODUCTS_WITHOUT_SHIPPING){
+                $type = Cart::ONLY_PRODUCTS;}*/
 
-			if (Configuration::get('PS_TAX_ADDRESS_TYPE') == 'id_address_invoice')
-				$address_id = (int)$this->id_address_invoice;
-			else
-				$address_id = (int)$product['id_address_delivery']; // Get delivery address of the product from the cart
-			if (!Address::addressExists($address_id))
-				$address_id = null;
-			
-			if ($this->_taxCalculationMethod == PS_TAX_EXC)
-			{
-				// Here taxes are computed only once the quantity has been applied to the product price
-				$price = Product::getPriceStatic(
-				                                 (int)$product['id_product'],
-				                                 false,
-				                                 (int)$product['id_product_attribute'],
-				                                 2,
-				                                 null,
-				                                 false,
-				                                 true,
-				                                 $product['cart_quantity'],
-				                                 false,
-				                                 (int)$this->id_customer ? (int)$this->id_customer : null,
-				                                 (int)$this->id,
-				                                 $address_id,
-				                                 $null,
-				                                 true,
-				                                 true,
-				                                 $virtual_context
-				                                 );
+            $param_product = true;
 
-				$total_ecotax = $product['ecotax'] * (int)$product['cart_quantity'];
-				$total_price = $price * (int)$product['cart_quantity'];
+            if (is_null($products)){
+                $param_product = false;
+                $products = $this->getProducts();
+            }
 
-				if ($with_taxes)
-				{
-					$product_tax_rate = (float)Tax::getProductTaxRate((int)$product['id_product'], (int)$address_id, $virtual_context);
-					$product_eco_tax_rate = Tax::getProductEcotaxRate((int)$address_id);
+            if ($type == Cart::ONLY_PHYSICAL_PRODUCTS_WITHOUT_SHIPPING){
+                foreach ($products as $key => $product){
+                    if ($product['is_virtual']){
+                        unset($products[$key]);
+                        $type = Cart::ONLY_PRODUCTS;
+                    }
+                }
+            }
 
-					$total_price = ($total_price - $total_ecotax) * (1 + $product_tax_rate / 100);
-					$total_ecotax = $total_ecotax * (1 + $product_eco_tax_rate / 100);
-					$total_price = Tools::ps_round($total_price + $total_ecotax, 2);
-				}
-			}
-			else
-			{
-				if ($with_taxes){ 
-					$price = Product::getPriceStatic(
-					                                 (int)$product['id_product'],
-					                                 true,
-					                                 (int)$product['id_product_attribute'],
-					                                 2,
-					                                 null,
-					                                 false,
-					                                 true,
-					                                 $product['cart_quantity'],
-					                                 false,
-					                                 ((int)$this->id_customer ? (int)$this->id_customer : null),
-					                                 (int)$this->id,
-					                                 ((int)$address_id ? (int)$address_id : null),
-					                                 $null,
-					                                 true,
-					                                 true,
-					                                 $virtual_context
-					                                 );
-				}
-				else {
-					$price = Product::getPriceStatic(
-					                                 (int)$product['id_product'],
-					                                 false,
-					                                 (int)$product['id_product_attribute'],
-					                                 2,
-					                                 null,
-					                                 false,
-					                                 true,
-					                                 $product['cart_quantity'],
-					                                 false,
-					                                 ((int)$this->id_customer ? (int)$this->id_customer : null),
-					                                 (int)$this->id,
-					                                 ((int)$address_id ? (int)$address_id : null),
-					                                 $null,
-					                                 true,
-					                                 true,
-					                                 $virtual_context
-					                                 );
+            $order_total = 0;
+            
+            if (Tax::excludeTaxeOption()){
+                $with_taxes = false;
+            }
+            $count_prod = 0;
+            // products refer to the cart details
+            foreach ($products as $product){
+                if ($virtual_context->shop->id != $product['id_shop']){
+                    $virtual_context->shop = new Shop((int)$product['id_shop']);
+                }
 
-				}
+                if (Configuration::get('PS_TAX_ADDRESS_TYPE') == 'id_address_invoice'){
+                    $address_id = (int)$this->id_address_invoice;
+                }
+                else{
+                    // Get delivery address of the product from the cart
+                    $address_id = (int)$product['id_address_delivery']; 
+                    if (!Address::addressExists($address_id)){
+                        $address_id = null;
+                    }
+                }
 
-				$total_price = Tools::ps_round($price * (int)$product['cart_quantity'], 2);
+                if ($this->_taxCalculationMethod == PS_TAX_EXC){
+                    // Here taxes are computed only once the quantity has been applied to the product price
+                    $price = Product::getPriceStatic(
+                                                    (int)$product['id_product'],
+                                                    false,
+                                                    (int)$product['id_product_attribute'],
+                                                    2,
+                                                    null,
+                                                    false,
+                                                    true,
+                                                    $product['cart_quantity'],
+                                                    false,
+                                                    (int)$this->id_customer ? (int)$this->id_customer : null,
+                                                    (int)$this->id,
+                                                    $address_id,
+                                                    $null,
+                                                    true,
+                                                    true,
+                                                    $virtual_context
+                                                    );
 
-			}
-			$order_total += $total_price;
+                    $total_ecotax = $product['ecotax'] * (int)$product['cart_quantity'];
+                    $total_price = $price * (int)$product['cart_quantity'];
 
-		}
+                    if ($with_taxes){
+                        $product_tax_rate = (float)Tax::getProductTaxRate((int)$product['id_product'], (int)$address_id, $virtual_context);
+                        $product_eco_tax_rate = Tax::getProductEcotaxRate((int)$address_id);
 
-
-		$order_total_products = $order_total;
-
-		if ($type == Cart::ONLY_DISCOUNTS)
-			$order_total = 0;
-
-		// Wrapping Fees
-		$wrapping_fees = 0;
-		if ($this->gift)
-			$wrapping_fees = Tools::convertPrice(Tools::ps_round($this->getGiftWrappingPrice(0), 2), Currency::getCurrencyInstance((int)$this->id_currency));
-		if ($type == Cart::ONLY_WRAPPING)
-			return $wrapping_fees;
-
-		$order_total_discount = 0;
-//		error_log("\r\n 1-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
-		if (!in_array($type, array(Cart::ONLY_SHIPPING, Cart::ONLY_PRODUCTS)) && CartRule::isFeatureActive())
-		{
-			// First, retrieve the cart rules associated to this "getOrderTotal"
-			if ($with_shipping || $type == Cart::ONLY_DISCOUNTS){
-				$cart_rules = $this->getCartRules(CartRule::FILTER_ACTION_ALL);
-//				error_log(" GetCartRules FILTER_ACTION_ALL ");
-			}
-			else{
-//				 error_log(" GetCartRules FILTER_ACTION_REDUCTION ");
-			$cart_rules = $this->getCartRules(CartRule::FILTER_ACTION_REDUCTION);
-				// Cart Rules array are merged manually in order to avoid doubles
-			foreach ($this->getCartRules(CartRule::FILTER_ACTION_GIFT) as $tmp_cart_rule)
-			{ 
-				$flag = false;
-				foreach ($cart_rules as $cart_rule)
-					if ($tmp_cart_rule['id_cart_rule'] == $cart_rule['id_cart_rule'])
-						$flag = true;
-					if (!$flag)
-						$cart_rules[] = $tmp_cart_rule;
-				}
-			}
-
-			$id_address_delivery = 0;
-			if (isset($products[0]))
-				$id_address_delivery = (is_null($products) ? $this->id_address_delivery : $products[0]['id_address_delivery']);
-			$package = array('id_carrier' => $id_carrier, 'id_address' => $id_address_delivery, 'products' => $products);
-
-			// Then, calculate the contextual value for each one
-			foreach ($cart_rules as $cart_rule)
-			{ // error_log("<<cart_rule: ".print_r($cart_rule,true).">>");
-				// If the cart rule offers free shipping, add the shipping cost
-		if (($with_shipping || $type == Cart::ONLY_DISCOUNTS) && $cart_rule['obj']->free_shipping){
-			$order_total_discount += Tools::ps_round($cart_rule['obj']->getContextualValue(0, $virtual_context, CartRule::FILTER_ACTION_SHIPPING, ($param_product ? $package : null), $use_cache), 2);
-//			error_log("\r\n 2-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
-//			error_log(" getContextualValue 1 ");
-		}
-				// If the cart rule is a free gift, then add the free gift value only if the gift is in this package
-		if ((int)$cart_rule['obj']->gift_product)
-		{
-			$in_order = false;
-			if (is_null($products))
-				$in_order = true;
-			else
-				foreach ($products as $product)
-					if ($cart_rule['obj']->gift_product == $product['id_product'] && $cart_rule['obj']->gift_product_attribute == $product['id_product_attribute'])
-						$in_order = true;
-
-					if ($in_order){
-						$order_total_discount += $cart_rule['obj']->getContextualValue(0, $virtual_context, CartRule::FILTER_ACTION_GIFT, $package, $use_cache);
-//						error_log("\r\n 3-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
-//						error_log(" getContextualValue 2 ");
-					}
-				}
-
-				// If the cart rule offers a reduction, the amount is prorated (with the products in the package)
-				if ($cart_rule['obj']->reduction_percent > 0 || $cart_rule['obj']->reduction_amount > 0) {
-					$order_total_discount += Tools::ps_round($cart_rule['obj']->getContextualValue(0, $virtual_context, CartRule::FILTER_ACTION_REDUCTION, $package, $use_cache), 2);
-//					error_log("\r\n 4-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
-//					error_log(" getContextualValue 3 ");
-				}
-			}
-
-			if ($type == Cart::ONLY_DISCOUNTS){
-				$result = $this->staggeredDiscounts($type , $with_shipping, $products,$shipping_fees, $wrapping_fees, $virtual_context);
-				if ($result !=0 ) {
-					$order_total_discount = $result;
-//					error_log("\r\n 5-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
-					/*echo "<pre> order_total_discount: ".$order_total_discount.'</pre>';*/
-				}
-			}
-
-			$result = $this->staggeredDiscounts($type , $with_shipping, $products,$shipping_fees, $wrapping_fees, $virtual_context);
-			if ($result !=0 ) {
-				$order_total = $result;
-//				error_log("\r\n 6-- order_total = result : ".$order_total, 3, "/tmp/progresivo.log");
-			}
-
-			$order_total_discount = min(Tools::ps_round($order_total_discount, 2), $wrapping_fees + $products_total + $shipping_fees);
-//			error_log("\r\n 7-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
-
-//			error_log("\r\n 8-- order_total: ".$order_total, 3, "/tmp/progresivo.log");
-
-			$order_total -= $order_total_discount;
-
-//			error_log("\r\n 9-- order_total: ".$order_total, 3, "/tmp/progresivo.log");
-		} 
+                        $total_price = ($total_price - $total_ecotax) * (1 + $product_tax_rate / 100);
+                        $total_ecotax = $total_ecotax * (1 + $product_eco_tax_rate / 100);
+                        $total_price = Tools::ps_round($total_price + $total_ecotax, 2);
+                    }
+                }
+                else {
+                    if ($with_taxes){ 
+                        $price = Product::getPriceStatic(
+                                                        (int)$product['id_product'],
+                                                        true,
+                                                        (int)$product['id_product_attribute'],
+                                                        2,
+                                                        null,
+                                                        false,
+                                                        true,
+                                                        $product['cart_quantity'],
+                                                        false,
+                                                        ((int)$this->id_customer ? (int)$this->id_customer : null),
+                                                        (int)$this->id,
+                                                        ((int)$address_id ? (int)$address_id : null),
+                                                        $null,
+                                                        true,
+                                                        true,
+                                                        $virtual_context
+                                                        );
+                    }
+                    else {
+                        $price = Product::getPriceStatic(
+                                                         (int)$product['id_product'],
+                                                         false,
+                                                         (int)$product['id_product_attribute'],
+                                                         2,
+                                                         null,
+                                                         false,
+                                                         true,
+                                                         $product['cart_quantity'],
+                                                         false,
+                                                         ((int)$this->id_customer ? (int)$this->id_customer : null),
+                                                         (int)$this->id,
+                                                         ((int)$address_id ? (int)$address_id : null),
+                                                         $null,
+                                                         true,
+                                                         true,
+                                                         $virtual_context
+                                                         );
+                    }
+                    $total_price = Tools::ps_round($price * (int)$product['cart_quantity'], 2);
+                }
+                $order_total += $total_price;
+            }
+            
+            $order_total_products = $order_total;
+            //Hasta aqui calcula todos los totales sin descuentos.
+            //error_log("\n\n order_total: ".print_r($order_total,true), 3, "/tmp/progresivo.log");
 
 
-		if ($type == Cart::BOTH)
-			$order_total += $shipping_fees + $wrapping_fees;
-//		error_log("\r\n 10-- order_total: ".$order_total, 3, "/tmp/progresivo.log");
+            if ($type == Cart::ONLY_DISCOUNTS){
+                $order_total = 0;
+            }
 
-		if ($order_total < 0 && $type != Cart::ONLY_DISCOUNTS)
-			return 0;
+            // Wrapping Fees
+            $wrapping_fees = 0;
+            if ($this->gift) {
+                $wrapping_fees = Tools::convertPrice(Tools::ps_round($this->getGiftWrappingPrice(0), 2), Currency::getCurrencyInstance((int) $this->id_currency));
+            }
+            if ($type == Cart::ONLY_WRAPPING) {
+                return $wrapping_fees;
+            }
 
-		if ($type == Cart::ONLY_DISCOUNTS)
-			return $order_total_discount;
+            $order_total_discount = 0;
+            //error_log("\r\n 1-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
+            if (!in_array($type, array(Cart::ONLY_SHIPPING, Cart::ONLY_PRODUCTS)) && CartRule::isFeatureActive()){
+                // First, retrieve the cart rules associated to this "getOrderTotal"
+                if ($with_shipping || $type == Cart::ONLY_DISCOUNTS){
+                    $cart_rules = $this->getCartRules(CartRule::FILTER_ACTION_ALL);
+                    //error_log(" GetCartRules FILTER_ACTION_ALL ");
+                }
+                else{
+                    //error_log(" GetCartRules FILTER_ACTION_REDUCTION ");
+                    $cart_rules = $this->getCartRules(CartRule::FILTER_ACTION_REDUCTION);
+                    // Cart Rules array are merged manually in order to avoid doubles
+                    foreach ( $this->getCartRules(CartRule::FILTER_ACTION_GIFT) as $tmp_cart_rule ){
+                        $flag = false;
+                        foreach ($cart_rules as $cart_rule){
+                            if ($tmp_cart_rule['id_cart_rule'] == $cart_rule['id_cart_rule']){
+                                $flag = true;
+                                if (!$flag){
+                                    $cart_rules[] = $tmp_cart_rule;
+                                }
+                            }
+                        }
+                    }
+                }
 
-//		error_log("\r\n 11-- order_total: ".$order_total, 3, "/tmp/progresivo.log");
+                $id_address_delivery = 0;
+                if (isset($products[0])) {
+                    $id_address_delivery = (is_null($products) ? $this->id_address_delivery : $products[0]['id_address_delivery']);
+                }
+                $package = array('id_carrier' => $id_carrier, 'id_address' => $id_address_delivery, 'products' => $products);
 
-		return Tools::ps_round((float)$order_total, 2);
+                // Then, calculate the contextual value for each one
+                foreach ($cart_rules as $cart_rule){ 
+                    // error_log("<<cart_rule: ".print_r($cart_rule,true).">>");
+                    // If the cart rule offers free shipping, add the shipping cost
+                    if (($with_shipping || $type == Cart::ONLY_DISCOUNTS) && $cart_rule['obj']->free_shipping){
+                        $order_total_discount += Tools::ps_round($cart_rule['obj']->getContextualValue(0, $virtual_context, CartRule::FILTER_ACTION_SHIPPING, ($param_product ? $package : null), $use_cache), 2);
+                        //error_log("\r\n 2-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
+                        //error_log(" getContextualValue 1 ");
+                    }
+                    // If the cart rule is a free gift, then add the free gift value only if the gift is in this package
+                    if ((int)$cart_rule['obj']->gift_product){
+                        $in_order = false;
+                        if (is_null($products)){
+                            $in_order = true;
+                        }
+                        else { 
+                            foreach ($products as $product){
+                                if ($cart_rule['obj']->gift_product == $product['id_product'] && $cart_rule['obj']->gift_product_attribute == $product['id_product_attribute']){
+                                    $in_order = true;
+                                }
+                            }
+                        }
+
+                        if ($in_order){
+                            $order_total_discount += $cart_rule['obj']->getContextualValue(0, $virtual_context, CartRule::FILTER_ACTION_GIFT, $package, $use_cache);
+                            //error_log("\r\n 3-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
+                            //error_log(" getContextualValue 2 ");
+                        }
+                    }
+
+                    // If the cart rule offers a reduction, the amount is prorated (with the products in the package)
+                    if ($cart_rule['obj']->reduction_percent > 0 || $cart_rule['obj']->reduction_amount > 0) {
+                        $order_total_discount += Tools::ps_round($cart_rule['obj']->getContextualValue(0, $virtual_context, CartRule::FILTER_ACTION_REDUCTION, $package, $use_cache), 2);
+                        //error_log("\r\n 4-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
+                        //error_log(" getContextualValue 3 ");
+                    }
+                }
+
+                if ($type == Cart::ONLY_DISCOUNTS){
+                    $result = $this->staggeredDiscounts($type , $with_shipping, $products,$shipping_fees, $wrapping_fees, $virtual_context);
+                    if ($result !=0 ) {
+                        $order_total_discount = $result;
+                        //error_log("\r\n 5-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
+                        /*echo "<pre> order_total_discount: ".$order_total_discount.'</pre>';*/
+                    }
+                }
+
+                $result = $this->staggeredDiscounts($type , $with_shipping, $products,$shipping_fees, $wrapping_fees, $virtual_context);
+                if ($result !=0 ) {
+                    $order_total = $result;
+                    //error_log("\r\n 6-- order_total = result : ".$order_total, 3, "/tmp/progresivo.log");
+                }
+
+                $order_total_discount = min(Tools::ps_round($order_total_discount, 2), $wrapping_fees + $products_total + $shipping_fees);
+                //error_log("\r\n 7-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
+
+                //error_log("\r\n 8-- order_total: ".$order_total, 3, "/tmp/progresivo.log");
+
+                $order_total -= $order_total_discount;
+
+                //error_log("\r\n 9-- order_total: ".$order_total, 3, "/tmp/progresivo.log");
+            } 
+
+            if ($type == Cart::BOTH){
+                $order_total += $shipping_fees + $wrapping_fees;
+                //error_log("\r\n 10-- order_total: ".$order_total, 3, "/tmp/progresivo.log");
+            }
+
+            if ($order_total < 0 && $type != Cart::ONLY_DISCOUNTS){
+                return 0;
+            }
+
+            if ($type == Cart::ONLY_DISCOUNTS){
+                return $order_total_discount;
+                //error_log("\r\n 11-- order_total: ".$order_total, 3, "/tmp/progresivo.log");
+            }
+
+            return Tools::ps_round((float)$order_total, 2);
 	}
 
 	public function add_total_tax($totalTax){
