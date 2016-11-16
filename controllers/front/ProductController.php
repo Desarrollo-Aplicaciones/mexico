@@ -127,8 +127,10 @@ class ProductControllerCore extends FrontController
 						break;
 						case '404':
 						default:
-							header('HTTP/1.1 404 Not Found');
-							header('Status: 404 Not Found');
+							//header('HTTP/1.1 404 Not Found');
+							//header('Status: 404 Not Found');
+                                                        header('HTTP/1.1 404 Not Found');
+                                                        header('Location: ?controller=404');
 							$this->errors[] = Tools::displayError('This product is no longer available.');
 						break;
 					}
@@ -162,6 +164,7 @@ class ProductControllerCore extends FrontController
 				}
 				if (!isset($this->category))
 					$this->category = new Category($this->product->id_category_default, (int)$this->context->cookie->id_lang);
+                           
 			}
 		}
 
