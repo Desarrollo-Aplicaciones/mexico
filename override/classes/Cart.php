@@ -984,12 +984,13 @@ class Cart extends CartCore {
 
 	public function getOrderTotal($with_taxes = true, $type = Cart::BOTH, $products = null, $id_carrier = null, $use_cache = true){  
             /************ Progressive Discounts ************/
-            $ProgressiveDiscounts = new Progressivediscounts();
-            $addProgressiveDiscounts = $ProgressiveDiscounts->getProductsFromCartWithProgressiveDiscount( $this );
-            //error_log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n en get order total: ".$addProgressiveDiscounts."\n\n\n\n\n\n\n\n\n\n" , 3, "/tmp/progresivo.log");
-                
-            if ( !$addProgressiveDiscounts ) {
-                $ProgressiveDiscounts->removeResidueProgressiveDiscount();
+            
+            if ( count(Context::getContext()->cart->_products) > 0 ){
+                $ProgressiveDiscounts = new Progressivediscounts();
+                $addProgressiveDiscounts = $ProgressiveDiscounts->getProductsFromCartWithProgressiveDiscount( $this );
+//                if ( !$addProgressiveDiscounts ) {
+//                    $ProgressiveDiscounts->removeResidueProgressiveDiscount();
+//                }
             }
 
             if (!$this->id) {
@@ -1270,15 +1271,10 @@ class Cart extends CartCore {
                     }
                 }
                 
-//                else if ($type == Cart::BOTH){
-//                    $result = $this->staggeredDiscounts($type , $with_shipping, $products, $shipping_fees, $wrapping_fees, $virtual_context);
-//                    if ($result !=0 ) {
-//                        $order_total = $result;
-//                        error_log("\n\n type: ".$type, 3, "/tmp/progresivo.log");
-//                        error_log("\n\n order_total: ".$order_total, 3, "/tmp/progresivo.log");
-//                    }                    
-//                }
-
+                //$result = $this->staggeredDiscounts($type , $with_shipping, $products, $shipping_fees, $wrapping_fees, $virtual_context);
+                //if ($result !=0 ) {
+                    //$order_total = $result;
+                //}                    
                 //$order_total_discount = min(Tools::ps_round($order_total_discount, 2), $wrapping_fees + $products_total + $shipping_fees);
                 //error_log("\r\n 7-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
 

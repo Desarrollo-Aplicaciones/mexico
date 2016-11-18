@@ -123,30 +123,34 @@ class ProgressivediscountsCore
             // tomar la fecha actual
             $date = getdate();
             $this->currentDate = $date[0];
-            //error_log("\n\n\t\t idProduct:  ".print_r($this->idProduct, true),3,"/tmp/progresivo.log");
-            //error_log("\n\n\t\t currentProgressiveDiscounts:  ".print_r($this->currentProgressiveDiscounts, true),3,"/tmp/progresivo.log");
-            //error_log("\n\n\t\t idProgressiveDiscounts:  ".print_r($this->idProgressiveDiscounts, true),3,"/tmp/progresivo.log");
+            //error_log("\n\n idProduct:  ".print_r($this->idProduct, true),3,"/tmp/progresivo.log");
+            //error_log("\n\n currentProgressiveDiscounts:  ".print_r($this->currentProgressiveDiscounts, true),3,"/tmp/progresivo.log");
+            //error_log("\n\n idProgressiveDiscounts:  ".print_r($this->idProgressiveDiscounts, true),3,"/tmp/progresivo.log");
                
                     	
             // valida si existe historial del descuento progresivo a aplicar
             $inHistoryProgressiveDiscount = $this->validateHistoryProgressiveDiscount();
-            //error_log("\n\n\t\t inHistoryProgressiveDiscount:  ".print_r($inHistoryProgressiveDiscount, true),3,"/tmp/progresivo.log");
+            //error_log("\n\n inHistoryProgressiveDiscount:  ".print_r($inHistoryProgressiveDiscount, true),3,"/tmp/progresivo.log");
             
             if ( $inHistoryProgressiveDiscount ) {
                 //error_log("\n\n 132 - Entro. ",3,"/tmp/progresivo.log");
                 
                 // si la orden anterior no se encuentra en el estado valido para aplicar el descuento progresivo, 
                 // no aplicara ningun descuento ni registrara en historial de descuento progresivo
-                $states_orders = explode(",", $this->currentProgressiveDiscount['states_orders']);
-                //error_log("\n\n\tcurrentProgressiveDiscount: ".print_r($this->currentProgressiveDiscount,true),3,"/tmp/progresivo.log");
-                //error_log("\n\n\tcurrentProgressiveDiscount: ".print_r($states_orders,true),3,"/tmp/progresivo.log");
-                if ( !in_array($this->beforeProgressiveDiscount['current_state'], $states_orders) ) {
-                    //error_log("\n\n\t\tPaila 1\n\n".print_r($this->beforeProgressiveDiscount['current_state'],true),3,"/tmp/progresivo.log");
+                $states_orders = $this->currentProgressiveDiscount['states_orders'];
+                
+                
+                //Si la orden anterior esta cancelada, o no tiene estado disponible para el descuento progresivo, muere.
+                if( in_array(  '6', explode( ",", $this->beforeProgressiveDiscount['current_state'] ) )
+                        || !in_array( $states_orders, explode( ",", $this->beforeProgressiveDiscount['current_state'] ) ) ){
+                    //error_log("\n 145 - Entro. ",3,"/tmp/progresivo.log");
+                    //error_log("\n producto:  ".$this->idProduct,3,"/tmp/progresivo.log");
                     return false;
                 }
+                
                 //error_log("\n\n\t\tContinuo...\n\n",3,"/tmp/progresivo.log");
 
-                // valida si el contador de ciclos es mayor a la cantidd de cilos del descuento progresivo
+                // valida si el contador de ciclos es mayor a la cantidad de cilos del descuento progresivo
                 $validateCounterCycles = $this->validateCounterCyclesProgressiveDiscount();
                 if ( !$validateCounterCycles ) {
                     //error_log("\n\n\t\tPaila 2\n\n",3,"/tmp/progresivo.log");
@@ -164,7 +168,7 @@ class ProgressivediscountsCore
                 if ( $validateRangeDateFinish || $validateCounterReset ) {
                     $this->addHistoryProgressiveDiscount();
                     return true;
-                } 
+                }  
 
                 // valida si la fecha actual es mayor a la fecha final del periodo vigente
                 $validateRangeDateFinishPeriod = $this->validateRangeDateFinishPeriod();
@@ -253,8 +257,9 @@ class ProgressivediscountsCore
 		$resultsCustomer = Db::getInstance()->ExecuteS($queryCustomer);
 
 		if ( $this->ObjectCart->id_customer != "" && $this->ObjectCart->id_customer != 0 && $resultsCustomer[0]['validCustomer'] != 0 /*&& (int)$this->ObjectCart->id_customer == 2691*/ ) {
-			$this->idCustomer = $this->ObjectCart->id_customer;
-			return true;
+                    $this->idCustomer = $this->ObjectCart->id_customer;
+                    //error_log("\n\n this->idCustomer".$this->idCustomer,3,"/tmp/progresivo.log");
+                    return true;
 		} else {
 			return false;
 		}
@@ -287,17 +292,8 @@ class ProgressivediscountsCore
                         $this->currentProgressiveDiscounts[] = $product;
                         $this->idProgressiveDiscounts[] = $product['id_progressive_discount'];
                     }
-
                     return true;
 		}
-                
-//		if ( $resultsSearchProduct = Db::getInstance()->ExecuteS($querySearchProduct) ) {
-//			$this->idProduct = $resultsSearchProduct[0]['id_product'];
-//			$this->currentProgressiveDiscount = $resultsSearchProduct[0];
-//			$this->idProgressiveDiscount = $resultsSearchProduct[0]['id_progressive_discount'];
-//			return true;
-//		}
-
 		return false;
 	}
 
@@ -306,14 +302,18 @@ class ProgressivediscountsCore
 	 * [validateHistoryProgressiveDiscount Funcion para validar si existe un historial del descuento progresivo a aplicar]
 	 */
 	public function validateHistoryProgressiveDiscount() {
-            $querySearchHistory = " SELECT ohpd.*, o.current_state
+            
+            $querySearchHistory = " SELECT ohpd.*, GROUP_CONCAT(oh.id_order_state) AS current_state
                                     FROM "._DB_PREFIX_."order_history_progressive_discounts ohpd
-                                    INNER JOIN "._DB_PREFIX_."orders o ON ( ohpd.id_order = o.id_order )
+                                    INNER JOIN "._DB_PREFIX_."order_history oh ON ( ohpd.id_order = oh.id_order )
                                     WHERE ohpd.id_customer = ".$this->idCustomer."
                                     AND ohpd.id_product = ".$this->idProduct."
                                     AND ohpd.id_progressive_discount = ".$this->idProgressiveDiscount."
-                                    ORDER BY ohpd.date_order DESC , ohpd.id_order_history_progressive_discount DESC";
+                                    GROUP BY ohpd.id_order_history_progressive_discount
+                                    ORDER BY ohpd.date_order DESC , ohpd.id_order_history_progressive_discount DESC
+                                    LIMIT 1";
 
+            //error_log("\nConsulte",3, "/tmp/progresivo.log");
             //error_log("\n\n\n\n\n\n\n\n SQL consulta History progresivos:\n\n".$querySearchHistory." \n\n\n\n\n\n\n\n",3, "/tmp/progresivo.log");
             //$resultsSearchHistory = Db::getInstance()->ExecuteS($querySearchHistory);
             //error_log("\n\n\n\n\n\n\n\n respuesta sql resultsSearchHistory:".print_r($resultsSearchHistory, true)." \n\n\n\n\n\n\n\n",3, "/tmp/progresivo.log");
