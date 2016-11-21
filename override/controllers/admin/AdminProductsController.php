@@ -106,8 +106,7 @@ class AdminProductsController extends AdminProductsControllerCore
 		if (Validate::isLoadedObject($this->_category) && empty($this->_filter))
 			$join_category = true;
 
-
-//SELECT  @rownum := @rownum + 1 AS rank, id_product from ps_product, ( select @rownum :=0 ) as pepe LIMIT 15;
+		//SELECT  @rownum := @rownum + 1 AS rank, id_product from ps_product, ( select @rownum :=0 ) as pepe LIMIT 15;
 
 		$this->_join .= '
 		LEFT JOIN `'._DB_PREFIX_.'image` i ON (i.`id_product` = a.`id_product`) 
@@ -217,7 +216,7 @@ class AdminProductsController extends AdminProductsControllerCore
 			);
 	}
 
-		public function getList($id_lang, $orderBy = null, $orderWay = null, $start = 0, $limit = null, $id_lang_shop = null)
+	public function getList($id_lang, $orderBy = null, $orderWay = null, $start = 0, $limit = null, $id_lang_shop = null)
 	{
 		if( isset($_REQUEST) && isset($_REQUEST['productOrderby']) && $_REQUEST['productOrderby'] == 'quantity')  {
 			$_REQUEST['productOrderby'] = 'sav!quantity';
@@ -258,5 +257,65 @@ class AdminProductsController extends AdminProductsControllerCore
 			$this->_list[$i]['price_final'] = $this->_list[$i]['price_tmp'];
 			unset($this->_list[$i]['price_tmp']);
 		}
+	}
+
+	/* @todo rename to processaddproductimage */
+	public function ajaxProcessAddImage()
+	{
+		self::$currentIndex = 'index.php?tab=AdminProducts';
+		$allowedExtensions = array('jpeg', 'gif', 'png', 'jpg');
+		// max file size in bytes
+		$uploader = new FileUploader($allowedExtensions, $this->max_image_size);
+		$result = $uploader->handleUpload();
+		if (isset($result['success']))
+		{
+
+			$obj = new Image((int)$result['success']['id_image'], Tools::getValue('alt'), Tools::getValue('title'));
+			// Associate image to shop from context
+			$shops = Shop::getContextListShopID();
+			$obj->associateTo($shops);
+			$json_shops = array();
+			foreach ($shops as $id_shop)
+				$json_shops[$id_shop] = true;
+
+			$json = array(
+				'name' => $result['success']['name'],
+				'status' => 'ok',
+				'id'=>$obj->id,
+				'path' => $obj->getExistingImgPath(),
+				'position' => $obj->position,
+				'cover' => $obj->cover,
+				'shops' => $json_shops,
+			);
+
+			// Sube las imágenes en AWS S3
+			$path = _PS_PROD_IMG_DIR_ . $obj->getImgFolder();
+			$files = array_diff(scandir($path), array('.', '..'));
+			$awsObj = new Aws();
+			foreach($files as $img) {
+				if (!$awsObj->setObjectImage($path . $img, $img, 'p/')) {
+					die(Tools::jsonEncode(array(
+						'error' => "Error al subir la imagen $img a AWS S3, por favor contactar a IT."
+					)));
+				}
+			}
+			// Elimina las imágenes del local
+			$this->deleteDirectory($path);
+
+			@unlink(_PS_TMP_IMG_DIR_.'product_'.(int)$obj->id_product.'.jpg');
+			@unlink(_PS_TMP_IMG_DIR_.'product_mini_'.(int)$obj->id_product.'_'.$this->context->shop->id.'.jpg');
+			die(Tools::jsonEncode($json));
+		}
+		else
+			die(Tools::jsonEncode($result));
+	}
+
+	/**
+	 * Remove a directory not empty
+	 * @see http://stackoverflow.com/questions/1653771/how-do-i-remove-a-directory-that-is-not-empty
+	 */
+	public function deleteDirectory($dir) {
+		system('rm -rf ' . escapeshellarg($dir), $retval);
+		return $retval == 0; // UNIX commands return zero on success
 	}
 }
