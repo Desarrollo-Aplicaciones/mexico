@@ -669,8 +669,13 @@ class API extends REST {
 
   private function test()
   {
-    $context = Context::getContext();
-    $this->response($this->json((array) $context->customer), 200);
+    //$context = Context::getContext();
+    //$this->response($this->json((array) $context->customer), 200);
+    $model = new Model();
+    $this->response(json_encode($model->list_medios_de_pago()));
+    //echo "<pre>";
+    //var_dump($model->list_medios_de_pago());
+    //echo "</pre>";
   }
 
 }
