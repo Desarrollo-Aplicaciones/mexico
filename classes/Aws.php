@@ -91,7 +91,7 @@ class AwsCore extends ObjectModel
 	 */
 	public function setObjectImage($srcObj = '', $obj = '', $folder = '')
 	{
-		$folder = Configuration::get('PS_SHOP_DOMAIN') == "www.farmalisto.com.co" ? $folder : 'test/' . $folder;
+		$folder = Configuration::get('PS_SHOP_DOMAIN') == "www.farmalisto.com.mx" ? $folder : 'test/' . $folder;
 		try {
 			$this->s3Client->putObject(array(
 				'Bucket' => $this->bucket,
