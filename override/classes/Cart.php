@@ -2378,7 +2378,7 @@ class Cart extends CartCore {
                     foreach ($cart_rules as $cart_rule) {
                         //$totals_discounts +=  Tools::ps_round( $cart_rule["total_discount_cart_rule"], 2);
                         $totals_discounts += Tools::ps_round($cart_rule['obj']->getContextualValue(0, $virtual_context, CartRule::FILTER_ACTION_REDUCTION, $package, $use_cache), 2);
-                        error_log("\r\n totals_discounts: ".print_r($totals_discounts,true), 3, "/tmp/ordererror.log"); 
+                        //error_log("\r\n totals_discounts: ".print_r($totals_discounts,true), 3, "/tmp/ordererror.log"); 
                         //error_log("\r\n staggeredDiscounts id_cart_rule: ".$cart_rule["id_cart_rule"]." - cart_rule[reduction_product]: ".$cart_rule['reduction_product']." - total_discount_cart_rule: ".$cart_rule["total_discount_cart_rule"]." - totals_discounts: ".$totals_discounts, 3, "/tmp/progresivo.log");
                     }
 
