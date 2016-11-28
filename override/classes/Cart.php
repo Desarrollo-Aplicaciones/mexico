@@ -1267,6 +1267,7 @@ class Cart extends CartCore {
                     $result = $this->staggeredDiscounts($type , $with_shipping, $products,$shipping_fees, $wrapping_fees, $virtual_context);
                     if ($result !=0 ) {
                         $order_total_discount = $result;
+                        //error_log("\r\n order_total_discount: ".print_r($order_total_discount,true), 3, "/tmp/ordererror.log"); 
                         //error_log("\n\n order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
                     }
                 }
@@ -2270,6 +2271,7 @@ class Cart extends CartCore {
 			$row['description'] = $row['name'];
 		}
 
+                //error_log("\r\n  result: ".print_r($result,true), 3, "/tmp/ordererror.log");
 		return $result;
 	}
 
@@ -2374,7 +2376,9 @@ class Cart extends CartCore {
                     $totals_discounts = 0;
 
                     foreach ($cart_rules as $cart_rule) {
-                        $totals_discounts +=  Tools::ps_round( $cart_rule["total_discount_cart_rule"], 2);
+                        //$totals_discounts +=  Tools::ps_round( $cart_rule["total_discount_cart_rule"], 2);
+                        $totals_discounts += Tools::ps_round($cart_rule['obj']->getContextualValue(0, $virtual_context, CartRule::FILTER_ACTION_REDUCTION, $package, $use_cache), 2);
+                        error_log("\r\n totals_discounts: ".print_r($totals_discounts,true), 3, "/tmp/ordererror.log"); 
                         //error_log("\r\n staggeredDiscounts id_cart_rule: ".$cart_rule["id_cart_rule"]." - cart_rule[reduction_product]: ".$cart_rule['reduction_product']." - total_discount_cart_rule: ".$cart_rule["total_discount_cart_rule"]." - totals_discounts: ".$totals_discounts, 3, "/tmp/progresivo.log");
                     }
 
