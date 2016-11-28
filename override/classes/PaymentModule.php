@@ -174,7 +174,7 @@ class PaymentModule extends PaymentModuleCore {
                     $order->invoice_date = '0000-00-00 00:00:00';
                     $order->delivery_date = '0000-00-00 00:00:00';
 
-                    $order->total_paid_tax_incl = (float) Tools::ps_round((float) $this->context->cart->getOrderTotal(false, Cart::BOTH, $order->product_list, $id_carrier), 2);
+                    //$order->total_paid_tax_incl = (float) Tools::ps_round((float) $this->context->cart->getOrderTotal(false, Cart::BOTH, $order->product_list, $id_carrier), 2);
                     $order->total_paid = $order->total_paid_tax_incl;
 
                     $order->private_message = str_replace( "\n", " - ",  str_replace( "\r", " - ", $private_message ) );

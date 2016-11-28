@@ -616,7 +616,7 @@ public function getAssociatedRestrictions($type, $active_only, $i18n)
                                 if ($this->reduction_tax && !$use_tax)
                                     $reduction_value += $prorata * $reduction_amount / (1 + $product_vat_rate);
                                 elseif (!$this->reduction_tax && $use_tax)
-                                    $reduction_value += $prorata * $reduction_amount * (1 + $product_vat_rate);
+                                    $reduction_value += $prorata * $reduction_amount /* (1 + $product_vat_rate)*/;
                             }
                     }
                     // DESCUENTO A TODA LA ORDEN MONETARIO
