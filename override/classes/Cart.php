@@ -803,6 +803,7 @@ class Cart extends CartCore {
 			return array();
 
 		$cart_shop_context = Context::getContext()->cloneContext();
+                //error_log("\r\n cart_shop_context: ".print_r($cart_shop_context['price_wt'],true), 3, "/tmp/ordererror.log"); 
 		foreach ($result as &$row){
 			if (isset($row['ecotax_attr']) && $row['ecotax_attr'] > 0)
 				$row['ecotax'] = (float)$row['ecotax_attr'];
@@ -932,7 +933,6 @@ class Cart extends CartCore {
 					// se toma el iva a aplicar del producto
 					$tax = Tax::getProductTaxRate((int)$row['id_product'], (int)$address_id);
 					$priceDiscount = $this->UnitPriceDiscountPercent( $row['price'], $tax, $CartRules[0]['reduction_percent'], true, $row['cart_quantity']);
-
 					$row['price_wt'] = Tools::ps_round( $priceDiscount, 2);
 					$row['total_wt'] = $row['price_wt'] * (int)$row['cart_quantity'];
 

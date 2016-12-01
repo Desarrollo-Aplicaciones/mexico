@@ -509,43 +509,23 @@ WHERE o.id_order = ' . (int) $this->order->id;
 
 
 
-                    if ( isset( $cupon_xml_calc ) && $cupon_xml_calc != null && $cupon_xml_calc['reduction'] != '' ) {
+//                    if ( isset( $cupon_xml_calc ) && $cupon_xml_calc != null && $cupon_xml_calc['reduction'] != '' ) {
+//                        if ( $cupon_xml_calc['tipo'] == 'porcentaje' && $cupon_xml_calc['reduction_product'] != '0' && $cupon_xml_calc['reduction_product'] == $list_products[$key]['product_id']) {
+//                            $iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key]['tax_rate'], 2), Tools::ps_round($cupon_xml_calc['reduction'], 2), false, Tools::ps_round($list_products[$key]['product_quantity'], 2), false, true ), 2);
+//                        } 
+//                        elseif ( $cupon_xml_calc['tipo'] == 'porcentaje' && $cupon_xml_calc['reduction_product'] == '0' ) {
+//                            $iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key]['tax_rate'], 2), Tools::ps_round($cupon_xml_calc['reduction'], 2), false, Tools::ps_round($list_products[$key]['product_quantity'], 2), false, true ), 2);
+//                        } 
+//                        else {
+//                            $iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key]['tax_rate'], 2), Tools::ps_round('0.00', 2), false, Tools::ps_round($list_products[$key]['product_quantity'], 2), false, true ), 2);
+//                        }
+//                    } 
+//                    else {
+//                        $iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key]['tax_rate'], 2), Tools::ps_round('0.00', 2), false, Tools::ps_round($list_products[$key]['product_quantity'], 2), false, true ), 2);
+//                    }
 
-                        if ( $cupon_xml_calc['tipo'] == 'porcentaje' && $cupon_xml_calc['reduction_product'] != '0' && $cupon_xml_calc['reduction_product'] == $list_products[$key]['product_id']) {
-
-                            $iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key]['tax_rate'], 2), Tools::ps_round($cupon_xml_calc['reduction'], 2), false, Tools::ps_round($list_products[$key]['product_quantity'], 2), false, true ), 2);
-
-                            
-                                ///echo "<br> val iva descuentop_aplicado % :".$cupon_xml_calc['reduction'];
-                            
-
-                        } elseif ( $cupon_xml_calc['tipo'] == 'porcentaje' && $cupon_xml_calc['reduction_product'] == '0' ) {
-
-                            $iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key]['tax_rate'], 2), Tools::ps_round($cupon_xml_calc['reduction'], 2), false, Tools::ps_round($list_products[$key]['product_quantity'], 2), false, true ), 2);
-
-                            
-                                ///echo "<br> val iva descuentop_aplicado % :".$cupon_xml_calc['reduction'];
-                            
-
-                        } else {
-
-                            $iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key]['tax_rate'], 2), Tools::ps_round('0.00', 2), false, Tools::ps_round($list_products[$key]['product_quantity'], 2), false, true ), 2);
-
-                            
-                                ///echo "<br> val iva descuentop_aplicado $ :".$cupon_xml_calc['reduction'];
-                            
-
-                        }
-                    } else {
-
-                        $iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key]['tax_rate'], 2), Tools::ps_round('0.00', 2), false, Tools::ps_round($list_products[$key]['product_quantity'], 2), false, true ), 2);
-
-                        
-                                ///echo "<br> val iva descuentop_aplicado sin descuento :". $iva_prod_actual ;                        
-
-                    }
-
-
+                    $iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key]['tax_rate'], 2), Tools::ps_round('0.00', 2), false, Tools::ps_round($list_products[$key]['product_quantity'], 2), false, true ), 2);
+                    //error_log("\n\n\n\n\n Prueba de iva con esa maricada: ".$iva_prod_actual,3,"/tmp/ordererror.log");
                     if ( Tools::ps_round( $list_products[$key]['tax_rate'] , 2) != '0.00') {
 
 
