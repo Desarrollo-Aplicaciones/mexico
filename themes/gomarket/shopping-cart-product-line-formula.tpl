@@ -80,9 +80,9 @@
 				<span class="gift-icon">{l s='¡Regalo!'}</span>
 			{else}
 				{if $quantityDisplayed == 0 AND isset($customizedDatas.$productId.$productAttributeId)}
-					{if !$priceDisplay}{displayPrice price=$product.total_customization_wt}{else}{displayPrice price=$product.total_customization}{/if}
+					{if !$priceDisplay}x{displayPrice price=$product.total_customization_wt}{else}y{displayPrice price=$product.total_customization}{/if}
 				{else}
-					{if !$priceDisplay}{displayPrice price=$product.total_wt}{else}{displayPrice price=$product.total}{/if}
+					{if !$priceDisplay}z{displayPrice price=$product.total_wt}{else}k{displayPrice price=$product.total}{/if}
 				{/if}
 			{/if}
 		</span>

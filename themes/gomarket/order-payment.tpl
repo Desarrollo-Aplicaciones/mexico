@@ -593,16 +593,16 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
 														{if $use_taxes}
 															{if $priceDisplay}
 																<div class="price2" id="total_product">
-																	{displayPrice price=$total_products}
+																	a {displayPrice price=$total_products}
 																</div>
 															{else}
 																<div class="price2" id="total_product">
-																	{displayPrice price=$total_products_wt}
+																	b {displayPrice price=$total_products_wt}
 																</div>
 															{/if}
 														{else}
 															<div class="price2" id="total_product">
-																{displayPrice price=$total_products}
+																c {displayPrice price=$total_products}
 															</div>
 														{/if}
 													</div>
@@ -694,12 +694,12 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
 
 
 		                        			<div class="total_span">				
-		                           				{if $use_taxes}
+                                                                {if $use_taxes}
 		                              				<div class="total_compra">
 		                              					{l s='Total:'}
 		                              				</div>
 		                              				<div class="price3" id="total_price_container">
-		                                				<span id="total_price">{displayPrice price=$total_price}</span>
+		                                				<span id="total_price">A- {displayPrice price=$total_price}</span>
 		                                				<div class="ctn-flecha-desplegable2">
 															<img class="img-flecha-desplegable" src="{$img_dir}mediosp/flecha-desplegable2.png">
 														</div>
@@ -710,7 +710,7 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
 		                                				{l s='Total:'}
 		                                			</div>
 		                                			<div class="price3" id="total_price_container">
-		                                				<span id="total_price">{displayPrice price=$total_price_without_tax}</span>
+		                                				<span id="total_price">B- {displayPrice price=$total_price_without_tax}</span>
 			                                			<div class="ctn-flecha-desplegable2">
 															<img class="img-flecha-desplegable" src="{$img_dir}mediosp/flecha-desplegable2.png">
 														</div>
