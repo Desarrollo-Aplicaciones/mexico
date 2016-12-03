@@ -2473,7 +2473,7 @@ class Cart extends CartCore {
                                 }
                             }
                         }
-                        $discounts_total += $cart_rules[$key_c]["total_discount_cart_rule"];
+                        $discounts_total = $cart_rules[$key_c]["total_discount_cart_rule"];
                     }
                 } else {
                     if (!isset($products[$key_p]["price_new"])) {

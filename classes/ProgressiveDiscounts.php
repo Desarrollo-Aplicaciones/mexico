@@ -99,6 +99,10 @@ class ProgressivediscountsCore
 		$productIn = $this->validateProductInProgressiveDiscount();
                 
                 if ( $isLogged && $productIn ) {
+                    
+                    //remueve las reglas de carrito que puedan haber en el carro
+                    $this->removeCartRuleFromCart();
+                    
                     $result = true;
                     foreach ( $this->idProducts as $key => $value ) {
                         $this->idProduct = $this->idProducts[$key];
