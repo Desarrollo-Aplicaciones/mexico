@@ -119,21 +119,21 @@ class preciosapp extends Module
 
 						     	if ( $valida_precios->ValidateFechaPrecioActua() ) { // validar formato fechas de forma correcta
 						     		
-						     		if ( $valida_precios->InsertProdsProvNew() ) { // Insertando precios nuevos
-						     			
-						     			if ($valida_precios->UpdateProdsProvOld()) {
+                                                            if ( $valida_precios->TruncateProdsProvNew() ) { // Truncando la tabla proveedores_costo
 
-						     				$output .= $this->displayConfirmation($this->l("Se actualizaron los precios de los productos y proveedores de la App Movil."));
+                                                                if ($valida_precios->InsertProdsProvNew()) { // Insertando precios nuevos
 
-						     			} else {
+                                                                    $output .= $this->displayConfirmation($this->l("Se actualizaron los precios de los productos y proveedores de la App Movil."));
 
-						     				$output .= $this->displayError(implode("<br>", $guardar_archivo->errores_cargue));
-						     			}
-						     			
-						     		} else {
+                                                                } else {
 
-						     			$output .= $this->displayError(implode("<br>", $guardar_archivo->errores_cargue));
-						     		}
+                                                                    $output .= $this->displayError(implode("<br>", $guardar_archivo->errores_cargue));
+                                                                }
+
+                                                            } else {
+
+                                                                $output .= $this->displayError(implode("<br>", $guardar_archivo->errores_cargue));
+                                                            }
 
 						     	} else {
 						     		$output .= $this->displayError(implode("<br>", $valida_precios->errores_cargue));

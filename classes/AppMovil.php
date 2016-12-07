@@ -191,22 +191,22 @@ class AppMovilCore extends ObjectModel {
      * [UpdateProdsProvOld Cambia los valores de las fechas de vencimiento cargadas cuando son vacias o nulas]
      * @return [bool] [dependiendo del resultado/ejecucion del query]
      */
-    public function UpdateProdsProvOld() {
-      //..-echo "<br>2.5";
-
-        $query_prod_prov_old = "UPDATE tmp_precios_proveed_app tpa
-            INNER JOIN ps_proveedores_costo ppc ON ( tpa.`id_producto` = ppc.id_product AND tpa.id_proveedor = ppc.id_supplier )
-            SET ppc.price = tpa.PVP,
-            ppc.date =  STR_TO_DATE( tpa.Fecha , '%Y-%m-%d' ),
-            ppc.flag = 2";
-
-        if ($results_prodprov = Db::getInstance()->Execute($query_prod_prov_old)) {
-            return true;
-        } else {
-            $this->errores_cargue[] = "Error en la actualización de los productos/proveedores.";
-            return false;    
-        }
-    }
+//    public function UpdateProdsProvOld() {
+//      //..-echo "<br>2.5";
+//
+//        $query_prod_prov_old = "UPDATE tmp_precios_proveed_app tpa
+//            INNER JOIN ps_proveedores_costo ppc ON ( tpa.`id_producto` = ppc.id_product AND tpa.id_proveedor = ppc.id_supplier )
+//            SET ppc.price = tpa.PVP,
+//            ppc.date =  STR_TO_DATE( tpa.Fecha , '%Y-%m-%d' ),
+//            ppc.flag = 2";
+//
+//        if ($results_prodprov = Db::getInstance()->Execute($query_prod_prov_old)) {
+//            return true;
+//        } else {
+//            $this->errores_cargue[] = "Error en la actualización de los productos/proveedores.";
+//            return false;    
+//        }
+//    }
 
 
 
