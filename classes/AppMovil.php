@@ -149,7 +149,7 @@ class AppMovilCore extends ObjectModel {
      */
     public function TruncateProdsProvNew() {
                     
-            $query_insert = "TRUNCATE TABLE 'ps_proveedores_costo';";
+            $query_insert = "TRUNCATE TABLE ps_proveedores_costo;";
                     
             if ( $results = Db::getInstance()->Execute( $query_insert) ) {
                 return true;
@@ -169,10 +169,11 @@ class AppMovilCore extends ObjectModel {
 
             $query_insert = "INSERT INTO ps_proveedores_costo ( id_product, id_supplier, price, date, flag )
                 SELECT tpa.`id_producto`, 
-                tpa.id_proveedor, tpa.PVP, STR_TO_DATE( tpa.Fecha , '%Y-%m-%d' ) , 1 
+                tpa.id_proveedor, tpa.PVP, STR_TO_DATE( tpa.fecha , '%Y-%m-%d' ) , 1 
                 FROM tmp_precios_proveed_app tpa
                 LEFT JOIN ps_proveedores_costo ppc ON ( tpa.`id_producto` = ppc.id_product AND tpa.id_proveedor = ppc.id_supplier )
                 WHERE ppc.id_product is NULL;";
+            //error_log("\n\n Este es el query: ".$query_insert,3,"/tmp/errorcito.log");
 
             if ( $results = Db::getInstance()->Execute( $query_insert) ) {
 
@@ -191,22 +192,22 @@ class AppMovilCore extends ObjectModel {
      * [UpdateProdsProvOld Cambia los valores de las fechas de vencimiento cargadas cuando son vacias o nulas]
      * @return [bool] [dependiendo del resultado/ejecucion del query]
      */
-//    public function UpdateProdsProvOld() {
-//      //..-echo "<br>2.5";
-//
-//        $query_prod_prov_old = "UPDATE tmp_precios_proveed_app tpa
-//            INNER JOIN ps_proveedores_costo ppc ON ( tpa.`id_producto` = ppc.id_product AND tpa.id_proveedor = ppc.id_supplier )
-//            SET ppc.price = tpa.PVP,
-//            ppc.date =  STR_TO_DATE( tpa.Fecha , '%Y-%m-%d' ),
-//            ppc.flag = 2";
-//
-//        if ($results_prodprov = Db::getInstance()->Execute($query_prod_prov_old)) {
-//            return true;
-//        } else {
-//            $this->errores_cargue[] = "Error en la actualización de los productos/proveedores.";
-//            return false;    
-//        }
-//    }
+    public function UpdateProdsProvOld() {
+      //..-echo "<br>2.5";
+
+        $query_prod_prov_old = "UPDATE tmp_precios_proveed_app tpa
+            INNER JOIN ps_proveedores_costo ppc ON ( tpa.`id_producto` = ppc.id_product AND tpa.id_proveedor = ppc.id_supplier )
+            SET ppc.price = tpa.PVP,
+            ppc.date =  STR_TO_DATE( tpa.Fecha , '%Y-%m-%d' ),
+            ppc.flag = 2";
+
+        if ($results_prodprov = Db::getInstance()->Execute($query_prod_prov_old)) {
+            return true;
+        } else {
+            $this->errores_cargue[] = "Error en la actualización de los productos/proveedores.";
+            return false;    
+        }
+    }
 
 
 
@@ -215,7 +216,6 @@ class AppMovilCore extends ObjectModel {
   * @path_file_load_db ruta del archivo csv
   */ 
  public function loadprodprovapp($path_file_load_db) {
-
 
         $mysqli_1 = mysqli_init();
         mysqli_options($mysqli_1, MYSQLI_OPT_LOCAL_INFILE, true);
@@ -238,21 +238,23 @@ class AppMovilCore extends ObjectModel {
 
             $this->errores_cargue[] = "Conexión fallida: %s\n mensaje error: " . mysqli_connect_error();
             return false;
+            
         }
 
         if (!mysqli_query($mysqli_1, "TRUNCATE TABLE tmp_precios_proveed_app")) {
-                        $this->errores_cargue[] = "Error al truncar la tabla (tmp_precios_proveed_app). Mensaje error: " .  mysqli_error($mysqli_1);
+            $this->errores_cargue[] = "Error al truncar la tabla (tmp_precios_proveed_app). Mensaje error: " .  mysqli_error($mysqli_1);
             return false;
         }
 
         $cargadat = "LOAD DATA LOCAL INFILE '" . $path_file_load_db . "'
         INTO TABLE tmp_precios_proveed_app
-        FIELDS TERMINATED BY ';'
+        FIELDS TERMINATED BY ','
         OPTIONALLY ENCLOSED BY '\"' 
-        LINES TERMINATED BY '\\r\\n'
+        LINES TERMINATED BY '\\n'
         IGNORE 1 LINES 
         (id_producto, pvp, id_proveedor, fecha)";
 
+        error_log("\n\n\n\n query 1111: ".$cargadat,3,"/tmp/errorcito.log");
 
         if (!mysqli_query($mysqli_1, $cargadat)) {
             $this->errores_cargue[] = "Error al subir el archivo (estructura no valida). Mensaje error: " . mysqli_error($mysqli_1);

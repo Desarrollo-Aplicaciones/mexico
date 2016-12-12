@@ -36,8 +36,9 @@ class preciosapp extends Module
 	function __construct() {
 		$this->name = 'preciosapp';
 		$this->tab = 'administration';
-		$this->version = '1 Alfa';
-		$this->author = 'Ewing Vasquez / Farmalisto';
+		//$this->version = '1 Alfa';
+		$this->version = '1.1';
+                $this->author = 'Ewing Vasquez / Farmalisto';
 		$this->need_instance = 0;
 
 		parent::__construct();
@@ -48,24 +49,28 @@ class preciosapp extends Module
 	}
 
 	public function install() {
-		if ( !parent::install() ) {
-			return false;
-		}
 
 		if (!$id_tab = Tab::getIdFromClassName('AdminPriceApp')) {
-			$tab = new Tab();
-			$tab->class_name = 'AdminPriceApp';
-			$tab->module = 'preciosapp';
-			$tab->id_parent = (int)Tab::getIdFromClassName('AdminCatalog'); //aparecerá al final del menú catalogo
+                    $tab = new Tab();
+                    $tab->class_name = 'AdminPriceApp';
+                    $tab->module = 'preciosapp';
+                    $tab->id_parent = (int)Tab::getIdFromClassName('AdminCatalog'); //aparecerá al final del menú catalogo
+                        
+                    foreach (Language::getLanguages(false) as $lang)
+                        $tab->name[(int)$lang['id_lang']] = 'Actualiza Precios App';
 
-			foreach (Language::getLanguages(false) as $lang)
-				$tab->name[(int)$lang['id_lang']] = 'Actualiza Precios App';
-
-			if (!$tab->save())
-				return $this->_abortInstall($this->l('Imposible crear la pestaña de nuevo'));
+                    if (!$tab->save())
+                        return $this->_abortInstall($this->l('Imposible crear la pestaña de nuevo'));
 		}
-	
+                    
+		if ( !parent::install() ) {
+                    return false;
+		}
 
+                if ( !$this->createTables() ) {
+                    return $this->_abortInstall('Imposible crear las tablas');
+                }
+	
 		return true;
 	}
 	
@@ -76,86 +81,85 @@ class preciosapp extends Module
 
 	public function getContent() {
 
-		$output = '<h2>'.$this->displayName.'</h2>';
-			if (Tools::isSubmit('submitpreciosapp')) {
+            $output = '<h2>'.$this->displayName.'</h2>';
+                if (Tools::isSubmit('submitpreciosapp')) {
 
-                    /* validar subida de archivo */
+                /* validar subida de archivo */
+                /* */                  
 
-  				/* */                  
-  				$allowedExts = array("txt", "csv" );
-				  
-				$temp = explode(".", $_FILES["filepreciosapp"]["name"]);
+                $allowedExts = array("txt", "csv" );
+
+                $temp = explode(".", $_FILES["filepreciosapp"]["name"]);
 
 
-				$extension = end($temp);
+                $extension = end($temp);
 
-				if ((($_FILES["filepreciosapp"]["type"] == "text/csv")
-				|| ($_FILES["filepreciosapp"]["type"] == "text/plain")
-				|| ($_FILES["filepreciosapp"]["type"] == "text/comma-separated-values")
-				|| ($_FILES["filepreciosapp"]["type"] == "application/csv")
-				|| ($_FILES["filepreciosapp"]["type"] == "application/excel")
-				|| ($_FILES["filepreciosapp"]["type"] == "application/vnd.ms-excel")
-				|| ($_FILES["filepreciosapp"]["type"] == "application/vnd.msexcel")
-				|| ($_FILES["filepreciosapp"]["type"] == "application/octet-stream")
-				|| ($_FILES["filepreciosapp"]["type"] == "text/anytext"))
-				&& ($_FILES["filepreciosapp"]["size"] < (1024*5000))
-				&& in_array($extension, $allowedExts)) {
+                if ((($_FILES["filepreciosapp"]["type"] == "text/csv")
+                || ($_FILES["filepreciosapp"]["type"] == "text/plain")
+                || ($_FILES["filepreciosapp"]["type"] == "text/comma-separated-values")
+                || ($_FILES["filepreciosapp"]["type"] == "application/csv")
+                || ($_FILES["filepreciosapp"]["type"] == "application/excel")
+                || ($_FILES["filepreciosapp"]["type"] == "application/vnd.ms-excel")
+                || ($_FILES["filepreciosapp"]["type"] == "application/vnd.msexcel")
+                || ($_FILES["filepreciosapp"]["type"] == "application/octet-stream")
+                || ($_FILES["filepreciosapp"]["type"] == "text/anytext"))
+                && ($_FILES["filepreciosapp"]["size"] < (1024*5000))
+                && in_array($extension, $allowedExts)) {
 
-				  	if ($_FILES["filepreciosapp"]["error"] > 0) {
+                    if ($_FILES["filepreciosapp"]["error"] > 0) {
 
-  						$this->_msg="Error: " . $_FILES["filepreciosapp"]["error"];
+                            $this->_msg="Error: " . $_FILES["filepreciosapp"]["error"];
 
-    				} else {
+                    } else {
 
-      					$guardar_archivo = new Icrall();
-      					$names = $guardar_archivo->saveFile($_FILES,'filepreciosapp',new Employee($this->context->cookie->id_employee),'preciosapp');     
+                        $guardar_archivo = new Icrall();
+                        $names = $guardar_archivo->saveFile($_FILES,'filepreciosapp',new Employee($this->context->cookie->id_employee),'preciosapp');     
 
-					    if (is_array($names) && $names[0] != '' && $names[0] != false && $names[2] !=false ){
-					    	
-					    	$valida_precios = new AppMovil();					    						    	
-					     	$retorno_cargue = $valida_precios->loadprodprovapp( $names[2] );
+                        if (is_array($names) && $names[0] != '' && $names[0] != false && $names[2] !=false ){
 
-					     	if ($retorno_cargue == true) {
+                            $valida_precios = new AppMovil();					    						    	
+                            $retorno_cargue = $valida_precios->loadprodprovapp( $names[2] );
 
-						     	if ( $valida_precios->ValidateFechaPrecioActua() ) { // validar formato fechas de forma correcta
-						     		
-                                                            if ( $valida_precios->TruncateProdsProvNew() ) { // Truncando la tabla proveedores_costo
+                            if ($retorno_cargue == true) {
 
-                                                                if ($valida_precios->InsertProdsProvNew()) { // Insertando precios nuevos
+                                if ( $valida_precios->ValidateFechaPrecioActua() ) { // validar formato fechas de forma correcta
+                                    if ( $valida_precios->TruncateProdsProvNew() ) { // Truncando la tabla proveedores_costo
 
-                                                                    $output .= $this->displayConfirmation($this->l("Se actualizaron los precios de los productos y proveedores de la App Movil."));
+                                        if ($valida_precios->InsertProdsProvNew()) { // Insertando precios nuevos
 
-                                                                } else {
+                                            $output .= $this->displayConfirmation($this->l("Se actualizaron los precios de los productos y proveedores de la App Movil."));
 
-                                                                    $output .= $this->displayError(implode("<br>", $guardar_archivo->errores_cargue));
-                                                                }
+                                        } else {
 
-                                                            } else {
+                                            $output .= $this->displayError(implode("<br>1", $guardar_archivo->errores_cargue));
+                                        }
 
-                                                                $output .= $this->displayError(implode("<br>", $guardar_archivo->errores_cargue));
-                                                            }
+                                    } else {
 
-						     	} else {
-						     		$output .= $this->displayError(implode("<br>", $valida_precios->errores_cargue));
-						     	}
+                                        $output .= $this->displayError(implode("<br>2", $guardar_archivo->errores_cargue));
+                                    }
 
-						    } else { //error
+                                } else {
+                                    $output .= $this->displayError(implode("<br>3", $valida_precios->errores_cargue));
+                                }
 
-						     	$output .= $this->adminDisplayWarning(implode("<br>", $guardar_archivo->errores_cargue));
-						    }
+                            } else { //error
 
-					    } else { //error
+                                $output .= $this->adminDisplayWarning(implode("<br>4", $guardar_archivo->errores_cargue));
+                            }
 
-     	 					$output .= $this->adminDisplayWarning(implode("<br>", $guardar_archivo->errores_cargue));
-     					}
+                        } else { //error
 
-    				}
+                            $output .= $this->adminDisplayWarning(implode("<br>5", $guardar_archivo->errores_cargue));
+                        }
 
-  				} else {
- 					$output .= $this->displayError( "Este tipo de archivo no es válido."); 
-  				}
-			}
- 		return $output.$this->displayForm();
+                    }
+
+                } else {
+                    $output .= $this->displayError( "Este tipo de archivo no es válido."); 
+                }
+            }
+            return $output.$this->displayForm();
 	}
 
 
@@ -175,6 +179,30 @@ class preciosapp extends Module
 		</form>';
 		return $output;
 	}
-
-
+        
+        
+        protected function createTables()
+        {
+            $executeQuery = Db::getInstance()->execute("
+                            CREATE TABLE  IF NOT EXISTS`" . _DB_PREFIX_ . "proveedores_costo` (
+                            `id_product` int(10) unsigned NOT NULL DEFAULT '0',
+                            `id_supplier` int(11) unsigned NOT NULL,
+                            `price` decimal(35,13) DEFAULT NULL,
+                            `flag` int(1) DEFAULT NULL,
+                            `date` date DEFAULT NULL,
+                            KEY `indx_provcos_id_product` (`id_product`) USING BTREE
+                            ) ENGINE=Aria DEFAULT CHARSET=utf8 PAGE_CHECKSUM=1;");
+            
+            $executeQuery &= Db::getInstance()->execute("
+                        CREATE TABLE  IF NOT EXISTS `tmp_precios_proveed_app` (
+                        `id_producto` int(11) DEFAULT NULL,
+                        `pvp` int(11) DEFAULT NULL,
+                        `id_proveedor` int(11) DEFAULT NULL,
+                        `fecha` varchar(255) DEFAULT NULL
+                        ) ENGINE=Aria DEFAULT CHARSET=latin1 PAGE_CHECKSUM=1;");
+            
+            return $executeQuery;
+        }
+        
+        
 }
