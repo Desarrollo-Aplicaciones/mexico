@@ -254,7 +254,7 @@ class AppMovilCore extends ObjectModel {
         IGNORE 1 LINES 
         (id_producto, pvp, id_proveedor, fecha)";
 
-        error_log("\n\n\n\n query 1111: ".$cargadat,3,"/tmp/errorcito.log");
+        //error_log("\n\n\n\n query 1111: ".$cargadat,3,"/tmp/errorcito.log");
 
         if (!mysqli_query($mysqli_1, $cargadat)) {
             $this->errores_cargue[] = "Error al subir el archivo (estructura no valida). Mensaje error: " . mysqli_error($mysqli_1);
