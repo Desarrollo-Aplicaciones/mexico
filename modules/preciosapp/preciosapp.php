@@ -183,16 +183,53 @@ class preciosapp extends Module
         
         protected function createTables()
         {
-            $executeQuery = Db::getInstance()->execute("
-                            CREATE TABLE  IF NOT EXISTS`" . _DB_PREFIX_ . "proveedores_costo` (
-                            `id_product` int(10) unsigned NOT NULL DEFAULT '0',
-                            `id_supplier` int(11) unsigned NOT NULL,
-                            `price` decimal(35,13) DEFAULT NULL,
-                            `flag` int(1) DEFAULT NULL,
-                            `date` date DEFAULT NULL,
-                            KEY `indx_provcos_id_product` (`id_product`) USING BTREE
-                            ) ENGINE=Aria DEFAULT CHARSET=utf8 PAGE_CHECKSUM=1;");
             
+            $tableExist = Db::getInstance()->execute( "CHECK TABLE " . _DB_PREFIX_ . "proveedores_costo" );
+            if( $tableExist > 1 ){
+                
+                $sql2 = "SHOW COLUMNS FROM `" . _DB_PREFIX_ . "proveedores_costo`;";
+                $result = Db::getInstance()->executeS( $sql2 );
+
+                $fieldsDB = array();
+                foreach ($result as $column ){
+                    $fieldsDB[] = $column['Field'] ;
+                }  
+                
+                $fields = array( "id_product", "id_supplier", "price", "flag", "date" );
+                
+                foreach ( $fields as $fieldExist ){
+                    
+                    if( !in_array( $fieldExist , $fields ) ){
+                        if ( $fieldExist == "flag" ){
+                            $sql = "ALTER TABLE `" . _DB_PREFIX_ . "proveedores_costo` 
+                                    ADD  `flag` int(1) DEFAULT NULL after `price`;";
+                        }
+                        
+                        if ( $fieldExist == "date" ){
+                            $sql = "ALTER TABLE `" . _DB_PREFIX_ . "proveedores_costo` 
+                                    ADD  `date` date DEFAULT NULL after `flag`;";
+                        }
+                        
+                        Db::getInstance()->execute( $sql );
+                        
+                    }
+                }
+                error_log("\n\n\n\n fields: ".print_r($fields, true),3,"/tmp/errorcito.log");
+                error_log("\n\n\n\n fieldsDB: ".print_r($fieldsDB, true),3,"/tmp/errorcito.log");
+            }
+            else {
+                
+                $executeQuery = Db::getInstance()->execute("
+                                CREATE TABLE  IF NOT EXISTS `" . _DB_PREFIX_ . "proveedores_costo` (
+                                `id_product` int(10) unsigned NOT NULL DEFAULT '0',
+                                `id_supplier` int(11) unsigned NOT NULL,
+                                `price` decimal(35,13) DEFAULT NULL,
+                                `flag` int(1) DEFAULT NULL,
+                                `date` date DEFAULT NULL,
+                                KEY `indx_provcos_id_product` (`id_product`) USING BTREE
+                                ) ENGINE=Aria DEFAULT CHARSET=utf8 PAGE_CHECKSUM=1;");
+
+            }
             $executeQuery &= Db::getInstance()->execute("
                         CREATE TABLE  IF NOT EXISTS `tmp_precios_proveed_app` (
                         `id_producto` int(11) DEFAULT NULL,
