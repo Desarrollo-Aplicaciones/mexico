@@ -611,7 +611,7 @@
 {/if}
 
 <div class="ctn-servier">
-    <span>Ingrese un representante:</span>
+    <span>Código Continuar:</span>
     {*<select name="servier" id="servier">
         {foreach item=item from=$rep_servier}
             <option value="{$item['id_asociado']}">{$item['nombre']}</option>
