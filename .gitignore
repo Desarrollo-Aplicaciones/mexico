@@ -51,3 +51,12 @@ KWE54O31MDORBOJRFRPLMM8C7H24LQQR/*
 **/._.DS_Store
 .htaccess
 xml_timbrado/*
+!admin8256/import
+admin8256/import/*
+robots.txt
+!quality_score
+quality_score/*
+!modules/ftpnadro
+modules/ftpnadro/*
+!file_exports
+file_exports/*
