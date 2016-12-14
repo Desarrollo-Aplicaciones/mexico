@@ -23,22 +23,32 @@ class servierMedicosCore extends ObjectModel {
         $sql = "SELECT id_servier, nombres, apellidos
                 FROM ps_medic_servier
                 WHERE UPPER(CONCAT(`nombres`, ' ', `apellidos`)) LIKE UPPER('%".$name_med."%')
-                LIMIT 10;";
+                LIMIT 5;";
         $result =  Db::getInstance()->executeS($sql);
         
         return $result;
     }
     
     public function concatNamesMedico( $result ) {
-        $ret = array();
+//        $ret = array();
+//        foreach( $result as $key => $value ) {
+//            $ret[] = array(
+//                'id' => $value["id_servier"],
+//                'label' => trim($value["nombres"]) . " " . trim($value["apellidos"]),
+//                'value' => trim($value["nombres"]) . " " . trim($value["apellidos"]),
+//            );
+//        }
+//        return $ret;
+        
+        $html = '<ul id="country-list">';
         foreach( $result as $key => $value ) {
-            $ret[] = array(
-                'id' => $value["id_servier"],
-                'label' => trim($value["nombres"]) . " " . trim($value["apellidos"]),
-                'value' => trim($value["nombres"]) . " " . trim($value["apellidos"]),
-            );
+            $nameComplete = trim($value["nombres"]) . " " . trim($value["apellidos"]);
+            $html .= '<li onClick="selectOption(\''.$nameComplete.'\');" value="'.$value["id_servier"].'">'.$nameComplete.'<li>';
         }
-        return $ret;
+        $html .= '</ul>';
+        error_log("\n\n El html: ".$html,3,"/tmp/errorcito.log");
+        return $html;
+        
     }
 
     public function insertMedico( $id_medico, $id_cart ){
