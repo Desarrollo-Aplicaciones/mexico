@@ -231,8 +231,10 @@ class preciosapp extends Module
 
             }
             
-            Db::getInstance()->execute( "DROP TABLE IF EXISTS tmp_precios_proveed_app;");
-            
+            $tableTmpExist = Db::getInstance()->execute( "CHECK TABLE tmp_precios_proveed_app" );
+            if( $tableTmpExist > 1 ){
+                Db::getInstance()->execute( "DROP TABLE IF EXISTS tmp_precios_proveed_app;");
+            }
             $executeQuery &= Db::getInstance()->execute("
                         CREATE TABLE  IF NOT EXISTS `tmp_precios_proveed_app` (
                         `id_producto` int(11) DEFAULT NULL,
