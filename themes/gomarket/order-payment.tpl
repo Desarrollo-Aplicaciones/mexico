@@ -830,12 +830,12 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
             });
         });
         //To select country name
-        function selectOption(val) {
-            $("#input-medico").val(val);
+        function selectOption(name, value) {
+            $("#input-medico").val(name);
             $.ajax({
                 type: "POST",
                 url: "{$base_dir}ajaxs/ajax_servier_medicos.php",
-                data:'id_medico='+$('#input-medico').val(),
+                data:'id_medico='+value,
                 success: function(data){
                     //console.log(data);
                 }

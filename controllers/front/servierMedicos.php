@@ -43,7 +43,7 @@ class servierMedicosCore extends ObjectModel {
         $html = '<ul id="country-list">';
         foreach( $result as $key => $value ) {
             $nameComplete = trim($value["nombres"]) . " " . trim($value["apellidos"]);
-            $html .= '<li onClick="selectOption(\''.$nameComplete.'\');" value="'.$value["id_servier"].'">'.$nameComplete.'<li>';
+            $html .= '<li onClick="selectOption(\''.$nameComplete.'\',\''.$value["id_servier"].'\');" value="'.$value["id_servier"].'">'.$nameComplete.'<li>';
         }
         $html .= '</ul>';
         error_log("\n\n El html: ".$html,3,"/tmp/errorcito.log");
