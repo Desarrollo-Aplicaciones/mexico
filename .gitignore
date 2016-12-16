@@ -60,3 +60,5 @@ quality_score/*
 modules/ftpnadro/*
 !file_exports
 file_exports/*
+!modules/ftpnadro
+modules/ftpnadro/*
