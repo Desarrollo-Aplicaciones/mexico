@@ -8,10 +8,12 @@ require_once(dirname(__FILE__) . '/../init.php');
     $id_cart = $context->cart->id;
     
     //Consulta del autocomplete
-    $medico = Tools::getValue('term');
+//    $medico = Tools::getValue('term');
+    $medico = $_POST["medico"];
+    error_log("\n\n El medico: ".$medico,3,"/tmp/errorcito.log");
     
     //Medico seleccionado.
-    $id_medico = Tools::getValue('id_medico');
+    $id_medico = $_POST["id_medico"];
  
     
     $servierMedico = new servierMedicos();
@@ -22,6 +24,7 @@ require_once(dirname(__FILE__) . '/../init.php');
             $result
         );
     }
+    
     else {
         //Consulta los medicos por nombre y apellido
         $result = $servierMedico->searchByNameMed( str_replace(" ", "%", $medico) );
@@ -29,9 +32,7 @@ require_once(dirname(__FILE__) . '/../init.php');
             //Los concatena para mostarlos en pantalla correctamente
             $ret = $servierMedico->concatNamesMedico($result);
             //los retorna.
-            echo json_encode(
-                $ret
-            );
+            echo $ret;
         }
         else{
             echo json_encode(

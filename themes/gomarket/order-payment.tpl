@@ -792,10 +792,10 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
             background: white url("images/ui-anim_basic_16x16.gif") right center no-repeat;
         }
     </style>
-    
-    {*<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    {*
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>*}
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
         $( function() {
             $( "#input-medico" ).autocomplete({
@@ -809,13 +809,48 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
                 }
             });
         });
+    </script>*}
+    <script>
+        $(document).ready(function(){
+            $("#input-medico").keyup(function(){
+                $.ajax({
+                    type: "POST",
+                    url: "{$base_dir}ajaxs/ajax_servier_medicos.php",
+                    data:'medico='+$(this).val(),
+                    beforeSend: function(){
+                        $("#input-medico").css("background","#FFF url(LoaderIcon.gif) no-repeat 165px");
+                    },
+                    success: function(data){
+                        //console.log(data);
+                        $("#suggesstion-box").show();
+                        $("#suggesstion-box").html(data);
+                        $("#input-medico").css("background","#FFF");
+                    }
+                });
+            });
+        });
+        //To select country name
+        function selectOption(name, value) {
+            $("#input-medico").val(name);
+            $.ajax({
+                type: "POST",
+                url: "{$base_dir}ajaxs/ajax_servier_medicos.php",
+                data:'id_medico='+value,
+                success: function(data){
+                    //console.log(data);
+                }
+            });
+            $("#suggesstion-box").hide();
+        }
     </script>
     
     <div class="ui-widget ctn-medicos">
         <br><span class="span-medicos">Ingrese un médico:</span>
         <input id="input-medico" >
-        <!--input id="input-medico-val" type="hidden"-->
+        <div id="suggesstion-box"></div>
     </div>
+    
+    
 
     <!--<div class="ui-widget" style="margin-top:2em; font-family:Arial">
       Result:
