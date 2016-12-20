@@ -313,7 +313,7 @@ document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/tru
 	</body>
 
 
-  {* chat *}
+  {* chat 
 <!-- Start of LiveChat (www.livechatinc.com) code -->
 <script type="text/javascript">
     window.__lc = window.__lc || {};
@@ -328,7 +328,7 @@ document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/tru
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s);
     })();
 </script>
-<!-- End of LiveChat code -->
+<!-- End of LiveChat code -->*}
 
 
 </html>
