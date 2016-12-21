@@ -2841,7 +2841,14 @@ class ProductCore extends ObjectModel
 
 	public function getPriceWithoutReduct($notax = false, $id_product_attribute = false)
 	{
-		return Product::getPriceStatic((int)$this->id, !$notax, $id_product_attribute, 6, null, false, false);
+            if ( (int)$this->id == 11808 ) {
+                $priceStatic = Product::getPriceStatic((int)$this->id, !$notax, $id_product_attribute, 6, null, false, false);
+                $this->specificPrice['id_specific_price'] = 31;
+                $this->specificPrice['reduction'] = 0.050000;
+                $aumentReduction = 1.30;
+                return $priceStatic * $aumentReduction;
+            }
+            return Product::getPriceStatic((int)$this->id, !$notax, $id_product_attribute, 6, null, false, false);
 	}
 
 	/**
@@ -3870,14 +3877,19 @@ class ProductCore extends ObjectModel
 
 	public static function getProductsProperties($id_lang, $query_result)
 	{
-		$results_array = array();
+            $results_array = array();
 
-		if (is_array($query_result))
-			foreach ($query_result as $row)
-				if ($row2 = Product::getProductProperties($id_lang, $row))
-					$results_array[] = $row2;
+            if (is_array($query_result))
+                foreach ($query_result as $row){
+                    if ($row2 = Product::getProductProperties($id_lang, $row)){
+                            if ($row2['id_product'] == 11808 ) { 
+                                $row2['reduction'] = 5; $row2['price_without_reduction'] = $row2['price'] * 1.15; 
+                            }
+                            $results_array[] = $row2;
+                    }
+                }
 
-		return $results_array;
+            return $results_array;
 	}
 
 	/*
