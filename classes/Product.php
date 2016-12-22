@@ -2841,17 +2841,29 @@ class ProductCore extends ObjectModel
 
 	public function getPriceWithoutReduct($notax = false, $id_product_attribute = false)
 	{
-            if ( (int)$this->id == 11808 ) {
+            
+            if ( $this->getPriceLabeled() ) {
                 $priceStatic = Product::getPriceStatic((int)$this->id, !$notax, $id_product_attribute, 6, null, false, false);
                 $this->specificPrice['id_specific_price'] = 31;
                 $this->specificPrice['reduction'] = 0.050000;
                 $aumentReduction = 1.30;
-                return $priceStatic * $aumentReduction;
+                return $this->getPriceLabeled();
             }
             return Product::getPriceStatic((int)$this->id, !$notax, $id_product_attribute, 6, null, false, false);
 	}
+        
+        public function getPriceLabeled($id){
+            
+            $id_product = ($id) ? $id : (int)$this->id;
+            
+            $sql = "SELECT price_labeled
+                    FROM "._DB_PREFIX_."front_price_labeled
+                    WHERE id_product = '".$id_product."';";
+            $result = DB::getInstance()->getValue($sql);
+            return $result;
+        }
 
-	/**
+        /**
 	* Display price with right format and currency
 	*
 	* @param array $params Params
@@ -3882,13 +3894,15 @@ class ProductCore extends ObjectModel
             if (is_array($query_result))
                 foreach ($query_result as $row){
                     if ($row2 = Product::getProductProperties($id_lang, $row)){
-                            if ($row2['id_product'] == 11808 ) { 
-                                $row2['reduction'] = 5; $row2['price_without_reduction'] = $row2['price'] * 1.15; 
-                            }
-                            $results_array[] = $row2;
+                        $result = self::getPriceLabeled( $row2['id_product'] );
+                        if ( $result ) {
+                            $row2['reduction'] = 5; 
+                            $row2['price_without_reduction'] = $result;
+                        }
+                        $results_array[] = $row2;
                     }
                 }
-
+                
             return $results_array;
 	}
 
