@@ -2841,10 +2841,29 @@ class ProductCore extends ObjectModel
 
 	public function getPriceWithoutReduct($notax = false, $id_product_attribute = false)
 	{
-		return Product::getPriceStatic((int)$this->id, !$notax, $id_product_attribute, 6, null, false, false);
+            
+            if ( $this->getPriceLabeled() ) {
+                $priceStatic = Product::getPriceStatic((int)$this->id, !$notax, $id_product_attribute, 6, null, false, false);
+                $this->specificPrice['id_specific_price'] = 31;
+                $this->specificPrice['reduction'] = 0.050000;
+                $aumentReduction = 1.30;
+                return $this->getPriceLabeled();
+            }
+            return Product::getPriceStatic((int)$this->id, !$notax, $id_product_attribute, 6, null, false, false);
 	}
+        
+        public function getPriceLabeled($id){
+            
+            $id_product = ($id) ? $id : (int)$this->id;
+            
+            $sql = "SELECT price_labeled
+                    FROM "._DB_PREFIX_."front_price_labeled
+                    WHERE id_product = '".$id_product."';";
+            $result = DB::getInstance()->getValue($sql);
+            return $result;
+        }
 
-	/**
+        /**
 	* Display price with right format and currency
 	*
 	* @param array $params Params
@@ -3870,14 +3889,21 @@ class ProductCore extends ObjectModel
 
 	public static function getProductsProperties($id_lang, $query_result)
 	{
-		$results_array = array();
+            $results_array = array();
 
-		if (is_array($query_result))
-			foreach ($query_result as $row)
-				if ($row2 = Product::getProductProperties($id_lang, $row))
-					$results_array[] = $row2;
-
-		return $results_array;
+            if (is_array($query_result))
+                foreach ($query_result as $row){
+                    if ($row2 = Product::getProductProperties($id_lang, $row)){
+                        $result = self::getPriceLabeled( $row2['id_product'] );
+                        if ( $result ) {
+                            $row2['reduction'] = 5; 
+                            $row2['price_without_reduction'] = $result;
+                        }
+                        $results_array[] = $row2;
+                    }
+                }
+                
+            return $results_array;
 	}
 
 	/*

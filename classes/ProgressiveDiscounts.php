@@ -436,7 +436,7 @@ class ProgressivediscountsCore
 
                 //error_log("\n\n Inserción de cart_cartrule_progressive_discounts:".$queryInsertCartCartRulePD, 3, "/tmp/progresivo.log");
 
-                $resultsInsertCartCartRulePD = Db::getInstance()->ExecuteS($queryInsertCartCartRulePD);
+                $resultsInsertCartCartRulePD = Db::getInstance()->Execute($queryInsertCartCartRulePD);
                 //error_log("\n\n\n\ resultsInsertCartCartRulePD:".$resultsInsertCartCartRulePD, 3, "/tmp/progresivo.log");
 
                 // valida si el cupon a agregar tiene restriccion a producto especifico
@@ -493,10 +493,11 @@ class ProgressivediscountsCore
             //error_log("\n\n\n result_QueryReglasCarritoEliminar: ".print_r($result_QueryReglasCarritoEliminar, true), 3, "/tmp/progresivo.log" );
 
             $ReglasCarritoEliminar = array();
-
-            foreach ($result_QueryReglasCarritoEliminar[0] as $key => $value) {
-                    $ReglasCarritoEliminar[] = $value;
-                    //error_log("\r\n  ReglasCarritoEliminar: ".$value." - ".count($ReglasCarritoEliminar), 3, "/tmp/progresivo.log");
+            if ($result_QueryReglasCarritoEliminar){
+                foreach ($result_QueryReglasCarritoEliminar[0] as $key => $value) {
+                        $ReglasCarritoEliminar[] = $value;
+                        //error_log("\r\n  ReglasCarritoEliminar: ".$value." - ".count($ReglasCarritoEliminar), 3, "/tmp/progresivo.log");
+                }            
             }
 
             //error_log("\r\n  removeCartRuleFromCart query \r\n : ".$reglasCarritoElminar, 3, "/tmp/progresivo.log");

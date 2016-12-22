@@ -379,17 +379,14 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 				<span id="reduction_percent_display">{if $product->specificPrice AND $product->specificPrice.reduction_type == 'percentage'}-{$product->specificPrice.reduction*100}%{/if}</span></p>
 				<p id="reduction_amount" {if !$product->specificPrice OR $product->specificPrice.reduction_type != 'amount' && $product->specificPrice.reduction|intval ==0} style="display:none"{/if}><span id="reduction_amount_display">{if $product->specificPrice AND $product->specificPrice.reduction_type == 'amount' && $product->specificPrice.reduction|intval !=0}-{convertPrice price=$product->specificPrice.reduction|floatval}{/if}</span></p> *}
 				{if $product->specificPrice AND $product->specificPrice.reduction}
-					<span id="old_price">
-						{if $priceDisplay >= 0 && $priceDisplay <= 2}
-							{if $productPriceWithoutReduction > $productPrice}
-								<span id="old_price_display">{convertPrice price=$productPriceWithoutReduction}</span>
-							{* {if $tax_enabled && $display_tax_label == 1}
-							{if $priceDisplay == 1}{l s='tax excl.'}{else}{l s='tax incl.'}{/if}
-							{/if} *}
-							{/if}
-						{/if}
-					</span>
-				{/if}
+                                    <span id="old_price">
+                                        {if $priceDisplay >= 0 && $priceDisplay <= 2}
+                                            {if $productPriceWithoutReduction > $productPrice}
+                                                <span id="old_price_display">{convertPrice price=$productPriceWithoutReduction}</span>
+                                            {/if}
+                                        {/if} 
+                                    </span>
+                                {/if}
 				{if isset($packItems) && isset($productPrice) && isset($product) && $packItems|@count && $productPrice < $product->getNoPackPrice()}
 					<p class="pack_price">{l s='instead of'} <span style="text-decoration: line-through;">{convertPrice price=$product->getNoPackPrice()}</span></p>
 					<br class="clear" />
