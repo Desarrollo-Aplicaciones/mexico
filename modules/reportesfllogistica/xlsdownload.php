@@ -36,8 +36,8 @@ if (isset($_GET['opc_sel']) ) {
                     WHERE o.date_add BETWEEN "'.$input1.' 00:00:00" AND "'.$input2.' 23:59:59"
                     ORDER BY o.id_order, od.product_reference ASC';
 
-                //if ($results = Db::getInstance_slv()->ExecuteS($sql)) {
-                 if ($results = Db::getInstance()->ExecuteS($sql)) {
+                if ($results = Db::getInstance_slv()->ExecuteS($sql)) {
+                //if ($results = Db::getInstance()->ExecuteS($sql)) {
                     //var_dump($results);
 
                     $output = fopen('php://output', 'w');
