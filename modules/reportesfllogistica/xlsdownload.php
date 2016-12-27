@@ -22,8 +22,8 @@ if (isset($_GET['opc_sel']) ) {
                 header("Content-Transfer-Encoding: binary"); 
 
                 $sql = 'SELECT o.id_order, o.invoice_number, CONCAT(c.firstname, " ", c.lastname) AS cliente,
-                    a.address1, a.address2, o.date_add, od.product_reference, od.product_name, CONCAT( "$ ", REPLACE( (od.product_price ),".",",")) AS precio,
-                     CONCAT( "$ ", REPLACE( (od.unit_price_tax_incl ),".",",")) AS precio_tax,
+                    a.address1, a.address2, o.date_add, od.product_reference, od.product_name, CONCAT( "$ ", REPLACE( (od.product_price ),",",",")) AS precio,
+                     CONCAT( "$ ", REPLACE( (od.unit_price_tax_incl ),",",",")) AS precio_tax,
                     od.product_quantity, i.cod_icr, tro.nombre, osl.`name` FROM ps_order_detail od 
                     INNER JOIN ps_orders o ON ( o.id_order = od.id_order )
                     INNER JOIN ps_customer c ON ( o.id_customer = c.id_customer )
@@ -36,7 +36,9 @@ if (isset($_GET['opc_sel']) ) {
                     WHERE o.date_add BETWEEN "'.$input1.' 00:00:00" AND "'.$input2.' 23:59:59"
                     ORDER BY o.id_order, od.product_reference ASC';
 
-                if ($results = Db::getInstance_slv()->ExecuteS($sql)) {
+                //if ($results = Db::getInstance_slv()->ExecuteS($sql)) {
+                 if ($results = Db::getInstance()->ExecuteS($sql)) {
+                    //var_dump($results);
 
                     $output = fopen('php://output', 'w');
                     fputcsv( $output, array( "NUM PEDIDO", "NUM FACTURA", "CLIENTE", "DIRECCION 1", "DIRECCION 2", "FECHA", "REFERENCIA", "DESCRIPCION", "PRECIO", "PRECIO CON IMPUEST", "CANTIDAD", "ICR", "TRANSPORTADORA", "ESTADO ORDEN" ) ) ;
@@ -99,7 +101,7 @@ if (isset($_GET['opc_sel']) ) {
 
 
 
-                $sql = 'SELECT so.id_supply_order, sod.reference, sod.`name`, i.cod_icr, REPLACE(sod.unit_price_te ,".",",") unit_price_te, REPLACE(sod.tax_rate ,".",",") tax_rate, w.`name` AS bodega, soi.lote, soi.fecha_vencimiento,
+                $sql = 'SELECT so.id_supply_order, sod.reference, sod.`name`, i.cod_icr, REPLACE(sod.unit_price_te ,",",",") unit_price_te, REPLACE(sod.tax_rate ,",",",") tax_rate, w.`name` AS bodega, soi.lote, soi.fecha_vencimiento,
                         soi.fecha, p.upc
                         FROM ps_supply_order_icr soi
                         INNER JOIN ps_supply_order_detail sod ON ( soi.id_supply_order_detail = sod.id_supply_order_detail)
