@@ -605,20 +605,20 @@ die();*/
                         if ($order_status->logable)
                             ProductSale::addProductSale((int) $product['id_product'], (int) $product['cart_quantity']);
 
-                    if (Configuration::get('PS_STOCK_MANAGEMENT') && $order_detail->getStockState()) {
-                        $history = new OrderHistory();
-                        $history->id_order = (int) $order->id;
-                        $history->changeIdOrderState(Configuration::get('PS_OS_OUTOFSTOCK'), $order, true);
-                        $history->addWithemail();
-                        
-                    } else {
-                        // Set order state in order history ONLY even if the "out of stock" status has not been yet reached
-                        // So you migth have two order states
-                        $new_history = new OrderHistory();
-                        $new_history->id_order = (int) $order->id;
-                        $new_history->changeIdOrderState((int) $id_order_state, $order, true);
-                        $new_history->addWithemail(true, $extra_vars);
-                    }
+                    
+                        if (Configuration::get('PS_STOCK_MANAGEMENT') && $order_detail->getStockState()) 
+                        {
+                            $history = new OrderHistory();
+                            $history->id_order = (int) $order->id;
+                            $history->changeIdOrderState(Configuration::get('PS_OS_OUTOFSTOCK'), $order, true);
+                            $history->addWithemail();
+                        }
+                    // Set order state in order history ONLY even if the "out of stock" status has not been yet reached
+                    // So you migth have two order states
+                    $new_history = new OrderHistory();
+                    $new_history->id_order = (int) $order->id;
+                    $new_history->changeIdOrderState((int) $id_order_state, $order, true);
+                    $new_history->addWithemail(true, $extra_vars);
 
                     unset($order_detail);
 
