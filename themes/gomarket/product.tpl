@@ -643,9 +643,9 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 								<strong>Costos de envío<br>
 								Pedidos en D.F. y Área<br>
 								Metropolitana:<br><br>
-								Mayores a $300.00</strong>, el <span class="txt-green-small"><strong>¡ENVÍO ES GRATIS!</span><br>
-								Menores a $300.00</strong>, el costo de envío es de <strong>$29.00 </strong><br>
-								Pedidos al <strong>interior de la República</strong>, el costo de envío es de <strong>$99.00</strong>
+								Mayores a $350.00</strong>, el <span class="txt-green-small"><strong>¡ENVÍO ES GRATIS!</span><br>
+								Menores a $350.00</strong>, el costo de envío es de <strong>$80.00 </strong><br>
+								Pedidos al <strong>interior de la República</strong>, el costo de envío es de <strong>$160.00</strong>
 							</span>
 						</div>
 					</ul>
