@@ -534,12 +534,21 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 			{* <div class="ctn-valor-min"><span class="txt-green-small"><strong>Valor mínimo</strong> de pedido: <strong>$25.000</strong></span></div> *}
 			<div class="ctn-info-times-delivery">
 				<span class="txt-gray">
-					<strong>Costos de envío<br>
+					<!--strong>Costos de envío<br>
 					Pedidos en D.F. y Área<br>
 					Metropolitana:<br><br>
 					Mayores a $350.00</strong>, el <span class="txt-green-small"><strong>¡ENVÍO ES GRATIS!</span><br>
 					Menores a $350.00</strong>, el costo de envío es de <strong>$80.00  </strong><br>
-					Pedidos al <strong>interior de la República</strong>, el costo de envío es de <strong>$189.00</strong>
+					Pedidos al <strong>interior de la República</strong>, el costo de envío es de <strong>$189.00</strong-->
+                                        Valor de Compra mínima: $150
+                                        <br><br>Costos de envío
+                                        <br><br>D.F. y Área Metropolitana:
+                                        <br><br>Mayores a $350.00, el ¡ENVÍO ES GRATIS!
+                                        <br>Menores a $350.00, el costo de envío es de $80.00 Iva Incluído
+                                        <br>Envío entre 2 y 24 horas máximo
+                                        <br><br>Interior de la República:
+                                        <br><br>El costo de envío es de $189.00 IVA incluído
+                                        <br>Envío entre 24 y 48 horas máximo
 				</span>
 			</div>
 			<div class="ctn-valor-min"><span class="txt-green-small"><strong>Ver más...</strong></span></div>
@@ -640,12 +649,21 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 					<ul id="idTab99" class="rte bullet content_hide_show">
 						<div class="ctn-times-delivery-li">
 							<span class="txt-gray">
-								<strong>Costos de envío<br>
+								<!--strong>Costos de envío<br>
 								Pedidos en D.F. y Área<br>
 								Metropolitana:<br><br>
 								Mayores a $350.00</strong>, el <span class="txt-green-small"><strong>¡ENVÍO ES GRATIS!</span><br>
 								Menores a $350.00</strong>, el costo de envío es de <strong>$80.00 </strong><br>
-								Pedidos al <strong>interior de la República</strong>, el costo de envío es de <strong>$189.00</strong>
+								Pedidos al <strong>interior de la República</strong>, el costo de envío es de <strong>$189.00</strong-->
+                                                                Valor de Compra mínima: $150
+                                                                <br><br>Costos de envío
+                                                                <br><br>D.F. y Área Metropolitana:
+                                                                <br><br>Mayores a $350.00, el ¡ENVÍO ES GRATIS!
+                                                                <br>Menores a $350.00, el costo de envío es de $80.00 Iva Incluído
+                                                                <br>Envío entre 2 y 24 horas máximo
+                                                                <br><br>Interior de la República:
+                                                                <br><br>El costo de envío es de $189.00 IVA incluído
+                                                                <br>Envío entre 24 y 48 horas máximo
 							</span>
 						</div>
 					</ul>
