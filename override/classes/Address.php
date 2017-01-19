@@ -489,149 +489,138 @@ public function get_id_custumer_account($billing_account_id, $json = false) {
     return '!';
 }
 
-public static function horaDeEntrega(){
+public static function horaDeEntrega()
+    {    
+        date_default_timezone_set('America/Bogota');
 
-    date_default_timezone_set('America/Bogota');
+        $inicio_intervalos = (int) Configuration::get('INIT_INTERVALS');
+        $fecha = new DateTime(date('Y-m-d H:i:s'));
+        $strDate = NULL;
 
-    $inicio_intervalos = (int) Configuration::get('INIT_INTERVALS');
+        if ($fecha->format('i') < 30) {
+            $strDate = $fecha->format('Y-m-d H:').'30'.$fecha->format(':s');
+            $date = new DateTime($strDate);
+            $date->add(new DateInterval('PT'.$inicio_intervalos.'H'));
+            $strDate = $date->format('Y-m-d H:i');
+        } else {
+            $strDate = $fecha->format('Y-m-d H:').'00'.$fecha->format(':s');
+            $date = new DateTime($strDate);
+            $date->add(new DateInterval('PT'.$inicio_intervalos.'H'));
+            $strDate = $date->format('Y-m-d H:i');
+        }
 
-    $fecha = new DateTime(date('Y-m-d H:i:s'));
-    $strDate = NULL;
-    if($fecha->format('i') < 30){
-        $strDate = $fecha->format('Y-m-d H:').'30'.$fecha->format(':s');
-        $date = new DateTime($strDate);
-        $date->add(new DateInterval('PT'.$inicio_intervalos.'H'));
-        $strDate = $date->format('Y-m-d H:i');
-    }
-    else{
-        $strDate = $fecha->format('Y-m-d H:').'00'.$fecha->format(':s');
-        $date = new DateTime($strDate);
-        $date->add(new DateInterval('PT'.$inicio_intervalos.'H'));
-        $strDate = $date->format('Y-m-d H:i');
-    }
+        $dias = array("Domingo","Lunes","Martes","Mi&eacute;rcoles","Jueves","Viernes","S&aacute;bado");
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
 
-    $dias = array("Domingo","Lunes","Martes","Mi&eacute;rcoles","Jueves","Viernes","S&aacute;bado");
-    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        $day_delivered = '<select name="" id="day_delivered" name="day_delivered" style="width: 150px !important;">';
+        $horasSelect = array();
 
-    $day_delivered = '<select name="" id="day_delivered" name="day_delivered" style="width: 150px !important;">';
-    $horasSelect = array();
+        $numeroDeHoras = (int) Configuration::get('MAX_HOURS_DELIVERED'); // MAX_HOURS_DELIVERED
+        $hora_inicio = (int) Configuration::get('INIT_HOUR_DELIVERE');
+        $hora_fin = (int) Configuration::get('END_HOUR_DELIVERE');
+        $ventanaDeHoras = (int) Configuration::get('WINDOWS_HOUR_DELIVERED'); // WINDOWS_HOUR_DELIVERED
 
-                $numeroDeHoras = (int) Configuration::get('MAX_HOURS_DELIVERED'); // MAX_HOURS_DELIVERED
-                $hora_inicio = (int) Configuration::get('INIT_HOUR_DELIVERE');
-                $hora_fin = (int) Configuration::get('END_HOUR_DELIVERE');
+        if ($numeroDeHoras == 0) $numeroDeHoras = 48;
+        if ($ventanaDeHoras == 0) $ventanaDeHoras = 2;
 
-                $ventanaDeHoras = (int) Configuration::get('WINDOWS_HOUR_DELIVERED'); // WINDOWS_HOUR_DELIVERED
-                if($numeroDeHoras == 0)
-                    $numeroDeHoras = 48;
-                if($ventanaDeHoras == 0)
-                    $ventanaDeHoras = 2;
+        $day = 0;
+        for ($i=0; $i < $numeroDeHoras; $i+=$ventanaDeHoras) {
+            $date_1 = new DateTime($strDate);
+            $date_1->add(new DateInterval('PT'.$i.'H'));
+            $now = new DateTime(date('Y-m-d H:i:s'));
+            $dNow = $now->format('d');
 
-                $day = 0;
-                for ($i=0; $i < $numeroDeHoras; $i+=$ventanaDeHoras) { 
-                    $date_1 = new DateTime($strDate);
-                    $date_1->add(new DateInterval('PT'.$i.'H'));
-                    $now = new DateTime(date('Y-m-d H:i:s'));
-                    $dNow = $now->format('d');
-
-                    if($day !=  ((int) $date_1->format('d'))){
-                        if((int)$dNow == (int)$date_1->format('d'))
-                        {
-                            $day_delivered .='<option value="'.$date_1->format('Y-m-d').'">Hoy '.$dias[idate('w', $date_1->getTimestamp())]." ". $date_1->format('d '). substr($meses[idate('n', $date_1->getTimestamp())-1], 0, 3).'</option>';
-                        }
-                        elseif( ((int)$dNow + 1) == (int)$date_1->format('d')) {
-                            $day_delivered .='<option value="'.$date_1->format('Y-m-d').'">Mañana '.$dias[idate('w', $date_1->getTimestamp())]." ". $date_1->format('d '). substr($meses[idate('n', $date_1->getTimestamp())-1], 0, 3).'</option>';
-                        }else{
-                            $day_delivered .='<option value="'.$date_1->format('Y-m-d').'">El '.$dias[idate('w', $date_1->getTimestamp())]." ". $date_1->format('d '). substr($meses[idate('n', $date_1->getTimestamp())-1], 0, 3).'</option>';
-
-
-                        }
-                        $day = (int)$date_1->format('d');       
-                    }
-                    $date_2 = new DateTime(date($date_1->format('Y-m-d H:i:s')));
-                    $date_2->add(new DateInterval('PT'.$ventanaDeHoras.'H'));
-
-                    $hora_in = (int)$date_1->format('H');
-                    $hora_out = (int)$date_2->format('H');
-
-                    if($hora_in >= $hora_inicio && $hora_out <= $hora_fin && $hora_out > $hora_inicio)
-                    {
-                        $horasSelect[$date_1->format('Y-m-d')][] = ''.$date_1->format('H:i').' a '.$date_2->format('H:i').''; 
-                    }
-
-
+            if ($day !=  ((int) $date_1->format('d'))){
+                if ((int)$dNow == (int)$date_1->format('d')) {
+                    $day_delivered .='<option value="'.$date_1->format('Y-m-d').'">Hoy '.$dias[idate('w', $date_1->getTimestamp())]." ". $date_1->format('d '). substr($meses[idate('n', $date_1->getTimestamp())-1], 0, 3).'</option>';
+                } elseif (((int)$dNow + 1) == (int)$date_1->format('d')) {
+                    $day_delivered .='<option value="'.$date_1->format('Y-m-d').'">Mañana '.$dias[idate('w', $date_1->getTimestamp())]." ". $date_1->format('d '). substr($meses[idate('n', $date_1->getTimestamp())-1], 0, 3).'</option>';
+                } else {
+                     $day_delivered .='<option value="'.$date_1->format('Y-m-d').'">El '.$dias[idate('w', $date_1->getTimestamp())]." ". $date_1->format('d '). substr($meses[idate('n', $date_1->getTimestamp())-1], 0, 3).'</option>';
                 }
 
-                $day_delivered.= '</select>';
-                $js_json_delivered = '<script type="text/javascript"> var js_json_delivered = '.json_encode($horasSelect).'
+                $day = (int)$date_1->format('d');                    
+            }
 
-                var form_to_add = "";
+            $date_2 = new DateTime(date($date_1->format('Y-m-d H:i:s')));
+            $date_2->add(new DateInterval('PT'.$ventanaDeHoras.'H'));
+            $hora_in = (int)$date_1->format('H');
+            $hora_out = (int)$date_2->format('H');
 
-                $(function(){
+            if ($hora_in >= $hora_inicio && $hora_out <= $hora_fin && $hora_out > $hora_inicio) { 
+                $horasSelect[$date_1->format('Y-m-d')][] = ''.$date_1->format('H:i').' a '.$date_2->format('H:i').''; 
+            }
 
-                 if( $("#form_dir").length ){
-                    form_to_add = "#form_dir"; 
-                } else{
-                    form_to_add = "#cod_form"; 
-                }              
+        }
 
-                $("<input>").attr({
-                    type: "hidden",
-                    id: "date_delivered",
-                    name: "date_delivered"
-                }).appendTo(form_to_add);
+        $day_delivered.= '</select>';
+        $js_json_delivered = '<script type="text/javascript">
+                                var js_json_delivered = '.json_encode($horasSelect).'
+                                var form_to_add = "";
+                           
+                                    $(function(){                                 
+                                
+                                    if ($("#form_dir").length) {
+                                       form_to_add = "#form_dir"; 
+                                    } else {
+                                       form_to_add = "#cod_form"; 
+                                    }        
 
-$("<input>").attr({
-    type: "hidden",
-    id: "hour_delivered_h",
-    name: "hour_delivered_h"
-}).appendTo(form_to_add);
+                                    $("<input>").attr({
+                                        type: "hidden",
+                                        id: "date_delivered",
+                                        name: "date_delivered"
+                                    }).appendTo(form_to_add);
 
-$("#hour_delivered").attr("enabled", "true");
-$.each(js_json_delivered[$("#day_delivered").val()], function() {
-    $("#hour_delivered").append(
-                                $("<option></option>").text(this).val(this)
+                                    $("<input>").attr({
+                                        type: "hidden",
+                                        id: "hour_delivered_h",
+                                        name: "hour_delivered_h"
+                                    }).appendTo(form_to_add);
 
-                                );
-});
+                                    $("#hour_delivered").attr("enabled", "true");
 
-$("#day_delivered").change(function() {
-    $("#hour_delivered").html("");              
+                                    if (js_json_delivered.hasOwnProperty($("#day_delivered").val())) {
+                                        $.each(js_json_delivered[$("#day_delivered").val()], function() {
+                                            $("#hour_delivered").append(
+                                                $("<option></option>").text(this).val(this)
+                                            );
+                                        });
+                                    }
 
-    $.each(js_json_delivered[$("#day_delivered").val()], function() {
-        $("#hour_delivered").append(
-                                    $("<option></option>").text(this).val(this)
+                                    $("#day_delivered").change(function() {
 
-                                    );
-});
+                                        if (js_json_delivered.hasOwnProperty($("#day_delivered").val())) {
+                                            $("#hour_delivered").html("");         
+                                            $.each(js_json_delivered[$("#day_delivered").val()], function() {
+                                                $("#hour_delivered").append(
+                                                    $("<option></option>").text(this).val(this)
+                                                );
+                                        
+                                            });
+                                            $("#hour_delivered_h").val($("#hour_delivered").val());
+                                            $("#hour_delivered option[day_delivered]").show();
+                                        } else {
+                                            $("#hour_delivered").html(""); 
+                                        }
+                                        
+                                    });
+                                                                                                      
+                                    $("#hour_delivered_h").val($("#hour_delivered").val());
+                                    $("#date_delivered").val($("#day_delivered").val());
+                                    $("#day_delivered").change(function() {
+                                        $("#date_delivered").val($("#day_delivered").val());
+                                    });
 
-$("#hour_delivered_h").val($("#hour_delivered").val());
-
-});
-
-
-$("#hour_delivered_h").val($("#hour_delivered").val());
-
-$("#date_delivered").val($("#day_delivered").val());
-
-$("#day_delivered").change(function() {
-    $("#date_delivered").val($("#day_delivered").val());
-});
-
-$("#hour_delivered").change(function() {
-    $("#hour_delivered_h").val($("#hour_delivered").val());
-});
-
-
-
-
-
-});
-
-
-
+                                    $("#hour_delivered").change(function() {
+                                        $("#hour_delivered_h").val($("#hour_delivered").val());
+                                        
+                                    });
+                                });
 </script>';
-return array('js_json_delivered' => $js_json_delivered, 'day_delivered' =>$day_delivered);
-}
+
+        return array('js_json_delivered' => $js_json_delivered, 'day_delivered' =>$day_delivered);
+    }
 
 public static function update_date_delivered(){
 
