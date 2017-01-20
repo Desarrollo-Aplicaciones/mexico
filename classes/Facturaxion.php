@@ -13,7 +13,7 @@ if (!class_exists('Facturaxion')) {
 		public $numero_certificado = '';
 		public $numero_certificadoS = '';
 		
-		public $dir_server = '/var/www/mexico/';
+		public $dir_server = '/var/www/html/mexico/';
 		public $sello_emisor = '';
 		public $certificado_emisor = '';
 		public $array_xml_a_timbrar = '';
@@ -225,9 +225,9 @@ function sellarXML($cfdi, $numero_certificado, $archivo_cer, $archivo_pem, $depu
 
   $xdoc = new DomDocument();
 
-  						$fp_cfdi=fopen("/home/ubuntu/modules/facturaxion/re_".date("Y-m-d")."T".date("H:i:s",  strtotime ( '-10 minute' , strtotime ( date("H:i:s") ) )).$this->test_char."_cfdi.xml","a+"); //"_".date("Y-m-d H:i:s").
-						fwrite($fp_cfdi,$cfdi);
-						fclose($fp_cfdi);
+        $fp_cfdi=fopen("/home/desarrollo/modules/facturaxion/re_".date("Y-m-d")."T".date("H:i:s",  strtotime ( '-10 minute' , strtotime ( date("H:i:s") ) )).$this->test_char."_cfdi.xml","a+"); //"_".date("Y-m-d H:i:s").
+        fwrite($fp_cfdi,$cfdi);
+        fclose($fp_cfdi);
 
   if ( $depurar == 1 ) {
   	@ini_set('display_errors', 'on');
@@ -766,6 +766,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 
 					//echo "<br> subtotal acumulado sin descuento: ".$subTotal_calculado;
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['importe'] = number_format( $list_products[$key_prod]['total_price_tax_excl'], 2, '.', '');
+                                        
 						//echo "<hr> ID: ".$key_prod." -- ".$list_products[$key_prod]['product_name']." iva: ".$list_products[$key_prod]['tax_rate'];
 						//echo "<br> precio: ".$list_products[$key_prod]['unit_price_tax_excl'];
 						//echo "<br> cantidad: ".$list_products[$key_prod]['product_quantity'];
@@ -778,6 +779,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 						if ( $cupon['tipo'] == 'porcentaje' && $cupon['reduction_product'] != '0' && $cupon['reduction_product'] == $list_products[$key_prod]['product_id']) {
 
 							$iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key_prod]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key_prod]['tax_rate'], 2), Tools::ps_round($cupon['reduction'], 2), false, Tools::ps_round($list_products[$key_prod]['product_quantity'], 2), false, true ), 2);
+                                                        error_log("\n\n 0.1----- iva_prod_actual:  ".print_r($iva_prod_actual,true)."\n\n",3,"/tmp/progresivo.log");
 
 							if ( $order_tot->id == $orden_validar  ) {
 								echo "<br> val iva descuentop_aplicado % :".$cupon['reduction'];
@@ -786,14 +788,24 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 						} elseif ( $cupon['tipo'] == 'porcentaje' && $cupon['reduction_product'] == '0' ) {
 
 							$iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key_prod]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key_prod]['tax_rate'], 2), Tools::ps_round($cupon['reduction'], 2), false, Tools::ps_round($list_products[$key_prod]['product_quantity'], 2), false, true ), 2);
+                                                        error_log("\n\n 0.2----- iva_prod_actual:  ".print_r($iva_prod_actual,true)."\n\n",3,"/tmp/progresivo.log");
 
 							if ( $order_tot->id == $orden_validar  ) {
 								echo "<br> val iva descuentop_aplicado % :".$cupon['reduction'];
 							}
 
-						} else {
+						} 
+                                                elseif ( $cupon['tipo'] == 'valor' && ($cupon['reduction_product'] != '0'  && $cupon['reduction_product'] == $list_products[$key_prod]['product_id']) ) {
+                                                    //$iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key]['tax_rate'], 2), Tools::ps_round($cupon_xml_calc['reduction'], 2), false, Tools::ps_round($list_products[$key]['product_quantity'], 2), false, true ), 2);
+                                                    $iva_prod_actual = Tools::ps_round(( Tools::ps_round((Tools::ps_round( ( Tools::ps_round(($list_products[$key_prod]['unit_price_tax_excl'] - $cupon['reduction']) * $list_products[$key_prod]['product_quantity'],2)),2) * $list_products[$key_prod]['tax_rate']),2)/100),2) ;
+                                                    error_log("\n\n 2.... iva_prod_actual:".print_r($iva_prod_actual,true),3,"/tmp/progresivo.log");
+                                                }
+                                                // $cupon['reduction_product'] == '0'
+                                                
+                                                else {
 
 							$iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key_prod]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key_prod]['tax_rate'], 2), Tools::ps_round('0.00', 2), false, Tools::ps_round($list_products[$key_prod]['product_quantity'], 2), false, true ), 2);
+                                                        error_log("\n\n 0.3----- iva_prod_actual:  ".print_r($iva_prod_actual,true)."\n\n",3,"/tmp/progresivo.log");
 
 							if ( $order_tot->id == $orden_validar  ) {
 								echo "<br> val iva descuentop_aplicado $ :".$cupon['reduction'];
@@ -803,6 +815,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 					} else {
 
 						$iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key_prod]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key_prod]['tax_rate'], 2), Tools::ps_round('0.00', 2), false, Tools::ps_round($list_products[$key_prod]['product_quantity'], 2), false, true ), 2);
+                                                error_log("\n\n 0.4----- iva_prod_actual:  ".print_r($iva_prod_actual,true)."\n\n",3,"/tmp/progresivo.log");
 
 						if ( $order_tot->id == $orden_validar  ) {
 								echo "<br> val iva descuentop_aplicado sin descuento :";
@@ -811,11 +824,14 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 					}
 					
 
+                                        error_log("\n\n 1.0----- iva_prod_actual:  ".print_r($iva_prod_actual,true)."\n\n",3,"/tmp/progresivo.log");
 					$iva_acum_porcen_dto += $iva_prod_actual;
+                                        error_log("\n\n 1.1----- iva_acum_porcen_dto:  ".print_r($iva_acum_porcen_dto,true)."\n\n",3,"/tmp/progresivo.log");
 
 
 					if ( $order_tot->id == $orden_validar) {
-						echo "<br><br> ----- calculado de/to: ".$iva_acum_porcen_dto;
+                                            echo "<br><br> ----- calculado de/to: ".$iva_acum_porcen_dto;
+                                            error_log("\n\n 2----- iva_acum_porcen_dto:  ".print_r($iva_acum_porcen_dto,true)."\n\n",3,"/tmp/progresivo.log");
 					}
 
 
@@ -1004,17 +1020,22 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 					//echo "<br> valor final envio: ". $order_tot->total_shipping;
 					//echo "<br> - valor sin iva envio: ". 
 					$val_no_iva_envio =  Tools::ps_round( $order_tot->total_shipping / 1.16 ,3);
+                                        error_log("\n\n 5----- val_no_iva_envio:  ".print_r($val_no_iva_envio,true)."\n\n",3,"/tmp/progresivo.log");
 
 					//echo "<br> - iva envio: ". 
 					$val_iva_envio_act = /* Tools::ps_round( ( */$order_tot->total_shipping  - $val_no_iva_envio/*) ,2)*/;
+                                        error_log("\n\n 6----- val_iva_envio_act:  ".print_r($val_iva_envio_act,true)."\n\n",3,"/tmp/progresivo.log");
 
 					$val_iva_X_tax['16.000'] += $val_iva_envio_act;
+                                        error_log("\n\n 6----- val_iva_envio_act:  ".print_r($val_iva_envio_act,true)."\n\n",3,"/tmp/progresivo.log");
 
 					//echo "<br> val anterior de iva :". /*Tools::ps_round( */$val_total_de_iva /*,2)*/;
 
 					$val_total_de_iva += /*Tools::ps_round( */$val_iva_envio_act /*,2)*/;
+                                        error_log("\n\n 3----- iva_acum_porcen_dto:  ".print_r($iva_acum_porcen_dto,true)."\n\n",3,"/tmp/progresivo.log");
 					$iva_acum_porcen_dto += $val_iva_envio_act;
-					//echo "<br> val acumulado total de iva :".  /*Tools::ps_round( */$val_total_de_iva /*,2)*/;
+                                        error_log("\n\n 3----- iva_acum_porcen_dto:  ".print_r($iva_acum_porcen_dto,true)."\n\n",3,"/tmp/progresivo.log");
+                                        //echo "<br> val acumulado total de iva :".  /*Tools::ps_round( */$val_total_de_iva /*,2)*/;
 
 					
 					$val_total_min_dto_mas_iva += $val_iva_envio_act + $val_no_iva_envio;
@@ -1117,7 +1138,15 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 				$arr_xml_cargar['@attributes']['certificado'] = ('MIIEdDCCA1ygAwIBAgIUMjAwMDEwMDAwMDAxMDAwMDU4NjcwDQYJKoZIhvcNAQEFBQAwggFvMRgwFgYDVQQDDA9BLkMuIGRlIHBydWViYXMxLzAtBgNVBAoMJlNlcnZpY2lvIGRlIEFkbWluaXN0cmFjacOzbiBUcmlidXRhcmlhMTgwNgYDVQQLDC9BZG1pbmlzdHJhY2nDs24gZGUgU2VndXJpZGFkIGRlIGxhIEluZm9ybWFjacOzbjEpMCcGCSqGSIb3DQEJARYaYXNpc25ldEBwcnVlYmFzLnNhdC5nb2IubXgxJjAkBgNVBAkMHUF2LiBIaWRhbGdvIDc3LCBDb2wuIEd1ZXJyZXJvMQ4wDAYDVQQRDAUwNjMwMDELMAkGA1UEBhMCTVgxGTAXBgNVBAgMEERpc3RyaXRvIEZlZGVyYWwxEjAQBgNVBAcMCUNveW9hY8OhbjEVMBMGA1UELRMMU0FUOTcwNzAxTk4zMTIwMAYJKoZIhvcNAQkCDCNSZXNwb25zYWJsZTogSMOpY3RvciBPcm5lbGFzIEFyY2lnYTAeFw0xMjA3MjcxNzAyMDBaFw0xNjA3MjcxNzAyMDBaMIHbMSkwJwYDVQQDEyBBQ0NFTSBTRVJWSUNJT1MgRU1QUkVTQVJJQUxFUyBTQzEpMCcGA1UEKRMgQUNDRU0gU0VSVklDSU9TIEVNUFJFU0FSSUFMRVMgU0MxKTAnBgNVBAoTIEFDQ0VNIFNFUlZJQ0lPUyBFTVBSRVNBUklBTEVTIFNDMSUwIwYDVQQtExxBQUEwMTAxMDFBQUEgLyBIRUdUNzYxMDAzNFMyMR4wHAYDVQQFExUgLyBIRUdUNzYxMDAzTURGUk5OMDkxETAPBgNVBAsTCFVuaWRhZCAxMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC2TTQSPONBOVxpXv9wLYo8jezBrb34i/tLx8jGdtyy27BcesOav2c1NS/Gdv10u9SkWtwdy34uRAVe7H0a3VMRLHAkvp2qMCHaZc4T8k47Jtb9wrOEh/XFS8LgT4y5OQYo6civfXXdlvxWU/gdM/e6I2lg6FGorP8H4GPAJ/qCNwIDAQABox0wGzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIGwDANBgkqhkiG9w0BAQUFAAOCAQEATxMecTpMbdhSHo6KVUg4QVF4Op2IBhiMaOrtrXBdJgzGotUFcJgdBCMjtTZXSlq1S4DG1jr8p4NzQlzxsdTxaB8nSKJ4KEMgIT7E62xRUj15jI49qFz7f2uMttZLNThipunsN/NF1XtvESMTDwQFvas/Ugig6qwEfSZc0MDxMpKLEkEePmQwtZD+zXFSMVa6hmOu4M+FzGiRXbj4YJXn9Myjd8xbL/c+9UIcrYoZskxDvMxc6/6M3rNNDY3OFhBK+V/sPMzWWGt8S1yjmtPfXgFs1t65AZ2hcTwTAuHrKwDatJ1ZPfa482ZBROAAX1waz7WwXp0gso7sDCm2/yUVww==');
 				$arr_xml_cargar['@attributes']['sello'] = '';
 				$subtotalNuevo = number_format( Tools::ps_round( $order_tot->total_paid , 2) + Tools::ps_round( $order_tot->total_discounts , 2) - Tools::ps_round( $iva_acum_porcen_dto , 2), 2, '.', '');
-				$arr_xml_cargar['@attributes']['subTotal'] = $subtotalNuevo;
+                                //echo "<pre>";
+                                //var_dump(debug_backtrace($order_tot->total_paid));
+                                //exit();
+                                
+                                error_log("\n\n 123123123123123123123-- order_tot->total_paid:".print_r($order_tot->total_paid,true),3,"/tmp/progresivo.log");
+                                error_log("\n\n 123123123123123123123-- order_tot->total_discounts:".print_r($order_tot->total_discounts,true),3,"/tmp/progresivo.log");
+                                error_log("\n\n 123123123123123123123-- iva_acum_porcen_dto:".print_r($iva_acum_porcen_dto,true),3,"/tmp/progresivo.log");
+                                error_log("\n\n 123123123123123123123-- subtotalNuevo:".print_r($subtotalNuevo,true),3,"/tmp/progresivo.log");
+                                $arr_xml_cargar['@attributes']['subTotal'] = $subtotalNuevo;
 
 				$arr_xml_cargar['@attributes']['total'] = number_format( $order_tot->total_paid , 2, '.', '');
 
@@ -1295,6 +1324,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 
 				$arr_xml_cargar =  array_merge($arr_xml_cargar,$arr_xml_cargar_p); // UNIMOS ARRAY DE PRODUCTOS Y EL INICIAL DEL XML
 
+                                error_log("\n\n 4----- iva_acum_porcen_dto:  ".print_r($iva_acum_porcen_dto,true)."\n\n",3,"/tmp/progresivo.log");
 				$arr_xml_cargar['ar6to67be_Impuestos']['@attributes']['totalImpuestosTrasladados'] = number_format($iva_acum_porcen_dto, 2, '.', '');
 
 				$cant_taxs = 0;
@@ -1752,7 +1782,7 @@ public function cancelacion( $order_tot_id, $order_invoice_date ) {
 				} catch(Exception $e){
 
 					$message = $e->getMessage();//echo $message;
-					$fp_cfdi=fopen("/home/ubuntu/modules/facturaxion/cancelacion_".date("Y-m-d")."T".date("H:i:s",  strtotime ( '-10 minute' , strtotime ( date("H:i:s") ) )).$this->test_char."_cfdi.xml","a+"); //"_".date("Y-m-d H:i:s").
+					$fp_cfdi=fopen("/home/desarrollo/modules/facturaxion/cancelacion_".date("Y-m-d")."T".date("H:i:s",  strtotime ( '-10 minute' , strtotime ( date("H:i:s") ) )).$this->test_char."_cfdi.xml","a+"); //"_".date("Y-m-d H:i:s").
 						fwrite($fp_cfdi,$message);
 						fclose($fp_cfdi);
 				} 

@@ -196,7 +196,6 @@ class OrderDetailControllerCore extends FrontController
 					'customizedDatas' => $customizedDatas
 					/* DEPRECATED: customizedDatas @since 1.5 */
 				));
-
 				if ($carrier->url && $order->shipping_number)
 					$this->context->smarty->assign('followup', str_replace('@', $order->shipping_number, $carrier->url));
 				$this->context->smarty->assign('HOOK_ORDERDETAILDISPLAYED', Hook::exec('displayOrderDetail', array('order' => $order)));

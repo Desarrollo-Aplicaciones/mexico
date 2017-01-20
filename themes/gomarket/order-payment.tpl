@@ -650,30 +650,30 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
 													{/if}
 													<!-- descuentos -->
 													{if count($discounts)}
-														<div class="cart_total_price">
-															{foreach from=$discounts item=discount name=discountLoop}
-																<div class="cart_discount {if $smarty.foreach.discountLoop.last}last_item{elseif $smarty.foreach.discountLoop.first}first_item{else}item{/if}" id="cart_discount_{$discount.id_discount}">
-																	<div class="descripcion">
-																		<span class="celeste">
-																			Cupón: {* $discount.name *} 
-																		</span>
-																	</div>
-																	<div class="price2" id="descuentos">
-																		<span>
-																			{if $discount.value_real > 0}
-																				{if !$priceDisplay}
-																					{displayPrice price=$discount.value_real*-1}
-																				{else}
-																					{displayPrice price=$discount.value_tax_exc*-1}
-																				{/if}
-																			{/if}
-																		</span>
-					                                        		</div>
-					                                    		</div>
-					                                		{/foreach}
-				                                		</div>
-				                        			{/if}
-				                        			<!-- fin descuentos -->
+                                                                                                            <div class="cart_total_price">
+                                                                                                                {foreach from=$discounts item=discount name=discountLoop}
+                                                                                                                    <div class="cart_discount {if $smarty.foreach.discountLoop.last}last_item{elseif $smarty.foreach.discountLoop.first}first_item{else}item{/if}" id="cart_discount_{$discount.id_discount}">
+                                                                                                                        <div class="descripcion">
+                                                                                                                            <span class="celeste">
+                                                                                                                                Cupón: {* $discount.name *} 
+                                                                                                                            </span>
+                                                                                                                        </div>
+                                                                                                                        <div class="price2" id="descuentos">
+                                                                                                                            <span>
+                                                                                                                                {if $discount.value_real > 0}
+                                                                                                                                    {if !$priceDisplay}
+                                                                                                                                        {displayPrice price=$discount.value_real*-1}
+                                                                                                                                    {else}
+                                                                                                                                        {displayPrice price=$discount.value_tax_exc*-1}
+                                                                                                                                    {/if}
+                                                                                                                                {/if}
+                                                                                                                            </span>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                {/foreach}
+                                                                                                            </div>
+                                                                                                        {/if}
+                                                                                                    <!-- fin descuentos -->
 				                    			</div>
 				                    			<!-- fin contenedor precio -->
 
