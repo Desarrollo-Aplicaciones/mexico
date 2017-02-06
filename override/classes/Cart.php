@@ -2539,12 +2539,13 @@ class Cart extends CartCore {
                                 }
                                 else if( $cart_rules[$key_c]['reduction_percent'] == 0 && $cart_rules[$key_c]['reduction_amount'] > 0 ) {
                                     $cart_rules[$key_c]["total_discount_cart_rule"] =  Tools::ps_round( $cart_rules[$key_c]['reduction_amount'],2 );
-                                    if($dGOT == 1){error_log("\r\n 11--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");}
+                                    if($dGOT == 1){error_log("\r\n 13--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");}
                                     $products[$key_p]["price_new"] =  Tools::ps_round( $products[$key_p]['precio_base'] , 2);
-                                    if($dGOT == 1){error_log("\r\n 12--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");}
+                                    if($dGOT == 1){error_log("\r\n 14--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");}
                                 }
                                 else if( $cart_rules[$key_c]['reduction_percent'] == 0 && $cart_rules[$key_c]['reduction_amount'] == 0 ){
                                     $products[$key_p]["price_new"] =  Tools::ps_round( $products[$key_p]['precio_base'] , 2);
+                                    if($dGOT == 1){error_log("\r\n 16--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");}
                                 }
                             }
                             
@@ -2589,10 +2590,10 @@ class Cart extends CartCore {
                 }
                 //if($dGOT == 1){error_log("\r\n 188888888888888--  staggeredDiscounts product: ".print_r($product,true), 3, "/tmp/progresivo.log");}
                 if ( $flag_order_monetario == 1 ){
-                    $products[$count_prod]["total_tax"] = Tools::ps_round( Tools::ps_round( (($products[$count_prod]["precio_base"] * $product['rate']) / 100),2)*$products[$count_prod]['cart_quantity'],2);
+                    $products[$count_prod]["total_tax"] = Tools::ps_round( Tools::ps_round( (($products[$count_prod]["precio_base"] * $product['rate']) / 100),2) * $products[$count_prod]['cart_quantity'],2);
                 }
                 else{
-                    $products[$count_prod]["total_tax"] = Tools::ps_round( (($products[$count_prod]["price_new"] * $product['rate']) / 100),2);                    
+                    $products[$count_prod]["total_tax"] = Tools::ps_round( ( ( Tools::ps_round( ( $products[$count_prod]["price_new"] * $products[$count_prod]['cart_quantity'] ), 2 ) * $product['rate'] ) / 100 ), 2 );                    
                 }
                 if($dGOT == 1){error_log("\r\n 19--  staggeredDiscounts products[count_prod][price_new]: ".print_r($products[$count_prod]["price_new"],true), 3, "/tmp/progresivo.log");}
                 if($dGOT == 1){error_log("\r\n 19--  staggeredDiscounts product[rate]: ".print_r($product['rate'],true), 3, "/tmp/progresivo.log");}
