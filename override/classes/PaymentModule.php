@@ -280,6 +280,7 @@ class PaymentModule extends PaymentModuleCore {
 print_r($order);
 die();*/
 
+                    $order->id_employee_close_order = Context::getContext()->employee->id;
                     $result = $order->add();
 
                     /************ Progressive Discounts ************/
