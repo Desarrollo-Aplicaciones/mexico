@@ -496,8 +496,8 @@ WHERE o.id_order = ' . (int) $this->order->id;
                 $val_total_de_iva = 0; // total del iva calculado
                 //$val_iva_X_tax = array();
                 
-                error_log("\n\n 11111.... list_products:".print_r($list_products,true),3,"/tmp/progresivo.log");
-                error_log("\n\n 22222.... cupon_xml_calc:".print_r($cupon_xml_calc,true),3,"/tmp/progresivo.log");
+//                error_log("\n\n 11111.... list_products:".print_r($list_products,true),3,"/tmp/progresivo.log");
+//                error_log("\n\n 22222.... cupon_xml_calc:".print_r($cupon_xml_calc,true),3,"/tmp/progresivo.log");
                 foreach ($list_products as $key => $value) {
 
                     $val_iva_prod_actual = 0; // total del iva calculado del producto actual
@@ -513,30 +513,30 @@ WHERE o.id_order = ' . (int) $this->order->id;
                     if ( isset( $cupon_xml_calc ) && $cupon_xml_calc != null && $cupon_xml_calc['reduction'] != '' ) {
                         if ( $cupon_xml_calc['tipo'] == 'porcentaje' && $cupon_xml_calc['reduction_product'] != '0' && $cupon_xml_calc['reduction_product'] == $list_products[$key]['product_id']) {
                             $iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key]['tax_rate'], 2), Tools::ps_round($cupon_xml_calc['reduction'], 2), false, Tools::ps_round($list_products[$key]['product_quantity'], 2), false, true ), 2);
-                            error_log("\n\n 1.... iva_prod_actual:".print_r($iva_prod_actual,true),3,"/tmp/progresivo.log");
+//                            error_log("\n\n 1.... iva_prod_actual:".print_r($iva_prod_actual,true),3,"/tmp/progresivo.log");
                         } 
                         elseif ( $cupon_xml_calc['tipo'] == 'porcentaje' && $cupon_xml_calc['reduction_product'] == '0' ) {
                             $iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key]['tax_rate'], 2), Tools::ps_round($cupon_xml_calc['reduction'], 2), false, Tools::ps_round($list_products[$key]['product_quantity'], 2), false, true ), 2);
-                            error_log("\n\n 2.1... iva_prod_actual:".print_r($iva_prod_actual,true),3,"/tmp/progresivo.log");
+//                            error_log("\n\n 2.1... iva_prod_actual:".print_r($iva_prod_actual,true),3,"/tmp/progresivo.log");
                         } 
                         elseif ( $cupon_xml_calc['tipo'] == 'valor' && $cupon_xml_calc['reduction_product'] != '0'  && ( $cupon_xml_calc['reduction_product'] == $list_products[$key]['product_id']) ){
                             //$iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key]['tax_rate'], 2), Tools::ps_round($cupon_xml_calc['reduction'], 2), false, Tools::ps_round($list_products[$key]['product_quantity'], 2), false, true ), 2);
-                            error_log("\n\n 2.2... list_products[key]['unit_price_tax_excl']:".print_r($list_products[$key]['unit_price_tax_excl'],true),3,"/tmp/progresivo.log");
-                            error_log("\n\n 2.2... list_products[key]['product_quantity']:".print_r($list_products[$key]['product_quantity'],true),3,"/tmp/progresivo.log");
-                            error_log("\n\n 2.2... cupon_xml_calc['reduction']:".print_r($cupon_xml_calc['reduction'],true),3,"/tmp/progresivo.log");
-                            error_log("\n\n 2.2... list_products[key]['tax_rate']:".print_r($list_products[$key]['tax_rate'],true),3,"/tmp/progresivo.log");
+//                            error_log("\n\n 2.2... list_products[key]['unit_price_tax_excl']:".print_r($list_products[$key]['unit_price_tax_excl'],true),3,"/tmp/progresivo.log");
+//                            error_log("\n\n 2.2... list_products[key]['product_quantity']:".print_r($list_products[$key]['product_quantity'],true),3,"/tmp/progresivo.log");
+//                            error_log("\n\n 2.2... cupon_xml_calc['reduction']:".print_r($cupon_xml_calc['reduction'],true),3,"/tmp/progresivo.log");
+//                            error_log("\n\n 2.2... list_products[key]['tax_rate']:".print_r($list_products[$key]['tax_rate'],true),3,"/tmp/progresivo.log");
                             $iva_prod_actual = Tools::ps_round(( Tools::ps_round((Tools::ps_round( ( Tools::ps_round(($list_products[$key]['unit_price_tax_excl'] - $cupon_xml_calc['reduction']),2) * $list_products[$key]['product_quantity']),2) * $list_products[$key]['tax_rate']),2)/100),2) ;
-                            error_log("\n\n 2.2... iva_prod_actual:".print_r($iva_prod_actual,true),3,"/tmp/progresivo.log");
+//                            error_log("\n\n 2.2... iva_prod_actual:".print_r($iva_prod_actual,true),3,"/tmp/progresivo.log");
                         }
                         //$cupon_xml_calc['reduction_product'] == '0'
                         else {
                             $iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key]['tax_rate'], 2), Tools::ps_round('0.00', 2), false, Tools::ps_round($list_products[$key]['product_quantity'], 2), false, true ), 2);
-                            error_log("\n\n 3.... iva_prod_actual:".print_r($iva_prod_actual,true),3,"/tmp/progresivo.log");
+//                            error_log("\n\n 3.... iva_prod_actual:".print_r($iva_prod_actual,true),3,"/tmp/progresivo.log");
                         }
                     } 
                     else {
                         $iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key]['tax_rate'], 2), Tools::ps_round('0.00', 2), false, Tools::ps_round($list_products[$key]['product_quantity'], 2), false, true ), 2);
-                        error_log("\n\n 4.... iva_prod_actual:".print_r($iva_prod_actual,true),3,"/tmp/progresivo.log");
+//                        error_log("\n\n 4.... iva_prod_actual:".print_r($iva_prod_actual,true),3,"/tmp/progresivo.log");
                     }
 
                     //$iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key]['tax_rate'], 2), Tools::ps_round('0.00', 2), false, Tools::ps_round($list_products[$key]['product_quantity'], 2), false, true ), 2);
@@ -602,7 +602,7 @@ WHERE o.id_order = ' . (int) $this->order->id;
 
                     //echo "<br> - iva envio: ". 
                     $val_iva_envio_act = /* number_format( ( */ $this->order->total_shipping  - $val_no_iva_envio/*) ,2, '.', '')*/;
-                    error_log("\n\n val_iva_envio_act:".print_r($val_iva_envio_act,true),3,"/tmp/progresivo.log");
+//                    error_log("\n\n val_iva_envio_act:".print_r($val_iva_envio_act,true),3,"/tmp/progresivo.log");
                     
                     
                     $array_ivas['16'] += number_format( $val_iva_envio_act ,2, '.', '');
@@ -769,7 +769,7 @@ WHERE o.id_order = ' . (int) $this->order->id;
         ));
           
         
-        error_log("\n\nIvas: ".print_r($array_ivas,true),3,"/tmp/progresivo.log");
+//        error_log("\n\nIvas: ".print_r($array_ivas,true),3,"/tmp/progresivo.log");
 ///////////////////////////////////////////////////////////////////////
   //sirve para mostrar la factura sin imprimir.
  //   echo '<pre>array<br>...';

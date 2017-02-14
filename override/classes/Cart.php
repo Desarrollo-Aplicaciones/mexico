@@ -1226,7 +1226,7 @@ class Cart extends CartCore {
             }*/
             
             $order_total = $total_price =  Tools::ps_round( $this->staggeredDiscounts($type , $with_shipping, $products, $shipping_fees, 0, $virtual_context, 1),2);
-            error_log("\n\t**********************************\n\t**  1209-- Order_total: ".$order_total." **\n\t**********************************\n", 3, "/tmp/progresivo.log");
+            if($dGOT ==  1){error_log("\n\t**********************************\n\t**  1209-- Order_total: ".$order_total." **\n\t**********************************\n", 3, "/tmp/progresivo.log");}
             
 
             if ($type == Cart::ONLY_DISCOUNTS){
@@ -1283,8 +1283,8 @@ class Cart extends CartCore {
                         $order_total_discount += Tools::ps_round($cart_rule['obj']->getContextualValue(0, $virtual_context, CartRule::FILTER_ACTION_SHIPPING, ($param_product ? $package : null), $use_cache), 2);
                         
                         if($dGOT ==  1){
-                            error_log("\r\n 2-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
-                            error_log(" getContextualValue 1 ");
+//                            error_log("\r\n 2-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
+//                            error_log(" getContextualValue 1 ");
                         }
                     }
                     // If the cart rule is a free gift, then add the free gift value only if the gift is in this package
@@ -1304,8 +1304,8 @@ class Cart extends CartCore {
                         if ($in_order){
                             $order_total_discount += $cart_rule['obj']->getContextualValue(0, $virtual_context, CartRule::FILTER_ACTION_GIFT, $package, $use_cache);
                             if($dGOT ==  1){
-                                error_log("\r\n 3-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
-                                error_log(" getContextualValue 2 ");
+//                                error_log("\r\n 3-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
+//                                error_log(" getContextualValue 2 ");
                             }
                         }
                     }
@@ -1322,8 +1322,8 @@ class Cart extends CartCore {
                     if ($result !=0 ) {
                         $order_total_discount = $result;
                         if($dGOT ==  1){
-                            error_log("\r\n order_total_discount: ".print_r($order_total_discount,true), 3, "/tmp/ordererror.log"); 
-                            error_log("\n\n order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
+//                            error_log("\r\n order_total_discount: ".print_r($order_total_discount,true), 3, "/tmp/ordererror.log"); 
+//                            error_log("\n\n order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
                         }
                     }
 
@@ -1335,16 +1335,16 @@ class Cart extends CartCore {
                     if ($result !=0 ) {
                         $order_total_discount = $result;
                         if($dGOT ==  1){
-                            error_log("\r\n order_total_discount: ".print_r($order_total_discount,true), 3, "/tmp/ordererror.log"); 
-                            error_log("\n\n order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
+//                            error_log("\r\n order_total_discount: ".print_r($order_total_discount,true), 3, "/tmp/ordererror.log"); 
+//                            error_log("\n\n order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
                         }
                     }
                 }
                
                 
                 if($dGOT ==  1){
-                    error_log("\r\n 7-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
-                    error_log("\r\n 8-- order_total: ".$order_total, 3, "/tmp/progresivo.log");
+//                    error_log("\r\n 7-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
+//                    error_log("\r\n 8-- order_total: ".$order_total, 3, "/tmp/progresivo.log");
                 }
 
                 $order_total;
@@ -1361,9 +1361,9 @@ class Cart extends CartCore {
 
             if ($type == Cart::BOTH){
                 if($dGOT ==  1){
-                    error_log("\r\n 10.1-- shipping_fees: ".$shipping_fees, 3, "/tmp/progresivo.log");
-                    error_log("\r\n 10.2-- wrapping_fees: ".$wrapping_fees, 3, "/tmp/progresivo.log");
-                    error_log("\r\n 10.3-- order_total: ".$order_total, 3, "/tmp/progresivo.log");
+//                    error_log("\r\n 10.1-- shipping_fees: ".$shipping_fees, 3, "/tmp/progresivo.log");
+//                    error_log("\r\n 10.2-- wrapping_fees: ".$wrapping_fees, 3, "/tmp/progresivo.log");
+//                    error_log("\r\n 10.3-- order_total: ".$order_total, 3, "/tmp/progresivo.log");
                 }
                 $order_total_tax = $this->staggeredDiscounts($type , $with_shipping, $products, $shipping_fees, $wrapping_fees, $virtual_context, 3);
                 if($dGOT ==  1){error_log("\r\n 10-- order_total_tax: ".$order_total_tax, 3, "/tmp/progresivo.log");}
@@ -2371,7 +2371,7 @@ class Cart extends CartCore {
         if ( isset( $_GET['debug_getOrderTotal'] ) && $_GET['debug_getOrderTotal'] == "true" && Configuration::get('PS_DEBUG_GET_ORDER_TOTAL') == 1 ) {
             $dGOT = 1;    
         } else {
-            $dGOT = 1;
+            $dGOT = 0;
         }
         if($dGOT == 1){error_log("\r\n 0.0-- staggeredDiscounts subtotal: ".print_r( $subtotal, true ), 3, "/tmp/progresivo.log");}
                 
@@ -2570,7 +2570,7 @@ class Cart extends CartCore {
                 $count_prod ++;		
             }
             if($dGOT == 1){
-                error_log("\r\n 18.22222--  staggeredDiscounts llega hasta aqui...".$discounts_total, 3, "/tmp/progresivo.log");
+//                error_log("\r\n 18.22222--  staggeredDiscounts llega hasta aqui...".$discounts_total, 3, "/tmp/progresivo.log");
             }
             if( $subtotal == 2 ){
                 if($dGOT == 1){error_log("\r\n 18.1111111--  staggeredDiscounts llega hasta aqui... pase de ahí", 3, "/tmp/progresivo.log");}

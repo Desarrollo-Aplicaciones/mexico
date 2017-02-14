@@ -2750,7 +2750,7 @@ class ProductCore extends ObjectModel
 		}
 		$price = Tools::ps_round($price, $decimals);
                 
-                error_log("\n\n\n\n\n\t****** Este es el Precio que guardo en BD:".$price."\n\n",3,"/tmp/progresivo.log");
+//                error_log("\n\n\n\n\n\t****** Este es el Precio que guardo en BD:".$price."\n\n",3,"/tmp/progresivo.log");
                 
 		if ($price < 0)
 			$price = 0;
