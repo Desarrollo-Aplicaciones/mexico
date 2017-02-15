@@ -31,9 +31,11 @@ if (!class_exists('Facturaxion')) {
 
 
 		public function __construct( $test_mode = false ) {
-
+                        
 			$test_mode = Configuration::get('PRODUCTION_FACTURAXION');
-
+                        $this->dir_server = (Configuration::get('PS_DIR_SERVER_FACTURAXION')) ? (Configuration::get('PS_DIR_SERVER_FACTURAXION')) : $dir_server ;
+//                        echo $this->dir_server;
+//                        die();
 			if ( $test_mode == '1') {
 
 				$this->numero_certificado = "00001000000304972067";
@@ -226,7 +228,9 @@ function sellarXML($cfdi, $numero_certificado, $archivo_cer, $archivo_pem, $depu
   $xdoc = new DomDocument();
 
         //$fp_cfdi=fopen("/home/desarrollo/modules/facturaxion/re_".date("Y-m-d")."T".date("H:i:s",  strtotime ( '-10 minute' , strtotime ( date("H:i:s") ) )).$this->test_char."_cfdi.xml","a+"); //"_".date("Y-m-d H:i:s").
-        $fp_cfdi=fopen("/home/ubuntu/modules/facturaxion/re_".date("Y-m-d")."T".date("H:i:s",  strtotime ( '-10 minute' , strtotime ( date("H:i:s") ) )).$this->test_char."_cfdi.xml","a+"); //"_".date("Y-m-d H:i:s").
+        //$fp_cfdi=fopen("/home/ubuntu/modules/facturaxion/re_".date("Y-m-d")."T".date("H:i:s",  strtotime ( '-10 minute' , strtotime ( date("H:i:s") ) )).$this->test_char."_cfdi.xml","a+"); //"_".date("Y-m-d H:i:s").
+        $fp_cfdi=fopen( (Configuration::get('PS_RUTA_FACTURAXION') ).date("Y-m-d")."T".date("H:i:s",  strtotime ( '-10 minute' , strtotime ( date("H:i:s") ) )).$this->test_char."_cfdi.xml","a+"); //"_".date("Y-m-d H:i:s").
+  
         fwrite($fp_cfdi,$cfdi);
         fclose($fp_cfdi);
 
