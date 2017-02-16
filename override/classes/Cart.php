@@ -598,11 +598,35 @@ class Cart extends CartCore {
 		$total_discounts = $this->getOrderTotal(true, Cart::ONLY_DISCOUNTS);
 		$total_discounts_tax_exc = $this->getOrderTotal(false, Cart::ONLY_DISCOUNTS);
 		
+                
+                
+                
+            /*echo "<pre>";
+        print_r($cart_rules);
+        //print_r($products);
+        echo "</pre>";
+        echo "<hr>";*/
 		// The cart content is altered for display
 		foreach ($cart_rules as &$cart_rule){
+                    foreach ($products as $key => &$product){
+                        if( $cart_rule['product_restriction'] == 1 && $cart_rule['reduction_amount'] > 0 && ($product['id_product'] == $cart_rule['reduction_product'] ) ){
+                            $cart_rule['value_real'] = Tools::ps_round($cart_rule['value_real'] * $product['cart_quantity'], (int)$context->currency->decimals * _PS_PRICE_DISPLAY_PRECISION_);
+//                            echo "<pre>";
+//                            print_r($cart_rule['value_real']);
+//                            echo "<pre>";
+//                            print_r($product['id_product'] );
+////                            echo "<pre>";                            
+////                            print_r($product );
+//                            echo "</pre>";
+//                            echo "<hr>";
+//                        
+                        }
+                    }
+                    
 			// If the cart rule is automatic (wihtout any code) and include free shipping, it should not be displayed as a cart rule but only set the shipping cost to 0
 			if ($cart_rule['free_shipping'] && (empty($cart_rule['code']) || preg_match('/^'.CartRule::BO_ORDER_CODE_PREFIX.'[0-9]+/', $cart_rule['code']))){
-				$cart_rule['value_real'] -= $total_shipping;
+                                
+                                $cart_rule['value_real'] -= $total_shipping;
 				$cart_rule['value_tax_exc'] -= $total_shipping_tax_exc;
 				$cart_rule['value_real'] = Tools::ps_round($cart_rule['value_real'], (int)$context->currency->decimals * _PS_PRICE_DISPLAY_PRECISION_);
 				$cart_rule['value_tax_exc'] = Tools::ps_round($cart_rule['value_tax_exc'], (int)$context->currency->decimals * _PS_PRICE_DISPLAY_PRECISION_);
@@ -627,7 +651,7 @@ class Cart extends CartCore {
 						$total_discounts_tax_exc = Tools::ps_round($total_discounts_tax_exc - $product['price'], (int)$context->currency->decimals * _PS_PRICE_DISPLAY_PRECISION_);
 					
 						// Update cart rule value
-						$cart_rule['value_real'] = Tools::ps_round($cart_rule['value_real'] - $product['price_wt'], (int)$context->currency->decimals * _PS_PRICE_DISPLAY_PRECISION_);
+						$cart_rule['value_real'] = Tools::ps_round(($cart_rule['value_real'] - $product['price_wt'])*$product['cart_quantity'], (int)$context->currency->decimals * _PS_PRICE_DISPLAY_PRECISION_);
 						$cart_rule['value_tax_exc'] = Tools::ps_round($cart_rule['value_tax_exc'] - $product['price'], (int)$context->currency->decimals * _PS_PRICE_DISPLAY_PRECISION_);
 						
 						// Update product quantity
@@ -653,17 +677,13 @@ class Cart extends CartCore {
                 }
 			}
 		}
-
 		/********** DESHABILITADO PARA MOSTRAR CUPONES CON VALOR EN CERO - Ewing 
 		foreach ($cart_rules as $key => &$cart_rule)
 			if ($cart_rule['value_real'] == 0)
 				unset($cart_rules[$key]);
 		**************/
 
-        /*echo "<pre>";
-        print_r($cart_rules);
-        echo "</pre>";
-        echo "<hr>";*/
+        
               return array(
 			'delivery' => $delivery,
 			'delivery_state' => State::getNameById($delivery->id_state),
@@ -987,7 +1007,7 @@ class Cart extends CartCore {
             if ( isset( $_GET['debug_getOrderTotal'] ) && $_GET['debug_getOrderTotal'] == "true" && Configuration::get('PS_DEBUG_GET_ORDER_TOTAL') == 1 ) {
                 $dGOT = 1;    
             } else {
-                $dGOT = 0;
+                $dGOT = 1;
             }
             
             /************ Progressive Discounts ************/
@@ -1206,8 +1226,8 @@ class Cart extends CartCore {
             }*/
             
             $order_total = $total_price =  Tools::ps_round( $this->staggeredDiscounts($type , $with_shipping, $products, $shipping_fees, 0, $virtual_context, 1),2);
+            if($dGOT ==  1){error_log("\n\t**********************************\n\t**  1209-- Order_total: ".$order_total." **\n\t**********************************\n", 3, "/tmp/progresivo.log");}
             
-
 
             if ($type == Cart::ONLY_DISCOUNTS){
                 $order_total = 0;
@@ -1263,8 +1283,8 @@ class Cart extends CartCore {
                         $order_total_discount += Tools::ps_round($cart_rule['obj']->getContextualValue(0, $virtual_context, CartRule::FILTER_ACTION_SHIPPING, ($param_product ? $package : null), $use_cache), 2);
                         
                         if($dGOT ==  1){
-                            error_log("\r\n 2-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
-                            error_log(" getContextualValue 1 ");
+//                            error_log("\r\n 2-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
+//                            error_log(" getContextualValue 1 ");
                         }
                     }
                     // If the cart rule is a free gift, then add the free gift value only if the gift is in this package
@@ -1284,38 +1304,47 @@ class Cart extends CartCore {
                         if ($in_order){
                             $order_total_discount += $cart_rule['obj']->getContextualValue(0, $virtual_context, CartRule::FILTER_ACTION_GIFT, $package, $use_cache);
                             if($dGOT ==  1){
-                                error_log("\r\n 3-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
-                                error_log(" getContextualValue 2 ");
+//                                error_log("\r\n 3-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
+//                                error_log(" getContextualValue 2 ");
                             }
                         }
                     }
 
                     // If the cart rule offers a reduction, the amount is prorated (with the products in the package)
-                    if ($cart_rule['obj']->reduction_percent > 0 || $cart_rule['obj']->reduction_amount > 0) {
-                        $order_total_discount += Tools::ps_round($cart_rule['obj']->getContextualValue(0, $virtual_context, CartRule::FILTER_ACTION_REDUCTION, $package, $use_cache), 2);
+//                    if ($cart_rule['obj']->reduction_percent > 0 || $cart_rule['obj']->reduction_amount > 0) {
+//                        $order_total_discount += Tools::ps_round($cart_rule['obj']->getContextualValue(0, $virtual_context, CartRule::FILTER_ACTION_REDUCTION, $package, $use_cache), 2);
+//                        if($dGOT ==  1){
+//                            error_log("\r\n 4-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
+//                            error_log(" getContextualValue 3 ");
+//                        }
+//                    }
+                    $result = $this->staggeredDiscounts($type , $with_shipping, $products, $shipping_fees, $wrapping_fees, $virtual_context, 2);
+                    if ($result !=0 ) {
+                        $order_total_discount = $result;
                         if($dGOT ==  1){
-                            error_log("\r\n 4-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
-                            error_log(" getContextualValue 3 ");
+//                            error_log("\r\n order_total_discount: ".print_r($order_total_discount,true), 3, "/tmp/ordererror.log"); 
+//                            error_log("\n\n order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
                         }
                     }
+
                 }
 
                 if ($type == Cart::ONLY_DISCOUNTS){
                     
-                    $result = $this->staggeredDiscounts($type , $with_shipping, $products,$shipping_fees, $wrapping_fees, $virtual_context, 2);
+                    $result = $this->staggeredDiscounts($type , $with_shipping, $products, $shipping_fees, $wrapping_fees, $virtual_context, 2);
                     if ($result !=0 ) {
                         $order_total_discount = $result;
                         if($dGOT ==  1){
-                            error_log("\r\n order_total_discount: ".print_r($order_total_discount,true), 3, "/tmp/ordererror.log"); 
-                            error_log("\n\n order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
+//                            error_log("\r\n order_total_discount: ".print_r($order_total_discount,true), 3, "/tmp/ordererror.log"); 
+//                            error_log("\n\n order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
                         }
                     }
                 }
-                
+               
                 
                 if($dGOT ==  1){
-                    error_log("\r\n 7-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
-                    error_log("\r\n 8-- order_total: ".$order_total, 3, "/tmp/progresivo.log");
+//                    error_log("\r\n 7-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");
+//                    error_log("\r\n 8-- order_total: ".$order_total, 3, "/tmp/progresivo.log");
                 }
 
                 $order_total;
@@ -1332,11 +1361,17 @@ class Cart extends CartCore {
 
             if ($type == Cart::BOTH){
                 if($dGOT ==  1){
-                    error_log("\r\n 10.1-- shipping_fees: ".$shipping_fees, 3, "/tmp/progresivo.log");
-                    error_log("\r\n 10.2-- wrapping_fees: ".$wrapping_fees, 3, "/tmp/progresivo.log");
-                    error_log("\r\n 10.3-- order_total: ".$order_total, 3, "/tmp/progresivo.log");
+//                    error_log("\r\n 10.1-- shipping_fees: ".$shipping_fees, 3, "/tmp/progresivo.log");
+//                    error_log("\r\n 10.2-- wrapping_fees: ".$wrapping_fees, 3, "/tmp/progresivo.log");
+//                    error_log("\r\n 10.3-- order_total: ".$order_total, 3, "/tmp/progresivo.log");
                 }
+                $order_total_tax = $this->staggeredDiscounts($type , $with_shipping, $products, $shipping_fees, $wrapping_fees, $virtual_context, 3);
+                if($dGOT ==  1){error_log("\r\n 10-- order_total_tax: ".$order_total_tax, 3, "/tmp/progresivo.log");}
+                
                 $order_total += $shipping_fees + $wrapping_fees - $order_total_discount;
+                if($dGOT ==  1){error_log("\r\n 10-- shipping_fees: ".$shipping_fees, 3, "/tmp/progresivo.log");}
+                if($dGOT ==  1){error_log("\r\n 10-- wrapping_fees: ".$wrapping_fees, 3, "/tmp/progresivo.log");}
+                if($dGOT ==  1){error_log("\r\n 10-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");}
                 if($dGOT ==  1){error_log("\r\n 10-- order_total: ".$order_total, 3, "/tmp/progresivo.log");}
             }
             
@@ -2336,9 +2371,9 @@ class Cart extends CartCore {
         if ( isset( $_GET['debug_getOrderTotal'] ) && $_GET['debug_getOrderTotal'] == "true" && Configuration::get('PS_DEBUG_GET_ORDER_TOTAL') == 1 ) {
             $dGOT = 1;    
         } else {
-            $dGOT = 0;
+            $dGOT = 1;
         }
-        if($dGOT == 1){error_log("\r\n\ \tstaggeredDiscounts subtotal :    ".print_r( $subtotal, true )."\n\n", 3, "/tmp/progresivo.log");}
+        if($dGOT == 1){error_log("\r\n 0.0-- staggeredDiscounts subtotal: ".print_r( $subtotal, true ), 3, "/tmp/progresivo.log");}
                 
         $products_total = 0;
         $products_base = 0;
@@ -2383,29 +2418,23 @@ class Cart extends CartCore {
             $order_total_tax_exc += $total_price_tax_exc;
         }
         
-        
-        
-        
-        
-
-        
-        
-        
-            if($dGOT == 1){error_log("\r\n  0-- staggeredDiscounts subtotal: ".print_r($subtotal,true), 3, "/tmp/progresivo.log");}
+        if($dGOT == 1){error_log("\r\n 0-- staggeredDiscounts subtotal: ".print_r($subtotal,true), 3, "/tmp/progresivo.log");}
             
         if ( $subtotal == 1 || $subtotal == 2 ){
-
-            $cart_rules = Db::getInstance()->executeS('
-				SELECT *
-				FROM `'._DB_PREFIX_.'cart_cart_rule` cd
-				LEFT JOIN `'._DB_PREFIX_.'cart_rule` cr ON cd.`id_cart_rule` = cr.`id_cart_rule`
-				LEFT JOIN `'._DB_PREFIX_.'cart_rule_lang` crl ON (
-					cd.`id_cart_rule` = crl.`id_cart_rule`
-					AND crl.id_lang = '.(int)$this->id_lang.'
-				)
-				WHERE `id_cart` = '.(int)$this->id.' ORDER by cr.priority ASC');
             
-            //error_log("\r\n  1-- staggeredDiscounts cart_rules: ".print_r($cart_rules,true), 3, "/tmp/progresivo.log");
+            $sql = 'SELECT *
+                    FROM `'._DB_PREFIX_.'cart_cart_rule` cd
+                    LEFT JOIN `'._DB_PREFIX_.'cart_rule` cr ON cd.`id_cart_rule` = cr.`id_cart_rule`
+                    LEFT JOIN `'._DB_PREFIX_.'cart_rule_lang` crl ON (
+                        cd.`id_cart_rule` = crl.`id_cart_rule`
+                        AND crl.id_lang = '.(int)$this->id_lang.'
+                    )
+                    WHERE `id_cart` = '.(int)$this->id.' ORDER by cr.priority ASC';
+            
+            //if($dGOT == 1){error_log("\r\n 1-- staggeredDiscounts SQL cart_rules: \n".print_r($sql,true), 3, "/tmp/progresivo.log");}
+            $cart_rules = Db::getInstance()->executeS( $sql );
+            
+            //if($dGOT == 1){error_log("\r\n  2-- staggeredDiscounts cart_rules: ".print_r($cart_rules,true), 3, "/tmp/progresivo.log");}
             $aux =  array();
     
             // sort results cart_rules
@@ -2437,9 +2466,9 @@ class Cart extends CartCore {
                                     //$products[$key_p]["price_new_tax"] =  $products[$key_p]["price_new"] * (1 + ( $products[$key_p]['rate'] /100 ));
                                 }
                                 else{
-                                    $cart_rules[$key_c]["total_discount_cart_rule"] +=  Tools::ps_round(  $cart_rules[$key_c]['reduction_amount']  ,2);
-                                    if($dGOT == 1){error_log("\r\n 5--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");}
-                                    $products[$key_p]["price_new"] =  Tools::ps_round( ($products[$key_p]['precio_base'] * $products[$key_p]['cart_quantity'] ) - $cart_rules[$key_c]['reduction_amount'], 2);
+                                    $cart_rules[$key_c]["total_discount_cart_rule"] +=  Tools::ps_round(  $cart_rules[$key_c]['reduction_amount'] * $products[$key_p]['cart_quantity'] ,2);
+                                    if($dGOT == 1){error_log("\r\n 5--    cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");}
+                                    $products[$key_p]["price_new"] =  Tools::ps_round( ($products[$key_p]['precio_base'] * $products[$key_p]['cart_quantity'] ), 2) - Tools::ps_round( ($cart_rules[$key_c]['reduction_amount'] * $products[$key_p]['cart_quantity']), 2);
                                     if($dGOT == 1){error_log("\r\n 6--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");}
                                 }
                             }
@@ -2458,9 +2487,8 @@ class Cart extends CartCore {
                                     if($dGOT == 1){error_log("\r\n 10--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");}
                                 }
                             }
-
-
-                        } elseif ( $cart_rules[$key_c]['product_restriction'] == 0 && $cart_rules[$key_c]['reduction_product'] == 0 ) {
+                        }
+                        elseif ( $cart_rules[$key_c]['product_restriction'] == 0 && $cart_rules[$key_c]['reduction_product'] == 0 ) {
 
                             if (!isset($products[$key_p]["price_new"])) {
                                 //error_log("\r\n NO products[count_prod][price_new] ".$products[$key_p]["price_new"], 3, "/tmp/progresivo.log");
@@ -2469,6 +2497,13 @@ class Cart extends CartCore {
                                     if($dGOT == 1){error_log("\r\n 11--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");}
                                     $products[$key_p]["price_new"] =  Tools::ps_round( ($products[$key_p]['precio_base'] - (($products[$key_p]['precio_base'] * $cart_rules[$key_c]['reduction_percent'])/100))* $products[$key_p]['cart_quantity'], 2);
                                     if($dGOT == 1){error_log("\r\n 12--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");}
+                                }
+                                else if( $cart_rules[$key_c]['reduction_percent'] == 0 && $cart_rules[$key_c]['reduction_amount'] > 0 && $cart_rules[$key_c]['reduction_currency'] == 1 ){
+                                    $cart_rules[$key_c]["total_discount_cart_rule"] =  Tools::ps_round( $cart_rules[$key_c]['reduction_amount'] ,2);//en los que son así se deberia m,ultipĺicar por la cantidad. pero no Faber
+                                    if($dGOT == 1){error_log("\r\n 11.11111--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");}
+                                    $products[$key_p]["price_new"] =  Tools::ps_round( ($products[$key_p]['precio_base'] ), 2);
+                                    if($dGOT == 1){error_log("\r\n 12.2222222--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");}
+                                    //* $products[$key_p]['cart_quantity']
                                 }
                                 else{
                                     $cart_rules[$key_c]["total_discount_cart_rule"] +=  Tools::ps_round( $cart_rules[$key_c]['reduction_amount'] ,2);//en los que son así se deberia m,ultipĺicar por la cantidad. pero no Faber
@@ -2493,9 +2528,32 @@ class Cart extends CartCore {
                                 }
                             }
                         }
+                        elseif ( $cart_rules[$key_c]['product_restriction'] == 1 && $cart_rules[$key_c]['reduction_product'] == 0 ) {
+                            if (!isset($products[$key_p]["price_new"])) {
+                                //error_log("\r\n NO products[count_prod][price_new] ".$products[$key_p]["price_new"], 3, "/tmp/progresivo.log");
+                                if( $cart_rules[$key_c]['reduction_percent'] > 0 && $cart_rules[$key_c]['reduction_amount'] == 0 ){
+                                    $cart_rules[$key_c]["total_discount_cart_rule"] +=  Tools::ps_round( (($products[$key_p]['precio_base'] * $cart_rules[$key_c]['reduction_percent'])/100) * $products[$key_p]['cart_quantity'] ,2);
+                                    if($dGOT == 1){error_log("\r\n 11--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");}
+                                    $products[$key_p]["price_new"] =  Tools::ps_round( ($products[$key_p]['precio_base'] - (($products[$key_p]['precio_base'] * $cart_rules[$key_c]['reduction_percent'])/100))* $products[$key_p]['cart_quantity'], 2);
+                                    if($dGOT == 1){error_log("\r\n 12--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");}
+                                }
+                                else if( $cart_rules[$key_c]['reduction_percent'] == 0 && $cart_rules[$key_c]['reduction_amount'] > 0 ) {
+                                    $cart_rules[$key_c]["total_discount_cart_rule"] =  Tools::ps_round( $cart_rules[$key_c]['reduction_amount'],2 );
+                                    if($dGOT == 1){error_log("\r\n 13--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");}
+                                    $products[$key_p]["price_new"] =  Tools::ps_round( $products[$key_p]['precio_base'] , 2);
+                                    if($dGOT == 1){error_log("\r\n 14--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");}
+                                }
+                                else if( $cart_rules[$key_c]['reduction_percent'] == 0 && $cart_rules[$key_c]['reduction_amount'] == 0 ){
+                                    $products[$key_p]["price_new"] =  Tools::ps_round( $products[$key_p]['precio_base'] , 2);
+                                    if($dGOT == 1){error_log("\r\n 16--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");}
+                                }
+                            }
+                            
+                        }
                         $discounts_total = $cart_rules[$key_c]["total_discount_cart_rule"];
                     }
-                } else {
+                } 
+                else {
                     if (!isset($products[$key_p]["price_new"])) {
                         
                         $products[$key_p]["price_new"] =  Tools::ps_round( ($products[$key_p]['precio_base'] ) * $products[$key_p]['cart_quantity'], 2);
@@ -2512,8 +2570,7 @@ class Cart extends CartCore {
                 $count_prod ++;		
             }
             if($dGOT == 1){
-                error_log("\r\n 18.22222--  staggeredDiscounts llega hasta aqui...".$discounts_total, 3, "/tmp/progresivo.log");
-                error_log("\r\n 18.1111111--  staggeredDiscounts llega hasta aqui...".$discounts_total, 3, "/tmp/progresivo.log");
+//                error_log("\r\n 18.22222--  staggeredDiscounts llega hasta aqui...".$discounts_total, 3, "/tmp/progresivo.log");
             }
             if( $subtotal == 2 ){
                 if($dGOT == 1){error_log("\r\n 18.1111111--  staggeredDiscounts llega hasta aqui... pase de ahí", 3, "/tmp/progresivo.log");}
@@ -2522,24 +2579,46 @@ class Cart extends CartCore {
 
             $count_prod = 0;
 
-            foreach ($products as $product ) { // 
-                $products[$count_prod]["total_tax"] = Tools::ps_round( (($products[$count_prod]["price_new"] * $product['rate']) / 100),2);
+            foreach ($products as $product ) {////
+                if(!empty($cart_rules)){
+                    foreach ($cart_rules as $key_c => $cart_rule) {
+                        if( $cart_rules[$key_c]['product_restriction'] == 0 && $cart_rules[$key_c]['reduction_percent'] == 0 && $cart_rules[$key_c]['reduction_product'] == 0  ){
+                            $flag_order_monetario = 1;
+                        }
+                        else{
+                            $flag_order_monetario = 0;
+                        }
+                    }
+                    //if($dGOT == 1){error_log("\r\n 188888888888888--  staggeredDiscounts product: ".print_r($product,true), 3, "/tmp/progresivo.log");}
+                    if ( $flag_order_monetario == 1 ){
+                        $products[$count_prod]["total_tax"] = Tools::ps_round( Tools::ps_round( (($products[$count_prod]["precio_base"] * $product['rate']) / 100),2) * $products[$count_prod]['cart_quantity'],2);
+                    }
+                    else{
+                        $products[$count_prod]["total_tax"] = Tools::ps_round( ( ( Tools::ps_round( ( $products[$count_prod]["price_new"] * $products[$count_prod]['cart_quantity'] ), 2 ) * $product['rate'] ) / 100 ), 2 );                    
+                    }                    
+                }
+                else{
+                    $products[$count_prod]["total_tax"] = Tools::ps_round( (($products[$count_prod]["price_new"] * $product['rate']) / 100),2);                    
+                }
+                if($dGOT == 1){error_log("\r\n 19--  staggeredDiscounts products[count_prod][price_new]: ".print_r($products[$count_prod]["price_new"],true), 3, "/tmp/progresivo.log");}
+                if($dGOT == 1){error_log("\r\n 19--  staggeredDiscounts product[rate]: ".print_r($product['rate'],true), 3, "/tmp/progresivo.log");}
                 if($dGOT == 1){error_log("\r\n 19--  staggeredDiscounts products[count_prod][total_tax]: ".print_r($products[$count_prod]["total_tax"],true), 3, "/tmp/progresivo.log");}
-                $count_prod ++;	
+                $count_prod ++;
             }
             // Calculate totals
             $count_prod = 0;
 
             foreach ($products as $product ) {
-                $products_total += $products[$count_prod]["price_new"];
-                $products_base += $products[$count_prod]["precio_base"]*$products[$count_prod]['cart_quantity'];
-                $tax_total += $products[$count_prod]["total_tax"];
+                $products_total += $products[$count_prod]["price_new"]*$products[$count_prod]['cart_quantity'];
+                $products_base += Tools::ps_round( ( $products[$count_prod]["precio_base"]*$products[$count_prod]['cart_quantity'] ) , 2 );
+                if($dGOT == 1){error_log("\r\n 20--  staggeredDiscounts products[count_prod][precio_base]: ".print_r($products[$count_prod]["precio_base"],true), 3, "/tmp/progresivo.log");}
+                $tax_total += Tools::ps_round( ( $products[$count_prod]["total_tax"] ) , 2 ) ;
                 $count_prod ++;	
                 $this->products_discouts = $products;
                 $this->cart_rules_discounts = $cart_rules;
             }
             
-            $result = $products_base + $tax_total;            
+            $result = Tools::ps_round( ( $products_base + $tax_total ) , 2 );            
             if($dGOT == 1){error_log("\r\n 20--  staggeredDiscounts result: ".print_r($result,true), 3, "/tmp/progresivo.log");}
             
             //si hay envio hace esto.
@@ -2579,32 +2658,32 @@ class Cart extends CartCore {
                                 //error_log("\r\n NO products[count_prod][price_new] ".$products[$key_p]["price_new"], 3, "/tmp/progresivo.log");
                                 if( $cart_rules[$key_c]['reduction_percent'] > 0 && $cart_rules[$key_c]['reduction_amount'] == 0 ){
                                     $cart_rules[$key_c]["total_discount_cart_rule"] +=  Tools::ps_round( (($products[$key_p]['precio_base'] * $cart_rules[$key_c]['reduction_percent'])/100) * $products[$key_p]['cart_quantity'] ,2);
-                                    //error_log("\r\n 3--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");
+                                    if($dGOT == 1){error_log("\r\n 21--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");}
                                     $products[$key_p]["price_new"] =  Tools::ps_round( ($products[$key_p]['precio_base'] - (($products[$key_p]['precio_base'] * $cart_rules[$key_c]['reduction_percent'])/100))* $products[$key_p]['cart_quantity'], 2);
-                                    //error_log("\r\n 4--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");
+                                    if($dGOT == 1){error_log("\r\n 22-  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");}
                                     //$products[$key_p]["price_new_tax"] =  Tools::ps_round( ( ($products[$key_p]['precio_base'] - (($products[$key_p]['precio_base'] * $cart_rules[$key_c]['reduction_percent'])/100))* $products[$key_p]['cart_quantity'] ) * (1 + ( $products[$key_p]['rate'] /100 )), 2);
                                     //$products[$key_p]["price_new_tax"] =  $products[$key_p]["price_new"] * (1 + ( $products[$key_p]['rate'] /100 ));
                                 }
                                 else{
                                     $cart_rules[$key_c]["total_discount_cart_rule"] +=  Tools::ps_round( ( $products[$key_p]['precio_base'] - $cart_rules[$key_c]['reduction_amount']) * $products[$key_p]['cart_quantity'] ,2);
-                                    //error_log("\r\n 5--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");
+                                    if($dGOT == 1){error_log("\r\n 23--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");}
                                     $products[$key_p]["price_new"] =  Tools::ps_round( ($products[$key_p]['precio_base'] - $cart_rules[$key_c]['reduction_amount']) * $products[$key_p]['cart_quantity'], 2);
-                                    //error_log("\r\n 6--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");
+                                    if($dGOT == 1){error_log("\r\n 24--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");}
                                 }
                             }
                             else {
                                 //error_log("\r\n SI products[count_prod][price_new] ".$products[$key_p]["price_new"], 3, "/tmp/progresivo.log");
                                 if( $cart_rules[$key_c]['reduction_percent'] > 0 && $cart_rules[$key_c]['reduction_amount'] == 0 ){
                                     $products[$key_p]["price_new"]  =  Tools::ps_round( ($products[$key_p]["price_new"] - (($products[$key_p]["price_new"] * $cart_rules[$key_c]['reduction_percent'])/100))* $products[$key_p]['cart_quantity'], 2);
-                                    //error_log("\r\n 7--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");
+                                    if($dGOT == 1){error_log("\r\n 25--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");}
                                     $cart_rules[$key_c]["total_discount_cart_rule"] +=  Tools::ps_round( (($products[$key_p]['precio_base'] * $cart_rules[$key_c]['reduction_percent'])/100)* $products[$key_p]['cart_quantity'], 2);
-                                    //error_log("\r\n 8--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");
+                                    if($dGOT == 1){error_log("\r\n 26--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");}
                                 }
                                 else{
                                     $products[$key_p]["price_new"]  =  Tools::ps_round( ($products[$key_p]["price_new"] - $cart_rules[$key_c]['reduction_amount'] )* $products[$key_p]['cart_quantity'], 2);
-                                    //error_log("\r\n 9--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");
+                                    if($dGOT == 1){error_log("\r\n 27--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");}
                                     $cart_rules[$key_c]["total_discount_cart_rule"] +=  Tools::ps_round( $cart_rules[$key_c]['reduction_amount'] * $products[$key_p]['cart_quantity'], 2);
-                                    //error_log("\r\n 10--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");
+                                    if($dGOT == 1){error_log("\r\n 28--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");}
                                 }
                             }
                             
@@ -2612,33 +2691,33 @@ class Cart extends CartCore {
                         } elseif ( $cart_rules[$key_c]['product_restriction'] == 0 && $cart_rules[$key_c]['reduction_product'] == 0 ) {
                             
                             if (!isset($products[$key_p]["price_new"])) {
-                                //error_log("\r\n NO products[count_prod][price_new] ".$products[$key_p]["price_new"], 3, "/tmp/progresivo.log");
+                                if($dGOT == 1){error_log("\r\n 29-- NO products[count_prod][price_new] ".$products[$key_p]["price_new"], 3, "/tmp/progresivo.log");}
                                 if( $cart_rules[$key_c]['reduction_percent'] > 0 && $cart_rules[$key_c]['reduction_amount'] == 0 ){
                                     $cart_rules[$key_c]["total_discount_cart_rule"] +=  Tools::ps_round( (($products[$key_p]['precio_base'] * $cart_rules[$key_c]['reduction_percent'])/100) * $products[$key_p]['cart_quantity'] ,2);
-                                    //error_log("\r\n 11--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");
+                                    if($dGOT == 1){error_log("\r\n 30--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");}
                                     $products[$key_p]["price_new"] =  Tools::ps_round( ($products[$key_p]['precio_base'] - (($products[$key_p]['precio_base'] * $cart_rules[$key_c]['reduction_percent'])/100))* $products[$key_p]['cart_quantity'], 2);
-                                    //error_log("\r\n 12--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");
+                                    if($dGOT == 1){error_log("\r\n 31--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");}
                                 }
                                 else{
                                     $cart_rules[$key_c]["total_discount_cart_rule"] +=  Tools::ps_round( ( $products[$key_p]['precio_base'] - $cart_rules[$key_c]['reduction_amount']) * $products[$key_p]['cart_quantity'] ,2);
-                                    //error_log("\r\n 13--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");
+                                    if($dGOT == 1){error_log("\r\n 32--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");}
                                     $products[$key_p]["price_new"] =  Tools::ps_round( ($products[$key_p]['precio_base'] - $cart_rules[$key_c]['reduction_amount']) * $products[$key_p]['cart_quantity'], 2);
-                                    //error_log("\r\n 14--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");
+                                    if($dGOT == 1){error_log("\r\n 33--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");}
                                 }
                             }
                             else {
-                                //error_log("\r\n SI products[count_prod][price_new] ".$products[$key_p]["price_new"], 3, "/tmp/progresivo.log");
+                                if($dGOT == 1){error_log("\r\n 34-- SI products[count_prod][price_new] ".$products[$key_p]["price_new"], 3, "/tmp/progresivo.log");}
                                 if( $cart_rules[$key_c]['reduction_percent'] > 0 && $cart_rules[$key_c]['reduction_amount'] == 0 ){
                                     $products[$key_p]["price_new"]  =  Tools::ps_round( ($products[$key_p]["price_new"] - (($products[$key_p]["price_new"] * $cart_rules[$key_c]['reduction_percent'])/100))* $products[$key_p]['cart_quantity'], 2);
-                                    //error_log("\r\n 15--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");
+                                    if($dGOT == 1){error_log("\r\n 35--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");}
                                     $cart_rules[$key_c]["total_discount_cart_rule"] +=  Tools::ps_round( (($products[$key_p]['precio_base'] * $cart_rules[$key_c]['reduction_percent'])/100)* $products[$key_p]['cart_quantity'], 2);
-                                    //error_log("\r\n 16--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");
+                                    if($dGOT == 1){error_log("\r\n 36--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");}
                                 }
                                 else{
                                     $products[$key_p]["price_new"]  =  Tools::ps_round( ($products[$key_p]["price_new"] - $cart_rules[$key_c]['reduction_amount'] )* $products[$key_p]['cart_quantity'], 2);
-                                    //error_log("\r\n 17--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");
+                                    if($dGOT == 1){error_log("\r\n 37--  staggeredDiscounts products[key_p][price_new]: ".print_r($products[$key_p]["price_new"],true), 3, "/tmp/progresivo.log");}
                                     $cart_rules[$key_c]["total_discount_cart_rule"] +=  Tools::ps_round( $cart_rules[$key_c]['reduction_amount'] * $products[$key_p]['cart_quantity'], 2);
-                                    //error_log("\r\n 18--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");
+                                    if($dGOT == 1){error_log("\r\n 38--  staggeredDiscounts cart_rules[key_c][total_discount_cart_rule]: ".print_r($cart_rules[$key_c]["total_discount_cart_rule"],true), 3, "/tmp/progresivo.log");}
                                 }
                             }
                         }
@@ -2649,16 +2728,16 @@ class Cart extends CartCore {
                 // return total discounts
                 if ($type == Cart::ONLY_DISCOUNTS){
                     $totals_discounts = 0;
-                    //error_log("\r\n\n 19--  staggeredDiscounts Entro a ONLY_DISCOUNTS: ".print_r("\n\n\n",true), 3, "/tmp/progresivo.log");
+                    if($dGOT == 1){error_log("\r\n\n 39--  staggeredDiscounts Entro a ONLY_DISCOUNTS: ".print_r("\n\n\n",true), 3, "/tmp/progresivo.log");}
                     foreach ($cart_rules as $cart_rule) {
                         //$totals_discounts +=  Tools::ps_round( $cart_rule["total_discount_cart_rule"], 2);
                         $totals_discounts += Tools::ps_round($cart_rule['obj']->getContextualValue(0, $virtual_context, CartRule::FILTER_ACTION_REDUCTION), 2);
-                        //error_log("\r\n totals_discounts: ".print_r($totals_discounts,true), 3, "/tmp/ordererror.log"); 
-                        //error_log("\r\n staggeredDiscounts id_cart_rule: ".$cart_rule["id_cart_rule"]." - cart_rule[reduction_product]: ".$cart_rule['reduction_product']." - total_discount_cart_rule: ".$cart_rule["total_discount_cart_rule"]." - totals_discounts: ".$totals_discounts, 3, "/tmp/progresivo.log");
+                        if($dGOT == 1){error_log("\r\n 40-- totals_discounts: ".print_r($totals_discounts,true), 3, "/tmp/ordererror.log"); }
+                        if($dGOT == 1){error_log("\r\n 41-- staggeredDiscounts id_cart_rule: ".$cart_rule["id_cart_rule"]." - cart_rule[reduction_product]: ".$cart_rule['reduction_product']." - total_discount_cart_rule: ".$cart_rule["total_discount_cart_rule"]." - totals_discounts: ".$totals_discounts, 3, "/tmp/progresivo.log");}
                     }
-                    //error_log("\r\n 20--  staggeredDiscounts totals_discounts: ".print_r($totals_discounts,true), 3, "/tmp/progresivo.log");
+                    if($dGOT == 1){error_log("\r\n 42--  staggeredDiscounts totals_discounts: ".print_r($totals_discounts,true), 3, "/tmp/progresivo.log");}
 
-                    //error_log("\r\n staggeredDiscounts return totals_discounts: ".$totals_discounts, 3, "/tmp/progresivo.log");
+                    if($dGOT == 1){error_log("\r\n 43-- staggeredDiscounts return totals_discounts: ".$totals_discounts, 3, "/tmp/progresivo.log");}
                     return  Tools::ps_round( $totals_discounts, 2);
                 }
 
@@ -2670,7 +2749,7 @@ class Cart extends CartCore {
                     $products[$count_prod]["total_tax"] = (($products[$count_prod]["price_new"] * $product['rate']) / 100);
                     $count_prod ++;	
                 }
-                //error_log("\r\n 21--  staggeredDiscounts products[count_prod][total_tax]: ".print_r($products[$count_prod]["total_tax"],true), 3, "/tmp/progresivo.log");
+                if($dGOT == 1){error_log("\r\n 44--  staggeredDiscounts products[count_prod][total_tax]: ".print_r($products[$count_prod]["total_tax"],true), 3, "/tmp/progresivo.log");}
                 // Calculate totals
                 $count_prod = 0;
 				
@@ -2682,7 +2761,7 @@ class Cart extends CartCore {
                     $this->products_discouts = $products;
                     $this->cart_rules_discounts = $cart_rules;
                 }
-                //error_log("\r\n 22--  staggeredDiscounts products_total: ".print_r($products_total,true), 3, "/tmp/progresivo.log");
+                if($dGOT == 1){error_log("\r\n 45--  staggeredDiscounts products_total: ".print_r($products_total,true), 3, "/tmp/progresivo.log");}
                 
                 // assigning new value discount applied
                 $count_cart_rule = 0;
@@ -2691,16 +2770,17 @@ class Cart extends CartCore {
                     $this->cart_rules_discounts[$count_cart_rule]["value_real"] = $cart_rule_d["total_discount_cart_rule"];
                     $count_cart_rule++;
                 }
-                //error_log("\r\n 23--  staggeredDiscounts this->cart_rules_discounts[count_cart_rule][value_real]: ".print_r($this->cart_rules_discounts[$count_cart_rule]["value_real"],true), 3, "/tmp/progresivo.log");
+                if($dGOT == 1){error_log("\r\n 46--  staggeredDiscounts this->cart_rules_discounts[count_cart_rule][value_real]: ".print_r($this->cart_rules_discounts[$count_cart_rule]["value_real"],true), 3, "/tmp/progresivo.log");}
             }
-            $this->total_products_wt = $products_total + $tax_total;
-            //error_log("\r\n 24--  staggeredDiscounts this->total_products_wt: ".print_r($this->total_products_wt,true), 3, "/tmp/progresivo.log");
+            $this->total_products_wt = Tools::ps_round( ( $products_total + $tax_total ) , 2 );
+            if($dGOT == 1){error_log("\r\n 47--  staggeredDiscounts this->total_products_wt: ".print_r($this->total_products_wt,true), 3, "/tmp/progresivo.log");}
         }
-        //error_log("\r\n 20--  staggeredDiscounts result: ".print_r($result,true), 3, "/tmp/progresivo.log");
+        
+        if($dGOT == 1){error_log("\r\n 48--  staggeredDiscounts result: ".print_r($result,true), 3, "/tmp/progresivo.log");}
         if( $shipping_fees == 0 && $subtotal == 0){
             return $result - $discounts_total;
         }
-        //error_log("\r\n 25--  staggeredDiscounts this->total_products_wt: ".print_r($this->total_products_wt,true), 3, "/tmp/progresivo.log");
+        if($dGOT == 1){error_log("\r\n 49--  staggeredDiscounts this->total_products_wt: ".print_r($this->total_products_wt,true), 3, "/tmp/progresivo.log");}
 	return $this->total_products_wt;
     }
 }
