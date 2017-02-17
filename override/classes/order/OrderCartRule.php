@@ -25,7 +25,8 @@ class OrderCartRule extends OrderCartRuleCore
 			'free_shipping' => 		array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
 			'reduction_percent' => 	array('type' => self::TYPE_FLOAT, 'validate' => 'isFloat'),
 			'reduction_amount' => 	array('type' => self::TYPE_FLOAT, 'validate' => 'isFloat'),
-			'reduction_product' => 	array('type' => self::TYPE_FLOAT, 'validate' => 'isFloat')
+			'reduction_product' => 	array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId'),
+			'gift_product' => 	array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId')
 		)
 	);
 }
