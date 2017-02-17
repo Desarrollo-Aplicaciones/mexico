@@ -124,6 +124,10 @@ class Order extends OrderCore {
 
 		$order_cart_rule->reduction_percent = $cart_rule->reduction_percent;
 		$order_cart_rule->reduction_amount = $cart_rule->reduction_amount;
+                $order_cart_rule->reduction_product = $cart_rule->reduction_product;
+                $order_cart_rule->gift_product = $cart_rule->reduction_product;
+                
+                
 
 		if ($free_shipping === null)
 		{
