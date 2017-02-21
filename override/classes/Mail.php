@@ -216,7 +216,7 @@ class Mail extends MailCore
 			ShopUrl::cacheMainDomainForShop((int)$id_shop);
 			/* don't attach the logo as */
 			if (isset($logo))
-				$template_vars['{shop_logo}'] = $message->attach(new Swift_Message_EmbeddedFile(new Swift_File($logo), null, ImageManager::getMimeTypeByExtension($logo)));
+				//$template_vars['{shop_logo}'] = $message->attach(new Swift_Message_EmbeddedFile(new Swift_File($logo), null, ImageManager::getMimeTypeByExtension($logo)));
 
 			if ((Context::getContext()->link instanceof Link) === false)
 				Context::getContext()->link = new Link();
@@ -230,7 +230,7 @@ class Mail extends MailCore
 
 			/* start new template mail */
 			if ( $template == 'es/order_conf' ) {
-				$template_vars['{logo_recuerda}'] = $message->attach(new Swift_Message_EmbeddedFile(new Swift_File( _PS_IMG_DIR_."/ordermail/Icono-mail.jpg" ), null));
+				//$template_vars['{logo_recuerda}'] = $message->attach(new Swift_Message_EmbeddedFile(new Swift_File( _PS_IMG_DIR_."/ordermail/Icono-mail.jpg" ), null));
 			}
 
 			if ( $template == 'es/delivered' || $template == 'es/canceled' ) {

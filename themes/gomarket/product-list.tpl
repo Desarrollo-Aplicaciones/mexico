@@ -155,9 +155,32 @@ function addcartlightbox( element ) {
 Bienvenido a Farmalisto, tu droguería online, encontrarás productos de farmacia, salud, nutrición, cuidado personal y para la familia.  Acá te decimos para qué sirve<label id="tituloCategoryProd"></label> En Farmalisto Puedes comprar con varios medios de pago, tarjeta d&eacute;bito, tarjeta de cr&eacute;dito, OXXO, cuenta de ahorros, efectivo, ten seguridad en cada una de tus transacciones a trav&eacute;s de Symantec Powered by verisign un completo sistema de seguridad en tus compras. Nuestros beneficios: Mejor precio garantizado, No m&aacute;s filas, ya no tendr&aacute;s que hacer filas al salir de tu m&eacute;dico, Discreci&oacute;n en todas tus compras, total confidencialidad en todas tus transacciones. Tu f&oacute;rmula m&eacute;dica completa en un s&oacute;lo lugar. Contamos con profesionales certificados de la farmacolog&iacute;a ofreciendo as&iacute; garant&iacute;a total en tu experiencia de compra, somos una droguer&iacute;a 100% online en donde encontrar&aacute;s todo lo que necesitas. No te auto mediques, somos responsables por la salud de nuestros clientes, exigimos un soporte certificado (f&oacute;rmula m&eacute;dica) por t&uacute; m&eacute;dico en el que autorice la venta del medicamento, la dosis, presentaci&oacute;n del producto, fecha, advertencias, caracter&iacute;sticas, posolog&iacute;a, indicaciones y contraindicaciones es responsabilidad de t&uacute; m&eacute;dico y no nos responsabilizamos por ello.
 </div>  *}
 
- <div class="cclearfix" style="float:left;font-size: 7pt;padding: 0 0px 20px 0;text-align: justify;">
+<div class="back-ctn-btn-cat">
+    <div class="ctn-btn-cat">
+        <div class="btn-cat" id="btn-cat">+</div>
+    </div>
+</div>
+
+ <div class="cclearfix" id="toggle-category" style="float:left;font-size: 7pt;padding: 0 0px 20px 0;text-align: justify;display: none;">
                             
 Bienvenido a Farmalisto, tu farmacia online, encontrarás medicamentos con receta y sin receta, productos dermatológicos, artículos para el cuidado personal, salud integral, pañales para adulto mayor, leches y pañales para bebés y salud sexual entre otros. Realizamos envíos urgentes a domicilio las 24 horas para Ciudad de México.<label id="tituloCategoryProd"></label><br> En Farmalisto puedes resolver preguntas acerca de tus medicamentos: ¿Para qué sirve? ¿Cuanto cuesta? Farmalisto es la farmacia Online más grande de México puedes comprar con varios medios de pago, tarjeta débito, tarjeta de crédito, OXXO, SevenEleven, PayPal cuenta de ahorros, efectivo, ten seguridad en cada una de tus transacciones a través de Symantec Powered by verisign un completo sistema de seguridad en tus compras. Nuestros beneficios: Mejor precio garantizado. Tu receta médica completa en un sólo lugar. Contamos con profesionales certificados de la farmacología ofreciendo así garantía total en tu experiencia de compra, somos una farmacia 100% online. No te automediques, no somos responsables por la salud de nuestros clientes, exigimos un soporte certificado (receta médica) por tú doctor en el que autorice la venta del medicamento, la dosis, presentación del producto, fecha, advertencias, características, posología, indicaciones y contraindicaciones es responsabilidad de tú doctor. <br> Los mejores precios entre Farmacias de Guadalajara, Farmacias del Ahorro, Farmacias San Pablo, Farmacias Similares, Farmacia Paris, Farmacias Especializadas y todas las farmacias de México, contáctanos las 24 horas, servicio a domicilio a todo México.
 </div> 
 	
+ <script type="text/javascript">
+    $(function(){
+        $(".ctn-btn-cat").click(function(){
+            if( $( '#toggle-category' ).is( ":hidden" ) ){
+                console.log("entre1");
+                $( "#btn-cat" ).css( "transform", "rotate(45deg)" );
+            }
+            else {
+                console.log("Entre2");
+
+                $( "#btn-cat" ).css( "transform", "rotate(0deg)" );
+            }
+            $( "#toggle-category" ).slideToggle("slow");
+        });
+    });
+</script>
+
 {/if}

@@ -280,6 +280,7 @@ class PaymentModule extends PaymentModuleCore {
 print_r($order);
 die();*/
 
+                    $order->id_employee_close_order = Context::getContext()->employee->id;
                     $result = $order->add();
 
                     /************ Progressive Discounts ************/
@@ -459,11 +460,11 @@ die();*/
                         if (!$customization_quantity || (int) $product['cart_quantity'] > $customization_quantity)
                             $products_list .=
                                     '<tr style="background-color: ' . ($key % 2 ? '#DDE2E6' : '#EBECEE') . ';">
-                                                <td style="padding: 0.6em 0.4em;width: 15%;">' . $product['reference'] . '</td>
-                                                <td style="padding: 0.6em 0.4em;width: 30%;"><strong>' . $product['name'] . (isset($product['attributes']) ? ' - ' . $product['attributes'] : '') . '</strong></td>
-                                                <td style="padding: 0.6em 0.4em; width: 20%;">' . Tools::displayPrice(Product::getTaxCalculationMethod((int) $this->context->customer->id) == PS_TAX_EXC ? Tools::ps_round($price, 2) : $price_wt, $this->context->currency, false) . '</td>
-                                                <td style="padding: 0.6em 0.4em; width: 15%;">' . ((int) $product['cart_quantity'] - $customization_quantity) . '</td>
-                                                <td style="padding: 0.6em 0.4em; width: 20%;">' . Tools::displayPrice(((int) $product['cart_quantity'] - $customization_quantity) * (Product::getTaxCalculationMethod() == PS_TAX_EXC ? Tools::ps_round($price, 2) : $price_wt), $this->context->currency, false) . '</td>
+                                                <td style="font-size: 11px; padding: 0.6em 0.4em;width: 15%;">' . $product['reference'] . '</td>
+                                                <td style="font-size: 10px; padding: 0.6em 0.4em;width: 30%;"><strong>' . $product['name'] . (isset($product['attributes']) ? ' - ' . $product['attributes'] : '') . '</strong></td>
+                                                <td style="font-size: 11px; padding: 0.6em 0.4em; width: 20%;">' . Tools::displayPrice(Product::getTaxCalculationMethod((int) $this->context->customer->id) == PS_TAX_EXC ? Tools::ps_round($price, 2) : $price_wt, $this->context->currency, false) . '</td>
+                                                <td style="font-size: 11px; padding: 0.6em 0.4em; width: 15%;">' . ((int) $product['cart_quantity'] - $customization_quantity) . '</td>
+                                                <td style="font-size: 11px; padding: 0.6em 0.4em; width: 20%;">' . Tools::displayPrice(((int) $product['cart_quantity'] - $customization_quantity) * (Product::getTaxCalculationMethod() == PS_TAX_EXC ? Tools::ps_round($price, 2) : $price_wt), $this->context->currency, false) . '</td>
                                                 </tr>';
 
                         // Check if is not a virutal product for the displaying of shipping
@@ -698,6 +699,7 @@ die();*/
                             '{invoice_state}' => $invoice->id_state ? $invoice_state->name : '',
                             '{invoice_phone}' => ($invoice->phone) ? $invoice->phone : $invoice->phone_mobile,
                             '{invoice_other}' => $invoice->other,
+                            '{id_order}'=> $order->id,
                             '{order_name}' => $order->getUniqReference(),
                             '{date}' => Tools::displayDate(date('Y-m-d H:i:s'), null, 1),
                             '{carrier}' => $virtual_product ? Tools::displayError('No carrier') : $carrier->name,

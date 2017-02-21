@@ -1574,7 +1574,7 @@
 		<label>{l s='Order status'}</label>
 		<div class="margin-form">
 			<select name="id_order_state" id="id_order_state">
-				{foreach from=$order_states item='order_state'}
+				{foreach from=$order_states_back item='order_state'}
 					<option value="{$order_state.id_order_state}" {if isset($smarty.post.id_order_state) && $order_state.id_order_state == $smarty.post.id_order_state}selected="selected"{/if}>{$order_state.name}</option>
 				{/foreach}
 			</select>

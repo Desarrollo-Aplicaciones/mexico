@@ -32,7 +32,7 @@ class OrderState extends OrderStateCore
 	* @param integer $id_lang Language id for state name
 	* @return array Order states
 	*/
-	public static function getOrderStates($id_lang, $id_profile = NULL)
+	public static function getOrderStates($id_lang, $id_profile = NULL, $flag_order_back = false)
 	{ 
 		$sql = '';
 		if(!is_null($id_profile) && is_int($id_profile)){
@@ -51,8 +51,29 @@ class OrderState extends OrderStateCore
 					ORDER BY `name` ASC';	
 		}  	
 		
-			$result = Db::getInstance()->executeS($sql);
-			// echo '<b> data-    -2xd: <pre>'.var_dump($result).'</pre>';
+                $result = Db::getInstance()->executeS($sql);
+                // echo '<b> data-    -2xd: <pre>'.var_dump($result).'</pre>';
+                        
+                if($flag_order_back){
+                    /*error_log("Este es el arreglo de order_state_back: ".print_r($result, true),3, "/tmp/orderstates.log" );*/
+                    // Ewstados validos para nuevas ordenes por back.
+                    $valid_states = explode(',',Configuration::get('PS_CREATE_ORDER_STATE_BACK'));
+                    /*error_log("Este es el arreglo de estados validos: ".print_r($valid_states, true),3, "/tmp/orderstates.log" );*/
+                    
+                    $states = array();
+                    
+                    foreach ($result as $array){
+                        foreach ($valid_states as $key => $value) {
+                            if ($array['id_order_state'] == $value) {
+                                $states[] = $array;
+                            }
+                        }
+                    }
+                    return $states;
+                    /*error_log("Este es el arreglo de estados validos FINAL: ".print_r($states, true),3, "/tmp/orderstates.log" );*/
+                    
+                }
+                        
 		return $result;
 	}
 
