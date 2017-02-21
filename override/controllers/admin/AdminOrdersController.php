@@ -194,57 +194,58 @@ public function printPDFIcons($id_order, $tr)
 		$loggin->lwrite("AdminOrdersController", "remover_productos.txt", "Ingreso Eliminar ICR de la Orden: ".$id_order." - empleado:".$this->context->employee->id);
 
 		if ($this->addProductStock($id_order)) {
-			$loggin->lwrite("AdminOrdersController", "remover_productos.txt", "Si se actualizo stock ");
+                    $loggin->lwrite("AdminOrdersController", "remover_productos.txt", "Si se actualizo stock ");
 
-			$query = "SELECT  picking.id_order_picking, id_icr 
-			FROM ps_icr icr 
-			INNER JOIN ps_order_picking picking ON(icr.id_icr=picking.id_order_icr) 
-			WHERE  icr.cod_icr IN ( SELECT icr.cod_icr
-			                       FROM ps_orders orders 
-			                       INNER JOIN ps_order_detail orders_d ON ( orders.id_order= orders_d.id_order)
-			                       INNER JOIN ps_supply_order_detail s_order_d ON (orders_d.product_id=s_order_d.id_product)
-			                       INNER JOIN ps_supply_order_icr s_order_i ON (s_order_d.id_supply_order_detail=s_order_i.id_supply_order_detail)
-			                       INNER JOIN ps_icr icr ON (s_order_i.id_icr=icr.id_icr)
-			                       INNER JOIN ps_order_picking o_picking ON (orders_d.id_order_detail= o_picking.id_order_detail AND s_order_i.id_supply_order_icr =o_picking.id_order_supply_icr)
-			                       INNER JOIN ps_product product ON (s_order_d.id_product=product.id_product)
-			                       WHERE icr.id_estado_icr=3 and orders.id_order=".$id_order." 
-			                       GROUP BY icr.cod_icr )";
+                    $query = "SELECT  picking.id_order_picking, id_icr 
+                        FROM ps_icr icr 
+                        INNER JOIN ps_order_picking picking ON ( icr.id_icr = picking.id_order_icr ) 
+                        INNER JOIN ps_order_detail od ON ( od.id_order = ".$id_order." AND od.id_order_detail = picking.id_order_detail )
+                        WHERE  icr.cod_icr IN ( SELECT icr.cod_icr
+	                       FROM ps_orders orders 
+	                       INNER JOIN ps_order_detail orders_d ON ( orders.id_order= orders_d.id_order)
+	                       INNER JOIN ps_supply_order_detail s_order_d ON (orders_d.product_id=s_order_d.id_product)
+	                       INNER JOIN ps_supply_order_icr s_order_i ON (s_order_d.id_supply_order_detail=s_order_i.id_supply_order_detail)
+	                       INNER JOIN ps_icr icr ON (s_order_i.id_icr=icr.id_icr)
+	                       INNER JOIN ps_order_picking o_picking ON (orders_d.id_order_detail= o_picking.id_order_detail AND s_order_i.id_supply_order_icr =o_picking.id_order_supply_icr AND orders_d.id_order = ".$id_order." )
+	                       INNER JOIN ps_product product ON (s_order_d.id_product=product.id_product)
+	                       WHERE icr.id_estado_icr=3 and orders.id_order=".$id_order." 
+	                       GROUP BY icr.cod_icr )";
 
-$array_icr = null;
-$array_order_picking = null;
+                    $array_icr = null;
+                    $array_order_picking = null;
 
-if ($results = Db::getInstance()->ExecuteS($query)) {
+                    if ($results = Db::getInstance()->ExecuteS($query)) {
 
-	foreach ($results as $row) {
-		$array_order_picking[] = $row['id_order_picking'];
-		$array_icr[] = $row['id_icr'];
-	}
-	if ($array_icr != NULL && $array_order_picking != NULL) {
+                            foreach ($results as $row) {
+                                    $array_order_picking[] = $row['id_order_picking'];
+                                    $array_icr[] = $row['id_icr'];
+                            }
+                            if ($array_icr != NULL && $array_order_picking != NULL) {
 
-		$query_2 = "DELETE from ps_order_picking WHERE id_order_picking IN ('" . implode("','", $array_order_picking) . "')";
+                                    $query_2 = "DELETE from ps_order_picking WHERE id_order_picking IN ('" . implode("','", $array_order_picking) . "')";
 
-		$loggin->lwrite("AdminOrdersController", "remover_productos.txt", "Query delete: ".$query_2);
+                                    $loggin->lwrite("AdminOrdersController", "remover_productos.txt", "Query delete: ".$query_2);
 
-		$query_3 = "UPDATE ps_icr SET id_estado_icr=2 WHERE id_icr IN ('" . implode("','", $array_icr) . "')";
+                                    $query_3 = "UPDATE ps_icr SET id_estado_icr=2 WHERE id_icr IN ('" . implode("','", $array_icr) . "')";
 
-		$loggin->lwrite("AdminOrdersController", "remover_productos.txt", "Query Update: ".$query_3);
+                                    $loggin->lwrite("AdminOrdersController", "remover_productos.txt", "Query Update: ".$query_3);
 
-		if ($results = Db::getInstance()->Execute($query_2) && $results3 = Db::getInstance()->Execute($query_3)) {
+                                    if ($results = Db::getInstance()->Execute($query_2) && $results3 = Db::getInstance()->Execute($query_3)) {
 
-			$loggin->lwrite("AdminOrdersController", "remover_productos.txt", "ICR actualizados ");
-			return true;
+                                            $loggin->lwrite("AdminOrdersController", "remover_productos.txt", "ICR actualizados ");
+                                            return true;
 
-		} else {
-			$loggin->lwrite("AdminOrdersController", "remover_productos.txt", "Querys no ejecutados correctamente.");
-		}
+                                    } else {
+                                            $loggin->lwrite("AdminOrdersController", "remover_productos.txt", "Querys no ejecutados correctamente.");
+                                    }
 
-	} else {
-		$loggin->lwrite("AdminOrdersController", "remover_productos.txt", "Alguno de los array estan vacios");
-	}
+                            } else {
+                                    $loggin->lwrite("AdminOrdersController", "remover_productos.txt", "Alguno de los array estan vacios");
+                            }
 
-} else {
-	$loggin->lwrite("AdminOrdersController", "remover_productos.txt", "No se ejecuto correctamente el query Select");	
-}
+                    } else {
+                            $loggin->lwrite("AdminOrdersController", "remover_productos.txt", "No se ejecuto correctamente el query Select");	
+                    }
 
 } else {
 	$loggin->lwrite("AdminOrdersController", "remover_productos.txt", "No se actualizo stock ");
