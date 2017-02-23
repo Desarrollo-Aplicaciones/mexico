@@ -115,6 +115,39 @@ WHERE adre.id_address=" . (int) $id_address . " LIMIT 1;";
                     GROUP BY cus.id_customer
                     LIMIT 40;';
         return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
-    }    
+    }
+
+       /**
+     * Login social meadia
+     * Return customer instance from its e-mail (optionnaly check password)
+     *
+     * @param string $email e-mail
+     * @param string $passwd Password is also checked if specified
+     * @return Customer instance
+     */
+        public function getByEmailSM($email, $ignore_guest = true)
+        {
+            if (!Validate::isEmail($email) )
+                die (Tools::displayError());
+
+            $sql = 'SELECT *
+            FROM `'._DB_PREFIX_.'customer`
+            WHERE `email` = \''.pSQL($email).'\'
+            '.Shop::addSqlRestriction(Shop::SHARE_CUSTOMER).'
+            '.(isset($passwd) ? 'AND `passwd` = \''.Tools::encrypt($passwd).'\'' : '').'
+            AND `deleted` = 0'.
+            ($ignore_guest ? ' AND `is_guest` = 0' : '');
+
+            $result = Db::getInstance()->getRow($sql);
+
+            if (!$result)
+                return false;
+            $this->id = $result['id_customer'];
+            foreach ($result as $key => $value)
+                if (key_exists($key, $this))
+                    $this->{$key} = $value;
+
+                return $this;
+        } 
     
 }
