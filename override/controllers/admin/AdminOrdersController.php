@@ -606,14 +606,27 @@ public function processAjax()
                                		$use_existings_payment = true;
                                	$history->changeIdOrderState((int)$order_state->id, $order, $use_existings_payment);
 
-						 //echo "<hr> order_controller actual: ".$order->current_state."  -- new_order_state : <br><pre>";
-						 //print_r($order_state);
-						 //echo "</pre>";
-						//echo "<hr> : fin old_order :".$order->current_state." -- new_order_state : ".$order_state->id;
+                                $products = $this->getProducts($order);
+                                foreach ($products as &$product){
+                                    $product['current_stock'] = StockAvailable::getQuantityAvailableByProduct($product['product_id'], $product['product_attribute_id'], $product['id_shop']);
+                                    if (Configuration::get('PS_STOCK_MANAGEMENT') && $product['current_stock'] < $product['product_quantity'] && $current_order_state->id == 3){
+//                                                        error_log("\n\n el producto: ".$product['product_id']." - ".$product['product_name']."No esta en stock y faltan: ".$product['out_of_stock'],3,"/tmp/states.log");
+                                        $history = new OrderHistory();
+                                        $history->id_order = (int) $order->id;
+                                        $history->changeIdOrderState(Configuration::get('PS_OS_OUTOFSTOCK'), $order, true);
+                                        $history->addWithemail();
+                                    }
+                                }                                
+                                
 
-						//echo "<br> order->current_state: ".$order->current_state;
-						//echo "<br> order_state->id: ".$order_state->id;
-						//echo "<br> texto orden: ".$order_state->template[1];
+                                //echo "<hr> order_controller actual: ".$order->current_state."  -- new_order_state : <br><pre>";
+                                //print_r($order_state);
+                                //echo "</pre>";
+                                //echo "<hr> : fin old_order :".$order->current_state." -- new_order_state : ".$order_state->id;
+
+                                //echo "<br> order->current_state: ".$order->current_state;
+                                //echo "<br> order_state->id: ".$order_state->id;
+                                //echo "<br> texto orden: ".$order_state->template[1];
 
                                	if ( $order->current_state == $order_state->id && $order_state->template[1] == 'shipped' ) {
 
@@ -2244,6 +2257,7 @@ public function renderView()
 			$display_out_of_stock_warning = true;
 
 		// products current stock (from stock_available)
+                $flagStockDisplayOption = false;
 		foreach ($products as &$product)
 		{
 			$product['current_stock'] = StockAvailable::getQuantityAvailableByProduct($product['product_id'], $product['product_attribute_id'], $product['id_shop']);
@@ -2255,9 +2269,20 @@ public function renderView()
 			$product['refund_history'] = OrderSlip::getProductSlipDetail($product['id_order_detail']);
 			$product['return_history'] = OrderReturn::getProductReturnDetail($product['id_order_detail']);
 			
+                        if ( $product['current_stock'] < $product['product_quantity'] ) {
+                            //error_log("\n\n si entro",3,"/tmp/states.log");
+                            $missingProduct = $product['product_quantity'] - $product['current_stock'];
+//                            $errorW = 'Faltan '.$missingProduct.' cantidades del producto '.$product['product_name'],3,"/tmp/states.log";
+                            $this->displayWarning('Faltan '.$missingProduct.' cantidades del producto '.$product['product_name']);
+                            if($current_order_state->id == 9){
+                                //error_log("Entro".print_r($current_order_state,true),3,"/tmp/states.log");
+                                $flagStockDisplayOption = true;
+                            }
+                        }
+                        
 			// if the current stock requires a warning
-			if ($product['current_stock'] == 0 && $display_out_of_stock_warning)
-				$this->displayWarning($this->l('This product is out of stock: ').' '.$product['product_name']);
+//			if ($product['current_stock'] == 0 && $display_out_of_stock_warning)
+//				$this->displayWarning($this->l('This product is out of stock: ').' '.$product['product_name']);
 			if ($product['id_warehouse'] != 0)
 			{
 				$warehouse = new Warehouse((int)$product['id_warehouse']);
@@ -2323,7 +2348,8 @@ public function renderView()
 			"stop_step" => $estados['stop_step'],
 			"id_employee" => $this->context->employee->id,
 			"formula_medica" => Utilities::is_formula($cart,$this->context),
-			"imgs_formula_medica" =>  Utilities::getImagenesFormula($order->id)
+			"imgs_formula_medica" =>  Utilities::getImagenesFormula($order->id),
+                        'flagStockDisplayOption' => $flagStockDisplayOption
 			);
 $this->motivo_cancelcion();
 $this->get_mensajero_order($this->id_object);
