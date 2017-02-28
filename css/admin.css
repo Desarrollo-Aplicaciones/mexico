@@ -1950,6 +1950,12 @@ div.progressBarImage
 	width:200px;
 	border-radius:3px;
 	}
+#customer_part #customers #fraud {
+	background-color:#FB0303 !important;
+	}
+#customer_part #customers #fraud a {
+	color:#050505 !important;
+	}
 #customer_part #customers ul li div.customerName { background-color:#eee; font-size:14px; text-shadow:0 1px 0 #fff; padding:2px; }
 #customer_part #customers ul li div.customerName a {  font-weight:bold;}
 #customer_part #customers ul li div.customerName .customerBirthday { font-size:12px;float:right;}

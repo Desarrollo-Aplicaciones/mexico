@@ -14,7 +14,9 @@ class OrderInvoice extends OrderInvoiceCore
 			$query .= '
 			AND od.`id_order_invoice` = '.(int)$this->id;
 		}
-		return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
-	}
+		
+                error_log("\n\n\n\n\n\t****** Este es el query: ******\n\n".$query."\n\n\n\n\n\n\n\n\n",3,"/tmp/progresivo.log");
+                return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
+        }
 }
 ?>

@@ -571,9 +571,14 @@
 				{
 					var html = '<ul>';
 					$.each(res.customers, function() {
-						html += '<li class="customerCard"><div class="customerName"><a class="fancybox" href="{$link->getAdminLink('AdminCustomers')}&id_customer='+this.id_customer+'&viewcustomer&liteDisplaying=1">'+this.firstname+' '+this.lastname+'</a><span class="customerBirthday"> '+((this.birthday != '0000-00-00') ? this.birthday : '')+'</span></div>';
+						if(this.fraud != 0 && this.type_fraud != null) {
+							var idFraud = "id='fraud'";
+						} else {
+							var idFraud = "";
+						}
+						html += '<li class="customerCard" '+idFraud+'><div class="customerName"><a class="fancybox" href="{$link->getAdminLink('AdminCustomers')}&id_customer='+this.id_customer+'&viewcustomer&liteDisplaying=1">'+this.firstname+' '+this.lastname+'</a><span class="customerBirthday"> '+((this.birthday != '0000-00-00') ? this.birthday : '')+'</span></div>';
 						html += '<div class="customerEmail"><a href="mailto:'+this.email+'">'+this.email+'</div>';
-						html += '<a onclick="setupCustomer(\''+ this.id_customer + '|' + this.firstname + '|' + this.lastname+'|' + this.email + '\');return false;" href="#" class="id_customer button">{l s='Choose'}</a></li>';
+						html += '<a onclick="setupCustomer(\''+ this.id_customer + '|' + this.firstname + '|' + this.lastname+'|' + this.email +'|' + this.fraud +'|' + this.type_fraud + '\');return false;" href="#" class="id_customer button">{l s='Choose'}</a></li>';
 					});
 					html += '</ul>';
 				}
@@ -642,7 +647,15 @@
 			}
 		});
                 {* Limpiar contenedor de customers *}
-                $("#customers").html('<div class="conf"> <b> Cliente seleccionado: ' + arreglo[1] + ' - ' + arreglo[2] + ' - ' + arreglo[3]+'</b></div>');
+                console.log(arreglo[5] + arreglo[4]);
+                if(arreglo[4] != 0 && arreglo[5] != "null") {
+                	var fraud = "error";
+                	var concatMessage = ' - '+arreglo[5];
+                } else {
+                	var fraud = "conf";
+                	var concatMessage = "";
+                }
+                $("#customers").html('<div class="'+fraud+'"> <b> Cliente seleccionado: ' + arreglo[1] + ' - ' + arreglo[2] + ' - ' + arreglo[3]+ concatMessage+'</b></div>');
 	}
 
 	function updateDeliveryOptionList(delivery_option_list)
@@ -1574,7 +1587,7 @@
 		<label>{l s='Order status'}</label>
 		<div class="margin-form">
 			<select name="id_order_state" id="id_order_state">
-				{foreach from=$order_states item='order_state'}
+				{foreach from=$order_states_back item='order_state'}
 					<option value="{$order_state.id_order_state}" {if isset($smarty.post.id_order_state) && $order_state.id_order_state == $smarty.post.id_order_state}selected="selected"{/if}>{$order_state.name}</option>
 				{/foreach}
 			</select>

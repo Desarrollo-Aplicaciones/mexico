@@ -316,21 +316,15 @@
 				{/if}
 
 				{foreach key=key item=item from=$ivas}
-
-    <tr style="line-height:3.5px;">
-					<td style="background-color: #EAEAEA; width: 186px;text-align: right; font-weight: bold"> IVA {$key} % </td>
-					<td style="background-color: #EAEAEA; width: 82px; text-align: right;">
-						
-
-							
-							
-							{displayPrice currency=$order->id_currency price=$item}
-	
-
-					&nbsp;&nbsp;&nbsp;</td>
-				</tr>
-
-  {/foreach}
+                                    {if $key != 0}
+                                        <tr style="line-height:3.5px;">
+                                            <td style="background-color: #EAEAEA; width: 186px;text-align: right; font-weight: bold"> IVA {$key} % </td>
+                                            <td style="background-color: #EAEAEA; width: 82px; text-align: right;">
+                                            {displayPrice currency=$order->id_currency price=$item}
+                                            &nbsp;&nbsp;&nbsp;</td>
+                                        </tr>
+                                    {/if}     
+                                {/foreach}
 
 				{if $order_invoice->total_shipping_tax_incl > 0}
 				<tr style="line-height:3.5px;">
