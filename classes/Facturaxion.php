@@ -38,8 +38,8 @@ if (!class_exists('Facturaxion')) {
 //                        die();
 			if ( $test_mode == '1') {
 
-				$this->numero_certificado = "00001000000405112669";
-				$this->archivo_cer = "xml_timbrado/certi_valido/00001000000405112669.cer"; // old 00001000000304972067.cer"; // Produccion
+				$this->numero_certificado = "00001000000304972067";
+				$this->archivo_cer = "xml_timbrado/certi_valido/00001000000304972067.cer"; // old 00001000000304972067.cer"; // Produccion
 				$this->archivo_pem = "xml_timbrado/certi_valido/publica.key.pem"; // Produccion
 				$this->usuario = "1130A7374C35496EACF575158BA20DEEF49494A2";
 				$this->proveedor = "FME140730J95";
