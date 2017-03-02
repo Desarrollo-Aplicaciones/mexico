@@ -62,3 +62,8 @@ modules/ftpnadro/*
 file_exports/*
 !modules/ftpnadro
 modules/ftpnadro/*
+themes/gomarket/mails/es/*
+mails/*
+img/cms/img/*
+img/m/*
+modules/*
