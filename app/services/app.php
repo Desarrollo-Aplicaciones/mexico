@@ -76,22 +76,26 @@ class API extends REST {
    * email : <Correo eléctronico>
    * pwd : <Contraseña>
    */
-  private function login()
+  private function login($email_sl = NULL,$passwd_sl = NULL)
   {
     // Validación Cross si el método de la petición es POST de lo contrario volverá estado de "no aceptable"
     if ($this->get_request_method() != "POST") {
       $this->response('',406);
     }
 
-    $email = $this->_request['email'];
-    $password = $this->_request['pwd'];
+    $email = strtolower(trim( $email_sl != NULL ? $email_sl : $this->_request['email']) );
+    $password =  trim( $passwd_sl != NULL ? $passwd_sl : $this->_request['pwd']);
 
     // Validaciones de entrada
     if (!empty($email) 
         && !empty($password)) {
       if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $customer = new Customer();
-        $authentication = $customer->getByEmail(trim($email), trim($password));
+        $authentication = $customer->getByEmail($email, $password);
+        // Login social meadia
+        if($email_sl != NULL && $passwd_sl != NULL && Customer::customerExists($email_sl)){
+          $authentication = $customer->getByEmailSM($email);
+        }
         
         if (!$authentication 
             || !$customer->id) {
@@ -138,6 +142,32 @@ class API extends REST {
     )), 400);
   }
 
+  private function socialLogin(){
+
+    $arguments['firstname'] = $this->_request['firstname'];
+    $arguments['lastname']  = $this->_request['lastname'];
+    $arguments['email']     = $this->_request['email'];
+    $arguments['id']        = $this->_request['id'];
+    $arguments['passwd']    = NULL;
+    $arguments['gender']    = substr($this->_request['gender'], 0,1);
+
+    if (Validate::isEmail($arguments['email']) && !empty($arguments['id']) && !empty($arguments['firstname']) ){
+
+      $tem_data = explode("@", $arguments['email']);
+      $arguments['passwd'] = md5($tem_data[1].$arguments['id'].$tem_data[0]);
+      if(!Customer::customerExists($arguments['email'])){
+        $model = new Model();
+        if($customer = $model->setAccount($arguments)) {
+          $this->response($this->json( $customer ),200);
+        }
+
+      }else{
+        $this->login($arguments['email'],$arguments['passwd']);
+      } 
+    }
+
+  }
+
   /**
    * Cierra sesión
    */
@@ -163,7 +193,7 @@ class API extends REST {
   private function categories()
   {
     $model = new Model();
-    $this->response(json_encode($model->get_category(2,3)),200);
+    $this->response(json_encode($model->get_category(2, 3, TRUE)),200);
   }
 
   /** 
@@ -177,8 +207,8 @@ class API extends REST {
    */
   public function prodCategories()
   {
-    // Validación Cross si el método de la petición es GET de lo contrario volverá estado de "no aceptable"
-    if ($this->get_request_method() != "GET") {
+    // Validación Cross si el método de la petición es POST de lo contrario volverá estado de "no aceptable"
+    if ($this->get_request_method() != "POST") {
       $this->response('', 406);
     }
 
