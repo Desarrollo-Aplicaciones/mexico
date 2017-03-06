@@ -1368,7 +1368,7 @@ class Cart extends CartCore {
                 $order_total_tax = $this->staggeredDiscounts($type , $with_shipping, $products, $shipping_fees, $wrapping_fees, $virtual_context, 3);
                 if($dGOT ==  1){error_log("\r\n 10-- order_total_tax: ".$order_total_tax, 3, "/tmp/progresivo.log");}
                 
-                $order_total += $shipping_fees + $wrapping_fees - $order_total_discount;
+                $order_total += $shipping_fees + $wrapping_fees;
                 if($dGOT ==  1){error_log("\r\n 10-- shipping_fees: ".$shipping_fees, 3, "/tmp/progresivo.log");}
                 if($dGOT ==  1){error_log("\r\n 10-- wrapping_fees: ".$wrapping_fees, 3, "/tmp/progresivo.log");}
                 if($dGOT ==  1){error_log("\r\n 10-- order_total_discount: ".$order_total_discount, 3, "/tmp/progresivo.log");}
