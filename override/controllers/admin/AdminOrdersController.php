@@ -616,6 +616,7 @@ public function processAjax()
                                         $history->changeIdOrderState(Configuration::get('PS_OS_OUTOFSTOCK'), $order, true);
                                         $history->addWithemail();
                                     }
+                                    
                                 }                                
                                 
 
