@@ -612,8 +612,8 @@ die();*/
                     $new_history->id_order = (int) $order->id;
                     $new_history->changeIdOrderState((int) $id_order_state, $order, true);
                     $new_history->addWithemail(true, $extra_vars);
-                    if (Configuration::get('PS_STOCK_MANAGEMENT') && $order_detail->getStockState() && $order_status->id == 3) 
-                    {
+                    
+                    if (Configuration::get('PS_STOCK_MANAGEMENT') && $order_detail->getStockState() && $order_status->id == 3) {
                         $history = new OrderHistory();
                         $history->id_order = (int) $order->id;
                         $history->changeIdOrderState(Configuration::get('PS_OS_OUTOFSTOCK'), $order, true);
