@@ -609,7 +609,7 @@ public function processAjax()
                                 $products = $this->getProducts($order);
                                 foreach ($products as &$product){
                                     $product['current_stock'] = StockAvailable::getQuantityAvailableByProduct($product['product_id'], $product['product_attribute_id'], $product['id_shop']);
-                                    if (Configuration::get('PS_STOCK_MANAGEMENT') && $product['current_stock'] < $product['product_quantity'] && $current_order_state->id == 3){
+                                    if (Configuration::get('PS_STOCK_MANAGEMENT') && $product['current_stock'] < $product['product_quantity'] && $order_state->id == 3){
                                         //error_log("\n\n el producto: ".$product['product_id']." - ".$product['product_name']."No esta en stock y faltan: ".$product['out_of_stock'],3,"/tmp/states.log");
                                         $history->addWithemail();
                                         $history = new OrderHistory();
