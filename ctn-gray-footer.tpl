@@ -54,8 +54,8 @@
 						<div class="ctn-md-toggle" id="footer-we-display">
 							<div class="ctn-col">
 								<a href="{$base_dir}content/69-que-es-farmalisto" class="txt-gray link">¿Quíenes somos?</a>
-								<a href="http://info.farmalisto.com/contacto-mx/" class="txt-gray link">Contacto</a>
-								<a href="{$base_dir}content/1-entregas-y-pedidos-domicilios" class="txt-gray link">Horarios de atención</a>
+								<a href=" https://farmalistomx.zendesk.com/hc/es/requests/new" class="txt-gray link">Contacto</a>
+								<a href="https://farmalistomx.zendesk.com/hc/es/articles/235604207-Horarios-de-Atenci%C3%B3n-Servicio-y-Reparto" class="txt-gray link">Horarios de atención</a>
 								<a href="http://www.bumeran.com.mx/perfiles/empresa_farmalisto_13058305.html  " class="txt-gray link">Trabaja con nosotros</a>
 								<a href="http://info.farmalisto.com/ventas_mayoreo/" class="txt-gray link">Ventas por mayoreo</a>
 							</div>
@@ -78,7 +78,7 @@
 							<div class="ctn-col">
 								<a href="{$base_dir}content/51-aviso-de-privacidad-integral-farmalisto" class="txt-gray link">Aviso de privacidad</a>
 								<a href="{$base_dir}content/3-condiciones-de-uso" class="txt-gray link">Términos y condiciones</a>
-								<a href="{$base_dir}content/63-preguntas-frecuentes" class="txt-gray link">Preguntas frecuentes</a>
+								<a href="http://ayuda.farmalisto.com.mx" class="txt-gray link">Centro de ayuda</a>
 								<a href="{$base_dir}mapa-del-sitio" class="txt-gray link">Mapa del sitio</a>
 							</div>
 						</div>
