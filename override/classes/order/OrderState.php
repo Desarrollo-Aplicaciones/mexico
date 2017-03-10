@@ -50,7 +50,7 @@ class OrderState extends OrderStateCore
 					WHERE deleted = 0
 					ORDER BY `name` ASC';	
 		}  	
-		
+		//error_log("Este es el query: ".print_r($sql, true),3, "/tmp/orderstates.log" );
                 $result = Db::getInstance()->executeS($sql);
                 // echo '<b> data-    -2xd: <pre>'.var_dump($result).'</pre>';
                         
