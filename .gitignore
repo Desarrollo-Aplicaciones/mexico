@@ -41,7 +41,6 @@ img/tmp/*
 upload/*
 !img/customers
 img/customers/*
-!img/customers/profile
 !img/customers/profile/img_default
 /nbproject
 nbproject
