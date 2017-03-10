@@ -259,8 +259,8 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 		<div class="arrow_formula"><img src="{$img_dir}pdp/Rx.png" alt="{l s='Subtract'}" width="100%" /></div>
 		<div class="legend_formula">
 			<span class="only1">Consultar al médico, </span>
-			Producto de venta con fórmula médica 
-			<span class="only2">, Sin fórmula médica no es posible la compra de este medicamento.</span>
+                        		Producto de venta con receta médica,
+			<span class="only2"> Sin receta médica no es posible la compra de este medicamento.</span>
 		</div>
 	</div>
 {/if}
