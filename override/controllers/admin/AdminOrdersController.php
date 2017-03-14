@@ -2298,7 +2298,7 @@ public function renderView()
 
 		$estados=$this->statusOrder(OrderState::getOrderStates((int)Context::getContext()->language->id,(int)$this->context->employee->id_profile),$order->current_state);
 		$this->fields_list['osname']['list'] = $estados['osname'];
-
+                $estadosValidos = explode(",", Configuration::get('PS_STATUS_AFTER_OUTSTOCK'));
 		$cart = new Cart($order->id_cart);             
 		// Smarty assign
 		$this->tpl_view_vars = array(
@@ -2351,7 +2351,8 @@ public function renderView()
 			"id_employee" => $this->context->employee->id,
 			"formula_medica" => Utilities::is_formula($cart,$this->context),
 			"imgs_formula_medica" =>  Utilities::getImagenesFormula($order->id),
-                        'flagStockDisplayOption' => $flagStockDisplayOption
+                        'flagStockDisplayOption' => $flagStockDisplayOption,
+                        'estadosValidos' =>  $estadosValidos
 			);
 $this->motivo_cancelcion();
 $this->get_mensajero_order($this->id_object);
