@@ -1328,7 +1328,7 @@ PASO 4 CHECKOUT MEXICO*/
 		ul#thumbs_list_frame li { display: inline-block; width: 100% !important; }
 		ul#thumbs_list_frame li a { width: 100%; display: inline-block; }
 		#image-block { display: none; }
-		#image-block-static { width: 100%; height: 200px; }
+		#image-block-static { width: 100%; height: 200px; display: none; }
 		ul#thumbs_list_frame img { height: 100%; margin: 0 0 0 0; }
 
 		.buy_block { margin-top: 20px; width: 100%; }
