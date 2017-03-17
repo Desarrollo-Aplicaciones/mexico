@@ -293,13 +293,11 @@ class Icrall extends IcrallCore {
 
         $cargadat = "LOAD DATA LOCAL INFILE '" . $path_file_load_db . "'
         INTO TABLE ps_tmp_cargue_icr_devolucion
-        FIELDS TERMINATED BY ','
+        FIELDS TERMINATED BY ';'
         OPTIONALLY ENCLOSED BY '\"' 
         LINES TERMINATED BY '\\n'
         IGNORE 1 LINES 
         ( cod_icr, estado_icr )";
-        
-        //error_log("\n\n Subi la base de datos: \n\n".print_r($cargadat,true),3,"/tmp/hola.log");
 
         if (!mysqli_query($mysqli_1, $cargadat)) {
             $this->errores_cargue[] = "Error al subir el archivo (estructura no valida). Mensaje error: " . mysqli_error($mysqli_1);
@@ -350,7 +348,7 @@ class Icrall extends IcrallCore {
                             INNER JOIN `" . _DB_PREFIX_ . "icr` i ON ( tcid.cod_icr = i.cod_icr )
                             INNER JOIN `" . _DB_PREFIX_ . "icr_estado` ie ON ( ie.id_estado = i.id_estado_icr )
                             WHERE i.id_estado_icr <> 2 ";
-                        //error_log("\n\n Llego hasta aqui: ".print_r($query_estados_icr,true),3,"/tmp/hola.log");
+
                         if ($retorno_estados_icr = DB::getInstance()->executeS($query_estados_icr) ) {
 
                             if( isset($retorno_estados_icr[0]['no_creado']) && $retorno_estados_icr[0]['icrs'] == NULL && $retorno_estados_icr[0]['estado_actual'] == NULL ) {
@@ -371,28 +369,16 @@ class Icrall extends IcrallCore {
 
                                         // Adicionar con , los nuevos estados admitidos
                                         
-                                        $sql_estado = "SELECT descripcion
-                                                                FROM " . _DB_PREFIX_ . "icr_estado
-                                                                WHERE id_estado in (".Configuration::get('PS_DEV_ANULA_ICR').");";
-                                        //error_log("\n\n Sql estado ".print_r($sql_estado,true),3,"/tmp/hola.log");
-                                        
-                                        $estados_validos =  DB::getInstance()->executeS($sql_estado);
-                                        
-                                        $estado_valido = array();
-                                        foreach ($estados_validos as $key => $value) {
-                                            $estado_valido[] = $value["descripcion"];
-                                        }
-                                        //error_log("\n\n estado_valido : ".print_r($estado_valido,true),3,"/tmp/hola.log");
-                                        
+                                        $estados_validos = "'Devolucion'"; //, 'Anulado'
+
                                         $query_estados_icr_validos = "SELECT 'Estados' AS Estado_a, 
                                                 GROUP_CONCAT(DISTINCT(tcid.cod_icr)) AS icrs, 
                                                 GROUP_CONCAT(DISTINCT(IFNULL(tcid.estado_icr, 1 ))) AS estado_nuevo
                                             FROM `" . _DB_PREFIX_ . "tmp_cargue_icr_devolucion` tcid
-                                            WHERE tcid.estado_icr NOT IN ('".implode('\',\'',$estado_valido)."')";
-                                        //error_log("\n\n query_estados_icr_validos : ".print_r($query_estados_icr_validos ,true),3,"/tmp/hola.log");
+                                            WHERE tcid.estado_icr NOT IN (".$estados_validos.")";
 
                                         if ($retorno_estados_icr_validos = DB::getInstance()->executeS($query_estados_icr_validos) ) {
-                                            
+
                                             if( isset($retorno_estados_icr_validos[0]['Estado_a']) && $retorno_estados_icr_validos[0]['icrs'] == NULL && $retorno_estados_icr_validos[0]['estado_nuevo'] == NULL ) {
 
                                                 return true;
