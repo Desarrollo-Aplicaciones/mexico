@@ -104,7 +104,7 @@ class loadicrdevoanula extends Module
 
 
 				$extension = end($temp);
-
+                                //error_log("\n\n Estioy entrando aqui: ".$_FILES["fileloadicrdevoanula"]["type"], 3,"/tmp/errorlog.log");
 				if ((($_FILES["fileloadicrdevoanula"]["type"] == "text/csv")
 				|| ($_FILES["fileloadicrdevoanula"]["type"] == "text/plain")
 				|| ($_FILES["fileloadicrdevoanula"]["type"] == "text/comma-separated-values")
@@ -116,9 +116,10 @@ class loadicrdevoanula extends Module
 				|| ($_FILES["fileloadicrdevoanula"]["type"] == "text/anytext"))
 				&& ($_FILES["fileloadicrdevoanula"]["size"] < (1024*5000))
 				&& in_array($extension, $allowedExts)) {
-
+                                        
 				  	if ($_FILES["fileloadicrdevoanula"]["error"] > 0) {
 
+                                                //error_log("\n\n Estioy entrando error ", 3,"/tmp/errorlog.log");
   						$this->_msg="Error: " . $_FILES["fileloadicrdevoanula"]["error"];
 
     				} else {
@@ -130,9 +131,9 @@ class loadicrdevoanula extends Module
 					     	$retorno_cargue = $guardar_archivo->loadicrdevoanula($names[2]);
 
 					     	if ($retorno_cargue == true) {
-
+                                                        
 						     	if ( $guardar_archivo->ValidateIcrCambioEstado() ) { // validar icr duplicados  // estados validos etc
-						     		
+                                                            //error_log("\n\n Entre después de guardar el archivo. ", 3,"/tmp/errorlog.log");
 						     		if ( $guardar_archivo->CambioEstadosIcr() ) { // si actualiza estado de los ICR
 						     			
 						     			if ($guardar_archivo->FullStockIcr()) {
@@ -179,7 +180,7 @@ class loadicrdevoanula extends Module
 		$output = ' <p><b>'.$this->_msg.'</b></p>
 		<form action="'.Tools::safeOutput($_SERVER['REQUEST_URI']).'" enctype="multipart/form-data" method="post">
 			<fieldset><legend><img src="'.$this->_path.'logo.gif" alt="" title="" />'.$this->l('Settings').'</legend>
-	<p>Con este modulo usted podrá actualizar los estados de los ICR a devuelto o a anulado, recuerde que el archivo CSV debe tener los siguientes campos <br><a download href="../modules/loadicrdevoanula/formato.csv">(cod_icr,estado_icr) </a>, estos <b>deben estar</b> en la cabecera del archivo, <a download href="../modules/loadicrdevoanula/formato.csv"><small>Descargar formato</small> </a><BR> * los estados se deben ingresar como texto, los cuales pueden ser: Devolucion . </p>
+	<p>Con este modulo usted podrá actualizar los estados de los ICR a devuelto o a anulado, recuerde que el archivo CSV debe tener los siguientes campos <br><a download href="../modules/loadicrdevoanula/formato.csv">(cod_icr,estado_icr) </a>, estos <b>deben estar</b> en la cabecera del archivo, <a download href="../modules/loadicrdevoanula/formato.csv"><small>Descargar formato</small> </a><BR> * los estados se deben ingresar como texto, los cuales pueden ser: Devolucion, Vencido . </p>
 
 
 <p><input name="fileloadicrdevoanula" type="file" />     </p>
