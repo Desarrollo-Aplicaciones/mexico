@@ -104,14 +104,14 @@
 	<td colspan="3" style="width: 100%; vertical-align:top;"><br style="line-height:1px;"><br style="line-height:1px;">
 		<table style="width: 100%; text-align:left; border-collapse:collapse;" cellpadding="0px">
 			<tr>
-				<td style="width: 50%; "> <img src="{$img_physical_uri}factura/logo_big.jpg" style="width:120px; height:29px; display:block;" />
+				<td style="width: 50%; "> {*<img src="{$img_physical_uri}factura/logo_big.jpg" style="width:120px; height:29px; display:block;" />*}
 				</td>
 				<td style="width: 50%; text-align: right; font-size: 8pt; "><br style="line-height:2.5px;"><br style="line-height:2.5px;"><strong>Farmatalam de México S de RL de C V<BR />
 					RFC: FME140730J95 </strong>
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2" style="width: 100%; height:3px;"><img src="{$img_physical_uri}factura/franja.png" style="width:539px; height:3px; display:block;" margin="0" padding="0" /></td>
+				<td colspan="2" style="width: 100%; height:3px;">{*<img src="{$img_physical_uri}factura/franja.png" style="width:539px; height:3px; display:block;" margin="0" padding="0" />*}</td>
 			</tr>			
 		</table>
 	</td>

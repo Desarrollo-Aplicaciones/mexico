@@ -293,7 +293,7 @@ class Icrall extends IcrallCore {
 
         $cargadat = "LOAD DATA LOCAL INFILE '" . $path_file_load_db . "'
         INTO TABLE ps_tmp_cargue_icr_devolucion
-        FIELDS TERMINATED BY ','
+        FIELDS TERMINATED BY ';'
         OPTIONALLY ENCLOSED BY '\"' 
         LINES TERMINATED BY '\\n'
         IGNORE 1 LINES 

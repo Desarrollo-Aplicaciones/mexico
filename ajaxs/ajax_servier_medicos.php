@@ -10,7 +10,7 @@ require_once(dirname(__FILE__) . '/../init.php');
     //Consulta del autocomplete
 //    $medico = Tools::getValue('term');
     $medico = $_POST["medico"];
-    error_log("\n\n El medico: ".$medico,3,"/tmp/errorcito.log");
+    //error_log("\n\n El medico: ".$medico,3,"/tmp/errorcito.log");
     
     //Medico seleccionado.
     $id_medico = $_POST["id_medico"];
@@ -35,13 +35,13 @@ require_once(dirname(__FILE__) . '/../init.php');
             echo $ret;
         }
         else{
-            echo json_encode(
-                array(
-                    'success'=>false, 
-                    'mesage'=>'No hay resultados',
-                    'resultado'=> $ret,
-                ) 
-            );
+//            echo json_encode(
+//                array(
+//                    'success'=>false, 
+//                    'mesage'=>'No hay resultados',
+//                    'resultado'=> $ret,
+//                ) 
+//            );
         }
     }
      
