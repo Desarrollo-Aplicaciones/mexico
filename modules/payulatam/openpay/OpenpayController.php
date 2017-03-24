@@ -165,6 +165,7 @@ public function get_customer(){
  * Agregar un pago con tarjeta de crédito
  */
 public function add_charge($post,$contador){
+	error_log('hola3');
 $this->context = Context::getContext();
 	// if($this->load_customer()){
 	if($this->add_customer()){
@@ -184,7 +185,7 @@ $chargeRequest = array(
                        'metadata' => array(
                                            'address1' 		=> substr(utf8_encode($address->address1),0,30),
                                            'address2' 		=> substr(utf8_encode($address->address2),0,30),
-                                           'address3' 		=> substr(utf8_encode($address->other),0,30),
+                                           'address3' 		=> (isset($address->other) && $address->other != '')?substr(utf8_encode($address->other),0,30):FALSE,
                                            'phone'			=> substr(utf8_encode($address->phone_mobile .' '.$address->phone),0,30),
                                            'fecha_compra' 	=> date("Y-m-d H:i:s"), 
                                            'total' 		=> $this->context->cart->getOrderTotal(),
@@ -194,7 +195,6 @@ $chargeRequest = array(
                                            'email' 		=> substr($customer->email,0,30)
                                            )
 );
-
 
 //error_log('<$chargeRequest '.print_r($chargeRequest,TRUE).' (charge)>',0);  
 try {
@@ -206,22 +206,27 @@ try {
 }  catch (OpenpayApiRequestError $e) { error_log('<Error en el script Openpay (charge)>',0); 
 	$this->errors_op[] = $this->get_message_error($e->getErrorCode());
 	Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.'  ERROR en la petición: ' . $e->getMessage(), 2, null, null, null, true);
+	error_log($e);
 	return FALSE;
 } 	catch (OpenpayApiConnectionError $e) { error_log('<Error en el script Openpay (charge)>',0);
 	$this->errors_op[] = $this->get_message_error($e->getErrorCode());
 	Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.' ERROR en la conexión al API: ' . $e->getMessage(), 2, null, null, null, true);
+	error_log('  ERROR en la conexión al API ');
 	return FALSE;
 } 	catch (OpenpayApiAuthError $e) { error_log('<Error en el script Openpay (charge)>',0);
 	$this->errors_op[] = $this->get_message_error($e->getErrorCode());
 	Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.' ERROR en la autenticación: ' . $e->getMessage(), 2, null, null, null, true);	
+	error_log(' ERROR en la autenticación:');
 	return FALSE;	
 } 	catch (OpenpayApiError $e) { error_log('<Error en el script Openpay (charge)>',0);
 	$this->errors_op[] = $this->get_message_error($e->getErrorCode());
 	Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.' ERROR en el API: ' . $e->getMessage(), 2, null, null, null, true);		
+	error_log('  ERROR en el API ');
 	return FALSE;	
 } 	catch (Exception $e) { error_log('<Error en el script Openpay (charge)>',0);
 	$this->errors_op[] = $e->getMessage();
 	Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.'return FALSE; Error en el script: ' . $e->getMessage(), 2, null, null, null, true);	
+	error_log(' return FALSE; Error en el script:');
 	return FALSE;
 }
 }
@@ -233,6 +238,7 @@ return FALSE;
  * Almacenar una transacción en la base de datos
  */
 protected function add_transaction($trans){
+	error_log(print_r($trans,true));
 	// echo ('<br><pre>add_transaction: '.print_r($trans,true).'<pre>');
 
 	$this->status = $trans->status; 

@@ -1087,10 +1087,9 @@
 
 			$openPay = new OpenpayController();
 			$conf = new ConfPayu();
-			$intentos = $conf->count_pay_cart($this->context->cart->id);
-
+			$context = Context::getContext();
+			$intentos = $conf->count_pay_cart($context->cart->id);
 			if($openPay->add_charge($args,$intentos) ) {                  	
-
 				if ( $openPay->get_status() == 'completed' ) {
 
 					return (int) Configuration::get('PS_OS_PAYMENT');
@@ -1117,48 +1116,46 @@
 			return array('id'=>$conn ['apilogin_id'],'public_key'=>$conn ['pseco_publickey'],'production'=> (boolean)$conn ['produccion']);
 		}
 
-			/**
-			 * Retorna la respuesta de la pasarela dependiendo del medio de pago
-			 */
-			public static function get_post_pay($id_cart){
+	/**
+	 * Retorna la respuesta de la pasarela dependiendo del medio de pago
+	 */
+	public static function get_post_pay($id_cart){
 
+	}
+	/**
+	 * Retorna variables extras payulatam
+	 */
+	public static function get_extra_vars_payu($id_cart,$method){
+
+		$extra_vars =  array();
+		$sql = "SELECT json_response 
+		FROM "._DB_PREFIX_."pagos_payu 
+		WHERE id_cart =".(int) $id_cart;
+
+		if($rs = Db::getInstance()->getValue($sql)){
+			$response = json_decode(stripslashes($rs),TRUE);
+			
+
+			if (isset($response['transactionResponse']['extraParameters']['BAR_CODE'])) {
+				$extra_vars =  array('method'=>$method,
+				                     'cod_pago'=>$response['transactionResponse']['extraParameters']['REFERENCE'],
+				                     'fechaex'=> date('d/m/Y', substr($response['transactionResponse']['extraParameters']['EXPIRATION_DATE'], 0, -3)),
+				                     'bar_code'=>$response['transactionResponse']['extraParameters']['BAR_CODE']);
+
+			}elseif (isset($response['transactionResponse']['extraParameters']['URL_PAYMENT_RECEIPT_HTML'])) {
+				$extra_vars =  array('method'=>$method,
+				                     'cod_pago'=>$response['transactionResponse']['extraParameters']['REFERENCE'],
+				                     'fechaex'=> date('d/m/Y', substr($response['transactionResponse']['extraParameters']['EXPIRATION_DATE'], 0, -3)));
 			}
-			/**
-			 * Retorna variables extras payulatam
-			 */
-			public static function get_extra_vars_payu($id_cart,$method){
 
-				$extra_vars =  array();
-				$sql = "SELECT json_response 
-				FROM "._DB_PREFIX_."pagos_payu 
-				WHERE id_cart =".(int) $id_cart;
-
-				if($rs = Db::getInstance()->getValue($sql)){
-					$response = json_decode(stripslashes($rs),TRUE);
-					
-
-					if (isset($response['transactionResponse']['extraParameters']['BAR_CODE'])) {
-						$extra_vars =  array('method'=>$method,
-						                     'cod_pago'=>$response['transactionResponse']['extraParameters']['REFERENCE'],
-						                     'fechaex'=> date('d/m/Y', substr($response['transactionResponse']['extraParameters']['EXPIRATION_DATE'], 0, -3)),
-						                     'bar_code'=>$response['transactionResponse']['extraParameters']['BAR_CODE']);
-
-					}elseif (isset($response['transactionResponse']['extraParameters']['URL_PAYMENT_RECEIPT_HTML'])) {
-						$extra_vars =  array('method'=>$method,
-						                     'cod_pago'=>$response['transactionResponse']['extraParameters']['REFERENCE'],
-						                     'fechaex'=> date('d/m/Y', substr($response['transactionResponse']['extraParameters']['EXPIRATION_DATE'], 0, -3)));
-					}
-
-				}
-				return $extra_vars;
-			}
+		}
+		return $extra_vars;
+	}
 
 	/**
-			 * 
-			 */		
-// función que genera una cadena aleatoria
-	public static function randString ($length = 32)
-	{  
+	 * función que genera una cadena aleatoria
+	 */
+	public static function randString ($length = 32){  
 		$string = "";
 		$possible = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXY";
 		$i = 0;
@@ -1177,6 +1174,20 @@
 		WHERE id_cart =".(int) $id_cart;
 		return (float)Db::getInstance()->getValue($sql);
 
+	}
+	/**
+	 * Retorna el ultimo error reportado por OpenPay de un carrito 
+	 */
+
+	public static function getLastErrorByCart($id_cart){
+		$sql = "SELECT `errors` 
+		FROM ps_error_pay
+		WHERE id_cart = ".(int)$id_cart."
+		ORDER BY id_erros_pay DESC
+		LIMIT 1";
+		$rs = Db::getInstance()->executeS($sql);
+		return $rs[0]['errors'];
+		//return Db::getInstance()->getValue($sql);		
 	}	
 
 }
