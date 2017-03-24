@@ -466,11 +466,13 @@ class Model extends PaymentModule {
         $aplicar_cupon = 1;
         foreach ($discounts as $key => $value) {
           $cartRule = NULL;
-          if ($value['type_voucher'] == 'md') {
-            $iddoc = trim($value['cupon']);
-            $cartRule = new CartRule(CartRule::getIdByDoctor($iddoc));
-          } elseif ($value['type_voucher'] == 'cupon') {
-            $cartRule = new CartRule(CartRule::getIdByCode(trim($value['cupon'])));
+          if (isset($value['type_voucher'])) {
+            if ($value['type_voucher'] == 'md') {
+              $iddoc = trim($value['cupon']);
+              $cartRule = new CartRule(CartRule::getIdByDoctor($iddoc));
+            } elseif ($value['type_voucher'] == 'cupon') {
+              $cartRule = new CartRule(CartRule::getIdByCode(trim($value['cupon'])));
+            }
           }
           if (!empty($cartRule))
             $this->context->cart->addCartRule($cartRule->id);
@@ -524,7 +526,8 @@ class Model extends PaymentModule {
         $discounts_return[] = array('success' => null);
       }
 
-      if ($aplicar_cupon == 1 
+      if ( isset($discounts_return[0]) 
+          && $aplicar_cupon == 1 
           && !isset( $discounts_return[0]['success'] ) 
           && !$discounts_return[0]['success'] == true) {
         $discounts_return = array();
