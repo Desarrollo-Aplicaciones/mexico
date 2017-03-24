@@ -720,7 +720,10 @@ die();*/
                             '{total_wrapping}' => Tools::displayPrice($order->total_wrapping, $this->context->currency, false),
                             '{total_tax_paid}' => Tools::displayPrice(($order->total_products_wt - $order->total_products) + ($order->total_shipping_tax_incl - $order->total_shipping_tax_excl), $this->context->currency, false),
                             '{baloto}' => $metodo_de_pago,
-                            '{url_transfer}' => $url_pago);
+                            '{url_transfer}' => $url_pago,
+                            '{img_transfer}' => Tools::getHttpHost(true).__PS_BASE_URI__.'/img/btn.png',
+                            
+                        );
 
 
                         if (is_array($extra_vars))
