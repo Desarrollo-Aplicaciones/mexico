@@ -165,7 +165,6 @@ public function get_customer(){
  * Agregar un pago con tarjeta de crédito
  */
 public function add_charge($post,$contador){
-	error_log('hola2');
 $this->context = Context::getContext();
 	// if($this->load_customer()){
 	if($this->add_customer()){
