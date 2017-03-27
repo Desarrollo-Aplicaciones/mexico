@@ -661,9 +661,11 @@ die();*/
                         $url_pago = '';
                         
                         if ( isset($extra_vars['url_payment_receipt_html']) && $extra_vars['url_payment_receipt_html'] != '' ) {
-                            $url_pago = $extra_vars['url_payment_receipt_html'];                            
-                        }
+                            
+                            $url_pago =' <td align="center"><a href="'.$extra_vars['url_payment_receipt_html'].'"><img style="border: none;" src="'. $this->context->smarty->tpl_vars['content_dir']->value . "img/btn.png".'" alt="pago"/> </a> <td>';                            
+                        } 
                         
+   
                         $invoice = new Address($order->id_address_invoice);
                         $delivery = new Address($order->id_address_delivery);
                         $delivery_state = $delivery->id_state ? new State($delivery->id_state) : false;
@@ -720,10 +722,8 @@ die();*/
                             '{total_wrapping}' => Tools::displayPrice($order->total_wrapping, $this->context->currency, false),
                             '{total_tax_paid}' => Tools::displayPrice(($order->total_products_wt - $order->total_products) + ($order->total_shipping_tax_incl - $order->total_shipping_tax_excl), $this->context->currency, false),
                             '{baloto}' => $metodo_de_pago,
-                            '{url_transfer}' => $url_pago,
-                            '{img_transfer}' => Tools::getHttpHost(true).__PS_BASE_URI__.'/img/btn.png',
-                            
-                        );
+                            '{url_transfer}' => $url_pago
+                         );
 
 
                         if (is_array($extra_vars))
