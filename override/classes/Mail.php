@@ -60,11 +60,21 @@ class Mail extends MailCore
 			return false;
 		}
 		
-		if (self::validateSinEmail($to))
-		{
-			Tools::dieOrLog(Tools::displayError('Error: parameter  is corrupted'), $die);
-			return false;
+		$email = $to;
+		$without_email = explode(",",Configuration::get('PS_WITHOUT_EMAIL'));
+		if(preg_match_all ("/^(.+)@([a-zA-Z0-9_]*)/", $email, $e1)){
+			if (in_array($e1[2][0], $without_email)){
+				//error_log("\n\n\n\n\nEste es el to 2: ".print_r($to,true)."\n\n\n\n");
+				Tools::dieOrLog(Tools::displayError('Error: parameter  is corrupted'), $die);
+				return false;
+			}
 		}
+		
+//		if (self::validateSinEmail($to))
+//		{
+//			Tools::dieOrLog(Tools::displayError('Error: parameter  is corrupted'), $die);
+//			return false;
+//		}
 
 		if (!is_array($template_vars))
 			$template_vars = array();
@@ -349,13 +359,13 @@ class Mail extends MailCore
 		}
 	}
 	
-	public function validateSinEmail($email){
-		$without_email = explode(",",Configuration::get('PS_WITHOUT_EMAIL'));
-		if(preg_match_all ("/^(.+)@([a-zA-Z0-9_]*)/", $email, $e1)){
-			if (!in_array($e1[2][0], $without_email)){
-				return false;
-			}
-		}
-		return true;
-	}
+//	public function validateSinEmail($email){
+//		$without_email = explode(",",Configuration::get('PS_WITHOUT_EMAIL'));
+//		if(preg_match_all ("/^(.+)@([a-zA-Z0-9_]*)/", $email, $e1)){
+//			if (!in_array($e1[2][0], $without_email)){
+//				return false;
+//			}
+//		}
+//		return true;
+//	}
 }
