@@ -1007,7 +1007,7 @@ class Cart extends CartCore {
             if ( isset( $_GET['debug_getOrderTotal'] ) && $_GET['debug_getOrderTotal'] == "true" && Configuration::get('PS_DEBUG_GET_ORDER_TOTAL') == 1 ) {
                 $dGOT = 1;    
             } else {
-                $dGOT = 1;
+                $dGOT = 0;
             }
             
             /************ Progressive Discounts ************/
@@ -1248,10 +1248,10 @@ class Cart extends CartCore {
                 // First, retrieve the cart rules associated to this "getOrderTotal"
                 if ($with_shipping || $type == Cart::ONLY_DISCOUNTS){
                     $cart_rules = $this->getCartRules(CartRule::FILTER_ACTION_ALL);
-                    if($dGOT ==  1){error_log(" GetCartRules FILTER_ACTION_ALL ");}
+                    if($dGOT ==  1){error_log(" GetCartRules FILTER_ACTION_ALL ",3,"/tmp/progresivo.log");}
                 }
                 else{
-                    if($dGOT ==  1){error_log(" GetCartRules FILTER_ACTION_REDUCTION ");}
+                    if($dGOT ==  1){error_log(" GetCartRules FILTER_ACTION_REDUCTION ",3,"/tmp/progresivo.log");}
                     $cart_rules = $this->getCartRules(CartRule::FILTER_ACTION_REDUCTION);
                     // Cart Rules array are merged manually in order to avoid doubles
                     foreach ( $this->getCartRules(CartRule::FILTER_ACTION_GIFT) as $tmp_cart_rule ){
@@ -2371,7 +2371,7 @@ class Cart extends CartCore {
         if ( isset( $_GET['debug_getOrderTotal'] ) && $_GET['debug_getOrderTotal'] == "true" && Configuration::get('PS_DEBUG_GET_ORDER_TOTAL') == 1 ) {
             $dGOT = 1;    
         } else {
-            $dGOT = 1;
+            $dGOT = 0;
         }
         if($dGOT == 1){error_log("\r\n 0.0-- staggeredDiscounts subtotal: ".print_r( $subtotal, true ), 3, "/tmp/progresivo.log");}
                 

@@ -165,7 +165,6 @@ public function get_customer(){
  * Agregar un pago con tarjeta de crédito
  */
 public function add_charge($post,$contador){
-	error_log('hola3');
 $this->context = Context::getContext();
 	// if($this->load_customer()){
 	if($this->add_customer()){
@@ -206,27 +205,22 @@ try {
 }  catch (OpenpayApiRequestError $e) { error_log('<Error en el script Openpay (charge)>',0); 
 	$this->errors_op[] = $this->get_message_error($e->getErrorCode());
 	Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.'  ERROR en la petición: ' . $e->getMessage(), 2, null, null, null, true);
-	error_log($e);
 	return FALSE;
 } 	catch (OpenpayApiConnectionError $e) { error_log('<Error en el script Openpay (charge)>',0);
 	$this->errors_op[] = $this->get_message_error($e->getErrorCode());
 	Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.' ERROR en la conexión al API: ' . $e->getMessage(), 2, null, null, null, true);
-	error_log('  ERROR en la conexión al API ');
 	return FALSE;
 } 	catch (OpenpayApiAuthError $e) { error_log('<Error en el script Openpay (charge)>',0);
 	$this->errors_op[] = $this->get_message_error($e->getErrorCode());
 	Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.' ERROR en la autenticación: ' . $e->getMessage(), 2, null, null, null, true);	
-	error_log(' ERROR en la autenticación:');
 	return FALSE;	
 } 	catch (OpenpayApiError $e) { error_log('<Error en el script Openpay (charge)>',0);
 	$this->errors_op[] = $this->get_message_error($e->getErrorCode());
 	Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.' ERROR en el API: ' . $e->getMessage(), 2, null, null, null, true);		
-	error_log('  ERROR en el API ');
 	return FALSE;	
 } 	catch (Exception $e) { error_log('<Error en el script Openpay (charge)>',0);
 	$this->errors_op[] = $e->getMessage();
 	Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.'return FALSE; Error en el script: ' . $e->getMessage(), 2, null, null, null, true);	
-	error_log(' return FALSE; Error en el script:');
 	return FALSE;
 }
 }
@@ -238,7 +232,6 @@ return FALSE;
  * Almacenar una transacción en la base de datos
  */
 protected function add_transaction($trans){
-	error_log(print_r($trans,true));
 	// echo ('<br><pre>add_transaction: '.print_r($trans,true).'<pre>');
 
 	$this->status = $trans->status; 

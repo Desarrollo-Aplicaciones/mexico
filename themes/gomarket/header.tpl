@@ -132,6 +132,8 @@
 }
 </script>
 
+<script> window._izq = window._izq || []; window._izq.push(["init"]); </script>
+<script src="//cdn.izooto.com/scripts/50b793d8f92c20a6119a2973cbec76c8e579affd.js"></script>
 	</head>
 	
 	<body {if isset($page_name)}id="{$page_name|escape:'htmlall':'UTF-8'}"{/if} class="{if $hide_left_column}hide-left-column{/if} {if $hide_right_column}hide-right-column{/if} {if $content_only} content_only {/if}">

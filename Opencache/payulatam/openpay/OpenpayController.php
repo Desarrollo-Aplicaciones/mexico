@@ -166,7 +166,6 @@ public function get_customer(){
  */
 public function add_charge($post,$contador){
 $this->context = Context::getContext();
-error_log('hola');
 	// if($this->load_customer()){
 	if($this->add_customer()){
 
@@ -196,7 +195,6 @@ $chargeRequest = array(
                        //                     'email' 		=> substr($customer->email,0,30)
                        //                     )
 );
-error_log(print_r($chargeRequest,TRUE));
 
 //error_log('<$chargeRequest '.print_r($chargeRequest,TRUE).' (charge)>',0);  
 try {

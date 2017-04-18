@@ -634,7 +634,7 @@ die();*/
                             if (in_array( strtolower($extra_vars['method']), $this->get_mediosp())) {
 
                 $metodo_de_pago = '
-                                                                <tr>
+                                <tr>
                                 <td align="left">Pago con: <b>' . $extra_vars['method'] . '</b></td>
                                 </tr>
                                 <tr>    
@@ -651,11 +651,21 @@ die();*/
                 $metodo_de_pago.='<tr>
                                 <td align="left"> <img alt="Bar Code" src="' . $this->context->smarty->tpl_vars['content_dir']->value . 'img/barcode.php?barcode=' . $extra_vars['bar_code'] . '" /> </td>
                                 </tr>
-                                ';
+                               ';
                             } 
                         } else {
                             $metodo_de_pago = ' ';
                         }
+                        
+                        
+                        $url_pago = '';
+                        
+                        if ( isset($extra_vars['url_payment_receipt_html']) && $extra_vars['url_payment_receipt_html'] != '' ) {
+                            
+                            $url_pago =' <td align="center"><a href="'.$extra_vars['url_payment_receipt_html'].'"><img style="border: none;" src="'. $this->context->smarty->tpl_vars['content_dir']->value . "img/btn.png".'" alt="pago"/> </a> <td>';                            
+                        } 
+                        
+   
                         $invoice = new Address($order->id_address_invoice);
                         $delivery = new Address($order->id_address_delivery);
                         $delivery_state = $delivery->id_state ? new State($delivery->id_state) : false;
@@ -711,7 +721,9 @@ die();*/
                             '{total_shipping}' => Tools::displayPrice($order->total_shipping, $this->context->currency, false),
                             '{total_wrapping}' => Tools::displayPrice($order->total_wrapping, $this->context->currency, false),
                             '{total_tax_paid}' => Tools::displayPrice(($order->total_products_wt - $order->total_products) + ($order->total_shipping_tax_incl - $order->total_shipping_tax_excl), $this->context->currency, false),
-                            '{baloto}' => $metodo_de_pago);
+                            '{baloto}' => $metodo_de_pago,
+                            '{url_transfer}' => $url_pago
+                         );
 
 
                         if (is_array($extra_vars))

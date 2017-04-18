@@ -104,10 +104,12 @@ $total_tax = PasarelaPago::get_total_tax($id_cart);
             $messsage = '<h1>¡Error!, Transaccion Rechazada</h1><br>' . $response['error'];
         } 
         elseif ($response['code'] === 'SUCCESS' && $response['transactionResponse']['state'] === 'PENDING' && $response['transactionResponse']['responseMessage'] != 'ERROR_CONVERTING_TRANSACTION_AMOUNTS') {
-         $extra_vars = array('method' => '7ELEVEN',
-                             'cod_pago' => $response['transactionResponse']['extraParameters']['REFERENCE'],
-                             'fechaex' => date('d/m/Y', substr($response['transactionResponse']['extraParameters']['EXPIRATION_DATE'], 0, -3)),
-                             'bar_code' => $response['transactionResponse']['extraParameters']['BAR_CODE']);
+         $extra_vars =  array('method'=>'7eleven',
+                         'cod_pago'=>$response['transactionResponse']['extraParameters']['REFERENCE'],
+                         'fechaex'=> date('d/m/Y', substr($response['transactionResponse']['extraParameters']['EXPIRATION_DATE'], 0, -3)),
+                         'bar_code'=>$response['transactionResponse']['extraParameters']['BAR_CODE'],
+                         'url_payment_receipt_html'=>$response['transactionResponse']['extraParameters']['URL_PAYMENT_RECEIPT_HTML']
+        );
          $this->createPendingOrder($extra_vars, '7ELEVEN', 'El sistema esta en espera de la confirmación de la pasarela de pago.', 'PAYU_WAITING_PAYMENT');
          $order = $conf->get_order($id_cart);
          $extras = $response['transactionResponse']['extraParameters']['REFERENCE'] . ';' . date('d/m/Y', substr($response['transactionResponse']['extraParameters']['EXPIRATION_DATE'], 0, -3)) . ';' . $response['transactionResponse']['extraParameters']['BAR_CODE'];

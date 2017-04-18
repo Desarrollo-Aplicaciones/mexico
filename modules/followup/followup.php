@@ -174,7 +174,7 @@ class Followup extends Module
 					'{days}' => $conf['PS_FOLLOW_UP_DAYS_1'],
 					'{voucher_num}' => $voucher->code
 				);
-				Mail::Send((int)$email['id_lang'], 'followup_1', Mail::l('Your cart and your discount', (int)$email['id_lang']), $template_vars, $email['email'], $email['firstname'].' '.$email['lastname'], null, null, null, null, dirname(__FILE__).'/mails/');
+				Mail::Send((int)$email['id_lang'], 'followup_1', Mail::l('Hemos recuperado tu carrito.', (int)$email['id_lang']), $template_vars, $email['email'], $email['firstname'].' '.$email['lastname'], null, null, null, null, dirname(__FILE__).'/mails/');
 				$this->logEmail(1, (int)$voucher->id, (int)$email['id_customer'], (int)$email['id_cart']);
 			}
 		}
@@ -307,6 +307,8 @@ class Followup extends Module
 				);
 				Mail::Send((int)$email['id_lang'], 'followup_3', Mail::l('You are one of our best customers', (int)$email['id_lang']), $template_vars, $email['email'], $email['firstname'].' '.$email['lastname'], null, null, null, null, dirname(__FILE__).'/mails/');
 				$this->logEmail(3, (int)$voucher->id, (int)$email['id_customer'], (int)$email['id_cart']);
+                                
+                               // echo $conf ;     exit();
 			}
 		}
 	}

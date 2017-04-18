@@ -723,8 +723,10 @@ WHERE o.id_order = ' . (int) $this->order->id;
                 ON o.id_cart = c.id_cart
                 WHERE o.id_order = '.$this->order->id.';';
         $sessionApego = DB::getInstance()->getValue($sql);
-        
-        $xml = $CirculoSalud->Create_Sales_Folio_Receta( $this->order->id, $sessionApego );
+	if ( $sessionApego ){
+		$xml = $CirculoSalud->Create_Sales_Folio_Receta( $this->order->id, $sessionApego );
+	}
+			
         //error_log("El resultado es: ".$xml,3,"/var/www/errors.log");
 //        
 //        $c_rule = new CartRule();
