@@ -201,10 +201,11 @@ class Model extends PaymentModule {
                 continue;
               }
 
-              if($value['id_parent'] == $value_3['i']){
+              if($value['id_parent'] == explode(',', $value_3['i'])[0]){
                 unset($value['id_parent']);
                 unset($value['level_depth']);
                 $aux_3[$key_2][$key_3]['s'][] = $value;
+                $aux_3[$key_2][$key_3]['i'] = $aux_3[$key_2][$key_3]['i'].', '.$value['i'];
                 unset($aux_3[$i][$key]);
 
               }
