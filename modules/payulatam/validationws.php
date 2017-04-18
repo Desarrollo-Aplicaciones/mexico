@@ -24,28 +24,21 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-
 require_once(dirname(__FILE__).'/../../config/config.inc.php');
 require_once(_PS_MODULE_DIR_.'payulatam/payulatam.php');
 require_once(_PS_MODULE_DIR_.'payulatam/config.php');
-
 if(isset($_POST)  && !empty($_POST))
 {
-
 try {
        
 $mysqldate = date("Y-m-d H:i:s");    
 $logPost= $_POST;
-
 $logPayu = new ConfPayu();
 $logPayu->log_response_ws($logPost);
-$logPayu->logtxt('Fecha de transacción-WS: '.$mysqldate.'\r\n'.var_export($logPost,TRUE));
-
+$logPayu->logtxt('Fecha de transacciÃ³n-WS: '.$mysqldate.'\r\n'.var_export($logPost,TRUE));
 } catch (Exception $exc) {
       Logger::AddLog('payulatam [validationws.php] log-response-payu error: ' . $exc->getTraceAsString(), 2, null, null, null, true);
     }
-
 //$payU = new PayULatam();
 //$payU->validationws();
-
 }
