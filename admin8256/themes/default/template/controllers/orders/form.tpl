@@ -45,10 +45,10 @@
 	var productosExpress = false;
         var entregaNocturna = false;
 	
-	{foreach from=$defaults_order_state key='module' item='id_order_state'}
-		defaults_order_state['{$module}'] = '{$id_order_state}';
-	{/foreach}
-	$(document).ready(function() {
+        {foreach from=$defaults_order_state key='module' item='id_order_state'}
+                defaults_order_state['{$module}'] = '{$id_order_state}';
+        {/foreach}
+        $(document).ready(function() {
 
 		$("#private_message").bind('keypress', function(event) {
 			var valid = [8, 46, 37, 38, 39, 40];
@@ -321,7 +321,47 @@
 			});
 		});
 		resetBind();
+		
+		$( "#servier" ).focusout(function() {
+			var id_rep = $(this).val();
+			$.post( "{$base_dir}ajaxs/ajax_servier.php", { id_rep: id_rep })
+			.done(function( data ) {
+				//console.log("Respuesta del ajax:   "+data);
+			}, "json");
+		});
+		
+		$("#input-medico").keyup(function(){
+			$.ajax({
+				type: "POST",
+				url: "{$base_dir}ajaxs/ajax_servier_medicos.php",
+				data:'medico='+$(this).val(),
+				beforeSend: function(){
+					//$("#input-medico").css("background","#FFF url(LoaderIcon.gif) no-repeat 165px");
+				},
+				success: function(data){
+					//console.log(data);
+					$("#suggesstion-box").show();
+					$("#suggesstion-box").html(data);
+					$("#input-medico").css("background","#FFF");
+				}
+			});
+		});
+		
 	});
+	//To select country name
+	function selectOption(name, value) {
+		$("#input-medico").val(name);
+		$.ajax({
+			type: "POST",
+			url: "{$base_dir}ajaxs/ajax_servier_medicos.php",
+			data:'id_medico='+value,
+			success: function(data){
+				//console.log(data);
+			}
+		});
+		$("#suggesstion-box").hide();
+	};
+		
 	function envio(id)
 	{
 		if($("#express").is(':checked'))
@@ -598,6 +638,7 @@
 		$('#vouchers_part').show();
 		$('#address_part').show();
 		$('#doctor_part').show();
+		$('#servier_data').show();
 		$('#carriers_part').show();
 		$('#summary_part').show();
 		$('#hora_entrega').show();
@@ -1459,6 +1500,21 @@
 	<p>
 		<label>Seleccionar Médico</label>
 		<input type="text" id="doctor" value="" />	
+		<div id="doctor_err" class="warn" style="display:none"></div>
+	</p>
+</fieldset>
+<br>
+<br />
+<fieldset id="servier_data" style="display:none;">
+	<legend><img src="../img/t/AdminEmployees.gif" />Servier</legend>
+	<p>
+		<label>Código Continuar:</label>
+		<input type="text" id="servier">
+	</p>
+                <p>
+		<label>Ingrese un Médico</label>
+		<input type="text" id="input-medico">
+		<div id="suggesstion-box"></div>
 		<div id="doctor_err" class="warn" style="display:none"></div>
 	</p>
 </fieldset>

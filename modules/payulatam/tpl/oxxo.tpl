@@ -7,7 +7,7 @@
   
     <div class="contend-form" >        
         <input type="hidden" value="payuOxxo" id="pagar" name="pagar" />
-                            
+                       
     </div>       
 
 </form>

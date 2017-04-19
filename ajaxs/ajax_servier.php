@@ -5,7 +5,7 @@ require_once(dirname(__FILE__) . '/../init.php');
 
     $context = Context::getContext();
     $servier = new Servier();
-    echo "<br>rep:".
+    //echo "<br>rep:".
     $id_rep = Tools::getValue('id_rep');
     
     $id_cart = $context->cart->id;
@@ -22,7 +22,7 @@ require_once(dirname(__FILE__) . '/../init.php');
         echo json_encode(
             array(
                 'success'=>true, 
-                'mesage'=>'Todo Ok', 
+                'mesage'=>'Los resultados son', 
                 'resultado'=> $result,
             ) 
         );        
@@ -31,7 +31,7 @@ require_once(dirname(__FILE__) . '/../init.php');
         echo json_encode(
             array(
                 'success'=>false, 
-                'mesage'=>'Todo Paila',
+                'mesage'=>'No hay resultados',
                 'resultado'=> $result,
             ) 
         );

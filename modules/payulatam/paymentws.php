@@ -41,7 +41,7 @@
 
         $params = $this->initParams();
         self::$smarty->assign(array(
-                              'formLink' => Configuration::get('PAYU_DEMO') != 1 ? 'https://gateway.payulatam.com/ppp-web-gateway/' : 'https://gateway.payulatam.com/ppp-web-gateway/',
+                              'formLink' => Configuration::get('PAYU_DEMO') != 1 ? 'https://gateway.payulatam.com/ppp-web-gateway/' : 'https://sandbox.gateway.payulatam.com/ppp-web-gateway',
                               'payURedirection' => $params
                               ));
     }

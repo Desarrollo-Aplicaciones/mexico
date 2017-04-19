@@ -184,7 +184,7 @@ $chargeRequest = array(
                        'metadata' => array(
                                            'address1' 		=> substr(utf8_encode($address->address1),0,30),
                                            'address2' 		=> substr(utf8_encode($address->address2),0,30),
-                                           'address3' 		=> substr(utf8_encode($address->other),0,30),
+                                           'address3' 		=> (isset($address->other) && $address->other != '')?substr(utf8_encode($address->other),0,30):FALSE,
                                            'phone'			=> substr(utf8_encode($address->phone_mobile .' '.$address->phone),0,30),
                                            'fecha_compra' 	=> date("Y-m-d H:i:s"), 
                                            'total' 		=> $this->context->cart->getOrderTotal(),
@@ -194,7 +194,6 @@ $chargeRequest = array(
                                            'email' 		=> substr($customer->email,0,30)
                                            )
 );
-
 
 //error_log('<$chargeRequest '.print_r($chargeRequest,TRUE).' (charge)>',0);  
 try {

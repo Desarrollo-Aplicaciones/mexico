@@ -460,11 +460,11 @@ die();*/
                         if (!$customization_quantity || (int) $product['cart_quantity'] > $customization_quantity)
                             $products_list .=
                                     '<tr style="background-color: ' . ($key % 2 ? '#DDE2E6' : '#EBECEE') . ';">
-                                                <td style="padding: 0.6em 0.4em;width: 15%;">' . $product['reference'] . '</td>
-                                                <td style="padding: 0.6em 0.4em;width: 30%;"><strong>' . $product['name'] . (isset($product['attributes']) ? ' - ' . $product['attributes'] : '') . '</strong></td>
-                                                <td style="padding: 0.6em 0.4em; width: 20%;">' . Tools::displayPrice(Product::getTaxCalculationMethod((int) $this->context->customer->id) == PS_TAX_EXC ? Tools::ps_round($price, 2) : $price_wt, $this->context->currency, false) . '</td>
-                                                <td style="padding: 0.6em 0.4em; width: 15%;">' . ((int) $product['cart_quantity'] - $customization_quantity) . '</td>
-                                                <td style="padding: 0.6em 0.4em; width: 20%;">' . Tools::displayPrice(((int) $product['cart_quantity'] - $customization_quantity) * (Product::getTaxCalculationMethod() == PS_TAX_EXC ? Tools::ps_round($price, 2) : $price_wt), $this->context->currency, false) . '</td>
+                                                <td style="font-size: 11px;  padding: 0.6em 0.4em;width: 15%;">' . $product['reference'] . '</td>
+                                                <td style="font-size: 11px;  padding: 0.6em 0.4em;width: 30%;"><strong>' . $product['name'] . (isset($product['attributes']) ? ' - ' . $product['attributes'] : '') . '</strong></td>
+                                                <td style="font-size: 11px;  padding: 0.6em 0.4em; width: 20%;">' . Tools::displayPrice(Product::getTaxCalculationMethod((int) $this->context->customer->id) == PS_TAX_EXC ? Tools::ps_round($price, 2) : $price_wt, $this->context->currency, false) . '</td>
+                                                <td style="font-size: 11px;  padding: 0.6em 0.4em; width: 15%;">' . ((int) $product['cart_quantity'] - $customization_quantity) . '</td>
+                                                <td style="font-size: 11px;  padding: 0.6em 0.4em; width: 20%;">' . Tools::displayPrice(((int) $product['cart_quantity'] - $customization_quantity) * (Product::getTaxCalculationMethod() == PS_TAX_EXC ? Tools::ps_round($price, 2) : $price_wt), $this->context->currency, false) . '</td>
                                                 </tr>';
 
                         // Check if is not a virutal product for the displaying of shipping
@@ -606,20 +606,19 @@ die();*/
                         if ($order_status->logable)
                             ProductSale::addProductSale((int) $product['id_product'], (int) $product['cart_quantity']);
 
-                    
-                        if (Configuration::get('PS_STOCK_MANAGEMENT') && $order_detail->getStockState()) 
-                        {
-                            $history = new OrderHistory();
-                            $history->id_order = (int) $order->id;
-                            $history->changeIdOrderState(Configuration::get('PS_OS_OUTOFSTOCK'), $order, true);
-                            $history->addWithemail();
-                        }
                     // Set order state in order history ONLY even if the "out of stock" status has not been yet reached
                     // So you migth have two order states
                     $new_history = new OrderHistory();
                     $new_history->id_order = (int) $order->id;
                     $new_history->changeIdOrderState((int) $id_order_state, $order, true);
                     $new_history->addWithemail(true, $extra_vars);
+                    
+                    if (Configuration::get('PS_STOCK_MANAGEMENT') && $order_detail->getStockState() && $order_status->id == 3) {
+                        $history = new OrderHistory();
+                        $history->id_order = (int) $order->id;
+                        $history->changeIdOrderState(Configuration::get('PS_OS_OUTOFSTOCK'), $order, true);
+                        $history->addWithemail();
+                    }
 
                     unset($order_detail);
 
@@ -635,7 +634,7 @@ die();*/
                             if (in_array( strtolower($extra_vars['method']), $this->get_mediosp())) {
 
                 $metodo_de_pago = '
-                                                                <tr>
+                                <tr>
                                 <td align="left">Pago con: <b>' . $extra_vars['method'] . '</b></td>
                                 </tr>
                                 <tr>    
@@ -652,11 +651,21 @@ die();*/
                 $metodo_de_pago.='<tr>
                                 <td align="left"> <img alt="Bar Code" src="' . $this->context->smarty->tpl_vars['content_dir']->value . 'img/barcode.php?barcode=' . $extra_vars['bar_code'] . '" /> </td>
                                 </tr>
-                                ';
+                               ';
                             } 
                         } else {
                             $metodo_de_pago = ' ';
                         }
+                        
+                        
+                        $url_pago = '';
+                        
+                        if ( isset($extra_vars['url_payment_receipt_html']) && $extra_vars['url_payment_receipt_html'] != '' ) {
+                            
+                            $url_pago =' <td align="center"><a href="'.$extra_vars['url_payment_receipt_html'].'"><img style="border: none;" src="'. $this->context->smarty->tpl_vars['content_dir']->value . "img/btn.png".'" alt="pago"/> </a> <td>';                            
+                        } 
+                        
+   
                         $invoice = new Address($order->id_address_invoice);
                         $delivery = new Address($order->id_address_delivery);
                         $delivery_state = $delivery->id_state ? new State($delivery->id_state) : false;
@@ -699,6 +708,7 @@ die();*/
                             '{invoice_state}' => $invoice->id_state ? $invoice_state->name : '',
                             '{invoice_phone}' => ($invoice->phone) ? $invoice->phone : $invoice->phone_mobile,
                             '{invoice_other}' => $invoice->other,
+                            '{id_order}'=> $order->id,
                             '{order_name}' => $order->getUniqReference(),
                             '{date}' => Tools::displayDate(date('Y-m-d H:i:s'), null, 1),
                             '{carrier}' => $virtual_product ? Tools::displayError('No carrier') : $carrier->name,
@@ -711,7 +721,9 @@ die();*/
                             '{total_shipping}' => Tools::displayPrice($order->total_shipping, $this->context->currency, false),
                             '{total_wrapping}' => Tools::displayPrice($order->total_wrapping, $this->context->currency, false),
                             '{total_tax_paid}' => Tools::displayPrice(($order->total_products_wt - $order->total_products) + ($order->total_shipping_tax_incl - $order->total_shipping_tax_excl), $this->context->currency, false),
-                            '{baloto}' => $metodo_de_pago);
+                            '{baloto}' => $metodo_de_pago,
+                            '{url_transfer}' => $url_pago
+                         );
 
 
                         if (is_array($extra_vars))

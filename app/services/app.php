@@ -267,7 +267,7 @@ class API extends REST {
       $msg,
       $id_cart,
       $clear
-    ),200));
+    )),200);
   }
 
   /**
@@ -706,6 +706,44 @@ class API extends REST {
     //echo "<pre>";
     //var_dump($model->list_medios_de_pago());
     //echo "</pre>";
+  }
+
+  public function getTerms()
+  {
+    if ($this->get_request_method() != "GET") {
+      $this->response('', 406);
+    }
+
+    $model = new Model();
+    $this->response($this->json($model->getTerms()),200);
+
+  }
+
+  /**
+   * Mira si la dirección dada se encuentra en otras ciudades para denegarle acceso a pago contraentrega
+   * @return [type] [description]
+   */
+  public function otraCiudad()
+  {
+    if ($this->get_request_method() != "POST") {
+      $this->response('', 406);
+    }
+
+    $id_address =   $this->_request['id'];
+    $model = new Model();
+    $this->response($this->json($model->list_medios_de_pago($id_address)),200);
+  }
+
+  public function getAddress()
+  {
+    if ($this->get_request_method() != "POST") {
+      $this->response('', 406);
+    }
+
+    // $context = Context::getContext();
+    $id_address =   $this->_request['id'];
+    $address = new Address($id_address);
+    $this->response(json_encode($address),200);
   }
 
 }

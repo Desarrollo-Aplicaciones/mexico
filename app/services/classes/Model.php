@@ -201,10 +201,11 @@ class Model extends PaymentModule {
                 continue;
               }
 
-              if($value['id_parent'] == $value_3['i']){
+              if($value['id_parent'] == explode(',', $value_3['i'])[0]){
                 unset($value['id_parent']);
                 unset($value['level_depth']);
                 $aux_3[$key_2][$key_3]['s'][] = $value;
+                $aux_3[$key_2][$key_3]['i'] = $aux_3[$key_2][$key_3]['i'].', '.$value['i'];
                 unset($aux_3[$i][$key]);
 
               }
@@ -466,11 +467,13 @@ class Model extends PaymentModule {
         $aplicar_cupon = 1;
         foreach ($discounts as $key => $value) {
           $cartRule = NULL;
-          if ($value['type_voucher'] == 'md') {
-            $iddoc = trim($value['cupon']);
-            $cartRule = new CartRule(CartRule::getIdByDoctor($iddoc));
-          } elseif ($value['type_voucher'] == 'cupon') {
-            $cartRule = new CartRule(CartRule::getIdByCode(trim($value['cupon'])));
+          if (isset($value['type_voucher'])) {
+            if ($value['type_voucher'] == 'md') {
+              $iddoc = trim($value['cupon']);
+              $cartRule = new CartRule(CartRule::getIdByDoctor($iddoc));
+            } elseif ($value['type_voucher'] == 'cupon') {
+              $cartRule = new CartRule(CartRule::getIdByCode(trim($value['cupon'])));
+            }
           }
           if (!empty($cartRule))
             $this->context->cart->addCartRule($cartRule->id);
@@ -524,7 +527,8 @@ class Model extends PaymentModule {
         $discounts_return[] = array('success' => null);
       }
 
-      if ($aplicar_cupon == 1 
+      if ( isset($discounts_return[0]) 
+          && $aplicar_cupon == 1 
           && !isset( $discounts_return[0]['success'] ) 
           && !$discounts_return[0]['success'] == true) {
         $discounts_return = array();
@@ -1105,7 +1109,8 @@ class Model extends PaymentModule {
       || empty($this->context->customer->id))
       return array('ERROR'=>'Debes iniciar sesión para agregar la foto de tu perfil.');
 
-    $path = _PS_ROOT_DIR_.'/KWE54O31MDORBOJRFRPLMM8C7H24LQQR/';     
+    $path = _PS_ROOT_DIR_.'/KWE54O31MDORBOJRFRPLMM8C7H24LQQR/';  
+    error_log($option);
     if ($option == 'profile') {
       $path = _PS_ROOT_DIR_.'/img/customers/profile/';    
     }
@@ -1324,15 +1329,16 @@ class Model extends PaymentModule {
     return Db::getInstance()->getRow($sql);
   }
 
-  private function get_id_city_select_address() 
+  private function get_id_city_select_address($id_address = null) 
   {
     $this->context = Context::getContext();
+    $direccion = (is_null($id_address))?$this->context->cart->id_address_delivery:$id_address;
 
     try {
       $sql = 'SELECT adc.id_city
       FROM '._DB_PREFIX_.'address adr 
       INNER JOIN '._DB_PREFIX_.'address_city adc ON (adc.id_address=adr.id_address)
-      WHERE adc.id_address= ' . (int) $this->context->cart->id_address_delivery;
+      WHERE adc.id_address= ' . (int) $direccion;
 
       if ($results = Db::getInstance()->ExecuteS($sql)) {
         foreach ($results as $row) {
@@ -1350,14 +1356,14 @@ class Model extends PaymentModule {
     }
   }
 
-  public function list_medios_de_pago() 
+  public function list_medios_de_pago($id_address = null) 
   {
     $this->context = Context::getContext();
 
     $query = "select mediosp.id_medio_de_pago,mediosp.Activo, IF (ISNULL(pepe.id_medio_de_pago),0,1) as inrule,mediosp.nombre 
     from "._DB_PREFIX_."medios_de_pago mediosp LEFT JOIN 
     ( SELECT mediospin.id_medio_de_pago, rules.id_ciudad FROM "._DB_PREFIX_."medios_de_pago mediospin INNER JOIN "._DB_PREFIX_."rules_mediosp_ciudades rules 
-    ON( mediospin.id_medio_de_pago = rules.id_medio_de_pago AND rules.id_ciudad = " .(int) $this->get_id_city_select_address(). ")
+    ON( mediospin.id_medio_de_pago = rules.id_medio_de_pago AND rules.id_ciudad = " .(int) $this->get_id_city_select_address($id_address). ")
     ) AS pepe ON (pepe.id_medio_de_pago = mediosp.id_medio_de_pago);";
 
     $list_mediosp = array();
@@ -1519,5 +1525,34 @@ class Model extends PaymentModule {
 
     return $string;
   }  
+
+  public function getTerms()
+  {
+      $array_img = array();
+      $query = "SELECT content FROM ps_cms_lang WHERE id_cms = 3";
+      $contenido = '';
+
+      if ($results = Db::getInstance()->ExecuteS($query)) {
+        foreach ($results as $value) {
+          $contenido = $value;
+        }
+      }
+
+    return $contenido;
+  }
+
+  public function verify_address($id_address)
+  {
+    $query = 'SELECT COUNT(*) as total
+              FROM '._DB_PREFIX_.'address adr 
+                LEFT JOIN '._DB_PREFIX_.'address_city adc ON ( adc.id_address = adr.id_address ) 
+                LEFT JOIN '._DB_PREFIX_.'carrier_city cac ON ( cac.id_city_des = adc.id_city ) 
+                WHERE adr.id_address='.$id_address.' AND cac.tarifa <> 1';
+    if ($results = Db::getInstance()->ExecuteS($query)) {
+        return $results;
+      }
+
+    return $results;
+  }
 
 }

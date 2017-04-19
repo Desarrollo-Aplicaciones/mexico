@@ -177,24 +177,24 @@ $chargeRequest = array(
                        'method' => 'card',
                        'source_id' => $post["token_id"],
                        'amount' => $this->context->cart->getOrderTotal(),
-                       'currency' => 'MXN',
+                       //'currency' => 'MXN',
                        'description' => 'Compra en '.Configuration::get('PS_SHOP_NAME').' '.$this->context->country->iso_code,
-                       'order_id' => Configuration::get('PS_SHOP_NAME').'-'.$this->context->country->iso_code.'-'.$this->context->cart->id.'-'.$contador,
+                       //'order_id' => Configuration::get('PS_SHOP_NAME').'-'.$this->context->country->iso_code.'-'.$this->context->cart->id.'-'.$contador,
                        'device_session_id' => $post["openpay_device_session_id"],
-                       'metadata' => array(
-                                           'address1' 		=> substr(utf8_encode($address->address1),0,30),
-                                           'address2' 		=> substr(utf8_encode($address->address2),0,30),
-                                           'address3' 		=> substr(utf8_encode($address->other),0,30),
-                                           'phone'			=> substr(utf8_encode($address->phone_mobile .' '.$address->phone),0,30),
-                                           'fecha_compra' 	=> date("Y-m-d H:i:s"), 
-                                           'total' 		=> $this->context->cart->getOrderTotal(),
-                                           'descuento' 	=> $this->context->cart->getOrderTotal( Cart::ONLY_DISCOUNTS ),
-                                           'iva' 			=> $this->context->cart->getOrderTotals()['total_iva'],
-                                           'nombre' 		=> substr(utf8_encode($customer->firstname.' '.$customer->lastname),0,30),
-                                           'email' 		=> substr($customer->email,0,30)
-                                           )
+                       'customer' => $customer
+                       // 'metadata' => array(
+                       //                     'address1' 		=> substr(utf8_encode($address->address1),0,30),
+                       //                     'address2' 		=> substr(utf8_encode($address->address2),0,30),
+                       //                     'address3' 		=> substr(utf8_encode($address->other),0,30),
+                       //                     'phone'			=> substr(utf8_encode($address->phone_mobile .' '.$address->phone),0,30),
+                       //                     'fecha_compra' 	=> date("Y-m-d H:i:s"), 
+                       //                     'total' 		=> $this->context->cart->getOrderTotal(),
+                       //                     'descuento' 	=> $this->context->cart->getOrderTotal( Cart::ONLY_DISCOUNTS ),
+                       //                     'iva' 			=> $this->context->cart->getOrderTotals()['total_iva'],
+                       //                     'nombre' 		=> substr(utf8_encode($customer->firstname.' '.$customer->lastname),0,30),
+                       //                     'email' 		=> substr($customer->email,0,30)
+                       //                     )
 );
-
 
 //error_log('<$chargeRequest '.print_r($chargeRequest,TRUE).' (charge)>',0);  
 try {

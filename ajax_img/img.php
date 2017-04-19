@@ -66,8 +66,9 @@ if($array_img[0] == 'supplier_icon'){
   $ruta_img = '0.jpg'; 
 }
 }
-
 $full_name = $ruta_base.$ruta_img;
+// var_dump($full_name);
+// exit;
 header("Content-Type: ".image_type_to_mime_type($extensions[strtolower($array_img[2])])); 
 header("Content-Transfer-Encoding: binary");
 header("Content-Length: ".filesize($full_name));

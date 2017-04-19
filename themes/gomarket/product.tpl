@@ -259,8 +259,8 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 		<div class="arrow_formula"><img src="{$img_dir}pdp/Rx.png" alt="{l s='Subtract'}" width="100%" /></div>
 		<div class="legend_formula">
 			<span class="only1">Consultar al médico, </span>
-			Producto de venta con fórmula médica 
-			<span class="only2">, Sin fórmula médica no es posible la compra de este medicamento.</span>
+                        		Producto de venta con receta médica,
+			<span class="only2"> Sin receta médica no es posible la compra de este medicamento.</span>
 		</div>
 	</div>
 {/if}
@@ -502,7 +502,7 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 		</div>
 
 		<div class="row-desplegable" id="active-whatsapp">
-			<a href="tel://5567321100#Intent;scheme=smsto;package=com.whatsapp;action=android.intent.action.SENDTO;end" class="href-whatsapp"> 
+			<a href="tel:5538913215" class="href-whatsapp"> 
 				<div class="ctn-img-whatsapp"><img src="{$img_dir}pdp/whatsapp.jpg" class="img-whatsapp"></div>
 				<div class="ctn-txt-arrow borde-superior">
 					<span>Whatsapp</span>
