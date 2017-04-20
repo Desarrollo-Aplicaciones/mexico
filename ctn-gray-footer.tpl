@@ -56,7 +56,7 @@
 								<a href="{$base_dir}content/69-que-es-farmalisto" class="txt-gray link">¿Quíenes somos?</a>
 								<a href=" https://farmalistomx.zendesk.com/hc/es/requests/new" class="txt-gray link">Contacto</a>
 								<a href="https://farmalistomx.zendesk.com/hc/es/articles/235604207-Horarios-de-Atenci%C3%B3n-Servicio-y-Reparto" class="txt-gray link">Horarios de atención</a>
-								<a href="http://www.bumeran.com.mx/perfiles/empresa_farmalisto_13058305.html  " class="txt-gray link">Trabaja con nosotros</a>
+								<a href="https://trello.com/b/t0qaBGtL/trabaja-con-nosotros-farmalisto" class="txt-gray link">Trabaja con nosotros</a>
 								<a href="http://info.farmalisto.com/ventas_mayoreo/" class="txt-gray link">Ventas por mayoreo</a>
 							</div>
 						</div>
