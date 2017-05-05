@@ -2800,4 +2800,28 @@ class Cart extends CartCore {
         if($dGOT == 1){error_log("\r\n 49--  staggeredDiscounts this->total_products_wt: ".print_r($this->total_products_wt,true), 3, "/tmp/progresivo.log");}
 	return $this->total_products_wt;
     }
+
+    public function addCartRule($id_cart_rule)
+    {
+        $result = parent::addCartRule($id_cart_rule);
+
+        if (Tools::isSubmit('submitAddDiscount') && $result) {
+            if (Module::isEnabled('quantitydiscountpro')) {
+                include_once(_PS_MODULE_DIR_.'quantitydiscountpro/quantitydiscountpro.php');
+                $quantityDiscount = new QuantityDiscountRule();
+                $quantityDiscountRulesAtCart = $quantityDiscount->getQuantityDiscountRulesAtCart((int)Context::getContext()->cart->id);
+
+                if (is_array($quantityDiscountRulesAtCart) && count($quantityDiscountRulesAtCart)) {
+                    foreach ($quantityDiscountRulesAtCart as $quantityDiscountRuleAtCart) {
+                        $quantityDiscountRuleAtCartObj = new QuantityDiscountRule((int)$quantityDiscountRuleAtCart['id_quantity_discount_rule']);
+                        if (!$quantityDiscount->compatibleCartRules($quantityDiscountRuleAtCartObj)) {
+                            $quantityDiscount->removeQuantityDiscountCartRule($quantityDiscountRuleAtCart['id_cart_rule'], (int)Context::getContext()->cart->id);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
 }
