@@ -777,7 +777,7 @@ public function getAssociatedRestrictions($type, $active_only, $i18n)
         //echo "<br> query: ".$query;
         return Db::getInstance()->executeS($query);
     }
-
+    
     public static function autoAddToCart(Context $context = null)
     {
         parent::autoAddToCart($context);
@@ -803,5 +803,4 @@ public function getAssociatedRestrictions($type, $active_only, $i18n)
 
         return $r;
     }
-    
 }  
