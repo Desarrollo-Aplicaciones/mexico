@@ -1007,7 +1007,7 @@ class Cart extends CartCore {
             if ( isset( $_GET['debug_getOrderTotal'] ) && $_GET['debug_getOrderTotal'] == "true" && Configuration::get('PS_DEBUG_GET_ORDER_TOTAL') == 1 ) {
                 $dGOT = 1;    
             } else {
-                $dGOT = 1;
+                $dGOT = 0;
             }
             
             /************ Progressive Discounts ************/
