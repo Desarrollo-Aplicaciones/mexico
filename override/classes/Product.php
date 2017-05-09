@@ -16,12 +16,13 @@ class Product extends ProductCore {
 			$context = Context::getContext();
 
 		$sql = new DbQuery();
-		$sql->select('p.`id_product`, pl.`name`, p.`active`, p.`reference`, m.`name` AS manufacturer_name, stock.`quantity`, product_shop.advanced_stock_management, p.`customizable`');
+		$sql->select('p.`id_product`, pl.`name`, p.`active`, p.`reference`, m.`name` AS manufacturer_name, stock.`quantity`, product_shop.advanced_stock_management, p.`customizable`,  ROUND(sod.unit_price_te) AS unit_price_te, ROUND(ps.wholesale_price) AS wholesale_price');
 		$sql->from('category_product', 'cp');
 		$sql->leftJoin('product', 'p', 'p.`id_product` = cp.`id_product`');
 		$sql->join(Shop::addSqlAssociation('product', 'p'));
                 
-                 $sql->innerJoin('product_shop', 'ps', 'ps.`id_product`  =  p.`id_product`');
+                $sql->innerJoin('product_shop', 'ps', 'ps.`id_product`  =  p.`id_product`');
+                $sql->innerJoin('supply_order_detail', 'sod', 'sod.`id_product` = ps.`id_product`');
                 $sql->leftJoin('product_black_list', 'prod_black', 'prod_black.`reference`  =  p.`reference`');
 		$sql->leftJoin('product_lang', 'pl', '
 			p.`id_product` = pl.`id_product`
