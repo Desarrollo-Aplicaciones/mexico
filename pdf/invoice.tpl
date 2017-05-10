@@ -297,7 +297,7 @@
 
 				{if $order_invoice->total_discount_tax_excl > 0} {*total_discount_tax_incl*}
 				<tr style="line-height:3.5px;">
-					<td style="background-color: #EAEAEA; width: 186px; text-align: right; font-weight: bold"> {if $apoyosalud!=NULL}{$apoyosalud}{else}Descuento{/if}{*l s='Total Vouchers' pdf='true'*}</td>
+					<td style="background-color: #EAEAEA; width: 186px; text-align: right; font-weight: bold"> {*if $apoyosalud!=NULL}{$apoyosalud}{else}Descuento{/if*}{l s='Total Vouchers' pdf='true'}</td>
 					<td style="background-color: #EAEAEA; width: 82px; text-align: right;">-{displayPrice currency=$order->id_currency price=($order_invoice->total_discount_tax_incl)}&nbsp;&nbsp;&nbsp;&nbsp;</td>
 				</tr>
 				{/if}
