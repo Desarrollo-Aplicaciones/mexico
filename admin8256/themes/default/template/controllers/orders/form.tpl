@@ -761,7 +761,7 @@
                                                 var Division = resultado / this.unit_price_te;
                                                 var Percentage = 100;
                                                 var profit = Division * Percentage;
-						products_found += '<option '+(this.combinations.length > 0 ? 'rel="'+this.qty_in_stock+'"' : '')+' value="'+this.id_product+'">'+this.name+(this.combinations.length == 0 ? ' - '+this.formatted_price : '')+' Margen Producto: '+Math.round10(profit, -1)+ '%</option>';
+						products_found += '<option '+(this.combinations.length > 0 ? 'rel="'+this.qty_in_stock+'"' : '')+' value="'+this.id_product+'">'+this.name+(this.combinations.length == 0 ? ' - '+this.formatted_price : '')+'{* Margen Producto: '+Math.round10(profit, -1)+ '% *}</option>';
 						attributes_html += '<select class="id_product_attribute" id="ipa_'+this.id_product+'" style="display:none;">';
 						var id_product = this.id_product;
 						stock[id_product] = new Array();
