@@ -13,15 +13,15 @@ class HTMLTemplateInvoice extends HTMLTemplateInvoiceCore
         $extras = null;
         $contact = null;
         $sql = 'SELECT adr.phone_mobile, cus.identification, adr.dni, odr.current_state, odr.module ,payu.method, payu.extras, 
-                        IF ( ohh.id_order_state = 10, "Transferencia electrónica (03)", mp.medio_de_pago ) AS medio_de_pago, payu.json_request,  GROUP_CONCAT(CONCAT(UPPER(LEFT(mes.message, 1)), LOWER(SUBSTRING(mes.message, 2)))) as note
-            FROM ps_orders odr 
-            LEFT JOIN ps_customer cus ON ( odr.id_customer = cus.id_customer )
-            LEFT JOIN ps_address adr ON ( adr.id_address = odr.id_address_delivery)
-            LEFT JOIN ps_pagos_payu payu ON (odr.id_order=payu.id_order AND odr.id_customer=payu.id_customer)
-            LEFT JOIN ps_medios_de_pago mp ON ( odr.payment = mp.nombre OR odr.payment = mp.nombre_alterno )
-            LEFT JOIN ps_message mes ON (odr.id_order = mes.id_order AND mes.id_employee = 0 AND mes.id_customer != 0)
-            LEFT JOIN ps_order_history ohh ON ( odr.id_order = ohh.id_order AND ohh.id_order_state = 10 AND ohh.id_order >='.$id_order_transfer.')
-            WHERE odr.id_order=' . (int) $this->order->id . " ;";
+                    IF ( ohh.id_order_state = 10, "Transferencia electrónica (03)", mp.medio_de_pago ) AS medio_de_pago, payu.json_request,  GROUP_CONCAT(CONCAT(UPPER(LEFT(mes.message, 1)), LOWER(SUBSTRING(mes.message, 2)))) as note
+                FROM ps_orders odr 
+                LEFT JOIN ps_customer cus ON ( odr.id_customer = cus.id_customer )
+                LEFT JOIN ps_address adr ON ( adr.id_address = odr.id_address_delivery)
+                LEFT JOIN ps_pagos_payu payu ON (odr.id_order=payu.id_order AND odr.id_customer=payu.id_customer)
+                LEFT JOIN ps_medios_de_pago mp ON ( odr.payment = mp.nombre OR odr.payment = mp.nombre_alterno )
+                LEFT JOIN ps_message mes ON (odr.id_order = mes.id_order AND mes.id_employee = 0 AND mes.id_customer != 0)
+                LEFT JOIN ps_order_history ohh ON ( odr.id_order = ohh.id_order AND ohh.id_order_state = 10 AND ohh.id_order >='.$id_order_transfer.')
+                WHERE odr.id_order=' . (int) $this->order->id . " ;";
                // print_r($sql);exit();
         if ($results = Db::getInstance()->ExecuteS($sql))
             foreach ($results as $row) {
@@ -35,13 +35,7 @@ class HTMLTemplateInvoice extends HTMLTemplateInvoiceCore
                 } else {
                     $dni = 'N/A';
                 }
-                
-                if( $row['medio_de_pago'] ){
-                    
-                }
-
-
-
+          
                 switch ($row['current_state']) {
                     case 1:
                         $current_state_img = 'pago_pendiente.png';
@@ -122,10 +116,10 @@ class HTMLTemplateInvoice extends HTMLTemplateInvoiceCore
 
 
         $query = 'SELECT cupon.description, cupon.reduction_percent, cupon.reduction_amount, cupon.reduction_product, cupon.gift_product
-FROM ps_orders orden
-INNER JOIN ps_order_cart_rule cartcup ON( orden.id_order = cartcup.id_order )
-INNER JOIN ps_cart_rule cupon ON(cartcup.id_cart_rule = cupon.id_cart_rule)
-WHERE orden.id_order =' . (int) $this->order->id . ' LIMIT 1';
+                    FROM ps_orders orden
+                    INNER JOIN ps_order_cart_rule cartcup ON( orden.id_order = cartcup.id_order )
+                    INNER JOIN ps_cart_rule cupon ON(cartcup.id_cart_rule = cupon.id_cart_rule)
+                    WHERE orden.id_order =' . (int) $this->order->id . ' LIMIT 1';
 
 
         $cupon = null;
