@@ -32,11 +32,11 @@
 	<div class="margin-form">
 		<input type="text" id="reduction_amount" name="reduction_amount" value="{$currentTab->getFieldValue($currentObject, 'reduction_amount')|floatval}" onchange="this.value = this.value.replace(/,/g, '.');" />
 		<select name="reduction_currency">
-		{foreach from=$currencies item='currency'}
-			<option value="{$currency.id_currency|intval}" {if $currentTab->getFieldValue($currentObject, 'reduction_currency') == $currency.id_currency || (!$currentTab->getFieldValue($currentObject, 'reduction_currency') && $currency.id_currency == $defaultCurrency)}selected="selected"{/if}>{$currency.iso_code}</option>
-		{/foreach}
+            {foreach from=$currencies item='currency'}
+				<option value="{$currency.id_currency|intval}" {if $currentTab->getFieldValue($currentObject, 'reduction_currency') == $currency.id_currency || (!$currentTab->getFieldValue($currentObject, 'reduction_currency') && $currency.id_currency == $defaultCurrency)}selected="selected"{/if}>{$currency.iso_code}</option>
+            {/foreach}
 		</select>
-		<select name="reduction_tax" id="reduction_tax">
+		<select name="reduction_tax">
 			<option value="0" {if $currentTab->getFieldValue($currentObject, 'reduction_tax') == 0}selected="selected"{/if}>{l s='Tax excluded'}</option>
 			<option value="1" {if $currentTab->getFieldValue($currentObject, 'reduction_tax') == 1}selected="selected"{/if}>{l s='Tax included'}</option>
 		</select>
@@ -51,12 +51,12 @@
 		&nbsp;&nbsp;
 		<input type="radio" name="apply_discount_to" id="apply_discount_to_product" value="specific"  {if $currentTab->getFieldValue($currentObject, 'reduction_product')|intval > 0}checked="checked"{/if} />
 		<label class="t" for="apply_discount_to_product"> {l s='Specific product'}</label>
-		{*&nbsp;&nbsp;
+		&nbsp;&nbsp;
 		<input type="radio" name="apply_discount_to" id="apply_discount_to_cheapest" value="cheapest"  {if $currentTab->getFieldValue($currentObject, 'reduction_product')|intval == -1}checked="checked"{/if} />
 		<label class="t" for="apply_discount_to_cheapest"> {l s='Cheapest product'}</label>
 		&nbsp;&nbsp;
 		<input type="radio" name="apply_discount_to" id="apply_discount_to_selection" value="selection"  {if $currentTab->getFieldValue($currentObject, 'reduction_product')|intval == -2}checked="checked"{/if} />
-		<label class="t" for="apply_discount_to_selection"> {l s='Selected product(s)'}</label>*}
+		<label class="t" for="apply_discount_to_selection"> {l s='Selected product(s)'}</label>
 	</div>
 	<div id="apply_discount_to_product_div">
 		<label>{l s='Product'}</label>
@@ -85,28 +85,17 @@
 		<div id="gift_product_list">
 			<label>{l s='Matching products'}</label>
 			<select name="gift_product" id="gift_product" onclick="displayProductAttributes();">
-				{$gift_product_select}
+                {$gift_product_select}
 			</select>
 		</div>
 		<div class="clear">&nbsp;</div>
 		<div id="gift_attributes_list" {if !$hasAttribute}style="display:none"{/if}>
 			<label>{l s='Available combinations'}</label>
 			<div id="gift_attributes_list_select">
-				{$gift_product_attribute_select}
+                {$gift_product_attribute_select}
 			</div>
 		</div>
 		<div class="clear">&nbsp;</div>
 	</div>
 	<div id="gift_products_err" class="warn" style="display:none"></div>
 </div>
-
-<script type="text/javascript">
-	$("#apply_discount_to_product, #apply_discount_to_order").change(function(){
-		if ( this.id == "apply_discount_to_product" ) {
-			$('#reduction_tax').val('0');
-			$('#reduction_tax').css('display', 'none');
-		} else {
-			$('#reduction_tax').css('display', 'initial');
-		}
-	});
-</script>

@@ -546,8 +546,8 @@ Requiere Nombre de carpeta en servidor FTP, acción (PUT-GET), ruta del archivo 
 public static function conectarFTPNadro($folder, $action, $path, $remote_file){
       #IMPORTANTE DATOS DE CONEXIÓN FTP ESTATICOS PARA NADRO, SE LLAMAN EN TIEMPO DE EJECUCION#
       $url = "ftp1.rednadro.com.mx";//<---------¡CUIDADO SOLO COLOCAR PARA PRODUCCIÓN
-      $username = "farma_listo";
-      $password = "Ost4-32re";
+      $username = "farmatalam";
+      $password = "gt*45dr9";
       #^----CAMBIAR AQUÍ-----^#
       $function = "ftp_".$action;
       $cid = ftp_connect($url);
