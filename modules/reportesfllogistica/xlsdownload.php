@@ -222,27 +222,7 @@ if (isset($_GET['opc_sel'])) {
       header("Content-type: application/force-download");
       header("Content-Disposition: attachment; filename=" . basename("Reporte_catalogo.csv"));
       header("Content-Transfer-Encoding: binary");
-      /* $sql = 'SELECT p.id_product, 
-        p.reference AS referencia,
-        pll.name AS description,
-        p.upc AS RegistroInvima,
-        REPLACE( pss.price,".",",") AS precio,
-        IF ( t.rate IS NULL , 0 , t.rate) AS id_iva_prod,
-        p.active AS estado,
-        pss.active,
-        blmt.name AS Motivo_cancelacion,
-        GROUP_CONCAT( sup.name SEPARATOR "|" ) AS Proveedores
-        FROM ps_product p
-        INNER JOIN ps_product_lang pll ON ( p.id_product = pll.id_product )
-        INNER JOIN ps_product_shop pss ON ( p.id_product = pss.id_product )
-        LEFT JOIN ps_tax_rule tr ON ( tr.id_tax_rules_group = pss.id_tax_rules_group AND tr.id_tax_rule NOT IN (3,4) )
-        LEFT JOIN ps_tax t ON ( t.id_tax = tr.id_tax AND t.active = 1 AND t.deleted = 0 )
-        LEFT JOIN ps_product_black_list pbl ON ( p.id_product = pbl.id_product )
-        LEFT JOIN ps_black_motivo blmt ON ( pbl.motivo = blmt.id_black_motivo )
-        LEFT JOIN ps_product_supplier psup ON ( p.id_product = psup.id_product )
-        LEFT JOIN ps_supplier sup ON ( psup.id_supplier = sup.id_supplier )
-        GROUP BY p.id_product
-        ORDER BY sup.id_supplier ASC'; */
+
       $sql = 'SELECT p.id_product, p.reference AS referencia, pll.name AS description,
                     p.upc AS RegistroInvima, REPLACE( pss.price,".",",") AS precio,  IF ( t.rate IS NULL , 0 , t.rate) AS id_iva_prod,
                     p.active AS estado, pss.active, blmt.name AS Motivo_cancelacion,
