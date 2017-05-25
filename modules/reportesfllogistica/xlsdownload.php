@@ -229,7 +229,7 @@ if (isset($_GET['opc_sel'])) {
                     GROUP_CONCAT( sup2.name SEPARATOR "|" ) AS Proveedores_Asociados,
                     GROUP_CONCAT( DISTINCT (sup.name) SEPARATOR "|" ) AS Proveedores_Comprados3M,
                     m.name AS Fabricante,
-                   sod.unit_price_te  AS precio_ultimo
+                    REPLACE( sod.unit_price_te ,".",",") AS precio_ultimo
                     FROM ps_product p
                     INNER JOIN ps_product_lang pll ON ( p.id_product = pll.id_product )
                     INNER JOIN ps_product_shop pss ON ( p.id_product = pss.id_product )
@@ -263,7 +263,7 @@ if (isset($_GET['opc_sel'])) {
           <td> PROVEEDORES </td>
           </tr>"; */
         foreach ($results as $dat_print) {
-          fputcsv($output, array($dat_print['id_product'], $dat_print['referencia'], utf8_decode($dat_print['description']), utf8_decode($dat_print['RegistroInvima']), $dat_print['precio'], $dat_print['id_iva_prod'], $dat_print['estado'], $dat_print['active'], utf8_decode($dat_print['Motivo_cancelacion']), utf8_decode($dat_print['Proveedores_Asociados']), utf8_decode($dat_print['Proveedores_Comprados3M']), utf8_decode($dat_print['Fabricante']), utf8_decode($dat_print['precio_ultimo'])));
+          fputcsv($output, array($dat_print['id_product'], $dat_print['referencia'], utf8_decode($dat_print['description']), utf8_decode($dat_print['RegistroInvima']), $dat_print['precio'], $dat_print['id_iva_prod'], $dat_print['estado'], $dat_print['active'], utf8_decode($dat_print['Motivo_cancelacion']), utf8_decode($dat_print['Proveedores_Asociados']), utf8_decode($dat_print['Proveedores_Comprados3M']), utf8_decode($dat_print['Fabricante']), $dat_print['precio_ultimo']));
 
           /* echo "
             <tr>
