@@ -18,6 +18,8 @@ if (isset($_GET['opc_sel'])) {
         $sql = 'SELECT
                         o.id_order,                        
                         CONCAT(c.firstname, " ", c.lastname) AS cliente,
+                        c.firstname,
+                        c.lastname,
                         a.address1,
                         a.address2,
                         o.date_add,
@@ -113,7 +115,7 @@ if (isset($_GET['opc_sel'])) {
               <td> ".$dat_print['Transportador']." </td>
               </tr>
               "; */
-            fputcsv($output, array($dat_print['id_order'], utf8_decode($dat_print['cliente']), utf8_decode($dat_print['address1']), utf8_decode($dat_print['address2']), utf8_decode($dat_print['city']), $dat_print['date_add'], $dat_print['product_reference'], utf8_decode($dat_print['product_name']), $dat_print['precio'], $dat_print['product_quantity'], $dat_print['cod_icr'], utf8_decode($dat_print['name']), $dat_print['id_supply_order'], $dat_print['Fecha_entrga'], $dat_print['Hora_entrega'], $dat_print['payment'], $dat_print['Transportador'], utf8_decode($dat_print['codpostal']), utf8_decode($dat_print['Tel_address']), utf8_decode($dat_print['total_pagado'])));
+            fputcsv($output, array($dat_print['id_order'], utf8_decode($dat_print['firstname']." ".$dat_print['lastname']), utf8_decode($dat_print['address1']), utf8_decode($dat_print['address2']), utf8_decode($dat_print['city']), $dat_print['date_add'], $dat_print['product_reference'], utf8_decode($dat_print['product_name']), $dat_print['precio'], $dat_print['product_quantity'], $dat_print['cod_icr'], utf8_decode($dat_print['name']), $dat_print['id_supply_order'], $dat_print['Fecha_entrga'], $dat_print['Hora_entrega'], $dat_print['payment'], $dat_print['Transportador'], utf8_decode($dat_print['codpostal']), utf8_decode($dat_print['Tel_address']), utf8_decode($dat_print['total_pagado'])));
           }
           //echo "</table>";
         } else {
