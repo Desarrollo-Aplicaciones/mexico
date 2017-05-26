@@ -41,7 +41,8 @@ if (isset($_GET['opc_sel'])) {
                     END
                     AS Transportador,
                     a.postcode AS codpostal,
-                    CONCAT(a.phone, ", ", a.phone_mobile) AS Tel_address,
+                    a.phone_mobile AS phone_mobile,
+                    a.phone AS phone,
                     o.total_paid_tax_incl AS total_pagado
                     FROM ps_order_detail od  -- 174411
                     INNER JOIN ps_orders o ON ( o.id_order = od.id_order )
@@ -66,7 +67,7 @@ if (isset($_GET['opc_sel'])) {
 
         if ($results = Db::getInstance_slv()->ExecuteS($sql)) {
           $output = fopen('php://output', 'w');
-          fputcsv($output, array('NUM PEDIDO', 'CLIENTE', 'DIRECCION 1', 'DIRECCION 2', 'CIUDAD DESTINO', 'FECHA', 'REFERENCIA', 'DESCRIPCION', 'PRECIO', 'CANTIDAD', 'ICR', 'ESTADO ORDEN', 'ORDEN SUMINISTRO', 'FECHA DE ENTREGA', 'HORA DE ENTREGA', 'METODO DE PAGO', 'TRANSPORTADOR', 'CODIGO POSTAL', 'TELEFONOS', 'TOTAL PAGADO'));
+          fputcsv($output, array('NUM PEDIDO', 'CLIENTE', 'DIRECCION 1', 'DIRECCION 2', 'CIUDAD DESTINO', 'FECHA', 'REFERENCIA', 'DESCRIPCION', 'PRECIO', 'CANTIDAD', 'ICR', 'ESTADO ORDEN', 'ORDEN SUMINISTRO', 'FECHA DE ENTREGA', 'HORA DE ENTREGA', 'METODO DE PAGO', 'TRANSPORTADOR', 'CODIGO POSTAL', 'CELULAR','TELEFONOS', 'TOTAL PAGADO'));
           /* echo "<table border='1'>
             <tr>
             <td> NUM PEDIDO </td>
@@ -115,7 +116,7 @@ if (isset($_GET['opc_sel'])) {
               <td> ".$dat_print['Transportador']." </td>
               </tr>
               "; */
-            fputcsv($output, array($dat_print['id_order'], utf8_decode($dat_print['firstname']." ".$dat_print['lastname']), utf8_decode($dat_print['address1']), utf8_decode($dat_print['address2']), utf8_decode($dat_print['city']), $dat_print['date_add'], $dat_print['product_reference'], utf8_decode($dat_print['product_name']), $dat_print['precio'], $dat_print['product_quantity'], $dat_print['cod_icr'], utf8_decode($dat_print['name']), $dat_print['id_supply_order'], $dat_print['Fecha_entrga'], $dat_print['Hora_entrega'], $dat_print['payment'], $dat_print['Transportador'], utf8_decode($dat_print['codpostal']), utf8_decode($dat_print['Tel_address']), utf8_decode($dat_print['total_pagado'])));
+          fputcsv($output, array($dat_print['id_order'], utf8_decode($dat_print['firstname']." ".$dat_print['lastname']), utf8_decode($dat_print['address1']), utf8_decode($dat_print['address2']), utf8_decode($dat_print['city']), $dat_print['date_add'], $dat_print['product_reference'], utf8_decode($dat_print['product_name']), $dat_print['precio'], $dat_print['product_quantity'], $dat_print['cod_icr'], utf8_decode($dat_print['name']), $dat_print['id_supply_order'], $dat_print['Fecha_entrga'], $dat_print['Hora_entrega'], $dat_print['payment'], $dat_print['Transportador'], utf8_decode($dat_print['codpostal']), utf8_decode($dat_print['phone_mobile']), utf8_decode($dat_print['phone']), utf8_decode($dat_print['total_pagado'])));
           }
           //echo "</table>";
         } else {
@@ -223,13 +224,19 @@ if (isset($_GET['opc_sel'])) {
       header("Content-Disposition: attachment; filename=" . basename("Reporte_catalogo.csv"));
       header("Content-Transfer-Encoding: binary");
 
-      $sql = 'SELECT p.id_product, p.reference AS referencia, pll.name AS description,
-                    p.upc AS RegistroInvima, REPLACE( pss.price,".",",") AS precio,  IF ( t.rate IS NULL , 0 , t.rate) AS id_iva_prod,
-                    p.active AS estado, pss.active, blmt.name AS Motivo_cancelacion,
+      $sql = 'SELECT p.id_product, 
+                    p.reference AS referencia, 
+                    pll.name AS description,
+                    p.upc AS RegistroInvima, 
+                    pss.price AS precio,  
+                    IF ( t.rate IS NULL , 0 , t.rate) AS id_iva_prod,
+                    p.active AS estado, 
+                    pss.active, 
+                    blmt.name AS Motivo_cancelacion,
                     GROUP_CONCAT( sup2.name SEPARATOR "|" ) AS Proveedores_Asociados,
                     GROUP_CONCAT( DISTINCT (sup.name) SEPARATOR "|" ) AS Proveedores_Comprados3M,
                     m.name AS Fabricante,
-                    REPLACE( sod.unit_price_te ,".",",") AS precio_ultimo
+                    sod.unit_price_te AS precio_ultimo
                     FROM ps_product p
                     INNER JOIN ps_product_lang pll ON ( p.id_product = pll.id_product )
                     INNER JOIN ps_product_shop pss ON ( p.id_product = pss.id_product )
@@ -248,7 +255,7 @@ if (isset($_GET['opc_sel'])) {
                 ORDER BY sup.id_supplier ASC';
       if ($results = Db::getInstance_slv()->ExecuteS($sql)) {
         $output = fopen('php://output', 'w');
-        fputcsv($output, array("ID_PRODUCTO", "REFERENCIA", "DESCRIPCION", "REGISTRO", "PRECIO", "IVA_PROD", "ACTIVO_PRODUCT", "ACTIVO_PRODUCT_SHOP", "MOTIVO", "PROVEEDORES ASOCIADOS", "PROVEEDORES COMPRA 3Meses", "FABRICANTE", "COSTO COMPRA (ÚLTIMO)"));
+        fputcsv($output, array("ID_PRODUCTO", "REFERENCIA", "DESCRIPCION", "REGISTRO", "PRECIO", "IVA_PROD", "ACTIVO_PRODUCT", "ACTIVO_PRODUCT_SHOP", "MOTIVO", "PROVEEDORES COMPRA 3Meses", "FABRICANTE", "COSTO COMPRA (ÚLTIMO)"));
         /* echo "<table border='1'>
           <tr>
           <td> ID_PRODUCTO </td>
@@ -263,7 +270,7 @@ if (isset($_GET['opc_sel'])) {
           <td> PROVEEDORES </td>
           </tr>"; */
         foreach ($results as $dat_print) {
-          fputcsv($output, array($dat_print['id_product'], $dat_print['referencia'], utf8_decode($dat_print['description']), utf8_decode($dat_print['RegistroInvima']), $dat_print['precio'], $dat_print['id_iva_prod'], $dat_print['estado'], $dat_print['active'], utf8_decode($dat_print['Motivo_cancelacion']), utf8_decode($dat_print['Proveedores_Asociados']), utf8_decode($dat_print['Proveedores_Comprados3M']), utf8_decode($dat_print['Fabricante']), $dat_print['precio_ultimo']));
+          fputcsv($output, array($dat_print['id_product'], $dat_print['referencia'], utf8_decode($dat_print['description']), utf8_decode($dat_print['RegistroInvima']), number_format(floatval($dat_print['precio']),2), $dat_print['id_iva_prod'], $dat_print['estado'], $dat_print['active'], utf8_decode($dat_print['Motivo_cancelacion']),  utf8_decode($dat_print['Proveedores_Comprados3M']), utf8_decode($dat_print['Fabricante']), number_format(floatval($dat_print['precio_ultimo']),2)));
 
           /* echo "
             <tr>
