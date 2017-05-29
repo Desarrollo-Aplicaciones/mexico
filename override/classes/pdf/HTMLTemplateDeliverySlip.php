@@ -30,6 +30,10 @@ class HTMLTemplateDeliverySlip extends HTMLTemplateDeliverySlipCore
 		$delivery_address = new Address((int)$this->order->id_address_delivery);
 		$formatted_delivery_address = AddressFormat::generateAddress($delivery_address, array(), '<br />', ' ');
 		$formatted_invoice_address = '';
+		$id_order_transfer = 32540;
+        if ( Configuration::get('TRANSFERENCIA_BANCARIA_FACT') != NULL && Configuration::get('TRANSFERENCIA_BANCARIA_FACT') != 0) {
+           $id_order_transfer = Configuration::get('TRANSFERENCIA_BANCARIA_FACT');
+        }
 
 		if ($this->order->id_address_delivery != $this->order->id_address_invoice)
 		{
@@ -49,7 +53,17 @@ class HTMLTemplateDeliverySlip extends HTMLTemplateDeliverySlipCore
 		$date_delivery = $message[0]['fecha'];
 		$time_delivery = $message[0]['hora'];
 		$message = $message[0]['note'];
-		
+
+		$sql = 'SELECT IF ( ohh.id_order_state = 10, "Transferencia electrónica (03)", mp.medio_de_pago ) AS medio_de_pago
+                FROM ps_orders odr 
+                LEFT JOIN ps_pagos_payu payu ON (odr.id_order=payu.id_order AND odr.id_customer=payu.id_customer)
+                LEFT JOIN ps_medios_de_pago mp ON ( odr.payment = mp.nombre OR odr.payment = mp.nombre_alterno )
+                LEFT JOIN ps_message mes ON (odr.id_order = mes.id_order AND mes.id_employee = 0 AND mes.id_customer != 0)
+                LEFT JOIN ps_order_history ohh ON ( odr.id_order = ohh.id_order AND ohh.id_order_state = 10 AND ohh.id_order >='.$id_order_transfer.')
+                WHERE odr.id_order=' . (int) $this->order->id . " ;";
+
+		$payment = Db::getInstance()->ExecuteS( $sql );
+
 		$carrier = new Carrier($this->order->id_carrier);
 		$carrier->name = ($carrier->name == '0' ? Configuration::get('PS_SHOP_NAME') : $carrier->name);
 		$this->smarty->assign(array(
@@ -57,6 +71,7 @@ class HTMLTemplateDeliverySlip extends HTMLTemplateDeliverySlipCore
 			'delivery_address' => $formatted_delivery_address,
 			'invoice_address' => $formatted_invoice_address,
 			'order_invoice' => $this->order_invoice,
+			'payment_method' => $payment[0]['medio_de_pago'],
 			'carrier' => $carrier,
 			'note' => $message,
 			'date_delivery' => $date_delivery,
