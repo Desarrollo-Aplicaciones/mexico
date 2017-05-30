@@ -326,7 +326,8 @@ class ProductControllerCore extends FrontController
 				'envio_gratis' => $gratis_envio_precio,
         		'img_manufacturer'=> $img_manufacturer,
         		'url_manufacturer'=> $url_manufacturer,
-        		'HOOK_BANNER' => Hook::exec('prodmain')
+        		'HOOK_BANNER' => Hook::exec('prodmain'),
+                'disponibilidad' => Configuration::get('PS_SUBJECT_INVENTORY'),
 
 			));
 		}
