@@ -356,9 +356,9 @@ public function getAssociatedRestrictions($type, $active_only, $i18n)
      * @param $id_lang
      * @return array
      */
-    public static function getCartsRuleByCode($name, $id_lang)
+    public static function getCartsRuleByCode($name, $id_lang, $extended = false)
     {
-
+ 
     /*
     SELECT mr.id_cart_rule
     FROM ps_cart_rule cr
