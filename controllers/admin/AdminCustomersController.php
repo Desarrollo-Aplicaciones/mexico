@@ -35,7 +35,7 @@ class AdminCustomersControllerCore extends AdminController
 	public function __construct()
 	{
 		$this->required_database = true;
-		$this->required_fields = array('newsletter','optin');
+		$this->required_fields = array('newsletter','optin','verificado');
 		$this->table = 'customer';
 		$this->className = 'Customer';
 		$this->lang = false;
@@ -117,6 +117,14 @@ class AdminCustomersControllerCore extends AdminController
 				'type' => 'bool',
 				'orderby' => false,
 				'filter_key' => 'a!active',
+			),
+			'verificado' => array(
+				'title' => $this->l('verificado'),
+				'width' => 70,
+				'align' => 'center',
+				'type' => 'bool',
+				'callback' => 'printValidateIcon',
+				'orderby' => false
 			),
 			'newsletter' => array(
 				'title' => $this->l('News.'),
@@ -218,6 +226,13 @@ class AdminCustomersControllerCore extends AdminController
 		{
 			if ($this->tabAccess['edit'] === '1')
 				$this->action = 'change_optin_val';
+			else
+				$this->errors[] = Tools::displayError('You do not have permission to edit this.');
+		}
+		elseif (Tools::isSubmit('changeValidateVal') && $this->id_object)
+		{
+			if ($this->tabAccess['edit'] === '1')
+				$this->action = 'change_validate_val';
 			else
 				$this->errors[] = Tools::displayError('You do not have permission to edit this.');
 		}
@@ -386,6 +401,27 @@ class AdminCustomersControllerCore extends AdminController
 						)
 					),
 					'desc' => $this->l('Customer will receive your ads via email.')
+				),
+				array(
+					'type' => 'radio',
+					'label' => $this->l('Verificado:'),
+					'name' => 'verificado',
+					'required' => false,
+					'class' => 't',
+					'is_bool' => true,
+					'values' => array(
+						array(
+							'id' => 'verificado_on',
+							'value' => 1,
+							'label' => $this->l('Enabled')
+						),
+						array(
+							'id' => 'verificado_off',
+							'value' => 0,
+							'label' => $this->l('Disabled')
+						)
+					),
+					'desc' => $this->l('Verifica el cliente.')
 				),
 			)
 		);
@@ -875,6 +911,17 @@ class AdminCustomersControllerCore extends AdminController
 		Tools::redirectAdmin(self::$currentIndex.'&token='.$this->token);
 	}
 
+	public function processChangeValidateVal()
+	{
+		$customer = new Customer($this->id_object);
+		if (!Validate::isLoadedObject($customer))
+			$this->errors[] = Tools::displayError('An error occurred while updating customer information.');
+		$customer->verificado = $customer->verificado ? 0 : 1;
+		if (!$customer->update())
+			$this->errors[] = Tools::displayError('An error occurred while updating customer information.');
+		Tools::redirectAdmin(self::$currentIndex.'&token='.$this->token);
+	}
+
 	public static function printNewsIcon($value, $customer)
 	{
 		return '<a href="index.php?tab=AdminCustomers&id_customer='
@@ -887,6 +934,14 @@ class AdminCustomersControllerCore extends AdminController
 	{
 		return '<a href="index.php?tab=AdminCustomers&id_customer='
 			.(int)$customer['id_customer'].'&changeOptinVal&token='.Tools::getAdminTokenLite('AdminCustomers').'">
+				'.($value ? '<img src="../img/admin/enabled.gif" />' : '<img src="../img/admin/disabled.gif" />').
+			'</a>';
+	}
+
+	public static function printValidateIcon($value, $customer)
+	{
+		return '<a href="index.php?tab=AdminCustomers&id_customer='
+			.(int)$customer['id_customer'].'&changeValidateVal&token='.Tools::getAdminTokenLite('AdminCustomers').'">
 				'.($value ? '<img src="../img/admin/enabled.gif" />' : '<img src="../img/admin/disabled.gif" />').
 			'</a>';
 	}

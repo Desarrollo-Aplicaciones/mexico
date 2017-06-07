@@ -71,6 +71,9 @@ class CustomerCore extends ObjectModel
 	/** @var boolean Opt-in subscription */
 	public $optin;
 
+	/** @var boolean Opt-in subscription */
+	public $verificado;
+
 	/** @var string WebSite **/
 	public $website;
 

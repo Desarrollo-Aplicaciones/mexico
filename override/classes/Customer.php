@@ -51,6 +51,7 @@ class Customer extends CustomerCore{
             'identification' =>             array('type' => self::TYPE_STRING, 'validate' => 'isFileName', 'copy_post' => false),
             'sms' =>                        array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId', 'copy_post' => false),
             'img_profile' =>                array('type' => self::TYPE_STRING, 'copy_post' => false),            
+            'verificado' =>                 array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),            
         ),
     );
     
