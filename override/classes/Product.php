@@ -22,7 +22,7 @@ class Product extends ProductCore {
 		$sql->join(Shop::addSqlAssociation('product', 'p'));
                 
                 $sql->innerJoin('product_shop', 'ps', 'ps.`id_product`  =  p.`id_product`');
-                $sql->innerJoin('supply_order_detail', 'sod', 'sod.`id_product` = ps.`id_product`');
+                $sql->leftJoin('supply_order_detail', 'sod', 'sod.`id_product` = ps.`id_product`');
                 $sql->leftJoin('product_black_list', 'prod_black', 'prod_black.`reference`  =  p.`reference`');
 		$sql->leftJoin('product_lang', 'pl', '
 			p.`id_product` = pl.`id_product`
