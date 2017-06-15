@@ -19,6 +19,7 @@ require_once(dirname(__FILE__) . '/../init.php');
     $servierMedico = new servierMedicos();
     
     if( $id_medico ){
+        error_log("\n ajaxserviermedicos  id_medico:".pSQL($id_medico)." - ",3,"/tmp/errorcito.log");
         $result = $servierMedico->insertMedico( $id_medico, $id_cart );
         echo json_encode(
             $result
@@ -26,6 +27,7 @@ require_once(dirname(__FILE__) . '/../init.php');
     }
     
     else {
+        error_log("\n ajaxserviermedicos NO id_medico",3,"/tmp/errorcito.log");
         //Consulta los medicos por nombre y apellido
         $result = $servierMedico->searchByNameMed( str_replace(" ", "%", $medico) );
         if ( isset($result) && $result != NULL ){
