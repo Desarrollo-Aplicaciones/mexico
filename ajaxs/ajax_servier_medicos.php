@@ -1,10 +1,16 @@
 <?php
 require_once(dirname(__FILE__) . '/../config/config.inc.php');
 //require_once(dirname(__FILE__) . '/../config/defines.inc.php');
-require_once(dirname(__FILE__) . '/../init.php');
+//require_once(dirname(__FILE__) . '/../init.php');
 
     //Id del carro para asociar el Medico
     $context = Context::getContext();
+    if ( $_POST["printpantalla"] == '1' )
+    {
+        echo "<pre>";
+        print_r($context);
+        echo "</pre>";
+    }    
     $id_cart = $context->cart->id;
     
     //Consulta del autocomplete
