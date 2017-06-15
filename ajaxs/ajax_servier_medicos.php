@@ -5,12 +5,14 @@ require_once(dirname(__FILE__) . '/../config/config.inc.php');
 
     //Id del carro para asociar el Medico
     $context = Context::getContext();
-    if ( $_POST["printpantalla"] == '1' )
+    
+    if ( $_GET["printpantalla"] == '1' )
     {
-        echo "<pre>";
+        echo "<pre>Context: <br>";
         print_r($context);
         echo "</pre>";
-    }    
+    }
+    
     $id_cart = $context->cart->id;
     
     //Consulta del autocomplete
