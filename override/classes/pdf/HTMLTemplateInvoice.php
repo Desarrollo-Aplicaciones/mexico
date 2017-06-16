@@ -568,8 +568,7 @@ var_dump($val_total_de_ivas);
     $sello_SAT = '';
 
 //echo "<br>this->order->current_state: " . $this->order->current_state;
-
-    if ( $this->order->id > 918 ) {
+    if ( $this->order->id > Configuration::get('ID_ORDER_TIMBRADO') ) {
 
         $factura = new Facturaxion();
 
