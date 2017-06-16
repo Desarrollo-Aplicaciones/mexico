@@ -1,1 +1,8 @@
-{"name": "iZooto Push Notification","short_name": "iZooto Notifier","icons": [{"src": "icon-192x192.png","sizes": "192x192"}],"start_url": "./index.html?homescreen=1","display": "standalone","gcm_sender_id": "161512991690"}
+{
+  "name": "Farmalisto México",
+  "short_name": "FarmalistoMex",
+  "start_url": "/",
+  "display": "standalone",
+  "gcm_sender_id": "482941778795",
+  "DO_NOT_CHANGE_GCM_SENDER_ID": "Do not change the GCM Sender ID"
+}

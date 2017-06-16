@@ -36,27 +36,27 @@ class ServierCore extends ObjectModel {
         
     
     public function validateIdCartOnServier( $id, $id_rep ){
-        if( isset($id) && $id != Null ){
+        if( isset($id) && $id != Null && $id != 0 ){
             $sql = "SELECT COUNT(id_cart) 
                     FROM ps_cart_asociado_servier
                     WHERE id_cart = '".$id."'";
             $result = DB::getInstance()->getValue($sql);
-            echo '<br>result<br>'.$result;
+            //echo '<br>result<br>'.$result;
             if( isset($result) && $result == 0 ){
 //                $return = $this->add();
-                $return = $this->insertOnServier( $id_rep, (int)$id );
+                $return2 = " Ingresado: ".$this->insertOnServier( $id_rep, (int)$id );
                 
             }
             elseif( $result >= 1 ){
 //                $return = $this->update();
-                $return = $this->updateOnServier( $id_rep, (int)$id );
+                $return2 = " Actualizado: ".$this->updateOnServier( $id_rep, (int)$id );
             }
-            else {}
+           
         }
         else{
-            $return = 'yucas';
+            $return2 = ' Sin carrito seleccionado';
         }
-        return " ".$return;
+        return " ".$return2;
     }
 
     public function insertOnServier($id_rep, $id_cart){
