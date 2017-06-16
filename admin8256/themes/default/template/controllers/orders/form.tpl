@@ -326,9 +326,9 @@
 			var id_rep = $(this).val();
 			$.post( "{$base_dir}ajaxs/ajax_servier.php", { id_rep: id_rep, id_cart_ini: id_cart })
 			.done(function( data ) {
-                            $("#doctor_err").show();
-                            $("#doctor_err").html(data);
-                            $("#doctor_err").css("background","#FFF");
+                            $("#servier_err").show();
+                            $("#servier_err").html(data.mesage + ' ' + data.resultado);
+                            $("#servier_err").css("background","#FFF");
 			}, "json");
 		});
 		
@@ -359,14 +359,13 @@
                         dataType: "json",
                         data : { 
                             id_medico: value,
-                            id_cart: id_cart_med,
                             id_cart_ini: id_cart
                                 },
 			
 			success: function(data){
-                            $("#doctor_err").show();
-                            $("#doctor_err").html(data);
-                            $("#doctor_err").css("background","#FFF");
+                            $("#servier_err").show();
+                            $("#servier_err").html(data);
+                            $("#servier_err").css("background","#FFF");
 				//console.log(data);
 			}
 		});
@@ -1555,7 +1554,7 @@
 		<label>Ingrese un Médico</label>
 		<input type="text" id="input-medico">
 		<div id="suggesstion-box"></div>
-		<div id="doctor_err" class="warn" style="display:none"></div>
+		<div id="servier_err" class="warn" style="display:none"></div>
 	</p>
 </fieldset>
 <br>
