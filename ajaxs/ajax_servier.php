@@ -12,8 +12,7 @@ require_once(dirname(__FILE__) . '/../init.php');
 
         $context = Context::getContext();       
 
-        if ( $_GET["printpantalla"] == '1' )
-        {
+        if ( $_GET["printpantalla"] == '1' ) {
             echo "<pre>REQUEST: <br>";
             print_r($_REQUEST);
             echo "<hr><br><br><hr>Context: <br>";
@@ -43,7 +42,7 @@ require_once(dirname(__FILE__) . '/../init.php');
         echo json_encode(
             array(
                 'success'=>true, 
-                'mesage'=>'Los resultados son', 
+                'mesage'=>'Código continuar al carrito '.$id_cart, 
                 'resultado'=> $result,
             ) 
         );        
@@ -52,7 +51,7 @@ require_once(dirname(__FILE__) . '/../init.php');
         echo json_encode(
             array(
                 'success'=>false, 
-                'mesage'=>'No hay resultados',
+                'mesage'=>'Fallo asociar Código continuar al carrito '.$id_cart,
                 'resultado'=> $result,
             ) 
         );
