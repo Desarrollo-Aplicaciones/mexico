@@ -327,7 +327,7 @@
 			$.post( "{$base_dir}ajaxs/ajax_servier.php", { id_rep: id_rep, id_cart_ini: id_cart })
 			.done(function( data ) {
                             $("#servier_err").show();
-                            $("#servier_err").html(data.mesage + ' ' + data.resultado);
+                            $("#servier_err").html(data);
                             $("#servier_err").css("background","#FFF");
 			}, "json");
 		});

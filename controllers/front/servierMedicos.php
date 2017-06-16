@@ -61,7 +61,7 @@ class servierMedicosCore extends ObjectModel {
                 ), 'id_cart = '.(int)$id_cart);
                 //echo "return 1: ".$result;
                 error_log("\n insertMedico update id_medico:".pSQL($id_medico)."- id_cart:".(int)$id_cart." | ".$result,3,"/tmp/errorcito.log");
-                return "Medico Servier actualizado en el carrito".(int)$id_cart." - ".$result; 
+                return "Medico Servier actualizado en el carrito ".(int)$id_cart." - (1 OK - 2 Bad): ".$result; 
             }
             else {
                 $result = Db::getInstance()->insert('servier_medicos_cart', array(
@@ -69,7 +69,7 @@ class servierMedicosCore extends ObjectModel {
                     'id_cart'      => (int)$id_cart,
                 ));
                 error_log("\n insertMedico insert id_medico:".pSQL($id_medico)."- id_cart:".(int)$id_cart." | ".$result,3,"/tmp/errorcito.log");
-                return "Medico Servier ingresado en el carrito".(int)$id_cart." - ".$result; 
+                return "Medico Servier ingresado en el carrito ".(int)$id_cart." - (1 OK - 2 Bad): ".$result; 
             }
             
         } else {

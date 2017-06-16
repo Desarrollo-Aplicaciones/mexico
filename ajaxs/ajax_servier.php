@@ -39,21 +39,9 @@ require_once(dirname(__FILE__) . '/../init.php');
     
     
     if ( isset($result) && $result ){
-        echo json_encode(
-            array(
-                'success'=>true, 
-                'mesage'=>'Código continuar al carrito '.$id_cart, 
-                'resultado'=> $result,
-            ) 
-        );        
+        echo 'Código continuar al carrito '.$id_cart.' - '.$result;        
     }
     else{
-        echo json_encode(
-            array(
-                'success'=>false, 
-                'mesage'=>'Fallo asociar Código continuar al carrito '.$id_cart,
-                'resultado'=> $result,
-            ) 
-        );
+        echo 'Fallo asociar Código continuar al carrito '.$id_cart.', Verificar código - ' .$result;
     }
 ?>

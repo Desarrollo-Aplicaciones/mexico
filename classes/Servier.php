@@ -44,17 +44,17 @@ class ServierCore extends ObjectModel {
             //echo '<br>result<br>'.$result;
             if( isset($result) && $result == 0 ){
 //                $return = $this->add();
-                $return2 = "Ingresado: ".$this->insertOnServier( $id_rep, (int)$id );
+                $return2 = " Ingresado: ".$this->insertOnServier( $id_rep, (int)$id );
                 
             }
             elseif( $result >= 1 ){
 //                $return = $this->update();
-                $return2 = "Actualizado: ".$this->updateOnServier( $id_rep, (int)$id );
+                $return2 = " Actualizado: ".$this->updateOnServier( $id_rep, (int)$id );
             }
            
         }
         else{
-            $return2 = 'Sin carrito seleccionado';
+            $return2 = ' Sin carrito seleccionado';
         }
         return " ".$return2;
     }
