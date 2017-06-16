@@ -3,23 +3,28 @@ include(dirname(__FILE__).'/../config/config.inc.php');
 include(dirname(__FILE__).'/../init.php');
 
     //Id del carro para asociar el Medico
-    $context = Context::getContext();
-    
-    $contextClone = Context::getContext()->cloneContext();
-    
-    if ( $_GET["printpantalla"] == '1' )
-    {
-        echo "<pre>REQUEST: <br>";
-        print_r($_REQUEST);
-        echo "<hr><br><br><hr>Context: <br>";
-        print_r($context);
-        echo '<hr><br><br><hr>CloneContext:<br>';
-        print_r($contextClone);
-        echo "</pre>";
+    if ( $_POST["id_cart_ini"] != 0 ) {
+        
+        $id_cart = $_POST["id_cart_ini"];
+        
+    } else {       
+
+        $context = Context::getContext();        
+
+        if ( $_GET["printpantalla"] == '1' )
+        {
+            echo "<pre>REQUEST: <br>";
+            print_r($_REQUEST);
+            echo "<hr><br><br><hr>Context: <br>";
+            print_r($context);
+            echo '<hr><br><br><hr>CloneContext:<br>';
+            print_r($contextClone);
+            echo "</pre>";
+        }
+
+        $id_cart = $context->cart->id;
     }
-    
-    $id_cart = $context->cart->id;
-    
+
     //Consulta del autocomplete
 //    $medico = Tools::getValue('term');
     $medico = $_POST["medico"];
