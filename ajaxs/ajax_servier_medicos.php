@@ -6,10 +6,14 @@ require_once(dirname(__FILE__) . '/../config/config.inc.php');
     //Id del carro para asociar el Medico
     $context = Context::getContext();
     
+    $contextClone = Context::getContext()->cloneContext();
+    
     if ( $_GET["printpantalla"] == '1' )
     {
         echo "<pre>Context: <br>";
         print_r($context);
+        echo '<hr><br><br><hr>CloneContext:<br>';
+        print_r($contextClone);
         echo "</pre>";
     }
     
