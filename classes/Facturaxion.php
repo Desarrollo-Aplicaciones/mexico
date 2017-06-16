@@ -55,10 +55,10 @@ if (!class_exists('Facturaxion')) {
 				$this->test_char = 't_';
 				$this->test_mode = true;
 
-				$this->numero_certificadoS = "aaa010101aaa__csd_01";
-				$this->numero_certificado = "20001000000100005867";
-				$this->archivo_cer = "xml_timbrado/certi_prueba/aaa010101aaa__csd_01.cer"; // Prueba de timbrado
-				$this->archivo_pem = "xml_timbrado/certi_prueba/aaa010101aaa__csd_01.pem"; // Prueba de timbrado 
+				$this->numero_certificadoS = "30001000000300023708";
+				$this->numero_certificado = "30001000000300023708";
+				$this->archivo_cer = "xml_timbrado/certi_prueba/CSD01_AAA010101AAA.cer"; // Prueba de timbrado
+				$this->archivo_pem = "xml_timbrado/certi_prueba/certificate1.pem"; // Prueba de timbrado 
 
 				$this->usuario = "1763AAB0593430490B3B3EE5457A9A2580F9D7DE";
 				$this->proveedor = "N#@Mo!)#oh&amp;gt;)BYOdX=q_ZUCsLxqpv?";
@@ -659,30 +659,11 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 	 * @return [Array]                  [Retorna la respuesta del timbrado de la factura]
 	 */
 	
-		public function solicitud2( $metodo_pago, $cupon, $list_products, $invoice_address, $order_tot, $estado_orden = 0, $obligar_timbrado = 0) {
+		public function solicitud2( $metodo_pago, $cupon, $list_products, $invoice_address, $order_tot, $array_ivas, $val_total_de_iva, $estado_orden = 0, $obligar_timbrado = 0) {
 
 			$orden_validar = Configuration::get('FACTURAXION_ORDER_VALIDATE');
-
-			
-
-			//echo "<textarea cols=150 rows=20>"./*str_replace(array("&amp;lt;","&amp;gt;",'&amp;quot;',"&lt;","&gt;",'&quot;'),array("<",">",'"',"<",">",'"') ,*/$xml_params/*)*/."</textarea><br>";
-			//echo "<textarea cols=150 rows=50>".utf80_decode($xml_params)."</textarea><br>";
-			
-			/*
-			echo "<br> order: <pre>"; //current_state
-			print_r($order_tot);
-			echo "</br> </pre>";
-			echo "<hr><div style='font-size:13px'> list_products: <pre style='font-size:13px'><font size='3'>"; //current_state
-			print_r($list_products);
-			echo " </pre>";
-
-			echo "<hr><div style='font-size:13px'> invoice_address: <pre style='font-size:13px'><font size='3'>"; //current_state
-			print_r($invoice_address);
-			echo "</hr> </pre>";
-			*/
-			//exit();
-			
-			
+			$order_tot->total_discounts = ($order_tot->total_products_wt+$order_tot->total_shipping_tax_incl+$order_tot->total_wrapping_tax_incl-$order_tot->total_paid_tax_incl);
+						
 			$valor_timbrado = $this->RegistroTimbrado( $order_tot->id , 1);
 
 			//echo "<br> <pre> orden timbrar datos : ";
@@ -721,413 +702,53 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 					print_r($cupon);
 					echo "</hr> </pre>";
 				}
-				//echo $xml_previamente_generado = $this->dir_server."xml_timbrado/response/".$invoice_date_t.$this->test_char.$order_tot->id."_response.xml";
-			//if ( !file_exists($xml_previamente_generado) ) {		
-
-				//echo "<br> No existe archivo XML de timbrado o registro de timbrado en la BD";
-
-				/****************************  Validar productos de la orden para totales y concepto  ***************************************/
-
-
-
-						/* {              INICIO  VALIDACION DE PRODUCTOS PARA TOTALES                     */
-
-				// solicitud2( $metodo_pago, $cupon, $list_products, $invoice_address, $order_tot ) 
-
-				/*
-
-				[product_name] => VIP PLAY BOY  DESODORANTE 24 HORAS DEO BODY SPRAY CON 150 ML – HOMBRE.
-							[product_quantity] => 2
-
-							[total_price_tax_incl] => 74.060000
-							[total_price_tax_excl] => 63.840000
-							[unit_price_tax_incl] => 37.030000
-							[unit_price_tax_excl] => 31.920000
-				*/
 
 				$cant_prods = 0;
-				$subTotal_calculado = floatval(0); // tendrá la suma de cada ( precio producto X cantidad ) antes de iva
-				$val_total_min_dto_mas_iva = 0; // Total de la venta actual
-				$val_total_de_iva = 0; // total del iva calculado
-				$val_iva_X_tax = array();
 
 				$hjys='';
-				$iva_acum_porcen_dto = 0;
-				$iva_prod_actual = 0;
 				foreach ($list_products as $key_prod => $value) {
 
-					$val_iva_prod_actual = 0; // total del iva calculado del producto actual
 					//$hjys .= "<br>".$list_products[$key_prod]['product_name'];
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['descripcion'] = $this->trim_all( trim( $this->stripAccents( $list_products[$key_prod]['product_name'] ) ) );
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['cantidad'] = number_format( $list_products[$key_prod]['product_quantity'], 2, '.', '');
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['unidad'] = 'Pieza';
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['valorUnitario'] = number_format( $list_products[$key_prod]['unit_price_tax_excl'], 2, '.', '');
 
-					if ( $cant_prods == 0 ) {
-						$subTotal_calculado = $list_products[$key_prod]['total_price_tax_excl'];
-					} else {
-						$subTotal_calculado += $list_products[$key_prod]['total_price_tax_excl'];
-					}
-
-					//echo "<br> subtotal acumulado sin descuento: ".$subTotal_calculado;
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['importe'] = number_format( $list_products[$key_prod]['total_price_tax_excl'], 2, '.', '');
-                                        
-						//echo "<hr> ID: ".$key_prod." -- ".$list_products[$key_prod]['product_name']." iva: ".$list_products[$key_prod]['tax_rate'];
-						//echo "<br> precio: ".$list_products[$key_prod]['unit_price_tax_excl'];
-						//echo "<br> cantidad: ".$list_products[$key_prod]['product_quantity'];
-						//echo "<br> Valor TOtal: ".$list_products[$key_prod]['total_price_tax_excl'];
-
-					/************* suma total del iva de los productos si se aplica un descuento global de porcentaje a la orden **************/
-
-					if ( isset( $cupon ) && $cupon != null && $cupon['reduction'] != '' ) {
-
-						if ( $cupon['tipo'] == 'porcentaje' && $cupon['reduction_product'] != '0' && $cupon['reduction_product'] == $list_products[$key_prod]['product_id']) {
-
-							$iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key_prod]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key_prod]['tax_rate'], 2), Tools::ps_round($cupon['reduction'], 2), false, Tools::ps_round($list_products[$key_prod]['product_quantity'], 2), false, true ), 2);
-                                                        //error_log("\n\n 0.1----- iva_prod_actual:  ".print_r($iva_prod_actual,true)."\n\n",3,"/tmp/progresivo.log");
-
-							if ( $order_tot->id == $orden_validar  ) {
-								echo "<br> val iva descuentop_aplicado % :".$cupon['reduction'];
-							}
-
-						} elseif ( $cupon['tipo'] == 'porcentaje' && $cupon['reduction_product'] == '0' ) {
-
-							$iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key_prod]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key_prod]['tax_rate'], 2), Tools::ps_round($cupon['reduction'], 2), false, Tools::ps_round($list_products[$key_prod]['product_quantity'], 2), false, true ), 2);
-                                                        ///error_log("\n\n 0.2----- iva_prod_actual:  ".print_r($iva_prod_actual,true)."\n\n",3,"/tmp/progresivo.log");
-
-							if ( $order_tot->id == $orden_validar  ) {
-								echo "<br> val iva descuentop_aplicado % :".$cupon['reduction'];
-							}
-
-						} 
-                                                elseif ( $cupon['tipo'] == 'valor' && ($cupon['reduction_product'] != '0'  && $cupon['reduction_product'] == $list_products[$key_prod]['product_id']) ) {
-                                                    //$iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key]['tax_rate'], 2), Tools::ps_round($cupon_xml_calc['reduction'], 2), false, Tools::ps_round($list_products[$key]['product_quantity'], 2), false, true ), 2);
-                                                    $iva_prod_actual = Tools::ps_round(( Tools::ps_round((Tools::ps_round( ( Tools::ps_round(($list_products[$key_prod]['unit_price_tax_excl'] - $cupon['reduction']) * $list_products[$key_prod]['product_quantity'],2)),2) * $list_products[$key_prod]['tax_rate']),2)/100),2) ;
-                                                    //error_log("\n\n 2.... iva_prod_actual:".print_r($iva_prod_actual,true),3,"/tmp/progresivo.log");
-                                                }
-                                                // $cupon['reduction_product'] == '0'
-                                                
-                                                else {
-
-							$iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key_prod]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key_prod]['tax_rate'], 2), Tools::ps_round('0.00', 2), false, Tools::ps_round($list_products[$key_prod]['product_quantity'], 2), false, true ), 2);
-                                                        //error_log("\n\n 0.3----- iva_prod_actual:  ".print_r($iva_prod_actual,true)."\n\n",3,"/tmp/progresivo.log");
-
-							if ( $order_tot->id == $orden_validar  ) {
-								echo "<br> val iva descuentop_aplicado $ :".$cupon['reduction'];
-							}
-
-						}
-					} else {
-
-						$iva_prod_actual = Tools::ps_round( Cart::StaticUnitPriceDiscountPercent( Tools::ps_round($list_products[$key_prod]['unit_price_tax_excl'], 2), Tools::ps_round($list_products[$key_prod]['tax_rate'], 2), Tools::ps_round('0.00', 2), false, Tools::ps_round($list_products[$key_prod]['product_quantity'], 2), false, true ), 2);
-                                                //error_log("\n\n 0.4----- iva_prod_actual:  ".print_r($iva_prod_actual,true)."\n\n",3,"/tmp/progresivo.log");
-
-						if ( $order_tot->id == $orden_validar  ) {
-								echo "<br> val iva descuentop_aplicado sin descuento :";
-						}
-
-					}
-					
-
-                                        //error_log("\n\n 1.0----- iva_prod_actual:  ".print_r($iva_prod_actual,true)."\n\n",3,"/tmp/progresivo.log");
-					$iva_acum_porcen_dto += $iva_prod_actual;
-                                        //error_log("\n\n 1.1----- iva_acum_porcen_dto:  ".print_r($iva_acum_porcen_dto,true)."\n\n",3,"/tmp/progresivo.log");
-
-
-					if ( $order_tot->id == $orden_validar) {
-                                            echo "<br><br> ----- calculado de/to: ".$iva_acum_porcen_dto;
-                                            //error_log("\n\n 2----- iva_acum_porcen_dto:  ".print_r($iva_acum_porcen_dto,true)."\n\n",3,"/tmp/progresivo.log");
-					}
-
-
-					if ( Tools::ps_round( $list_products[$key_prod]['tax_rate'] , 2) != '0.00') {
-
-
-
-						if ( $order_tot->id ==   $orden_validar) {
-							echo "<br> si tax del ". /*Tools::ps_round( */$list_products[$key_prod]['tax_rate'] /*, 2)*/;
-						}
-
-/*
-						if ( isset( $cupon ) && $cupon != null && $cupon['reduction'] != '' ) {
-
-
-
-							if ( $order_tot->id == $orden_validar  ) {
-								echo "<br> si cupon del ". $cupon['reduction'] ;
-							}
-
-
-							if ( $cupon['tipo'] == 'porcentaje' ) {
-
-
-
-								if ( $order_tot->id == $orden_validar  ) {
-
-									echo "<br> si cupon de %  ";
-
-									echo "<br> val acumulado total de iva :".//Tools::ps_round( 
-									( $list_products[$key_prod]['total_price_tax_excl'] - ( $list_products[$key_prod]['total_price_tax_excl'] * $cupon['reduction'] ) / 100 ) * ( ( $list_products[$key_prod]['tax_rate'] ) / 100 );
-																	
-								}
-
-
-							} else { // ----------------------------- cupon monetario
-
-								$val_total_de_iva += $val_iva_prod_actual = $list_products[$key_prod]['total_price_tax_excl']  * ( ( $list_products[$key_prod]['tax_rate'] ) / 100 );
-
-								$val_total_min_dto_mas_iva += ( $list_products[$key_prod]['unit_price_tax_excl'] * $list_products[$key_prod]['product_quantity'] ) + $val_iva_prod_actual;
-
-								if ( $order_tot->id == $orden_validar  ) {
-									echo "<br> val_total_min_dto_mas_iva $ dto: ".$val_total_min_dto_mas_iva;
-									echo "<br> val iva acum $ dto: ".$val_total_de_iva;
-									echo "<br> val iva prod actual $ dto: ".$val_iva_prod_actual;
-								}
-
-							}
-
-						} else {  //------------------------------- si no tiene cupon de descuento 
-
-							if ( $order_tot->id == $orden_validar  ) {
-								echo "<br> val acumulado total de iva :".$list_products[$key_prod]['total_price_tax_excl'] * ( ( $list_products[$key_prod]['tax_rate'] ) / 100 );
-							}
-
-							$val_total_de_iva += $val_iva_prod_actual = //Tools::ps_round( 
-								$list_products[$key_prod]['total_price_tax_excl'] * ( ( $list_products[$key_prod]['tax_rate'] ) / 100 );
-
-							if ( $order_tot->id == $orden_validar  ) {
-								echo "<br> Iva actual : ". $val_iva_prod_actual;
-							}
-
-							//echo "<br> val total acumulado :".
-							$val_total_min_dto_mas_iva += 
-								 $list_products[$key_prod]['total_price_tax_incl'] 
-								;
-
-							//echo "<br> precio con iva: ".$list_products[$key_prod]['total_price_tax_incl'];
-
-						}*/
-
-
-						if ( !isset( $val_iva_X_tax[$list_products[$key_prod]['tax_rate']] ) ) {
-							//echo "<br> no creado tax del %  ".$list_products[$key_prod]['tax_rate'];
-
-							$val_iva_X_tax[$list_products[$key_prod]['tax_rate']] = 0;
-
-						}
-
-						if ( $order_tot->id == $orden_validar  ) { 
-							echo "<br> tax del  ".$list_products[$key_prod]['tax_rate']." % antes con ".$val_iva_X_tax[$list_products[$key_prod]['tax_rate']];
-						}
-
-						$val_iva_X_tax[$list_products[$key_prod]['tax_rate']] += $iva_prod_actual;
-						$iva_prod_actual = 0;
-
-						if ( $order_tot->id == $orden_validar  ) {
-							echo "<br> tax del  ".$list_products[$key_prod]['tax_rate']." % despues con ".$val_iva_X_tax[$list_products[$key_prod]['tax_rate']];
-						}
-
-
-					} else { //-----------------------------------------         si producto no tiene impuestos
-
-						/*if ( isset( $cupon ) && $cupon != null && $cupon['reduction'] != '' ) {
-
-							if ( $cupon['tipo'] == 'porcentaje' ) {
-
-
-								if ( $order_tot->id == $orden_validar  ) {
-									echo "<br> val total acumulado :".( $list_products[$key_prod]['total_price_tax_excl'] - ( $list_products[$key_prod]['total_price_tax_excl'] * $cupon['reduction'] ) / 100 );
-								}
-								$val_total_min_dto_mas_iva += //Tools::ps_round( 
-									( $list_products[$key_prod]['total_price_tax_excl'] - ( $list_products[$key_prod]['total_price_tax_excl'] * $cupon['reduction'] ) / 100 );
-
-							} else {
-
-								$val_total_min_dto_mas_iva += ( $list_products[$key_prod]['unit_price_tax_excl'] * $list_products[$key_prod]['product_quantity'] ) ;
-
-								if ( $order_tot->id == $orden_validar  ) {
-									echo "<br> val_total_min_dto_mas_iva $ dto: ".$val_total_min_dto_mas_iva;									
-								}
-
-							}
-
-						} else {
-
-							$val_total_min_dto_mas_iva += $list_products[$key_prod]['total_price_tax_excl'];
-
-							if ( $order_tot->id == $orden_validar  ) {
-								echo "<br> val total acumulado :".$val_total_min_dto_mas_iva ;
-							}
-
-						}*/
-
-					}
 
 					$cant_prods++;
 
 				}
 
-				if ( $order_tot->id == $orden_validar  ) {
-					echo "<br>SUBTOTAL_CALCULADO: ".$subTotal_calculado;
-				}
-				/********* descuentos *********/
-
-				$descuentop_aplicado = 0;
-				if ( isset( $cupon ) && $cupon != null && $cupon['reduction'] != '' ) {
-
-					echo "<br> val descuentop_aplicado % :".$descuentop_aplicado;
-
-
-					if ( $cupon['tipo'] == 'porcentaje' ) {
-						$descuentop_aplicado = ( $subTotal_calculado * $cupon['reduction'] ) / 100;
-
-						if ( $order_tot->id == $orden_validar  ) {
-							echo "<br> val descuentop_aplicado % :".$descuentop_aplicado;
-						}
-
-					} else {
-
-						$descuentop_aplicado = $cupon['reduction'];
-
-						if ( $order_tot->id == $orden_validar  ) {
-							echo "<br> val descuentop_aplicado $ :".$descuentop_aplicado;
-							echo "<br> cupon: ".$cupon['reduction'];							
-						}
-
-						if ( $subTotal_calculado >= $descuentop_aplicado ) {
-							$val_total_min_dto_mas_iva -= $descuentop_aplicado;
-						} else {
-							$descuentop_aplicado = $subTotal_calculado;
-							$val_total_min_dto_mas_iva -= $subTotal_calculado;
-						}
-
-						if ( $order_tot->id == $orden_validar  ) {
-							echo "<br> post val descuentop_aplicado $ :".$descuentop_aplicado;
-							echo "<br> post cupon: ".$cupon['reduction'];							
-						}
-					}					
-
-				}
-				/*******************************/
-
-				if ( $order_tot->id == $orden_validar  ) {
-						echo "<br> ddd -- val_total_min_dto_mas_iva: ".$val_total_min_dto_mas_iva;
-				}
-
 				/******************  ENVIO DE PRODUCTOS... DOMICILIO ******************/
 
 				if ( $order_tot->total_shipping != '0.00' || $order_tot->total_shipping_tax_incl != '0.00' ) {
-
-					if ( !isset( $val_iva_X_tax['16.000'] ) ) {
-						$val_iva_X_tax['16.000'] = 0;
-					}
-
-					//echo "<br> valor final envio: ". $order_tot->total_shipping;
-					//echo "<br> - valor sin iva envio: ". 
 					$val_no_iva_envio =  Tools::ps_round( $order_tot->total_shipping / 1.16 ,3);
-                                        //error_log("\n\n 5----- val_no_iva_envio:  ".print_r($val_no_iva_envio,true)."\n\n",3,"/tmp/progresivo.log");
-
-					//echo "<br> - iva envio: ". 
-					$val_iva_envio_act = /* Tools::ps_round( ( */$order_tot->total_shipping  - $val_no_iva_envio/*) ,2)*/;
-                                        //error_log("\n\n 6----- val_iva_envio_act:  ".print_r($val_iva_envio_act,true)."\n\n",3,"/tmp/progresivo.log");
-
-					$val_iva_X_tax['16.000'] += $val_iva_envio_act;
-                                        //error_log("\n\n 6----- val_iva_envio_act:  ".print_r($val_iva_envio_act,true)."\n\n",3,"/tmp/progresivo.log");
-
-					//echo "<br> val anterior de iva :". /*Tools::ps_round( */$val_total_de_iva /*,2)*/;
-
-					$val_total_de_iva += /*Tools::ps_round( */$val_iva_envio_act /*,2)*/;
-                                        //error_log("\n\n 3----- iva_acum_porcen_dto:  ".print_r($iva_acum_porcen_dto,true)."\n\n",3,"/tmp/progresivo.log");
-					$iva_acum_porcen_dto += $val_iva_envio_act;
-                                        //error_log("\n\n 3----- iva_acum_porcen_dto:  ".print_r($iva_acum_porcen_dto,true)."\n\n",3,"/tmp/progresivo.log");
-                                        //echo "<br> val acumulado total de iva :".  /*Tools::ps_round( */$val_total_de_iva /*,2)*/;
-
-					
-					$val_total_min_dto_mas_iva += $val_iva_envio_act + $val_no_iva_envio;
-
-					if ( $order_tot->id == $orden_validar  ) {
-						echo "<br> val_total_min_dto_mas_iva: ".$val_total_min_dto_mas_iva;
-					}
-
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['descripcion'] = "FLETE ENVIO";
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['cantidad'] = Tools::ps_round( '1' ,2);
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['unidad'] = 'Pieza';
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['valorUnitario'] = $val_no_iva_envio;
-					$subTotal_calculado += $arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['importe'] = Tools::ps_round( $val_no_iva_envio ,2);
+					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['importe'] = Tools::ps_round( $val_no_iva_envio ,2);
 
 				}
-
-				//echo "<br> ivas: ".count($val_iva_X_tax);
 				
 				/**
 				 *  si no existe impuesto, crea una regla con valor 0 cero
 				 */
-				
-				if ( count($val_iva_X_tax) == 0 ){
-					$val_iva_X_tax['0.000'] = 0;
-				}
 
 				if ( $order_tot->id == $orden_validar  ) { 
-					foreach ($val_iva_X_tax as $key => $value) {
+					foreach ($array_ivas as $key => $value) {
 						echo "<br> 1. tax: ".$key."  - - - Value : ".$value;
 					}
 				}
-
-				/**
-				 * [$valor_calculado_verificador se usa para tomar el valor calculado del subtotal iva e impuesto y ver si hace match con el valor final]
-				 * @var [float]
-				 */
 				
-				if ( $order_tot->id == $orden_validar  ) { 
-					echo "<br> val_total_min_dto_mas_iva: ".$val_total_min_dto_mas_iva." ---- val_total_de_iva: ".$val_total_de_iva." --- descuentop_aplicado:  ".$descuentop_aplicado;
-				}
-
-				
-
-					$valor_calculado_verificador = Tools::ps_round( $val_total_min_dto_mas_iva - $val_total_de_iva + $descuentop_aplicado, 2);
-				
-
-				/*if (  $valor_calculado_verificador !=  Tools::ps_round($subTotal_calculado , 2) ) {
-
-					if ( $order_tot->id == $orden_validar  ) { 
-						echo "<br> VALORES DIFERENTES !!!!!!!!!!!! ".$valor_calculado_verificador." <> ".Tools::ps_round($subTotal_calculado , 2);
-					}
-
-					$diferenciaValoresCalculados = Tools::ps_round($subTotal_calculado , 2) - $valor_calculado_verificador;
-
-					if ( count($val_iva_X_tax) != 0 ) {
-						asort($val_iva_X_tax);
-						foreach ($val_iva_X_tax as $key => $value) {
-							
-							if ( $key != '0.000' && $value >= $diferenciaValoresCalculados ) {
-								$val_iva_X_tax[$key] = $value - $diferenciaValoresCalculados;
-								$val_total_de_iva = $val_total_de_iva - $diferenciaValoresCalculados;
-								break;
-							}
-							//!isset( $val_iva_X_tax['16.000']
-						}
-
-					}
-
-				}*/
-				ksort($val_iva_X_tax);
+				ksort($array_ivas);
 
 				if ( $order_tot->id == $orden_validar  ) { 
-					foreach ($val_iva_X_tax as $key => $value) {
+					foreach ($array_ivas as $key => $value) {
 						echo "<br> 2. tax: ".$key."  - - - Value : ".$value;
 					}
 				}
-
-				/*               FIN  VALIDACION DE PRODUCTOS PARA TOTALES                    } */
-
-
-				//exit;
-				/****************  envio $this->order->total_shipping_tax_incl   *//////////
-
-
-				//echo "<br>invoice_address: <pre>";
-				//print_r($invoice_address);
-				//echo "</pre><br>";
 
 				$arr_xml_cargar['@attributes']['xmlns_cfdi'] = 'http://www.sat.gob.mx/cfd/3';
 				$arr_xml_cargar['@attributes']['xmlns_xsi'] = 'http://www.w3.org/2001/XMLSchema-instance';
@@ -1142,20 +763,10 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 				$arr_xml_cargar['@attributes']['noCertificado'] = $this->numero_certificado ;
 				$arr_xml_cargar['@attributes']['certificado'] = ('MIIEdDCCA1ygAwIBAgIUMjAwMDEwMDAwMDAxMDAwMDU4NjcwDQYJKoZIhvcNAQEFBQAwggFvMRgwFgYDVQQDDA9BLkMuIGRlIHBydWViYXMxLzAtBgNVBAoMJlNlcnZpY2lvIGRlIEFkbWluaXN0cmFjacOzbiBUcmlidXRhcmlhMTgwNgYDVQQLDC9BZG1pbmlzdHJhY2nDs24gZGUgU2VndXJpZGFkIGRlIGxhIEluZm9ybWFjacOzbjEpMCcGCSqGSIb3DQEJARYaYXNpc25ldEBwcnVlYmFzLnNhdC5nb2IubXgxJjAkBgNVBAkMHUF2LiBIaWRhbGdvIDc3LCBDb2wuIEd1ZXJyZXJvMQ4wDAYDVQQRDAUwNjMwMDELMAkGA1UEBhMCTVgxGTAXBgNVBAgMEERpc3RyaXRvIEZlZGVyYWwxEjAQBgNVBAcMCUNveW9hY8OhbjEVMBMGA1UELRMMU0FUOTcwNzAxTk4zMTIwMAYJKoZIhvcNAQkCDCNSZXNwb25zYWJsZTogSMOpY3RvciBPcm5lbGFzIEFyY2lnYTAeFw0xMjA3MjcxNzAyMDBaFw0xNjA3MjcxNzAyMDBaMIHbMSkwJwYDVQQDEyBBQ0NFTSBTRVJWSUNJT1MgRU1QUkVTQVJJQUxFUyBTQzEpMCcGA1UEKRMgQUNDRU0gU0VSVklDSU9TIEVNUFJFU0FSSUFMRVMgU0MxKTAnBgNVBAoTIEFDQ0VNIFNFUlZJQ0lPUyBFTVBSRVNBUklBTEVTIFNDMSUwIwYDVQQtExxBQUEwMTAxMDFBQUEgLyBIRUdUNzYxMDAzNFMyMR4wHAYDVQQFExUgLyBIRUdUNzYxMDAzTURGUk5OMDkxETAPBgNVBAsTCFVuaWRhZCAxMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC2TTQSPONBOVxpXv9wLYo8jezBrb34i/tLx8jGdtyy27BcesOav2c1NS/Gdv10u9SkWtwdy34uRAVe7H0a3VMRLHAkvp2qMCHaZc4T8k47Jtb9wrOEh/XFS8LgT4y5OQYo6civfXXdlvxWU/gdM/e6I2lg6FGorP8H4GPAJ/qCNwIDAQABox0wGzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIGwDANBgkqhkiG9w0BAQUFAAOCAQEATxMecTpMbdhSHo6KVUg4QVF4Op2IBhiMaOrtrXBdJgzGotUFcJgdBCMjtTZXSlq1S4DG1jr8p4NzQlzxsdTxaB8nSKJ4KEMgIT7E62xRUj15jI49qFz7f2uMttZLNThipunsN/NF1XtvESMTDwQFvas/Ugig6qwEfSZc0MDxMpKLEkEePmQwtZD+zXFSMVa6hmOu4M+FzGiRXbj4YJXn9Myjd8xbL/c+9UIcrYoZskxDvMxc6/6M3rNNDY3OFhBK+V/sPMzWWGt8S1yjmtPfXgFs1t65AZ2hcTwTAuHrKwDatJ1ZPfa482ZBROAAX1waz7WwXp0gso7sDCm2/yUVww==');
 				$arr_xml_cargar['@attributes']['sello'] = '';
-				$subtotalNuevo = number_format( Tools::ps_round( $order_tot->total_paid , 2) + Tools::ps_round( $order_tot->total_discounts , 2) - Tools::ps_round( $iva_acum_porcen_dto , 2), 2, '.', '');
-                                //echo "<pre>";
-                                //var_dump(debug_backtrace($order_tot->total_paid));
-                                //exit();
-                                
-//                                error_log("\n\n 123123123123123123123-- order_tot->total_paid:".print_r($order_tot->total_paid,true),3,"/tmp/progresivo.log");
-//                                error_log("\n\n 123123123123123123123-- order_tot->total_discounts:".print_r($order_tot->total_discounts,true),3,"/tmp/progresivo.log");
-//                                error_log("\n\n 123123123123123123123-- iva_acum_porcen_dto:".print_r($iva_acum_porcen_dto,true),3,"/tmp/progresivo.log");
-//                                error_log("\n\n 123123123123123123123-- subtotalNuevo:".print_r($subtotalNuevo,true),3,"/tmp/progresivo.log");
-                                $arr_xml_cargar['@attributes']['subTotal'] = $subtotalNuevo;
-
+                $arr_xml_cargar['@attributes']['subTotal'] = $order_tot->total_products;
 				$arr_xml_cargar['@attributes']['total'] = number_format( $order_tot->total_paid , 2, '.', '');
 
-				if ($descuentop_aplicado != null ) {
+				if ($order_tot->total_discounts != null || $order_tot->total_discounts != 0) {
 					$arr_xml_cargar['@attributes']['descuento'] = number_format( $order_tot->total_discounts , 2, '.', '');
 
 					if ( trim( $cupon['description'] ) != '' ) {
@@ -1173,28 +784,25 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 
 					$arr_xml_cargar['ar6to67be_Emisor']['@attributes']['rfc'] = $this->RFCEmisor;
 					$arr_xml_cargar['ar6to67be_Emisor']['@attributes']['nombre'] = $this->RFCEmisor_nombre;
+					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['calle'] = 'Doctora';
+					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['noExterior'] = '39';
+					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['noInterior'] = '0';
+					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['colonia'] = 'Tacubaya';
+					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['localidad'] = 'Miguel Hidalgo';
+					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['municipio'] = 'Miguel Hidalgo';
+					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['estado'] = 'Distrito Federal';
+					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['pais'] = 'M&eacute;xico';
+					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['codigoPostal'] = '11870';
 
-
-						$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['calle'] = 'Doctora';
-						$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['noExterior'] = '39';
-						$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['noInterior'] = '0';
-						$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['colonia'] = 'Tacubaya';
-						$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['localidad'] = 'Miguel Hidalgo';
-						$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['municipio'] = 'Miguel Hidalgo';
-						$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['estado'] = 'Distrito Federal';
-						$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['pais'] = 'M&eacute;xico';
-						$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['codigoPostal'] = '11870';
-
-						$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['calle'] = 'Doctora';
-						$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['noExterior'] = '39';
-						$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['noInterior'] = '0';
-						$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['colonia'] = 'Tacubaya';
-						$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['localidad'] = 'Miguel Hidalgo';
-						$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['municipio'] = 'Miguel Hidalgo';
-						$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['estado'] = 'Distrito Federal';
-						$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['pais'] = 'M&eacute;xico';
-						$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['codigoPostal'] = '11870';
-
+					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['calle'] = 'Doctora';
+					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['noExterior'] = '39';
+					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['noInterior'] = '0';
+					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['colonia'] = 'Tacubaya';
+					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['localidad'] = 'Miguel Hidalgo';
+					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['municipio'] = 'Miguel Hidalgo';
+					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['estado'] = 'Distrito Federal';
+					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['pais'] = 'M&eacute;xico';
+					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['codigoPostal'] = '11870';
 						/*
 						
 ['calle'] = 'Acapulco';
@@ -1328,18 +936,17 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 
 
 				$arr_xml_cargar =  array_merge($arr_xml_cargar,$arr_xml_cargar_p); // UNIMOS ARRAY DE PRODUCTOS Y EL INICIAL DEL XML
-
-//                                error_log("\n\n 4----- iva_acum_porcen_dto:  ".print_r($iva_acum_porcen_dto,true)."\n\n",3,"/tmp/progresivo.log");
-				$arr_xml_cargar['ar6to67be_Impuestos']['@attributes']['totalImpuestosTrasladados'] = number_format($iva_acum_porcen_dto, 2, '.', '');
+				$arr_xml_cargar['ar6to67be_Impuestos']['@attributes']['totalImpuestosTrasladados'] = number_format($val_total_de_iva, 2, '.', '');
 
 				$cant_taxs = 0;
 
-				foreach ($val_iva_X_tax as $key => $value) {
-
-					$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['impuesto'] = 'IVA';
-					$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['tasa'] = number_format($key, 2, '.', '');
-					$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['importe'] = number_format($value, 2, '.', '');
-					$cant_taxs++;
+				foreach ($array_ivas as $key => $value) {
+					if($value > 0){
+						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['impuesto'] = 'IVA';
+						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['tasa'] = number_format($key, 2, '.', '');
+						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['importe'] = number_format($value, 2, '.', '');
+						$cant_taxs++;
+					}
 
 				}
 
