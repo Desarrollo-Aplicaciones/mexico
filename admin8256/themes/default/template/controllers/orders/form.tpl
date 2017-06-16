@@ -356,8 +356,9 @@
 			type: "POST",
 			url: "{$base_dir}ajaxs/ajax_servier_medicos.php",
                         dataType: "json",
-                        data : {id_medico: value,
-                                id_cart: id_cart_med
+                        data : { 
+                            id_medico: value,
+                            id_cart: id_cart_med
                                 },
 			
 			success: function(data){
