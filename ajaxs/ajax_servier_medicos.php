@@ -1,7 +1,6 @@
 <?php
-require_once(dirname(__FILE__) . '/../config/config.inc.php');
-//require_once(dirname(__FILE__) . '/../config/defines.inc.php');
-//require_once(dirname(__FILE__) . '/../init.php');
+include(dirname(__FILE__).'/../config/config.inc.php');
+include(dirname(__FILE__).'/../init.php');
 
     //Id del carro para asociar el Medico
     $context = Context::getContext();
