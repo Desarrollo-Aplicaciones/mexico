@@ -324,9 +324,11 @@
 		
 		$( "#servier" ).focusout(function() {
 			var id_rep = $(this).val();
-			$.post( "{$base_dir}ajaxs/ajax_servier.php", { id_rep: id_rep })
+			$.post( "{$base_dir}ajaxs/ajax_servier.php", { id_rep: id_rep, id_cart_ini: id_cart })
 			.done(function( data ) {
-				//console.log("Respuesta del ajax:   "+data);
+                            $("#doctor_err").show();
+                            $("#doctor_err").html(data);
+                            $("#doctor_err").css("background","#FFF");
 			}, "json");
 		});
 		
@@ -350,8 +352,7 @@
 	});
 	//To select country name data:'id_medico='+value,'id_cart='+id_cart_med,
 	function selectOption(name, value) {
-		$("#input-medico").val(name);
-                var id_cart_med = {$cart->id|intval};
+		$("#input-medico").val(name);                
 		$.ajax({
 			type: "POST",
 			url: "{$base_dir}ajaxs/ajax_servier_medicos.php",
@@ -363,6 +364,9 @@
                                 },
 			
 			success: function(data){
+                            $("#doctor_err").show();
+                            $("#doctor_err").html(data);
+                            $("#doctor_err").css("background","#FFF");
 				//console.log(data);
 			}
 		});
