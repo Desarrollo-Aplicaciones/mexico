@@ -348,13 +348,18 @@
 		});
 		
 	});
-	//To select country name
+	//To select country name data:'id_medico='+value,'id_cart='+id_cart_med,
 	function selectOption(name, value) {
 		$("#input-medico").val(name);
+                var id_cart_med = {$cart->id|intval};
 		$.ajax({
 			type: "POST",
 			url: "{$base_dir}ajaxs/ajax_servier_medicos.php",
-			data:'id_medico='+value,
+                        dataType: "json",
+                        data : {id_medico: value,
+                                id_cart: id_cart_med
+                                },
+			
 			success: function(data){
 				//console.log(data);
 			}

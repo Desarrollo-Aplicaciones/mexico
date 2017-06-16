@@ -9,7 +9,9 @@ include(dirname(__FILE__).'/../init.php');
     
     if ( $_GET["printpantalla"] == '1' )
     {
-        echo "<pre>Context: <br>";
+        echo "<pre>REQUEST: <br>";
+        print_r($_REQUEST);
+        echo "<hr><br><br><hr>Context: <br>";
         print_r($context);
         echo '<hr><br><br><hr>CloneContext:<br>';
         print_r($contextClone);
