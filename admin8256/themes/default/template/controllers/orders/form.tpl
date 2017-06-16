@@ -359,6 +359,7 @@
                         dataType: "json",
                         data : { 
                             id_medico: value,
+                            id_cart: id_cart_med,
                             id_cart_ini: id_cart
                                 },
 			
