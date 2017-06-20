@@ -416,83 +416,11 @@ WHERE o.id_order = ' . (int) $this->order->id;
         ///*** INICIO CALCULO COSTO TOTAL, CON CUPON DE DESCUENTO PORCENTAJE Y LISTADO DE IMPUESTOS DE PRODUCTOS ***///
         $cart_rules = $this->order->getCartRules($this->order_invoice->id);
 
-        /*if (!empty($cart_rules)) {
-
-            $detailcartrule = $this->cartRuleDetail($cart_rules[0]['id_cart_rule']);
-            $porcentajedescuento = $detailcartrule[0]['reduction_percent'];
-
-            if ( $porcentajedescuento != "" && $porcentajedescuento != 0 ) {
-                foreach ($list_products as $key => $product) {
-                    $precio = $product['product_price'];
-
-                    $iva_c = (int)$product['tax_rate'];
-
-                    $descuento = ( ( $precio * $product['product_quantity'] )  * $porcentajedescuento) / 100;                    
-                    $ivaproducto = ( ( $precio * $product['product_quantity'] ) - $descuento) * ($iva_c / 100);
-
-                    $list_products[$key]['iva_recalculado'] = $ivaproducto;
-                    $recalculadoivaproducto = true;
-                    
-                    if ( !isset($array_ivas[$iva_c]) ) {
-                        $array_ivas[$iva_c] = 0;
-                    }
-
-                    $array_ivas[$iva_c] += $ivaproducto;
-                }
-            }
-
-        } else { 
-
-             foreach ($list_products as $key => $product) {
-
-                $precio = $product['product_price'];
-
-                $iva_c = (int)$product['tax_rate'];
-                
-                $ivaproducto = ( $precio * $product['product_quantity'] ) * ($iva_c / 100);
-                
-                    if ( !isset($array_ivas[$iva_c]) ) {
-                        $array_ivas[$iva_c] = 0;
-                    }
-
-                //echo "<br> iva si: ".$iva_c." - ".
-                $array_ivas[$iva_c] += number_format( $ivaproducto ,2, '.', '');
-
-                }
-
-        }*/
-        ///*** FIN CALCULO COSTO TOTAL, CON CUPON DE DESCUENTO PORCENTAJE ***///
-
-        /*if ( $this->order->total_shipping != '0.00' || $this->order->total_shipping_tax_incl != '0.00' ) {
-
-                    if ( !isset( $array_ivas['16'] ) ) {
-                        $array_ivas['16'] = 0;
-                    }
-
-                    // envio valor sin iva
-                    $val_no_iva_envio =  number_format( $this->order->total_shipping / 1.16 ,2, '.', '');
-                    
-                    //envio valor del iva
-                    $val_iva_envio_act = $this->order->total_shipping  - $val_no_iva_envio;
-
-                    $array_ivas['16'] += $val_iva_envio_act;
-        }*/
-
-
-
-
-                
-
-
-
-
-
-
-
                 $cant_prods = 0;
                 $subTotal_calculado = floatval(0); // tendrá la suma de cada ( precio producto X cantidad ) antes de iva
                 $val_total_min_dto_mas_iva = 0; // Total de la venta actual
                 $val_total_de_iva = 0; // total del iva calculado
+                $iva_prod_actual = 0;
                 //$val_iva_X_tax = array();
                 
 //                error_log("\n\n 11111.... list_products:".print_r($list_products,true),3,"/tmp/progresivo.log");
@@ -556,8 +484,6 @@ WHERE o.id_order = ' . (int) $this->order->id;
 
 
                         $array_ivas[Tools::ps_round($list_products[$key]['tax_rate'],0)] += $iva_prod_actual;
-                        
-                        $iva_prod_actual = 0;
 
                             ///echo "<br> tax del  ".Tools::ps_round($list_products[$key]['tax_rate'],0)." % despues con ".$array_ivas[Tools::ps_round($list_products[$key]['tax_rate'],0)];
 
@@ -569,11 +495,7 @@ WHERE o.id_order = ' . (int) $this->order->id;
                 }
 
 
-
-
-
-
-
+                
                 $descuentop_aplicado = 0;
 
                 if ( isset( $cupon_xml_calc ) && $cupon_xml_calc != null && $cupon_xml_calc['reduction'] != '' ) {
@@ -609,7 +531,6 @@ WHERE o.id_order = ' . (int) $this->order->id;
                     //echo "<br> val anterior de iva :". /*number_format( */$val_total_de_iva /*,2, '.', '')*/;
 
                     $val_total_de_iva += /*number_format( */$val_iva_envio_act /*,2, '.', '')*/;
-
                     //echo "<br> val acumulado total de iva :".  /*number_format( */$val_total_de_iva /*,2, '.', '')*/;
 
                     
@@ -619,42 +540,16 @@ WHERE o.id_order = ' . (int) $this->order->id;
                     $subTotal_calculado += number_format( $val_no_iva_envio ,2, '.', '');
                 }
 
-
-
-
                 //echo "<br> Valor verificador: ".
                 $valor_calculado_verificador = number_format( $val_total_min_dto_mas_iva - $val_total_de_iva + $descuentop_aplicado, 2, '.', '');
-
-                /*if (  $valor_calculado_verificador !=  number_format($subTotal_calculado , 2, '.', '') ) {
-
-                    echo "<br> VALORES DIFERENTES !!!!!!!!!!!! ".$valor_calculado_verificador." <> ".number_format($subTotal_calculado , 2, '.', '');
-                    $diferenciaValoresCalculados = number_format($subTotal_calculado , 2, '.', '') - $valor_calculado_verificador;
-
-                    if ( count($array_ivas) != 0 ) {
-
-                        arsort($array_ivas);
-                        
-                        foreach ($array_ivas as $key => $value) {
-                            
-                            if ( $key != '0' && $value >= $diferenciaValoresCalculados ) {
-                                $array_ivas[$key] = number_format( $value - $diferenciaValoresCalculados , 2, '.', '');
-                                $val_total_de_iva = $val_total_de_iva - $diferenciaValoresCalculados;
-                                break;
-                            }
-                            //!isset( $array_ivas['16.000']
-                        }
-
-                    }
-
-                }*/
-
+                $val_total_de_ivas = 0;
                 foreach ($array_ivas as $key => $value) {
-
+                    $val_total_de_ivas += $value;
                     $array_ivas[$key] = number_format( $array_ivas[$key] , 2, '.', '');
 
                 }
 
-
+var_dump($val_total_de_ivas);
 
         // arsort() ordenar valores mayor a menor
         
@@ -685,11 +580,10 @@ WHERE o.id_order = ' . (int) $this->order->id;
         }
         
         $cant_rep = 0;
-        
 
        // while ( ( $sello_SAT == '' && $cant_rep < 5 ) ) {
                                             //( $metodo_pago, $cupon,          $list_products, $invoice_address, $order_tot ) {
-        $sello_SAT = $factura->solicitud2(  $metodo_pago, $cupon_xml_calc, $list_products, $invoice_address, $this->order, $this->order->current_state, $obligar_timbrado );        
+        $sello_SAT = $factura->solicitud2( $metodo_pago, $cupon_xml_calc, $list_products, $invoice_address, $this->order, $array_ivas, $val_total_de_ivas, $this->order->current_state, $obligar_timbrado);
         $cant_rep++;
         $obligar_timbrado = 0;
         usleep(800000);
@@ -743,30 +637,30 @@ WHERE o.id_order = ' . (int) $this->order->id;
 
         
         $this->smarty->assign(array(
-            'order' => $this->order,
-            'order_details' => $list_products,
+            'apoyosalud' => $cupon,
+            'bar_code' => $bar_code,
             'cart_rules' => $cart_rules,
+            'current_state_img' => $current_state_img,
+            'current_state_txt' => $current_state_txt,
+            'customer' => $customer,
             'delivery_address' => $formatted_delivery_address,
-            'invoice_address' => $formatted_invoice_address,
             'facturaValida' => $facturaValida,
             'facturaValida2' => $facturaValida2,
             'facturaValida3' => $facturaValida3,
+            'formu_medical' => $formu_medical,
+            'invoice_address' => $formatted_invoice_address,
+            'ivas' => $array_ivas,
+            'metodo_pago' => $metodo_pago,
+            'note' => $note,
+            'order_details' => $list_products,
+            'order' => $this->order,
+            'recalculadoivaproducto' => $recalculadoivaproducto,
+            'rfcemisor' => $rfcEmisor,
+            'rfcreceptor' => $rfcReceptor,
+            'sellosat' => $sello_SAT,
             'tax_excluded_display' => Group::getPriceDisplayMethod($customer->id_default_group),
             'tax_tab' => $this->getTaxTabContent(),
-            'customer' => $customer,
-            'current_state_img' => $current_state_img,
-            'current_state_txt' => $current_state_txt,
-            'apoyosalud' => $cupon,
-            'formu_medical' => $formu_medical,
-            'recalculadoivaproducto' => $recalculadoivaproducto,
-            'bar_code' => $bar_code,
-            'metodo_pago' => $metodo_pago,
             'ultimos_numeros' => $ultimos4_digitos,
-            'sellosat' => $sello_SAT,
-            'ivas' => $array_ivas,
-            'note' => $note,
-            'rfcreceptor' => $rfcReceptor,
-            'rfcemisor' => $rfcEmisor
         ));
           
         
@@ -799,18 +693,19 @@ WHERE o.id_order = ' . (int) $this->order->id;
         $centavos = explode(".", $this->order_invoice->total_paid_tax_incl);
 
         $letras = utf8_encode($numLetras->ValorEnLetras((int) $val_en_letras[0], 'Pesos ('.$centavos[1].'/100) M.N.'));
-
+        $this->order->total_discounts_tax_incl = ($this->order->total_products_wt+$this->order->total_shipping_tax_incl+$this->order->total_wrapping_tax_incl-$this->order->total_paid_tax_incl);
+//  ENvia datos a invoice.tpl
         $this->smarty->assign(array(
-            'tax_exempt' => $tax_exempt,
-            'use_one_after_another_method' => $this->order_invoice->useOneAfterAnotherTaxComputationMethod(),
+            'carrier' => $carrier,
+            'ecotax_tax_breakdown' => $this->order_invoice->getEcoTaxTaxesBreakdown(),
+            'order_invoice' => $this->order_invoice,
+            'order' => $this->order,
             'product_tax_breakdown' => $this->order_invoice->getProductTaxesBreakdown(),
             'shipping_tax_breakdown' => $this->order_invoice->getShippingTaxesBreakdown($this->order),
-            'ecotax_tax_breakdown' => $this->order_invoice->getEcoTaxTaxesBreakdown(),
+            'tax_exempt' => $tax_exempt,
+            'use_one_after_another_method' => $this->order_invoice->useOneAfterAnotherTaxComputationMethod(),
+            'ValorEnLetras' => $letras,
             'wrapping_tax_breakdown' => $this->order_invoice->getWrappingTaxesBreakdown(),
-            'order' => $this->order,
-            'order_invoice' => $this->order_invoice,
-            'carrier' => $carrier,
-            'ValorEnLetras' => $letras
         ));
 
         return $this->smarty->fetch($this->getTemplate('invoice.tax-tab'));
