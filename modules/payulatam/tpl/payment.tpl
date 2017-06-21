@@ -124,6 +124,10 @@
   </div>
 </div>
 <div class="separador-medios-pago"></div>
+<div class="row cuadro_ayuda" id="cuadro_ayuda_debito">
+  <div class="col-lg-10 titulo">Tarjeta de crédito o Débito:</div>
+  <div class="col-lg-12 texto">Sujeto a un proceso de autenticación de seguridad. Para más información consulta nuestro aviso de privacidad.</div>
+</div>
 <!-- Tarjeta Credito /-->
 
 
