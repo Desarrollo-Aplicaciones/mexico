@@ -192,9 +192,9 @@ class Order extends OrderCore {
 			$order_invoices = new Collection('OrderInvoice');
 		}
 		$order_invoices->where('id_order', '=', $this->id);
-		$order_invoices[0]->total_discount_tax_incl = ($order_invoices[0]->total_products_wt+$order_invoices[0]->total_shipping_tax_incl+$order_invoices[0]->total_wrapping_tax_incl-$order_invoices[0]->total_paid_tax_incl);
-			// var_dump($order_invoices);
-			// exit();
+		if(isset($order_invoices[0])){
+			$order_invoices[0]->total_discount_tax_incl = ($order_invoices[0]->total_products_wt+$order_invoices[0]->total_shipping_tax_incl+$order_invoices[0]->total_wrapping_tax_incl-$order_invoices[0]->total_paid_tax_incl);
+		}
 		return $order_invoices;
 	}
 }
