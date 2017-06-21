@@ -430,6 +430,30 @@ label.labels
   width: 100%;
 }
 
+.icono_ayuda{
+  cursor: pointer;
+}
+
+.cuadro_ayuda{
+  box-shadow: 0px 1px 7px 1px #c8c8c8;
+  padding: 20px;
+  width: 45%;
+  position: absolute;
+  z-index: 100;
+  background-color: white;
+  display: none;
+}
+
+.cuadro_ayuda .titulo{
+  color: #39bc93;
+  font-size: 16px;
+}
+
+.cuadro_ayuda .texto{
+  color: #646464;
+  font-size: 14px;
+}
+
 #paypal-express-checkout-form{
   text-align: center;
 }

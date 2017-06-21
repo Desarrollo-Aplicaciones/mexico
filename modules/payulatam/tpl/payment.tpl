@@ -96,13 +96,12 @@
       <div class="visible">
       </div>
     </div>
-    <div class="payment_module"  id="textradiocredit">
+    <div class="payment_module" id="textradiocredit">
       <input type="radio" value="div2" name="mediopago" id="mediopagot">
       <div class="image">
         <img src="{$img_dir}mediosp/tarjetas.png" alt="Tarjetas Farmalisto" id="img-tarjetas-farmalisto"/>
       </div>
-      <div class="ctn-title-medio-pago">Tarjeta de Crédito o Débito</div>
-      
+      <div class="ctn-title-medio-pago">Tarjeta de Crédito o Débito <img id="ayuda_debito" class="icono_ayuda" src="{$img_dir}mediosp/Icono-de-ayuda.png"/></div>
       <div class="cont-mas-menos">
         <img id="div2im" src="{$img_dir}mediosp/mas_menos.png">
       </div>

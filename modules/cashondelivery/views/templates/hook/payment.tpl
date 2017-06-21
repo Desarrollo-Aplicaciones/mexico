@@ -37,6 +37,7 @@
 {else}
 {/if *}
 
+
 <div id="ctn-contra-entrega" class="cont-opc-pago">
   <div name="opcion4" id="opciones" onclick="mouse_overd('div4', '#ctn-contra-entrega');">
     <div class="invisible">
@@ -50,7 +51,7 @@
       <div class="image">
         <img src="{$img_dir}mediosp/pagocontentrega.png" id="imgcontrae" alt="Pago contra entrega" id="img-Pago-contra-entrega"/>
       </div>
-      Pago contra entrega
+      Pago contra entrega <img id="ayuda_contra_entrega" class="icono_ayuda" src="{$img_dir}mediosp/Icono-de-ayuda.png"/>
       <div class="cont-mas-menos">
         <img id="div4im" src="{$img_dir}mediosp/mas_menos.png">
       </div>
@@ -120,6 +121,10 @@
  </div>
 </div>
 <div class="separador-medios-pago"></div>
+<div class="row cuadro_ayuda" id="cuadro_ayuda_contra_entrega">
+  <div class="col-lg-10 titulo">Pago Contra Entrega</div>
+  <div class="col-lg-12 texto">Disponible sólo para la <b>Ciudad de México</b> y en montos <b>inferiores</b> a <b>$3000 MXN</b></div>
+</div>
 {*  <!-- Datáfono -->
 <div>
   <div name="opcion5" id="opciones" onclick="mouse_overd('div5');">
