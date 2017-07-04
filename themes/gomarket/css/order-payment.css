@@ -432,6 +432,7 @@ label.labels
 
 .icono_ayuda{
   cursor: pointer;
+  height: 22px !important;
 }
 
 .cuadro_ayuda{
