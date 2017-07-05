@@ -87,7 +87,7 @@
 
 <!-- Tarjeta Credito -->
 <div id="ctn-tarjetas" class="cont-opc-pago">
-  <div name="opcion2" id="opciones" onclick="mouse_overd('div2', '#ctn-tarjetas');">
+  <div name="opcion2" id="opciones">
 
     <div class="invisible">
       <div id="div2rb">
@@ -102,14 +102,18 @@
         <img src="{$img_dir}mediosp/tarjetas.png" alt="Tarjetas Farmalisto" id="img-tarjetas-farmalisto"/>
       </div>
       <div class="ctn-title-medio-pago">Tarjeta de Crédito o Débito <img id="ayuda_debito" class="icono_ayuda" src="{$img_dir}mediosp/Icono-de-ayuda.png"/></div>
-      <div class="cont-mas-menos">
+      <div class="cont-mas-menos" onclick="mouse_overd('div2', '#ctn-tarjetas');">
         <img id="div2im" src="{$img_dir}mediosp/mas_menos.png">
       </div>
     </div> 
   </div>
+  <div class="row cuadro_ayuda" id="cuadro_ayuda_debito">
+    <div class="col-lg-10 titulo">Tarjeta de crédito o Débito: <img style="float:right; transform: rotate(45deg);" src="{$img_dir}mediosp/mas_menos.png"></div>
+    <div class="col-lg-12 texto">Sujeto a un proceso de autenticación de seguridad. Para más información consulta nuestro aviso de privacidad.</div>
+  </div>
   <div id="divs">
-   {if isset($medios_de_pago['Tarjeta_credito']) && $medios_de_pago['Tarjeta_credito'] ==='1'}    
-    <div id="div2"  class="ctn-toggle-payment"  style="display: none; ">              
+   {if isset($medios_de_pago['Tarjeta_credito']) && $medios_de_pago['Tarjeta_credito'] ==='1'}
+    <div id="div2"  class="ctn-toggle-payment"  style="display: none; ">
       <div class="contendfrom">
         <div style=" width: auto; height: auto; text-justify: auto;">
           {include file="$tpl_dir../../modules/payulatam/tpl/credit_card.tpl"}
@@ -119,15 +123,11 @@
     {else}
       <div id="div2" style="display: none;">
         {include file="$tpl_dir../../modules/payulatam/tpl/no_disponible.tpl"}
-      </div>             
-    {/if}         
+      </div>
+    {/if}
   </div>
 </div>
 <div class="separador-medios-pago"></div>
-<div class="row cuadro_ayuda" id="cuadro_ayuda_debito">
-  <div class="col-lg-10 titulo">Tarjeta de crédito o Débito:</div>
-  <div class="col-lg-12 texto">Sujeto a un proceso de autenticación de seguridad. Para más información consulta nuestro aviso de privacidad.</div>
-</div>
 <!-- Tarjeta Credito /-->
 
 

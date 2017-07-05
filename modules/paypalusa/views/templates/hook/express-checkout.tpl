@@ -25,7 +25,7 @@
 <!-- Tarjeta crédito -->
 {if isset($smarty.get.paso) && $smarty.get.paso === 'pagos'}
 <div id="ctn-paypal" class="cont-opc-pago">
-<div id="opciones" name="payPal" onclick="mouse_overd('divPayC', '#ctn-paypal');">
+<div id="opciones" name="payPal">
     <div class="invisible">
         <div id="divPayCrb" >
         </div>
@@ -36,10 +36,14 @@
         <input type="radio" value="divPayC" name="mediopago" id="mediopagop" >
         <div class="image"><img src="{$img_dir}mediosp/pagopaypal.png" alt="{l s='Pay with PayPal' mod='paypalusa'}" id="img-Pay-with-PayPal"/></div>
         {l s='Pagar con Paypal' mod='paypalusa'}<img id="ayuda_paypal" class="icono_ayuda" src="{$img_dir}mediosp/Icono-de-ayuda.png"/>
-        <div class="cont-mas-menos">
+        <div class="cont-mas-menos" onclick="mouse_overd('divPayC', '#ctn-paypal');">
         <img id="divPayCim" src="{$img_dir}mediosp/mas_menos.png">
       </div>
     </div>
+</div>
+<div class="row cuadro_ayuda" id="cuadro_ayuda_paypal">
+  <div class="col-lg-10 titulo">Advertencia <img style="float:right; transform: rotate(45deg);" src="{$img_dir}mediosp/mas_menos.png"></div>
+  <div class="col-lg-12 texto">Recomendamos este medio de pago <b>sólo</b> si tu cuenta ya ha sido <b>verificada</b> por <b>PayPal.</b></div>
 </div>
 {/if}
 <div id="divPayC"   class="ctn-toggle-payment"  style="display: none; ">
@@ -112,10 +116,6 @@
 </div>
 </div>
 <div class="separador-medios-pago"></div>
-<div class="row cuadro_ayuda" id="cuadro_ayuda_paypal">
-  <div class="col-lg-10 titulo">Advertencia</div>
-  <div class="col-lg-12 texto">Recomendamos este medio de pago <b>sólo</b> si tu cuenta ya ha sido <b>verificada</b> por <b>PayPal.</b></div>
-</div>
 <!-- Fin tarjeta crédito --> 
 
 
@@ -230,7 +230,7 @@
 
 {if $contador > 0}  *}
     <div id="ctn-deposito-efectivo" class="cont-opc-pago">
-        <div name="opcion9" id="opciones" onclick="mouse_overd('div9', '#ctn-deposito-efectivo');">
+        <div name="opcion9" id="opciones">
             <div class="invisible">
                 <div id="div9rb" >
                 </div>
@@ -243,12 +243,15 @@
                     <img src="{$img_dir}mediosp/pagodepsefec.png" alt="Deposito en efectivo" id="img-Deposito-en-efectivo"/> 
                 </div>
                 Deposito en efectivo <img id="ayuda_deposito" class="icono_ayuda" src="{$img_dir}mediosp/Icono-de-ayuda.png"/>
-                <div class="cont-mas-menos">
+                <div class="cont-mas-menos" onclick="mouse_overd('div9', '#ctn-deposito-efectivo');">
                     <img id="div9im" src="{$img_dir}mediosp/mas_menos.png">
                 </div>
             </div> 
         </div>
-            
+        <div class="row cuadro_ayuda" id="cuadro_ayuda_deposito">
+            <div class="col-lg-10 titulo">Oxxo / 7Eleven <img style="float:right; transform: rotate(45deg);" src="{$img_dir}mediosp/mas_menos.png"></div>
+            <div class="col-lg-12 texto"><b>Recibes un correo</b> con el Código de Barras que debes <b>imprimir</b> y presentar en cualquier sucursal <b>Oxxo / 7Eleven</b> para realizar tu pago.</div>
+        </div>
         <div id="divs">
             <div id="div9" class="ctn-toggle-payment" style="display: none;" > 
                      {* Si _max_amount es igual a 0.00 o si el total de la orden es inferior al máximo permitido para el medio de pago*}
@@ -306,10 +309,6 @@
         </div>
     </div>
 <div class="separador-medios-pago"></div>
-<div class="row cuadro_ayuda" id="cuadro_ayuda_deposito">
-  <div class="col-lg-10 titulo">Oxxo / 7Eleven</div>
-  <div class="col-lg-12 texto"><b>Recibes un correo</b> con el Código de Barras que debes <b>imprimir</b> y presentar en cualquier sucursal <b>Oxxo / 7Eleven</b> para realizar tu pago.</div>
-</div>
 {* {/if} *}
 
 <!-- Fin deposito bancario -->
