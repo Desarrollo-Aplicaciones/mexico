@@ -2300,7 +2300,13 @@ public function renderView()
                 $estadosValidos = explode(",", Configuration::get('PS_STATUS_AFTER_OUTSTOCK'));
 		$cart = new Cart($order->id_cart);
 		//Asignar descuentos mal calculados
-		$order->total_discounts_tax_incl = ($order->total_products_wt+$order->total_shipping_tax_incl+$order->total_wrapping_tax_incl-$order->total_paid_tax_incl);
+                if($order != null && !empty($order)){
+                    if(isset($order[0])){
+                        $order[0]->total_discount_tax_incl = ($order[0]->total_products_wt+$order[0]->total_shipping_tax_incl+$order[0]->total_wrapping_tax_incl-$order[0]->total_paid_tax_incl);
+                    }else{
+                        $order->total_discount_tax_incl = ($order->total_products_wt+$order->total_shipping_tax_incl+$order->total_wrapping_tax_incl-$order->total_paid_tax_incl);
+                    }
+                }
 		// Smarty assign
 		$this->tpl_view_vars = array(
 		                             'order' => $order,
