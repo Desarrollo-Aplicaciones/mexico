@@ -662,14 +662,8 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 		public function solicitud2( $metodo_pago, $cupon, $list_products, $invoice_address, $order_tot, $array_ivas, $val_total_de_iva, $estado_orden = 0, $obligar_timbrado = 0) {
 
 			$orden_validar = Configuration::get('FACTURAXION_ORDER_VALIDATE');
-                        if($order_tot != null && !empty($order_tot)){
-                            if(isset($order_tot[0])){
-                                $order_tot[0]->total_discounts = ($order_tot[0]->total_products_wt+$order_tot[0]->total_shipping_tax_incl+$order_tot[0]->total_wrapping_tax_incl-$order_tot[0]->total_paid_tax_incl);
-                            }else{
-                                $order_tot->total_discounts = ($order_tot->total_products_wt+$order_tot->total_shipping_tax_incl+$order_tot->total_wrapping_tax_incl-$order_tot->total_paid_tax_incl);
-                            }
-                        }
-						
+                        
+                        $order_tot->total_discounts = ($order_tot->total_products_wt+$order_tot->total_shipping_tax_incl+$order_tot->total_wrapping_tax_incl-$order_tot->total_paid_tax_incl);			
 			$valor_timbrado = $this->RegistroTimbrado( $order_tot->id , 1);
 
 			//echo "<br> <pre> orden timbrar datos : ";
