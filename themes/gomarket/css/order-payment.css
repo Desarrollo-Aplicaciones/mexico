@@ -771,9 +771,14 @@ img.trust_img{margin:7px 0;}
     #tarjeta_credito_texto{
       width: 70%;
       display: inline-flex;
+      line-height: 16px;
     }
 
     .ctn-title-medio-pago{
       width: 50%;
+    }
+
+    #div2rb, #div4rb{
+      width: 1px!important;
     }
 }
