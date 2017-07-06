@@ -960,6 +960,10 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
 
 				$('.icono_ayuda').hover(abrirAyuda,cerrarAyuda);
 
+				$('.icono_ayuda').click(function(event){
+					event.stopPropagation();
+				});
+
         		$('#doc_fnd').change(function () {
                 //alert("cambio id doc");
                 if ($('#doc_fnd').val().length === 0) {

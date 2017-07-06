@@ -87,8 +87,7 @@
 
 <!-- Tarjeta Credito -->
 <div id="ctn-tarjetas" class="cont-opc-pago">
-  <div name="opcion2" id="opciones">
-
+  <div name="opcion2" id="opciones" onclick="mouse_overd('div2', '#ctn-tarjetas');">
     <div class="invisible">
       <div id="div2rb">
       </div>
@@ -101,8 +100,8 @@
       <div class="image">
         <img src="{$img_dir}mediosp/tarjetas.png" alt="Tarjetas Farmalisto" id="img-tarjetas-farmalisto"/>
       </div>
-      <div class="ctn-title-medio-pago">Tarjeta de Crédito o Débito <img id="ayuda_debito" class="icono_ayuda" src="{$img_dir}mediosp/Icono-de-ayuda.png"/></div>
-      <div class="cont-mas-menos" onclick="mouse_overd('div2', '#ctn-tarjetas');">
+      <div class="ctn-title-medio-pago"><span id="tarjeta_credito_texto">Tarjeta de Crédito o Débito </span><img id="ayuda_debito" class="icono_ayuda" src="{$img_dir}mediosp/Icono-de-ayuda.png"/></div>
+      <div class="cont-mas-menos">
         <img id="div2im" src="{$img_dir}mediosp/mas_menos.png">
       </div>
     </div> 

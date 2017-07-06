@@ -39,7 +39,7 @@
 
 
 <div id="ctn-contra-entrega" class="cont-opc-pago">
-  <div name="opcion4" id="opciones">
+  <div name="opcion4" id="opciones" onclick="mouse_overd('div4', '#ctn-contra-entrega');">
     <div class="invisible">
       <div id="div4rb" >
       </div>
@@ -52,7 +52,7 @@
         <img src="{$img_dir}mediosp/pagocontentrega.png" id="imgcontrae" alt="Pago contra entrega" id="img-Pago-contra-entrega"/>
       </div>
       Pago contra entrega <img id="ayuda_contra_entrega" class="icono_ayuda" src="{$img_dir}mediosp/Icono-de-ayuda.png"/>
-      <div class="cont-mas-menos" onclick="mouse_overd('div4', '#ctn-contra-entrega');">
+      <div class="cont-mas-menos">
         <img id="div4im" src="{$img_dir}mediosp/mas_menos.png">
       </div>
     </div>

@@ -25,7 +25,7 @@
 <!-- Tarjeta crédito -->
 {if isset($smarty.get.paso) && $smarty.get.paso === 'pagos'}
 <div id="ctn-paypal" class="cont-opc-pago">
-<div id="opciones" name="payPal">
+<div id="opciones" name="payPal" onclick="mouse_overd('divPayC', '#ctn-paypal');">
     <div class="invisible">
         <div id="divPayCrb" >
         </div>
@@ -36,7 +36,7 @@
         <input type="radio" value="divPayC" name="mediopago" id="mediopagop" >
         <div class="image"><img src="{$img_dir}mediosp/pagopaypal.png" alt="{l s='Pay with PayPal' mod='paypalusa'}" id="img-Pay-with-PayPal"/></div>
         {l s='Pagar con Paypal' mod='paypalusa'}<img id="ayuda_paypal" class="icono_ayuda" src="{$img_dir}mediosp/Icono-de-ayuda.png"/>
-        <div class="cont-mas-menos" onclick="mouse_overd('divPayC', '#ctn-paypal');">
+        <div class="cont-mas-menos">
         <img id="divPayCim" src="{$img_dir}mediosp/mas_menos.png">
       </div>
     </div>
@@ -230,7 +230,7 @@
 
 {if $contador > 0}  *}
     <div id="ctn-deposito-efectivo" class="cont-opc-pago">
-        <div name="opcion9" id="opciones">
+        <div name="opcion9" id="opciones" onclick="mouse_overd('div9', '#ctn-deposito-efectivo');">
             <div class="invisible">
                 <div id="div9rb" >
                 </div>
@@ -243,7 +243,7 @@
                     <img src="{$img_dir}mediosp/pagodepsefec.png" alt="Deposito en efectivo" id="img-Deposito-en-efectivo"/> 
                 </div>
                 Deposito en efectivo <img id="ayuda_deposito" class="icono_ayuda" src="{$img_dir}mediosp/Icono-de-ayuda.png"/>
-                <div class="cont-mas-menos" onclick="mouse_overd('div9', '#ctn-deposito-efectivo');">
+                <div class="cont-mas-menos">
                     <img id="div9im" src="{$img_dir}mediosp/mas_menos.png">
                 </div>
             </div> 

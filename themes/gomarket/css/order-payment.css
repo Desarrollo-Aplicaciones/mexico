@@ -765,6 +765,15 @@ img.trust_img{margin:7px 0;}
 @media only screen and (max-width: 768px) {
     /* For mobile phones: */
     .cuadro_ayuda {
-        width: 100%;
+        width: 90%;
+    }
+
+    #tarjeta_credito_texto{
+      width: 70%;
+      display: inline-flex;
+    }
+
+    .ctn-title-medio-pago{
+      width: 50%;
     }
 }
