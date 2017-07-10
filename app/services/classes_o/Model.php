@@ -643,7 +643,7 @@ return false;
 
 
 public function cart($products_app, $id_customer, $id_address = 0 ,$discounts = NULL, $deleteDiscount = NULL, $msg= NULL, $id_cart = null ) {
-
+	
 	if (is_array($products_app) && count($products_app) > 0) {
             //echo 'crear carrito';
             $this->context = Context::getContext(); // actualizar contexto
@@ -758,8 +758,16 @@ public function cart($products_app, $id_customer, $id_address = 0 ,$discounts = 
         }*/
 
         $msg = json_decode($this->context->cookie->{'msg_app'});
-        return array('id_cart' => (int)$this->context->cart->id,'id_customer' => (int)$this->context->cart->id_customer,'msg' => $msg,'id_address' => (int)$this->context->cart->id_address_invoice ,'order_total' => $this->context->cart->getOrderTotal(), 'sub_total' => $subtotal,'products' => $products,'discounts' => $discounts,
-                     'total_discounts'=>$this->context->cart->getOrderTotal(TRUE,Cart::ONLY_DISCOUNTS),'shipping_cost'=>(float)$this->context->cart->getTotalShippingCost(),
+        return array('id_cart' => (int)$this->context->cart->id,
+					 'id_customer' => (int)$this->context->cart->id_customer,
+					 'msg' => $msg,
+					 'id_address' => (int)$this->context->cart->id_address_invoice ,
+					 'order_total' => $this->context->cart->getOrderTotal(), 
+					 'sub_total' => $subtotal,
+					 'products' => $products,
+					 'discounts' => $discounts,
+                     'total_discounts'=>$this->context->cart->getOrderTotal(TRUE,Cart::ONLY_DISCOUNTS),
+					 'shipping_cost'=>(float)$this->context->cart->getTotalShippingCost(),
                      'rx'=> $this->context->cart->is_formula());                     
     }
 

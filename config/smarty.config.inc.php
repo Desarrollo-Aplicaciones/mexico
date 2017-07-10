@@ -43,13 +43,13 @@ $smarty->compile_check = (Configuration::get('PS_SMARTY_FORCE_COMPILE') <= _PS_S
 $smarty->debugging = false;
 $smarty->debugging_ctrl = 'NONE';
 
-if (Configuration::get('PS_SMARTY_CONSOLE') == _PS_SMARTY_CONSOLE_OPEN_BY_URL_)
-{
-	$smarty->debugging_ctrl = 'URL';
-	$smarty->smarty_debug_id = Configuration::get('PS_SMARTY_CONSOLE_KEY');
-}
-else if (Configuration::get('PS_SMARTY_CONSOLE') == _PS_SMARTY_CONSOLE_OPEN_)
-	$smarty->debugging = true;
+// if (Configuration::get('PS_SMARTY_CONSOLE') == _PS_SMARTY_CONSOLE_OPEN_BY_URL_)
+// {
+// 	$smarty->debugging_ctrl = 'URL';
+// 	$smarty->smarty_debug_id = Configuration::get('PS_SMARTY_CONSOLE_KEY');
+// }
+// else if (Configuration::get('PS_SMARTY_CONSOLE') == _PS_SMARTY_CONSOLE_OPEN_)
+// 	$smarty->debugging = true;
 
 /* Use this constant if you want to load smarty without all PrestaShop functions */
 if (defined('_PS_SMARTY_FAST_LOAD_') && _PS_SMARTY_FAST_LOAD_)

@@ -477,8 +477,9 @@ public function getOrderPage($data = null){
 	    if ( (int)$this->context->cart->nbProducts() > 0 ) {
         	$uri = "index.php?controller=order";
         } else {
-        	parse_str(parse_url($_SERVER["REQUEST_URI"])['query'], $queryString);
+			parse_str(parse_url($_SERVER["REQUEST_URI"])['query'], $queryString);
 			$uri = ( isset($queryString['back']) && !empty($queryString['back']) ) ? $queryString['back'] : 'my-account.php';
+			
         }
 
 	    $smarty->assign($this->name.'uri', $uri);

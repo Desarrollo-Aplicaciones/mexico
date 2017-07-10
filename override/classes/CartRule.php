@@ -558,9 +558,10 @@ public function getAssociatedRestrictions($type, $active_only, $i18n)
             {
                 // Do not give a reduction on free products!
                 $order_total = $context->cart->getOrderTotal($use_tax, Cart::ONLY_PRODUCTS, $package_products);
-                foreach ($context->cart->getCartRules(CartRule::FILTER_ACTION_GIFT) as $cart_rule)
+                
+                foreach ($context->cart->getCartRules(CartRule::FILTER_ACTION_GIFT) as $cart_rule){
                     $order_total -= Tools::ps_round($cart_rule['obj']->getContextualValue($use_tax, $context, CartRule::FILTER_ACTION_GIFT, $package), 2);
-
+                }
                 $reduction_value += $order_total * $this->reduction_percent / 100;
             }
 
@@ -726,8 +727,8 @@ public function getAssociatedRestrictions($type, $active_only, $i18n)
                     }
                 }
         }
-
-        Cache::store($cache_id, $reduction_value);;
+        error_log(print_r('reduction_value:'.$reduction_value,true));
+        Cache::store($cache_id, $reduction_value);
         return $reduction_value;
     }
     
