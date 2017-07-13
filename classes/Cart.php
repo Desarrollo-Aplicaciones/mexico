@@ -844,7 +844,6 @@ class CartCore extends ObjectModel
             elseif (!Customer::customerHasAddress(Context::getContext()->customer->id, $id_address_delivery)) // The $id_address_delivery must be linked with customer
                 $id_address_delivery = 0;
         }
-
         $quantity = (int)$quantity;
         $id_product = (int)$id_product;
         $id_product_attribute = (int)$id_product_attribute;
@@ -963,16 +962,18 @@ class CartCore extends ObjectModel
                     return false;
             }
         }
-
+ 
         // refresh cache of self::_products
         $this->_products = $this->getProducts(true);
         $this->update(true);
         $context = Context::getContext()->cloneContext();
         $context->cart = $this;
         Cache::clean('getContextualValue_*');
+        /**Borra la regla de compra**/
         if ($auto_add_cart_rule)
             CartRule::autoAddToCart($context);
-
+/**Borra la regla de compra**/
+        
         if ($product->customizable)
             return $this->_updateCustomizationQuantity((int)$quantity, (int)$id_customization, (int)$id_product, (int)$id_product_attribute, (int)$id_address_delivery, $operator);
         else
@@ -1508,6 +1509,7 @@ class CartCore extends ObjectModel
                         $cart_rules[] = $tmp_cart_rule;
                 }
             }
+            // error_log(print_r($cart_rules,true));
 
             $id_address_delivery = 0;
             if (isset($products[0]))
@@ -1515,8 +1517,11 @@ class CartCore extends ObjectModel
             $package = array('id_carrier' => $id_carrier, 'id_address' => $id_address_delivery, 'products' => $products);
 
             // Then, calculate the contextual value for each one
+            //error_log(print_r(array_keys($cart_rules),true));
             foreach ($cart_rules as $cart_rule)
             {
+                // error_log(print_r('$cart_rule[\'obj\']->reduction_amount',true));
+                // error_log(print_r($cart_rule['obj']->reduction_amount,true));
                 // If the cart rule offers free shipping, add the shipping cost
                 if (($with_shipping || $type == Cart::ONLY_DISCOUNTS) && $cart_rule['obj']->free_shipping){
                     $order_total_discount += Tools::ps_round($cart_rule['obj']->getContextualValue($with_taxes, $virtual_context, CartRule::FILTER_ACTION_SHIPPING, ($param_product ? $package : null), $use_cache), 2);
@@ -1555,6 +1560,7 @@ class CartCore extends ObjectModel
         if ($type == Cart::ONLY_DISCOUNTS){
             return $order_total_discount;
         }
+        //error_log($order_total);
         return Tools::ps_round((float)$order_total, 2);
     }
 

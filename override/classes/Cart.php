@@ -611,8 +611,6 @@ class Cart extends CartCore {
 		$total_products = $this->getOrderTotal(false, Cart::ONLY_PRODUCTS_WITHOUT_SHIPPING);
 		$total_discounts = $this->getOrderTotal(true, Cart::ONLY_DISCOUNTS);
 		$total_discounts_tax_exc = $this->getOrderTotal(false, Cart::ONLY_DISCOUNTS);
-		error_log(print_r('total_discounts_tax_exc: '.$total_discounts_tax_exc,true));
-		error_log(print_r('total_discounts: '.$total_discounts,true));
 
                 
                 
@@ -1723,11 +1721,11 @@ class Cart extends CartCore {
 		if (!CartRule::isFeatureActive() || !$this->id)
 			return array();
 
-		$cache_key = 'Cart::getCartRules'.$this->id.'-'.$filter;
+		//$cache_key = 'Cart::getCartRules'.$this->id.'-'.$filter;
 
 		//--//error_log("\r\n  method getCartRules: ".$cache_key, 3, "/tmp/progresivo.log");
-		if (!Cache::isStored($cache_key))
-		{
+		//if (!Cache::isStored($cache_key))
+		//{
 
 			$result = Db::getInstance()->executeS('
 				SELECT *
@@ -1741,7 +1739,7 @@ class Cart extends CartCore {
 				'.($filter == CartRule::FILTER_ACTION_SHIPPING ? 'AND free_shipping = 1' : '').'
 				'.($filter == CartRule::FILTER_ACTION_GIFT ? 'AND gift_product != 0' : '').'
 				'.($filter == CartRule::FILTER_ACTION_REDUCTION ? 'AND (reduction_percent != 0 OR reduction_amount != 0)' : '')
-				.' ORDER by cr.priority ASC'
+				.' AND cr.active != 0 ORDER by cr.priority ASC'
 			);
 // error_log(print_r('
 // 				SELECT *
@@ -1759,9 +1757,9 @@ class Cart extends CartCore {
 // error_log(print_r(array_keys($result), true));
 			//--//error_log("\r\n  NO CARGO CACHE, EJECUTO QUERY", 3, "/tmp/progresivo.log");
 
-			Cache::store($cache_key, $result);
-		}
-		$result = Cache::retrieve($cache_key);
+			//Cache::store($cache_key, $result);
+		//}
+		//$result = Cache::retrieve($cache_key);
 //error_log(print_r(array_keys($result),true));
 		// Define virtual context to prevent case where the cart is not the in the global context
 		$virtual_context = Context::getContext()->cloneContext();
@@ -1781,7 +1779,7 @@ class Cart extends CartCore {
 			$row['id_discount'] = $row['id_cart_rule'];
 			$row['description'] = $row['name'];
 		}
-		//error_log(print_r(array_keys($result), true));
+		//error_log(print_r($result[2]['id_cart_rule'], true));
 
                 //--//error_log("\r\n  Cart::getCartRules result: ", 3, "/tmp/ordererror.log");
 		return $result;
