@@ -1509,7 +1509,6 @@ class CartCore extends ObjectModel
                         $cart_rules[] = $tmp_cart_rule;
                 }
             }
-            // error_log(print_r($cart_rules,true));
 
             $id_address_delivery = 0;
             if (isset($products[0]))
@@ -1517,11 +1516,8 @@ class CartCore extends ObjectModel
             $package = array('id_carrier' => $id_carrier, 'id_address' => $id_address_delivery, 'products' => $products);
 
             // Then, calculate the contextual value for each one
-            //error_log(print_r(array_keys($cart_rules),true));
             foreach ($cart_rules as $cart_rule)
             {
-                // error_log(print_r('$cart_rule[\'obj\']->reduction_amount',true));
-                // error_log(print_r($cart_rule['obj']->reduction_amount,true));
                 // If the cart rule offers free shipping, add the shipping cost
                 if (($with_shipping || $type == Cart::ONLY_DISCOUNTS) && $cart_rule['obj']->free_shipping){
                     $order_total_discount += Tools::ps_round($cart_rule['obj']->getContextualValue($with_taxes, $virtual_context, CartRule::FILTER_ACTION_SHIPPING, ($param_product ? $package : null), $use_cache), 2);
@@ -1541,7 +1537,6 @@ class CartCore extends ObjectModel
                         $order_total_discount += $cart_rule['obj']->getContextualValue($with_taxes, $virtual_context, CartRule::FILTER_ACTION_GIFT, $package, $use_cache);
                     }
                 }
-                //error_log(print_r($cart_rule['obj'],true));
                 // If the cart rule offers a reduction, the amount is prorated (with the products in the package)
                 if ($cart_rule['obj']->reduction_percent > 0 || $cart_rule['obj']->reduction_amount > 0){
                     $order_total_discount += Tools::ps_round($cart_rule['obj']->getContextualValue($with_taxes, $virtual_context, CartRule::FILTER_ACTION_REDUCTION, $package, $use_cache), 2);
@@ -1560,7 +1555,6 @@ class CartCore extends ObjectModel
         if ($type == Cart::ONLY_DISCOUNTS){
             return $order_total_discount;
         }
-        //error_log($order_total);
         return Tools::ps_round((float)$order_total, 2);
     }
 

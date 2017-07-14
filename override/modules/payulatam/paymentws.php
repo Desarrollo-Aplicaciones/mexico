@@ -47,7 +47,7 @@
     }
 
     public function initParams() {
-error_log('print_r($order->total_discounts_tax_excl,true)');
+
         $tax = (float) self::$cart->getOrderTotal() - (float) self::$cart->getOrderTotal(false);
         $base = (float) self::$cart->getOrderTotal(true, Cart::ONLY_PRODUCTS) + (float) self::$cart->getOrderTotal(true, Cart::ONLY_DISCOUNTS) - (float) $tax;
         if ($tax == 0)

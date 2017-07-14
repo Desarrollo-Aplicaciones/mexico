@@ -1715,7 +1715,6 @@ class Cart extends CartCore {
 
 	public function getCartRules($filter = CartRule::FILTER_ACTION_ALL)
 	{
-		//error_log('hola');
             //--//error_log("\r\n  method getCartRules this->id : ".$this->id, 3, "/tmp/progresivo.log");
 		// If the cart has not been saved, then there can't be any cart rule applied
 		if (!CartRule::isFeatureActive() || !$this->id)
@@ -1741,26 +1740,11 @@ class Cart extends CartCore {
 				'.($filter == CartRule::FILTER_ACTION_REDUCTION ? 'AND (reduction_percent != 0 OR reduction_amount != 0)' : '')
 				.' AND cr.active != 0 ORDER by cr.priority ASC'
 			);
-// error_log(print_r('
-// 				SELECT *
-// 				FROM `'._DB_PREFIX_.'cart_cart_rule` cd
-// 				LEFT JOIN `'._DB_PREFIX_.'cart_rule` cr ON cd.`id_cart_rule` = cr.`id_cart_rule`
-// 				LEFT JOIN `'._DB_PREFIX_.'cart_rule_lang` crl ON (
-// 					cd.`id_cart_rule` = crl.`id_cart_rule`
-// 					AND crl.id_lang = '.(int)$this->id_lang.'
-// 				)
-// 				WHERE `id_cart` = '.(int)$this->id.'
-// 				'.($filter == CartRule::FILTER_ACTION_SHIPPING ? 'AND free_shipping = 1' : '').'
-// 				'.($filter == CartRule::FILTER_ACTION_GIFT ? 'AND gift_product != 0' : '').'
-// 				'.($filter == CartRule::FILTER_ACTION_REDUCTION ? 'AND (reduction_percent != 0 OR reduction_amount != 0)' : '')
-// 				.' AND cr.active != 0 ORDER by cr.priority ASC', true));
-// error_log(print_r(array_keys($result), true));
 			//--//error_log("\r\n  NO CARGO CACHE, EJECUTO QUERY", 3, "/tmp/progresivo.log");
 
 			//Cache::store($cache_key, $result);
 		//}
 		//$result = Cache::retrieve($cache_key);
-//error_log(print_r(array_keys($result),true));
 		// Define virtual context to prevent case where the cart is not the in the global context
 		$virtual_context = Context::getContext()->cloneContext();
 		$virtual_context->cart = $this;
@@ -1779,7 +1763,6 @@ class Cart extends CartCore {
 			$row['id_discount'] = $row['id_cart_rule'];
 			$row['description'] = $row['name'];
 		}
-		//error_log(print_r($result[2]['id_cart_rule'], true));
 
                 //--//error_log("\r\n  Cart::getCartRules result: ", 3, "/tmp/ordererror.log");
 		return $result;

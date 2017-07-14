@@ -411,7 +411,7 @@ class Model extends PaymentModule {
       $this->context = Context::getContext(); // actualizar contexto
       // carga un carrito de la sesión o por el id_cart
       $cart_exist = (int) Db::getInstance()->getValue("SELECT COUNT(id_cart) total FROM ps_cart WHERE id_cart = ". (int) (isset($id_cart)? $id_cart :  $this->context->cookie->id_cart ));
-      //error_log(print_r($this->context->cookie->id_cart,true));
+      
       if ((isset($this->context->cookie->id_cart) 
           && !empty($this->context->cookie->id_cart)) 
           || $cart_exist != 0) {
@@ -461,10 +461,8 @@ class Model extends PaymentModule {
       $this->context->cart->id_address_delivery = (int) $id_address;
       $this->context->cart->id_address_invoice =  (int) $id_address;
       $this->context->cart->update();
-//error_log(print_r($this->context->cart , true));
       // Valida y agrega cupon de descuento
       $aplicar_cupon = 0;
-      //error_log(print_r($discounts ,true));
       if (isset($discounts) && !empty($discounts) && is_array($discounts) && count($discounts) > 0) {
         $aplicar_cupon = 1;
         foreach ($discounts as $key => $value) {
@@ -545,7 +543,6 @@ class Model extends PaymentModule {
       }
 
       $cart_rules = (array)$this->context->cart->getCartRules(CartRule::FILTER_ACTION_GIFT);
-  // error_log(print_r($cart_rules,true));
 
       $gift_products = array();
       foreach ($cart_rules as $cart_rule) {

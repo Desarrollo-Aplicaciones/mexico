@@ -256,7 +256,7 @@ class API extends REST {
     }
     $id_cart = $id_cart > 0 ? $id_cart : NULL;
     $clear = !empty($clear) ? (boolean) $clear : FALSE;
-//error_log(print_r($discounts, true));
+
     $model = new Model();
     $this->response($this->json($model->cart(
       $products,
