@@ -256,9 +256,9 @@
 		/* Product Page V3.0 */
 		#views_block { width: 46px; }
 		ul#thumbs_list_frame img { height: 30px; }
-		#image-block, #image-block-static { width: 371px; height: 247px; }
+		#image-block, #image-block-static { width: 322px; height: 247px; margin-top: 35px; }
 		div#thumbs_list div.caroufredsel_wrapper { height: 156px !important; }
-		.buy_block { width: 320px; padding: 0px 0 0 10px; }
+		.buy_block { width: 340px; padding: 0px 0 0 10px; }
 		#add_to_cart.buttons_bottom_block input#btnComprar, #add_to_cart.buttons_bottom_block input#btnComprar:hover { height: 31px; font-size: 15px; width: 157px; line-height: 27px; margin-right: 6px;}
 		#add_to_cart.buttons_bottom_block #btnAgregar1, #add_to_cart.buttons_bottom_block #btnAgregar1:hover, #add_to_cart.buttons_bottom_block #btnAgregar1:active { height: 31px; font-size: 15px; width: 157px; line-height: 27px; }
 		#btnAgregar1 img { margin: 2px 14px 2px 5px; }
@@ -415,7 +415,18 @@
 	}
 
 /******************** fin mejora busqueda   **********************/
-    	}
+    /******************** modal productos lista negra ***************/
+.icon-right-bottom {
+            width: 320px;
+        }
+        .icon-right-bottom img {
+           width: 35px;
+        }
+        .buttom-open-bold {    
+            width: 70%;
+        }
+/******************** fin modal productos lista negra ***************/
+}
 	
 	
 	/* Small Tablet Portrait size to standard 600 (devices and browsers) */
@@ -613,7 +624,7 @@
 		#qty_content .ctn-price { margin-top: 15px; }
 		ul#thumbs_list_frame img { height: 100%; margin: 0 0 0 0; }
 
-		.buy_block { margin-top: 20px; width: 100%; }
+		.buy_block { margin-top: 20px; width: 100%; float:none;}
 		#name_unico_sin_estilo { font-size: 18px !important; }
 		#old_price_display { font-size: 15px; }
 		#page #columns .our_price_display { font-size: 26px; }
@@ -969,7 +980,12 @@ PASO 4 CHECKOUT MEXICO*/
 
 /******************** fin mejora busqueda   **********************/
 
+/******************** modal productos lista negra   **********************/
+	.icon-right-bottom img {
+		width: 51px;
 	}
+/******************** fin Modal productos lista negra   **********************/
+}
 
 
 	/* All Mobile Sizes (devices and browser) */
@@ -1717,4 +1733,28 @@ PASO 4 CHECKOUT MEXICO*/
 
 
 /******************** fin mejora busqueda   **********************/
+/******************* Modal productos lista negra *********************/
+        
+	#qty_content_black_list {
+		width: 100%;
+	}
+	.buy_block .ctn-product-name {
+		width: 100%;
+	}
+	.buttom-open-bold {}
+		width: 70%;
+	.icon-right-bottom {
+		width: 296px;
+	}
+	.icon-right-bottom img {
+		width: 33px;
+	}
+	.buttom-open-bold {
+		width: 80%;
+	}
+	.color-font-bottom {
+		width: 94%;
+	}
+    
+/******************* fin Modal productos lista negra *********************/
 }

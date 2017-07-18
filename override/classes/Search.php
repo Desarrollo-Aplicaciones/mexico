@@ -162,6 +162,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 		    	$conn_open = 0;
 			}
 
+			$productBlackList = Configuration::get('PRODUCT_BLACK_LIST_SHOW');
 			$sql = "SELECT DISTINCT p.id_product, pl.name pname, cl.name cname, cl.link_rewrite crewrite, pl.link_rewrite prewrite, position2.peso, IF(position2.porc = 100 ,".$reference_load.",0) AS ref_fnd, GROUP_CONCAT(DISTINCT im.id_image SEPARATOR ',') AS imgs, p.id_tax_rules_group AS taxgr, t.rate,
 				CASE p.id_tax_rules_group
 					WHEN 0 THEN ROUND(p.price,2)
@@ -169,10 +170,12 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 					END
 					AS price
 				FROM ps_product p
-				INNER JOIN ps_product_lang pl ON (p.active = 1 AND p.id_product = pl.id_product AND pl.id_lang = 1 AND pl.id_shop = 1  )
-				INNER JOIN ps_product_shop product_shop ON ( product_shop.active = 1 AND product_shop.visibility IN ('both', 'search')
-									AND product_shop.indexed = 1 AND product_shop.id_product = p.id_product AND product_shop.id_shop = 1 )
-				INNER JOIN ps_category_lang cl ON ( product_shop.id_category_default = cl.id_category AND cl.id_lang = 1 AND cl.id_shop = 1  )
+				LEFT JOIN ps_product_black_list product_black ON (product_black.id_product = p.id_product)
+ 				INNER JOIN ps_product_lang pl ON (p.active = IF(product_black.motivo IN (".$productBlackList."),  0,  1) AND p.id_product = pl.id_product AND pl.id_lang = 1 AND pl.id_shop = 1  )
+                INNER JOIN ps_product_shop product_shop ON ( product_shop.active = IF(product_black.motivo IN (".$productBlackList."),  0,  1) AND product_shop.visibility IN ('both', 'search')					                                        
+ 				AND product_shop.indexed = 1 AND product_shop.id_product = p.id_product AND product_shop.id_shop = 1 )
+  				AND product_shop.id_product = p.id_product AND product_shop.id_shop = 1 )
+                INNER JOIN ps_category_lang cl ON ( product_shop.id_category_default = cl.id_category AND cl.id_lang = 1 AND cl.id_shop = 1  )
 				INNER JOIN tmp_search_".$alenum." position2 ON ( position2.id_product = p.id_product)
 				LEFT JOIN `ps_tax_rule` tr ON (product_shop.id_tax_rules_group = tr.id_tax_rules_group AND tr.id_tax != 0)
 				LEFT JOIN `ps_tax` t ON (t.id_tax = tr.id_tax AND t.active = 1 AND t.deleted = 0 )
@@ -942,6 +945,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 		// Adjust the limit to get only "whole" products, in every languages (and at least one)
 		$max_possibilities = $total_languages * count(Shop::getShops(true));
 		$limit = max($max_possibilities, floor($limit / $max_possibilities) * $max_possibilities);
+		$productBlackList = Configuration::get('PRODUCT_BLACK_LIST_SHOW');
 		$query = '
 			SELECT p.id_product, pl.id_lang, pl.id_shop, pl.name pname, p.reference, p.ean13, p.upc,
 				pl.description_short, pl.description, cl.name cname, m.name mname, l.iso_code
@@ -955,11 +959,12 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 				ON m.id_manufacturer = p.id_manufacturer
 			LEFT JOIN '._DB_PREFIX_.'lang l
 				ON l.id_lang = pl.id_lang
+			LEFT JOIN '._DB_PREFIX_.'product_black_list product_black ON (product_black.id_product = p.id_product)
 			WHERE product_shop.indexed = 0
 			AND product_shop.visibility IN ("both", "search")
 			'.($id_product ? 'AND p.id_product = '.(int)$id_product : '');
 			if(Configuration::get('SEARCH_INDEX_ACTIVE') && Configuration::get('SEARCH_INDEX_ACTIVE') == 1){
-				$query .= ' AND p.active = '.Configuration::get('SEARCH_INDEX_ACTIVE');
+				$query .= ' AND p.active = IF(product_black.motivo IN ('.$productBlackList.'),  0, '.Configuration::get('SEARCH_INDEX_ACTIVE').')';
 			}
 		return Db::getInstance()->executeS($query);
 	}

@@ -724,3 +724,72 @@ function checkUrl()
 		}
 	}
 }
+$(document).ready(function() { 
+    // Abre farma-modal 
+    $('.buttom-open-bold').click(function(event) {  
+        event.preventDefault();  
+
+        //transition effect      
+        $('#modal-register-product').fadeIn();      
+    });  
+
+    // Cierra modal 
+    $('.farma-modal .modal-close').click(function (e) {  
+        //Cancel the link behavior  
+        e.preventDefault();  
+        $('#modal-register-product').fadeOut();
+    }); 
+    
+    $("#modal-register-product form").submit(function (e) {
+        //Cancel the link behavior  
+        e.preventDefault(); 
+        
+        // Cacheando objeto formulario
+        var $this = $(this);
+        
+        // Oculta todos los errores
+        $this.find('.error').hide();
+        
+        // Recorre los input del formulario
+        $this.find('input').each(function( key, input ) {
+            // Cacheando objeto input
+            var $formInput = $(input);
+            $formInput.removeClass("line-error");
+            // Si el input esta vacio, muestra el error
+            if (!$formInput.val()) {
+                $formInput.parent().children(".error").show();
+                $formInput.addClass("line-error");
+            }
+        });
+        
+        // Si no hay ningun error envia el formulario
+        if (!$this.find('.error').is(":visible")) {
+            $.post( $this.attr('action'), $this.serialize(), function( data ) {
+                if(data.success) {
+                  // Cacheando objeto modal-content
+                  var $modalRegisterProduct = $("#modal-register-product .modal-content");
+                  $modalRegisterProduct.children(".modal-table, .body-modal").fadeOut( "slow", function() {
+                    // Animation complete.
+                    $modalRegisterProduct.children("#modal-thanks").fadeIn( "fast" );
+                     $( ".exit" ).remove();
+                  });
+                } else {
+                    alert("Ocurrió un error interno, por favor intente más tarde.");
+                }
+            });
+        }
+    });
+
+    // Valida el texto de los input del formulario
+    $("#modal-register-product form input").keyup(function() {
+        var inputVal = $(this).val();
+        if (inputVal.length) {
+            $(this).removeClass("line-error");
+            $(this).parent().children(".error").slideUp();
+        } else {
+            $(this).addClass("line-error");
+            $(this).parent().children(".error").slideDown();
+        }
+    });
+    
+});
