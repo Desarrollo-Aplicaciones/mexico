@@ -6,7 +6,7 @@ class Product extends ProductCore {
          
  	public function __construct($id_product = null, $full = false, $id_lang = null, $id_shop = null, Context $context = null)
  	{
- 		parent::__construct($id_product, $id_lang, $id_shop);
+ 		ObjectModel::__construct($id_product, $id_lang, $id_shop);
  		if (!$context)
  			$context = Context::getContext();
  		if ($full && $this->id)
