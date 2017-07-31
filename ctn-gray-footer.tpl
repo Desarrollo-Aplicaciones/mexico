@@ -79,7 +79,7 @@
 								<a href="{$base_dir}content/51-aviso-de-privacidad-integral-farmalisto" class="txt-gray link">Aviso de privacidad</a>
 								<a href="{$base_dir}content/3-condiciones-de-uso" class="txt-gray link">Términos y condiciones</a>
 								<a href="http://ayuda.farmalisto.com.mx" class="txt-gray link">Centro de ayuda</a>
-								<a href="{$base_dir}mapa-del-sitio" class="txt-gray link">Mapa del sitio</a>
+								{*<a href="{$base_dir}mapa-del-sitio" class="txt-gray link">Mapa del sitio</a>*}
 							</div>
 						</div>
 					</div>
