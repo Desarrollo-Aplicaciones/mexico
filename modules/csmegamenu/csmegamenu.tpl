@@ -281,7 +281,7 @@ $("li a.title_menu_parent").hover(
 				<li class="tags"><a href="{$link->getPageLink('history', true)}">Mis pedidos</a></li>
 				<li class="map-marker"><a href="{$link->getPageLink('addresses', true)}">Mis direcciones</a></li>
 				<li class="cog"><a href="{$link->getPageLink('identity', true)}">Mis datos personales</a></li>
-                                <li class="mustela"><a href="{$link->getPageLink('53-eshop-mustela')}">E-shop mustela </a></li>
+                                <li class="mustela"><a href="{$base_dir}content/53-eshop-mustela">E-shop mustela </a></li>
 					{*{if $typeOS == "Android" || $typeOS == "iPad" || $typeOS == "iPhone"}
 						<li class="download-alt"><a title="{$typeOS}" href="{if $typeOS == 'Android'}https://play.google.com/store/apps/details?id=com.kubo.farmalistomx&hl=es-419{else if $typeOS == 'iPad'}https://itunes.apple.com/mx/app/farmalisto-mexico/id1029945733?mt=8{else if $typeOS == 'iPhone'}https://itunes.apple.com/mx/app/farmalisto-mexico/id1029945733?mt=8{else}javascript:;{/if}">Descarga nuestra aplicación</a></li>
 					{/if}*}
@@ -299,7 +299,7 @@ $("li a.title_menu_parent").hover(
                                     {/if}*}
 				{/if}
 			</ul>
-        </li> 
+        </li>  
     </ul>
 </div>
 {/if}
