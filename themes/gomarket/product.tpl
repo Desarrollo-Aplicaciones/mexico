@@ -659,7 +659,7 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 				<ul id="more_info_tabs" class="idTabs idTabsShort clearfix">
 					{if $product->description_short}<li><a id="info_tab_info" href="#idTab0">{l s='Información'}</a></li>{/if}
 					{if $product->description}<li><a id="more_info_tab_more_info" href="#idTab1">{l s='More info'}</a></li>{/if}
-					{if $features}<li><a id="more_info_tab_data_sheet" href="#idTab2">{l s='Data sheet'}</a></li>{/if}
+					{*{if $features}<li><a id="more_info_tab_data_sheet" href="#idTab2">{l s='Data sheet'}</a></li>{/if}*}
 					{if $attachments}<li><a id="more_info_tab_attachments" href="#idTab9">{l s='Download'}</a></li>{/if}
 					{if isset($accessories) AND $accessories}<li><a href="#idTab4">{l s='Accessories'}</a></li>{/if}
 					{if isset($product) && $product->customizable}<li><a href="#idTab10">{l s='Product customization'}</a></li>{/if}
@@ -680,7 +680,7 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 						{* <div class="title_hide_show">{l s='Data sheet'}</div> *}
 					{/if}
 
-					{if isset($features) && $features}
+					{*{if isset($features) && $features}
 						<!-- product's features -->
 						<ul id="idTab2" class="rte bullet content_hide_show">
 							<div id="scro">
@@ -694,7 +694,7 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 								{/foreach}
 							</div>
 						</ul>
-					{/if}
+					{/if}*}
 
 					{* {if $attachments}<div class="title_hide_show" style="display:none">{l s='Download'}</div>{/if} *}
 					
