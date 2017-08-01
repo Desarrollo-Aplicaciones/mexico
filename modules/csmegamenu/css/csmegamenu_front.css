@@ -233,7 +233,7 @@ ul#responsive-nav > li {
 
 ul#responsive-nav > li:before {
 	content: '';
-	background: url(../img/menu_icons_2.png) no-repeat left top;
+	background: url(../img/menu-icons.png) no-repeat left top;
 	height: 32px;
 	width: 32px;
 	position: absolute;
