@@ -74,6 +74,9 @@ class CustomerCore extends ObjectModel
 	/** @var string WebSite **/
 	public $website;
 
+	/** @var boolean img_profile */
+ 	public $img_profile;
+
 	/** @var string Company */
 	public $company;
 
