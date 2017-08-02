@@ -179,3 +179,12 @@ $(window).load(function(){
 
 
 {/if}
+
+<script type="text/javascript">
+    var google_tag_params = {
+        ecomm_prodid: '',
+        ecomm_pagetype: 'category',
+        ecomm_totalvalue: ''
+    };
+</script>
+s
