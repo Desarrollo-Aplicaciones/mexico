@@ -1720,12 +1720,12 @@ class Cart extends CartCore {
 		if (!CartRule::isFeatureActive() || !$this->id)
 			return array();
 
-		$cache_key = 'Cart::getCartRules'.$this->id.'-'.$filter;
+		//$cache_key = 'Cart::getCartRules'.$this->id.'-'.$filter;
 
 		//--//error_log("\r\n  method getCartRules: ".$cache_key, 3, "/tmp/progresivo.log");
 
-		if (!Cache::isStored($cache_key))
-		{
+		// if (!Cache::isStored($cache_key))
+		// {
 
 			$result = Db::getInstance()->executeS('
 				SELECT *
@@ -1744,9 +1744,9 @@ class Cart extends CartCore {
 
 			//--//error_log("\r\n  NO CARGO CACHE, EJECUTO QUERY", 3, "/tmp/progresivo.log");
 
-			Cache::store($cache_key, $result);
-		}
-		$result = Cache::retrieve($cache_key);
+			//Cache::store($cache_key, $result);
+		//}
+		//$result = Cache::retrieve($cache_key);
 
 		// Define virtual context to prevent case where the cart is not the in the global context
 		$virtual_context = Context::getContext()->cloneContext();

@@ -727,7 +727,7 @@ public function getAssociatedRestrictions($type, $active_only, $i18n)
                 }
         }
 
-        Cache::store($cache_id, $reduction_value);;
+        Cache::store($cache_id, $reduction_value);
         return $reduction_value;
     }
     
