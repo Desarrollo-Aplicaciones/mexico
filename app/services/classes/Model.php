@@ -795,7 +795,8 @@ class Model extends PaymentModule {
       WHERE ad.id_customer = ".(int)$id_customer." 
       AND ad.is_rfc = 0 
       AND ad.deleted = 0" .($id_address != NULL ? (" AND ad.id_address = ".(int)$id_address) : "")
-      . " ORDER BY ad.id_address DESC";
+      . " GROUP BY ad.id_address 
+      ORDER BY ad.id_address DESC";
 
     return Db::getInstance()->ExecuteS($sql);
   }
