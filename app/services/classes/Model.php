@@ -558,8 +558,17 @@ class Model extends PaymentModule {
                   unset($products[$key]);
               }
 
+              $products_app_gift = $this->get_order_datail(false, $product['id']);
+
+              foreach ($products_app_gift as  $value2) {
+                if($value2['id_product'] == $product['id'] ){
+                  $img = $value2['img_url'];  
+                }
+              }
+
               $gift_product = $product;
               $gift_product['qty'] = 1;
+              $gift_product['img'] = $img;
               $gift_product['price'] = 0;
               $gift_product['gift'] = true;
 
@@ -1279,7 +1288,7 @@ class Model extends PaymentModule {
     }  
   }
 
-  public function get_order_datail($id_order)
+  public function get_order_datail($id_order = FALSE, $id_product = FALSE)
   {
     $sql = " SELECT p.`name`,
       od.product_quantity,
@@ -1292,7 +1301,9 @@ class Model extends PaymentModule {
       LEFT JOIN `ps_product_shop` ps ON (ps.id_product = p.id_product AND ps.id_shop = od.id_shop)
       LEFT JOIN `ps_image` i ON (i.`id_product` = p.`id_product` AND  i.cover = 1)
       LEFT JOIN `ps_image_lang` il ON (i.`id_image` = il.`id_image` AND il.`id_lang` = 0) 
-      WHERE od.`id_order` = ".(int) $id_order. "
+      WHERE 1=1
+      ".(($id_order)?" AND od.id_order = ".(int) $id_order:"")."
+      ".(($id_product)?" AND p.id_product = ".(int) $id_product:"")."
       GROUP BY p.id_product;";
 
     //error_log($sql,0);
