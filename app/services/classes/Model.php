@@ -585,6 +585,7 @@ class Model extends PaymentModule {
         'order_total' => $order_total, 
         'sub_total' => $subtotal,
         'products' => $products,
+        'gift_products' => $gift_products,
         'discounts' => $discounts_return,
         'total_discounts'=>$total_discounts,
         'shipping_cost' => (float)$this->context->cart->getTotalShippingCost(),
