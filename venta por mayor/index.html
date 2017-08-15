@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Ventas por mayoreo</title>
+
+    <!-- Custom CSS -->
+    <link href="main.css" rel="stylesheet">
+   
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div id="formulario">
+      <form action="http://192.168.10.121:81/ajaxs/ajax_cotizaciones.php" method="post">
+      <!--form action="mailto:andres.valencia@farmalisto.com.co" enctype="text/plain" method="post"-->
+        <br>Nombre: <br> <input id="nombre" type="text" name="nombre" required>
+        <div id="error-nombre" class="form-error"></div>
+        <br>Empresa: <br> <input type="text" name="empresa" required>
+        <div id="error-empresa" class="form-error"></div>
+        <br>Email: <br> <input type="text" name="email" required>
+        <div id="error-email" class="form-error"></div>
+        <br>Teléfono: <br> <input type="text" name="telefono" required >
+        <div id="error-telefono" class="form-error"></div>
+        <br>Código Postal: <br> <input type="text" name="codigpostal" required>
+        <div id="error-codigpostal" class="form-error"></div>
+        <br></br>
+
+        <div class="product"> 
+          producto:
+          <select name="products[0][cod]" >
+            <option value="75004088">75004088 Accua Aseptic HP Bidón Con 5 Litros De Solución</option>
+            <option value="75004996">75004996 Acicran Max Caja Con 30 Tabletas Recubiertas</option>
+            <option value="75020286">75020286 Actron 600 mg Caja Con 30 Cápsulas</option>
+            <option value="8400000378">8400000378 Aderogyl 15 Caja Con 5 Ampolletas</option>
+            <option value="8400000491">8400000491 Adimod 400 mg Solución Caja Con 10 Frascos Con 7 mL Cada Uno</option>
+            <option value="8400001290">8400001290 Adimod Solución 800 mg / 7 mL Caja Con Frasco De 7 mL</option>
+            <option value="8400005687">8400005687 Advil Fast Gel 200mg Caja Con Frasco Con 20 Cápsulas</option>
+            <option value="8400005694">8400005694 Advil Max 400 mg Caja Con 20 Cápsulas</option>
+            <option value="48723215134">48723215134 Advil Max 400mg Caja Con 10 Cápsulas</option>
+            <option value="93815996491">93815996491 Agrifen 500 mg Caja Con 10 Tabletas</option>
+            <option value="300055501638">300055501638 Agua De Alibour Botella Con 250 mL</option>
+            <option value="300090342043">300090342043 Ajolotius Jarabe De Miel Frasco Con 250 mL</option>
+            <option value="300651431681">300651431681 Alcohol Etílico Desnaturalizado 68.5-78.5°GL Botella Con 230mL</option>
+            <option value="353885008211">353885008211 Aldara Crema 5 % Empaque Con 2 Cajas Con 6 Sobres 250 mg</option>
+            <option value="353885490252">353885490252 Alfaré Leche En Polvo Lata Con 400 g Lactantes Con Desnutrición</option>
+            <option value="353885771504">353885771504 Alin 8mg/2mL Caja Con 1 Ampolleta</option>
+            <option value="354312225133">354312225133 Alka-Seltzer Caja Con 12 Tabletas Efervescentes Sabor Lima-Limón</option>
+            <option value="385220000178">385220000178 Aminoter Caja Con 30 Cápsulas</option>
+            <option value="650240007019">650240007019 Anepigran 100 mg Caja Con 20 Tabletas</option>
+            <option value="650240007651">650240007651 Angiotrofin A.P 120 mg Caja Con 20 Tabletas</option>
+            <option value="650240010538">650240010538 Angiotrofin A.P 90 mg Caja Con 20 Tabletas</option>
+            <option value="650240021824">650240021824 Antibacterial Blumen Fresh Citrus Frasco Con 525 mL Gel</option>
+            <option value="714706905513">714706905513 Antiflu-Des Caja Con 24 Cápsulas</option>
+            <option value="729513130027">729513130027 ANTIFLU-DES JR SOL 60 ML 2</option>
+            <option value="734722456318">734722456318 Antiflu-Des Pediátrico Solución Caja Con Frasco Con Frasco Gotero Con 30mL</option>
+            <option value="736085132069">736085132069 Aretaeus 100 mg Caja Con 30 Tabletas</option>
+            <option value="736085207743">736085207743 Aretaeus 25mg Caja Con 30 Tabletas</option>
+            <option value="736085208054">736085208054 Aspirina 500 mg Caja Con 100 Tabletas</option>
+            <option value="736085405422">736085405422 Aspirina 500mg Caja Con 40 Tabletas</option>
+            <option value="736085905373">736085905373 Aspirina Protec 100 mg Caja Con 28 Tabletas</option>
+            <option value="762860013476">762860013476 Aspirina Protec 100 mg Caja Con 84 Tabletas De Liberación Prolongada</option>
+            <option value="3282776382109">3282776382109 Avamys 2A Suspensión 27.5 mcg / 50 mcL Frasco Con 120 Disparos</option>
+            <option value="3282776432026">3282776432026 Aytugre Ns 50 mcg Caja Con Frasco Con 120 Dosis Suspensión</option>
+            <option value="3337872413025">3337872413025 BD Plastipak Caja Con 5 Jeringas Estériles 5mL 22Gx32mm</option>
+            <option value="3337872414084">3337872414084 Bedoyecta Tri Caja Con 5 Jeringas</option>
+            <option value="3499320001205">3499320001205 Bella Aurora Crema Stillman Caja Con Tarro Con 30 g</option>
+            <option value="3499320002448">3499320002448 Bepanthen Pomada Caja Con Tubo Con 100g</option>
+            <option value="3499320004237">3499320004237 Bexident Triclosan Encías Caja Con Tubo Con 75 mL Pasta Dentífrica</option>
+            <option value="3594455800232">3594455800232 Biberón Evenflo Vidrio 8 Onzas Con 1 Pieza</option>
+            <option value="3594456400103">3594456400103 Bio-Electro Caja Con Frasco Con 24 Tabletas</option>
+            <option value="4005800079948">4005800079948 Bonviva 150 mg Caja Con 1 Tableta</option>
+            <option value="4005800079955">4005800079955 Bullenza 100 mg Caja Con 4 Tabletas</option>
+            <option value="4005800084546">4005800084546 Bullenza 50 mg Caja Con 4 Tabletas</option>
+            <option value="4019338604954">4019338604954 CAFIASPIRINA 500mg/30mg Caja Con 40 Tabletas</option>
+            <option value="4030571000389">4030571000389 Caltrate 600 D Caja Con Frasco Con 60 Tabletas</option>
+            <option value="4042809000702">4042809000702 Cámara De Inhalación Aerochamber Plus Flow-Vu Infantil Con 1 Pieza</option>
+            <option value="4042809000733">4042809000733 Carbonato De Magnesio Puro Empaque Con 1 Terrón</option>
+            <option value="4046222301613">4046222301613 Celestamine NS 100 mg/5 mg Caja Con Frasco Con 60 mL</option>
+            <option value="4046222740542">4046222740542 CeraVe Mointurizing Cream Piel Normal Bote Con 340 g</option>
+            <option value="5000174305449">5000174305449 Cetaphil Barra Dermolimpiadora Caja Con 1 Jabón 127 g</option>
+            <option value="5016533617719">5016533617719 Cetolán Caja Con 100 grageas</option>
+            <option value="5033439034211">5033439034211 Champix 1 mg Empaque De Mantenimiento Tipo Cartera Con 28 Tabletas Recubiertas</option>
+            <option value="5391189200851">5391189200851 Chofabol Granulado Caja Con Frasco Con 100g</option>
+            <option value="5702191008098">5702191008098 Choragon 5000 UI Caja Con 1 Ampolleta Con 1 mL De Diluyente Solución Inyectable</option>
+            <option value="7500326768712">7500326768712 Cialis 20 mg Caja Con 1 Tableta</option>
+            <option value="7500326768729">7500326768729 Cialis 5 mg Caja Con 14 Tabletas</option>
+            <option value="7500326768736">7500326768736 Cialis 5 mg Caja con 28 Tabletas</option>
+            <option value="7501006820027">7501006820027 Cineraria Maritima Caja Con Frasco Gotero Con 10 mL</option>
+            <option value="7501008409503">7501008409503 Cinta Microporosa Leukopor Color Piel Empaque Con 1 Rollo 1.25 Cm X 4.5 M</option>
+            <option value="7501008409527">7501008409527 CINTA MICROPOROSA LEUKOPOR COLOR PIEL EMPAQUE CON 1 ROLLO 2.5 CM X 4.57 M</option>
+            <option value="7501008427330">7501008427330 Claris Toallitas Húmedas Desmaquillantes Bolsa Con 40 Piezas</option>
+            <option value="7501008433676">7501008433676 Clearblue Prueba de Ovulación Digital</option>
+            <option value="7501008443194">7501008443194 Colgate Periogard Caja Con Frasco 250 mL Solución Bucal</option>
+            <option value="7501008485057">7501008485057 Combivent Respimat 1.68mg/8.77mg/1mL Caja Con Frasco Aerosol</option>
+            <option value="7501008491966">7501008491966 Complan Lata Con 400 g Sabor Vainilla</option>
+            <option value="7501008496152">7501008496152 Condil Caja Con Frasco Con 5mL</option>
+            <option value="7501008497340">7501008497340 Controlip 160 mg Caja Con 30 Cápsulas</option>
+            <option value="7501009071938">7501009071938 Corneregel 5 % Gel Caja Con Tubo Con 10 g</option>
+            <option value="7501017361113">7501017361113 COVERSAM Peridonpril/Amlodipino 5 mg/ 5 mg Caja Con 30 Comprimidos</option>
+            <option value="7501020670349">7501020670349 Cozaar 100 mg Caja Con 30 Comprimidos</option>
+            <option value="7501022101933">7501022101933 Cozaar 50 mg Caja Con 30 Comprimidos</option>
+            <option value="7501022110348">7501022110348 Crema Blanca Bustillos Hidroquinona Caja Con Frasco Con 40g</option>
+            <option value="7501023108894">7501023108894 Crema dental Colgate MFP 22 mL</option>
+            <option value="7501027511058">7501027511058 Cronadyn 20 mg Caja Con 14 Tabletas</option>
+            <option value="7501027511065">7501027511065 Curiosin Gel Caja Con Tubo Multidosis De 15 g</option>
+            <option value="7501033950636">7501033950636 Curitas Transparentes Caja Con 10 Piezas</option>
+            <option value="7501033953057">7501033953057 Curitas Transpiel Caja Con 100 Unidades</option>
+            <option value="7501033954412">7501033954412 Daflon 500M 500 mg Caja con 20 Tabletas</option>
+            <option value="7501033954559">7501033954559 Danzen 10 mg Caja Con 20 Tabletas</option>
+            <option value="7501033955969">7501033955969 Dermacrom Loción Corporal Caja Con Frasco Con 120 mL</option>
+            <option value="7501033957970">7501033957970 Dermoscalp Shampoo Botella Con 100 mL</option>
+            <option value="7501033958717">7501033958717 Desenfriol D 2mg/5mg/500mg Caja Con 24 Tabletas-Antigripal</option>
+            <option value="7501034605115">7501034605115 Desowen 0.05 % Caja Con Tubo Con 30 g</option>
+            <option value="7501034651044">7501034651044 Dexeryl Caja Con Tubo 250 g Crema Emoliente</option>
+            <option value="7501036619233">7501036619233 Dexivant 30 mg Caja Con Blíster Con 14 Cápsulas</option>
+            <option value="7501037905588">7501037905588 Dexivant 60 mg Caja Con Blíster Con 14 Cápsulas</option>
+            <option value="7501037965001">7501037965001 Diapro Gel</option>
+            <option value="7501041941848">7501041941848 Diapro Paquete Con 42 Toallas Limpiadoras Húmedas Para Adulto</option>
+            <option value="7501048613601">7501048613601 Ditrei 50 mg Caja Con 48 Cápsulas</option>
+            <option value="7501048613700">7501048613700 Dolo-Neurobión Forte Caja Con Frasco Con 30 Tabletas</option>
+            <option value="7501048922208">7501048922208 DUCRAY KELUAL DS SH C/100ML</option>
+            <option value="7501048923403">7501048923403 Duosight 1 5G Gel Tubo 30 g.</option>
+            <option value="7501050617055">7501050617055 Duramax Tubo Con 14.1g Gel Masculino Retardante</option>
+            <option value="7501050629577">7501050629577 Effaclar Duo + Innovación Eficancia Anti-Manchas Tubo Con 40 mL</option>
+            <option value="7501050699990">7501050699990 Effaclar Mat Crema Facial Matificante y Humectante Caja Con Tubo Con 40 mL</option>
+            <option value="7501057002663">7501057002663 Effezel Gel 0.1g/2.5g/100g Caja Con Tubo Con 30g</option>
+            <option value="7501065055019">7501065055019 Elantan 20mg Caja Con 30 Tabletas</option>
+            <option value="7501070612368">7501070612368 Elatec 500 mg Caja Con 30 Tabletas</option>
+            <option value="7501070615277">7501070615277 Enfamil Premium 2 6-12 Meses Lata Con 900 g</option>
+            <option value="7501070635664">7501070635664 Ensure Advance Sabor Vainilla Frasco Con 237mL</option>
+            <option value="7501070637378">7501070637378 Enterogermina Caja Con 20 Ampolletas</option>
+            <option value="7501073086180">7501073086180 Esbeltex 500 mg Frasco Con 120 Tabletas</option>
+            <option value="7501080128828">7501080128828 Espavén 50 mg / 40 mg Caja Con 24 Tabletas</option>
+            <option value="7501080911185">7501080911185 Espavén Pediátrico Suspensión Frasco Gotero Con 30 mL</option>
+            <option value="7501080912076">7501080912076 Eucerin Aquaphor Caja Con Tarro Con 99 g</option>
+            <option value="7501082212143">7501082212143 EUCERIN DA Control Caja Con Tubo Con 40 mL</option>
+            <option value="7501082224269">7501082224269 EUCERIN DA Loción Corporal Control Botella Con 250mL</option>
+            <option value="7501082242409">7501082242409 Euflexxa TA Solución Inyectable Caja con 1 Jeringa Prellenada 2 mL</option>
+            <option value="7501082242720">7501082242720 Eutirox 100 mcg Caja Con 50 Tabletas</option>
+            <option value="7501082750508">7501082750508 Eutirox 50 mcg Caja Con 50 Tabletas</option>
+            <option value="7501086301393">7501086301393 Evenflo Classic Biberón De Vidrio Caja Con 1 Pieza 120mL</option>
+            <option value="7501088504655">7501088504655 Evolution Autocode Tiras Reactivas Caja Con Frasco Con 50 Piezas</option>
+            <option value="7501088504808">7501088504808 Evorel 50mcg Caja Con 8 Parches Matriz Activa De Liberación Controlada</option>
+            <option value="7501088505003">7501088505003 Fabroven Caja Con 30 Cápsulas</option>
+            <option value="7501088507007">7501088507007 Febrax 275 mg / 300 mg Caja Con 15 Tabletas</option>
+            <option value="7501088507854">7501088507854 Ferranina Fol 100 mg / 800 mcg Caja Con 30 Tabletas</option>
+            <option value="7501088509766">7501088509766 Flanax 550 550 mg Caja Con 12 Tabletas</option>
+            <option value="7501088509773">7501088509773 FLUOXETINA 20 MG CAP 14 ♥Rx</option>
+            <option value="7501088509810">7501088509810 Folcress %5 Solución Botellas Con 60 mL</option>
+            <option value="7501088588525">7501088588525 Fortalite Caja Con Frasco Con 30 Tabletas</option>
+            <option value="7501088604058">7501088604058 Forteo Colter Inyectable 250 mcg / mL Caja Con Pluma De 2.4 mL Y 3 Cajas De BD Ultra</option>
+            <option value="7501089802033">7501089802033 Fortini Niños Tarro/ Lata Con 400 g</option>
+            <option value="7501089802040">7501089802040 Fosfonat 150 mg Caja Con 1 Tableta</option>
+            <option value="7501089808936">7501089808936 Freestyle Optium Tiras Reactivas Caja Con 50 Tiras</option>
+            <option value="7501089808943">7501089808943 Fucicort Crema 20 mg / 1 mg Caja Con Tubo Con 15 g</option>
+            <option value="7501091440629">7501091440629 Gabirol Caja Con 14 Cápsulas</option>
+            <option value="7501092720980">7501092720980 Gasa Absorbente Estéril Protec 10X10Cm Caja Con 100 Gasas</option>
+            <option value="7501092743033">7501092743033 Gasa Absorbente Esterilizada Alfa Caja Con 10 Gasas 10 X 10 cm</option>
+            <option value="7501092773511">7501092773511 Gelfoam Sobre Con Esponja Estéril De 100 cm²</option>
+            <option value="7501092793038">7501092793038 Gelicart Caja Con 30 Sobres De 10 g Cada Uno</option>
+            <option value="7501092793052">7501092793052 Graneodín B Caja Con 24 Pastillas Sabor Frambuesa</option>
+            <option value="7501094910570">7501094910570 Granudoxy 100mg Caja Con 28 Tabletas</option>
+            <option value="7501094916800">7501094916800 Grecian 2000 Crema Tinte Desvanecedor De Canas Caja Con Tubo Con 60g</option>
+            <option value="7501095409004">7501095409004 Hepa Merz Granulado Caja Con 30 Sobres Con 3 g</option>
+            <option value="7501095452505">7501095452505 HHerbacil Té De Arnica Caja Con 25 Bolsas</option>
+            <option value="7501095467264">7501095467264 Huggies Natural Care Toallitas Húmedas Empaque Con 80 Toallas</option>
+            <option value="7501098603867">7501098603867 Huggies Supreme Prematuro Etapa P Paquete Con 30 Pañales</option>
+            <option value="7501098611329">7501098611329 Huggies Supreme Pure & Natural Etapa 6 Niña Empaque Con 36 Piezas</option>
+            <option value="7501100089016">7501100089016 HUGGIES SUPREME RECIÉN NACIDO ETAPA RN MENOS DE 6Kg EMPAQUE CON 20 PAÑALES</option>
+            <option value="7501101660740">7501101660740 Huggies Ultra Confort Etapa 6 Niño Empaque Con 31 Pañales</option>
+            <option value="7501108763468">7501108763468 Hypafix Cinta Autoadhesiva 10cmx10cm Caja Con 1 Rollo</option>
+            <option value="7501108767527">7501108767527 Hypafix Cinta Autoadhesiva 5 cm X 10 cm Caja Con 1 Rollo</option>
+            <option value="7501108767947">7501108767947 IDAPTAN MR 35 mg Caja Con 30 Comprimidos De Liberación Prolongada</option>
+            <option value="7501109761944">7501109761944 Imodium 2mg Caja Con 12 Tabletas</option>
+            <option value="7501109901067">7501109901067 Incresina 25 mg Frasco Con 28 Tabletas</option>
+            <option value="7501109902637">7501109902637 Indaflex Crema 2.5 % Caja Con Tubo Con 40 g</option>
+            <option value="7501109902866">7501109902866 Inderalici 40 mg Caja Con 30 Tabletas</option>
+            <option value="7501109903054">7501109903054 Intracto De Castaño De Indias Frasco Con 110 mL Solución</option>
+            <option value="7501109904440">7501109904440 Jabón Dermolimpiador Acnaid Barra Con 100 g</option>
+            <option value="7501119200020">7501119200020 Jardianz 25 mg Caja Con 30 Tabletas Recubiertas</option>
+            <option value="7501122900511">7501122900511 Johnson & Johnson Hisopos Cotonetes Frasco Con 150 Unidades</option>
+            <option value="7501122962700">7501122962700 Kamiloderm Crema Tubo Con 100g</option>
+            <option value="7501123000845">7501123000845 KIN B5 PASTA DENTIFRICA TUB 75</option>
+            <option value="7501123013302">7501123013302 Kitoscell 30 g Caja Con Tubo Con Gel</option>
+            <option value="7501123018031">7501123018031 Kitoscell Caja Con Tubo 90 g Gel</option>
+            <option value="7501124103590">7501124103590 Kitoscell Gel Caja Con Tubo Con 10g</option>
+            <option value="7501124180867">7501124180867 Kitoscell Q Gel Caja Con Tubo Con 10 g</option>
+            <option value="7501124181369">7501124181369 Kleenex Pañuelos Caja Con 180 Pañuelos Desechables</option>
+            <option value="7501124181987">7501124181987 Krytan Tek Ofteno 20mg/5mg/2mg/mL Caja Con Frasco Gotero Con 5mL</option>
+            <option value="7501124818647">7501124818647 Lactiflora Fem Caja Con 6 Cápsulas Vaginales</option>
+            <option value="7501125109935">7501125109935 Lagenbach 2g Frasco Con 60 Barras</option>
+            <option value="7501125116810">7501125116810 Lamotrigina 100mg Caja Con 28 Tabletas Masticables</option>
+            <option value="7501125160684">7501125160684 Lasderma Caja Con Tubo Con 15 g</option>
+            <option value="7501125160691">7501125160691 Linicin Loción 15 Minutos Frasco Con 100 mL</option>
+            <option value="7501125160837">7501125160837 Lipovitasi Or Caja Con 60 Tabletas</option>
+            <option value="7501142989428">7501142989428 Livermed Caja Con 60 Cápsulas</option>
+            <option value="7501165003040">7501165003040 Lomotil 2mg Caja Con 8 Tabletas</option>
+            <option value="7501165007598">7501165007598 Losec A 20 20 mg Caja Con 14 Cápsulas</option>
+            <option value="7501165007604">7501165007604 Lowtiyel 50 mg Gel Caja Con 14 Sobres Con 5 g</option>
+            <option value="7501165007611">7501165007611 Lyrica 75 mg Caja Con 28 Cápsulas</option>
+            <option value="7501165007956">7501165007956 Magna-vida cloruro de magnesio Caja Con 100g</option>
+            <option value="7501185730568">7501185730568 Magsokon Caja Con Sobre Con 26g</option>
+            <option value="7501188800473">7501188800473 Mandikoz 5 % Con Caja Con 12 Sobres Crema</option>
+            <option value="7501249605634">7501249605634 Meladermic Energy 5 % Caja Con Tubo Con 50 g</option>
+            <option value="7501258203234">7501258203234 Metamix 5 Caja con 14 Sobres 35g C/U</option>
+            <option value="7501258209748">7501258209748 Metamix 5 Tarro con 490g Sabor Natural</option>
+            <option value="7501258212632">7501258212632 Metamix 5 Tarro con 980g Sabor Natural</option>
+            <option value="7501258214445">7501258214445 MICCIL CPR 20 455</option>
+            <option value="7501273500165">7501273500165 Microdacyn 60 Frasco Con 240 mL</option>
+            <option value="7501273500479">7501273500479 Microdacyn 60 Frasco Spray Con 120 mL</option>
+            <option value="7501273500493">7501273500493 Motrin Infantil Suspensión Sabor Frutas Caja Con Frasco Con 120mL</option>
+            <option value="7501287612120">7501287612120 Motrin Pediátrico Suspensión 40mg/1mL Caja Con Frasco Con 15mL Sabor Fresa-Frambuesa</option>
+            <option value="7501287670311">7501287670311 Mycospor Onicoset Caja Con Tubo De Aluminio Con 10 g</option>
+            <option value="7501289511698">7501289511698 Nazil Ofteno 1mg/mL Caja Con Frasco Gotero Con 15mL</option>
+            <option value="7501289514460">7501289514460 Neo-Bacigrin Ungüento Caja con Tubo con 5 g</option>
+            <option value="7501293200151">7501293200151 Neocate Advance Polvo 400g</option>
+            <option value="7501293201523">7501293201523 Neo-Cholal Solución Oral Caja Con 10 Ampolletas de 10 mL</option>
+            <option value="7501298221403">7501298221403 Nepro Lata Con 273 mL Sabor Vainilla</option>
+            <option value="7501298234601">7501298234601 Nexcare Micropore Cinta Adhesiva De Papel Color Piel. Empaque Con 1 Rollo</option>
+            <option value="7501298234908">7501298234908 Nexium Mups 40 mg Caja Con 14 Tabletas</option>
+            <option value="7501298269009">7501298269009 Next Tabs Caja Con 10 Tabletas Con Termómetro</option>
+            <option value="7501298281308">7501298281308 NIQUITIN 21 MG PARCH C 7</option>
+            <option value="7501299306130">7501299306130 Nitroderm TTS 5mg/Día Caja Con 7 Parches</option>
+            <option value="7501299330319">7501299330319 Nootropil 800 mg Caja Con 30 Tabletas</option>
+            <option value="7501299342015">7501299342015 Novamil AR Digest Lata Con 400 mL</option>
+            <option value="7501300407047">7501300407047 Novo Fine 32 g Super Flow Caja Con 100 Agujas</option>
+            <option value="7501303457513">7501303457513 Novotiral 100mcg / 20 mcg Caja Con 50 Tabletas</option>
+            <option value="7501303458503">7501303458503 Nucleo C.M.P Forte 5mg/3mg Caja Con 30 Cápsulas</option>
+            <option value="7501314704552">7501314704552 Nutramigen Premium Con Lgg Tarro Con 357 g</option>
+            <option value="7501318612082">7501318612082 Omeprazol 20 mg Caja Con Frasco Con 7 Cápsulas</option>
+            <option value="7501318612655">7501318612655 Omeprazol 20mg. 30 Cápsulas</option>
+            <option value="7501318634756">7501318634756 omeprazol cápsulas 20mg caja con 14 cápsulas</option>
+            <option value="7501318641327">7501318641327 ONE TOUCH Lancetas Ultra-Soft Caja Con 25 Lancetas</option>
+            <option value="7501318673205">7501318673205 One Touch Ultra Caja Con 2 Frascos Con 25 Tiras Reactivas</option>
+            <option value="7501318683099">7501318683099 Onetouch Select Caja 2 Frascos Con 50 Tiras Reactivas</option>
+            <option value="7501324402356">7501324402356 Onglyza 5 mg Caja con 28 Tabletas</option>
+            <option value="7501326000987">7501326000987 Optivision Caja Con 60 Cápsulas</option>
+            <option value="7501326001106">7501326001106 ORAL-B SUPER FLOSS CAJA CON 50 UNIDADES</option>
+            <option value="7501328979366">7501328979366 Pantogar Caja Con 90 Cápsulas</option>
+            <option value="7501328980119">7501328980119 Pasta Adhesiva Fixodent Original 40 mL Extra Fuerte Caja Con Tubo</option>
+            <option value="7501342800103">7501342800103 Patanol 0.2% Solución Caja Con Frasco Gotero con 2.5 mL</option>
+            <option value="7501361680687">7501361680687 Persantin Solución 5 mg / mL Caja Con 5 Ampolletas De 2mL-Cardiovascular</option>
+            <option value="7501384544256">7501384544256 Pharmaton Matruelle Caja Con Frasco Con 60 Cápsulas</option>
+            <option value="7501385491085">7501385491085 Piascledine 300 100 mg/200 mg Caja Con 30 Cápsulas</option>
+            <option value="7501390910427">7501390910427 Pilexil Forte Caja Con 20 Ampolletas</option>
+            <option value="7501390912582">7501390912582 Pilexil Shampoo Frasco Con 300 mL</option>
+            <option value="7501390912599">7501390912599 Pilovait 1mg Caja Con 56 Tabletas</option>
+            <option value="7501406579211">7501406579211 Pirimir 100 mg Caja Con 24 Tabletas</option>
+            <option value="7501406870097">7501406870097 Podofilia No. 2 Caja Con 1 Frasco Con 5.0 mL</option>
+            <option value="7501415701603">7501415701603 POSTDAY 0.75 MG CAJA CON 2 TABLETAS</option>
+            <option value="7501417001749">7501417001749 PREMID UNG C/3 GR</option>
+            <option value="7501417004764">7501417004764 Primotestón Depot Solución 250 mg / 1 mL Caja Con 1 Ampolleta Con 1 mL</option>
+            <option value="7501417010253">7501417010253 Proesse Forte Caja Con 30 Tabletas</option>
+            <option value="7501446000898">7501446000898 Prosure Lata Con 250 mL Sabor A Vainilla</option>
+            <option value="7501450100218">7501450100218 Protec Gasa Absorbente Estéril 10X10m Caja Con 10 Piezas– Material De Curación</option>
+            <option value="7501535300021">7501535300021 Protec Guantes Para Exploración De Latex Caja Con 100 Piezas Talla Chica</option>
+            <option value="7501581103010">7501581103010 Protec Guantes Para Exploración de Látex No Estéril Talla Mediana</option>
+            <option value="7501672690528">7501672690528 Protoliber Frasco Con 300 Gragéas</option>
+            <option value="7501871720644">7501871720644 Prudence Lub Natural Bote Con 75 mL</option>
+            <option value="7501871720668">7501871720668 Redoxon 1g Tubo Con 10 Tabletas Efervescentes Sabor Naranja</option>
+            <option value="7501943433236">7501943433236 Redoxon Forte 2g Tubo Con 10 Comprimidos Efervescentes</option>
+            <option value="7501943435964">7501943435964 Regenesis Max Caja Con 30 Cápsulas</option>
+            <option value="7501943442405">7501943442405 Regio Rinde+ Paquete Con 4 Mega-Rollos</option>
+            <option value="7501943445772">7501943445772 Renegy 500 mg Solución Inyectable Ampolleta Con 10 mL</option>
+            <option value="7501943454743">7501943454743 Revidox 84 % Caja con 30 Cápsulas</option>
+            <option value="7501943468054">7501943468054 Ribotripsin Caja Con Frasco Con 25 Grageas</option>
+            <option value="7501943474895">7501943474895 Ribovac Granulado Caja Con 24 Sobres</option>
+            <option value="7501943476813">7501943476813 Riopan Gel Caja Con 10 Sobres De 10 mL Cada Uno</option>
+            <option value="7502001017023">7502001017023 Riopan Gel Caja Con Frasco Con 250 mL</option>
+            <option value="7502002460071">7502002460071 Sal De Uvas Picot Caja Con 50 Sobres</option>
+            <option value="7502003560107">7502003560107 Salilex Caja Con Barra De 120 g</option>
+            <option value="7502003560510">7502003560510 Samyr 500 mg Caja Con 40 Tabletas</option>
+            <option value="7502214983726">7502214983726 SEBAMED GEL DE BAÑO PARA BEBÉ FRASCO CON 200 ML</option>
+            <option value="7502216580039">7502216580039 Sedalmerck 500mg/50mg/5mg Caja Con 40 Tabletas</option>
+            <option value="7502216792760">7502216792760 Seebri Breezhaler 50mcg Caja Con 30 Cápsulas Con Polvo Para Inhalación Y Dispositivo</option>
+            <option value="7502216797284">7502216797284 Selsun Azul Acción Humectante Frasco Con 200 mL</option>
+            <option value="7502221012303">7502221012303 Selsun Azul Suave Y Manejable Frasco Con 200 mL</option>
+            <option value="7502221952050">7502221952050 Sertralina 50mg Caja Con 14 Tabletas</option>
+            <option value="7502224225038">7502224225038 Sertralina 50mg Caja Con 14 Tabletas</option>
+            <option value="7502224228619">7502224228619 SHADE PROTEC CRA FPS 50 177ML</option>
+            <option value="7502224228763">7502224228763 Shampoo Iralfaris Caja Con Frasco Con 200 mL</option>
+            <option value="7502224228787">7502224228787 Shampoo Medicasp Caja Con Frasco Con 130 mL</option>
+            <option value="7502224228916">7502224228916 Shampoo Selsun Oro Botella Con 200 mL</option>
+            <option value="7502235760139">7502235760139 Similaxol 78 por 100 mg Frasco Con 50 Tabletas</option>
+            <option value="7502237102173">7502237102173 Similaxol Tabletas Frasco Con 50 Tabletas 100 mg</option>
+            <option value="7502240450612">7502240450612 Sistema GB Solución Alopecia Caja Con Frasco Con 60 mL-Pérdida De Cabello</option>
+            <option value="7502244510039">7502244510039 Skinvita Caja Con 30 Cápsulas</option>
+            <option value="7502246640628">7502246640628 Soldrín Oftálmico Solución Caja Con Frasco Con 10mL</option>
+            <option value="7502246642820">7502246642820 Somazina 500 mg Caja Con 20 Comprimidos Recubiertos</option>
+            <option value="7502257270036">7502257270036 Splash Tears Caja Con Frasco Gotero Con 15mL</option>
+            <option value="7502257270067">7502257270067 Stérimar Frasco Con 100mL</option>
+            <option value="7503000883497">7503000883497 Stérimar Nasal Frasco Spray Con 100 mL</option>
+            <option value="7503000883787">7503000883787 Suavel Pañuelos 4 Paquetes Con 10 Pañuelos</option>
+            <option value="7503002057810">7503002057810 Sufrexal Combi Caja Con 10 Óvulos</option>
+            <option value="7503005569105">7503005569105 Super Fix Spray Con 250mL De Fijador Con Acondicionador</option>
+            <option value="7503006698316">7503006698316 Supradol 30 mg Caja Con 4 Tabletas Sublinguales</option>
+            <option value="7503006698323">7503006698323 Synvisc 2 mL Caja Con Una Jeringa Prellenada</option>
+            <option value="7503007704634">7503007704634 Systane Ultra Frasco Con 10 mL</option>
+            <option value="7503007704658">7503007704658 Tabcin Active Caja Con 12 Cápsulas</option>
+            <option value="7503007822611">7503007822611 Tafirol Ac 500mg/50mg Caja Con 15 Tabletas</option>
+            <option value="7503007859099">7503007859099 Tempra Forte Adultos 650mg Caja Con 24 Tabletas</option>
+            <option value="7503013040900">7503013040900 Tempra Pediátrico 100mg/mL Caja Con Frasco Con 30mL</option>
+            <option value="7503014279576">7503014279576 Tesalon Tesaperl 100 mg Caja Con 20 Cápsulas</option>
+            <option value="7506200700083">7506200700083 The Sensual Tea Zisen Caja Con 2 Comprimidos</option>
+            <option value="7506205804847">7506205804847 Thioctacid 600 H R 600 mg Tabletas</option>
+            <option value="7506295337447">7506295337447 Toblefam Solución 1 g Caja Con 1 Frasco Ámpula Y Ampolleta</option>
+            <option value="7509546039152">7509546039152 Traderma 0.1% Caja Con Tubo Con 30 g</option>
+            <option value="7640114722776">7640114722776 Treda 129mg/280mg/30mg Caja Con 20 Tabletas</option>
+            <option value="7702003469282">7702003469282 Trexen Duo 100 mg / 400 mg Caja Con 7 Óvulos</option>
+            <option value="7702003476594">7702003476594 Tri</option>
+            <option value="7703281001447">7703281001447 Tylex 750mg Caja Con 20 Tabletas</option>
+            <option value="7703281003946">7703281003946 UKN Caja Con 60 Cápsulas</option>
+            <option value="7703331157506">7703331157506 Umbrella Plus Caja Con Emulsión En Spray Con 120 g</option>
+            <option value="7707331801346">7707331801346 Valmetrol</option>
+            <option value="7707331801353">7707331801353 Valproato De Magnesio 200 mg Caja Con 40 Tabletas</option>
+            <option value="7795323773016">7795323773016 Vantal Bucofaríngeo Solución Frasco Con 360 mL</option>
+            <option value="7800005064020">7800005064020 VCF LAMINA ANTICONCEPTIVA FEM</option>
+            <option value="7891010039110">7891010039110 Venalot Depot 180 mg/30 mg Caja con 30 Tabletas</option>
+            <option value="7891024179901">7891024179901 Venda Elástica Empaque Con 5 cm X 5 m</option>
+            <option value="8020030091252">8020030091252 Venlafaxina 37.5mg Caja Con 20 Cápsulas De Liberación Prolongada</option>
+            <option value="8414200215508">8414200215508 Vessel Due</option>
+            <option value="8429420058729">8429420058729 VIDA MAGNESIO PLUS Frasco con 60 Càpsulas</option>
+            <option value="8430206280197">8430206280197 Vitacilina Ungüento Caja Con Tubo Con 28g</option>
+            <option value="8470001657909">8470001657909 Viusid Caja Con 21 Sobres Con 4 g</option>
+            <option value="8470002063754">8470002063754 Vontrol 25 mg Caja Con 25 Tabletas</option>
+            <option value="8717405008471">8717405008471 Wobe</option>
+            <option value="8901120004386">8901120004386 Yasmin 24/4 3 mg / 0.02 mg Caja Con 28 Comprimidos</option>
+            <option value="8901120004409">8901120004409 Yasmin Caja con 21 Comprimidos</option>
+            <option value="8904091101689">8904091101689 Zolnic 4 mg Caja Con 1 Frasco Ámpula 5 mL</option>
+            <option value="8904091187324">8904091187324 Zuum Alidol Gel Alcanforado Mentolado y Eucalipto Frasco Con 125 mL</option>
+          </select>
+          &nbsp
+          Cantidad:<input type="number" min="5" name="products[0][qty]" value="5" >
+          &nbsp
+          <a class="delete" href="javascript:void(0);"> Quitar </a>
+        </div>
+
+        <input name="subject" id="subject" type="hidden" value="Cotización">
+        <input name="body" id="body" type="hidden" value="">
+
+        <div align="center">
+          <br><br>
+          <button class="btn" id="add-product">1.Agregar producto</button>
+          <a class="btn" href="javascript:window.print();" id="print-summary">2.Imprime Cotización</a>
+          <input id='submit' type="submit" class="btn" type="button" value="3.Adjunta y Envía">
+        </div>
+
+      </form>
+    </div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
+    <script src="main.js"></script>
+   
+  </body>
+</html>
