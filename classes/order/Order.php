@@ -844,8 +844,9 @@ class OrderCore extends ObjectModel
 		foreach ($res as $key => $val)
 		{
 			$res2 = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
-				SELECT os.`id_order_state`, osl.`name` AS order_state, os.`invoice`
+				SELECT os.`id_order_state`, osl.`name` AS order_state, os.`invoice`, tbo.`rutaxml`
 				FROM `'._DB_PREFIX_.'order_history` oh
+                                LEFT JOIN `'._DB_PREFIX_.'timbrado` tbo ON (tbo.`id_order` = oh.`id_order`)
 				LEFT JOIN `'._DB_PREFIX_.'order_state` os ON (os.`id_order_state` = oh.`id_order_state`)
 				INNER JOIN `'._DB_PREFIX_.'order_state_lang` osl ON (os.`id_order_state` = osl.`id_order_state` AND osl.`id_lang` = '.(int)$context->language->id.')
 			WHERE oh.`id_order` = '.(int)($val['id_order']).(!$showHiddenStatus ? ' AND os.`hidden` != 1' : '').'
@@ -856,7 +857,7 @@ class OrderCore extends ObjectModel
 				$res[$key] = array_merge($res[$key], $res2[0]);
 
 		}
-		return $res;
+                	return $res;
 	}
 
 	public static function getOrdersIdByDate($date_from, $date_to, $id_customer = null, $type = null)
