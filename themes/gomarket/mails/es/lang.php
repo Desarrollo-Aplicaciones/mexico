@@ -23,5 +23,5 @@ $_LANGMAIL['Password query confirmation'] = '🔒 Solicitud de cambio de contras
 $_LANGMAIL['An answer to your message is available #ct%1$s #tc%2$s'] = 'Una respuesta a su mensaje está disponible en #ct%1$s #tc%2$s';
 $_LANGMAIL['An answer to your message is available'] = '';
 $_LANGMAIL['New voucher regarding your order %s'] = 'Nuevo bono con respecto a su orden %s';
-$_LANGMAIL['Your cart and your discount'] = 'Discount offer for items in your cart';
+
 ?>

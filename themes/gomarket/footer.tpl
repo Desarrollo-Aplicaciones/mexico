@@ -321,11 +321,11 @@ document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/tru
                 }
             </script>
             <script type="text/javascript">
-                / <![CDATA[ /
+                
                     var google_conversion_id = 929354855;
                     var google_custom_params = window.google_tag_params;
                     var google_remarketing_only = true;
-                / ]]> /
+                
             </script>
             <script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js"></script>
             <noscript>

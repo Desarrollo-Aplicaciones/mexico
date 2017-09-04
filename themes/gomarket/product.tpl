@@ -441,6 +441,10 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 				<input type="hidden" name="id_product" value="{$product->id|intval}" id="product_page_product_id" />
 				<input type="hidden" name="add" value="1" />
 				<input type="hidden" name="id_product_attribute" id="idCombination" value="" />
+				<div style="display=none;" itemprop="priceSpecification" itemscope itemtype="http://schema.org/PriceSpecification">
+					<meta itemprop="price" content="{convertPrice price=$productPrice}">
+					<meta itemprop="priceCurrency" content="MXN">
+				</div>
 				<div class="proceed">
 					<input type="submit" id="btnComprar" name="Submit" value="{l s='Comprar'}" class="exclusive" />
 				</div>
@@ -671,7 +675,7 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 						{* <div class="title_hide_show">{l s='Información'}</div> *}
 						<!--info-->
 						<div id="idTab0" class="rte content_hide_show">
-              <div id="scro"><span class="font-3"><h2>{$disponibilidad}</h2></span><p style="text-align: justify;" align="justify">&nbsp;</p>{$product->description_short}</div>
+              <div id="scro"><span class="font-3"><b>{$disponibilidad}</b></span><p style="text-align: justify;" align="justify">&nbsp;</p>{$product->description_short}</div>
 						</div>
 					{/if}
 
