@@ -36,12 +36,11 @@ $query_select = "SELECT COUNT(1) FROM ps_stock_available_mv";
 		print_r($results[0]);
 	}
 
-	if ( isset( $_GET['desde_os_validar'] ) && $_GET['desde_os_validar'] != "") {
-            $desde_os_validar == $_GET['desde_os_validar'];    
-    } else {
-            $desde_os_validar = 5600;
-    }
+ $desde_os_validar = 5600;
 
+	if ( isset( $_GET['desde_os_validar'] ) && $_GET['desde_os_validar'] != "") {
+            $desde_os_validar = $_GET['desde_os_validar'];    
+    } 
 
     $query_updt = 'SELECT sod.id_supply_order, sod.id_supply_order_detail, sod.id_product, sod.reference, sod.quantity_expected, 
 sod.quantity_received, COUNT(soi.id_icr) AS cant_real_rev 
