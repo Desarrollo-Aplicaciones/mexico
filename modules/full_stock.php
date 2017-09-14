@@ -36,12 +36,19 @@ $query_select = "SELECT COUNT(1) FROM ps_stock_available_mv";
 		print_r($results[0]);
 	}
 
+	if ( isset( $_GET['desde_os_validar'] ) && $_GET['desde_os_validar'] != "") {
+            $desde_os_validar == $_GET['desde_os_validar'];    
+    } else {
+            $desde_os_validar = 5600;
+    }
+
+
     $query_updt = 'SELECT sod.id_supply_order, sod.id_supply_order_detail, sod.id_product, sod.reference, sod.quantity_expected, 
 sod.quantity_received, COUNT(soi.id_icr) AS cant_real_rev 
 , CONCAT( "UPDATE ps_supply_order_detail sod SET sod.quantity_received =", COUNT(soi.id_icr) , " WHERE sod.id_supply_order_detail  = ", sod.id_supply_order_detail, ";" ) AS querys
 FROM ps_supply_order_detail sod
 LEFT JOIN ps_supply_order_icr soi on ( sod.id_supply_order_detail = soi.id_supply_order_detail )
-WHERE sod.id_supply_order >=  14000
+WHERE sod.id_supply_order >=  '.$desde_os_validar.'
 GROUP BY sod.id_supply_order_detail
 HAVING sod.quantity_received <> COUNT(soi.id_icr)';
 
