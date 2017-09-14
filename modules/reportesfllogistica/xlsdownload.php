@@ -160,7 +160,7 @@ if (isset($_GET['opc_sel'])) {
             $orden_query = "so.id_supply_order, sod.id_supply_order_detail";
             break;
         }
-        $sql = 'SELECT so.id_supply_order, sod.reference, sod.`name`, i.cod_icr, REPLACE(sod.unit_price_te ,".",",") unit_price_te, REPLACE(sod.tax_rate ,".",",") tax_rate, w.`name` AS bodega, soi.lote, soi.fecha_vencimiento,
+        $sql = 'SELECT so.id_supply_order, sod.reference, sod.`name`, i.cod_icr, ROUND(sod.unit_price_te,2) unit_price_te, ROUND(sod.tax_rate) tax_rate, w.`name` AS bodega, soi.lote, soi.fecha_vencimiento,
                         DATE_ADD( soi.fecha ,INTERVAL -5 HOUR ) AS fecha, p.upc
                         FROM ps_supply_order_icr soi
                         INNER JOIN ps_supply_order_detail sod ON ( soi.id_supply_order_detail = sod.id_supply_order_detail)
