@@ -675,7 +675,7 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 						{* <div class="title_hide_show">{l s='Información'}</div> *}
 						<!--info-->
 						<div id="idTab0" class="rte content_hide_show">
-              <div id="scro"><h2 class="font-3">{$disponibilidad}</h2><p style="text-align: justify;" align="justify">&nbsp;</p>{$product->description_short}</div>
+              <div id="scro"><h2 class="font-h2">{$disponibilidad}</h2><p style="text-align: justify;" align="justify">&nbsp;</p>{$product->description_short}</div>
 						</div>
 					{/if}
 
