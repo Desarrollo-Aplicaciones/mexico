@@ -174,7 +174,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
  				INNER JOIN ps_product_lang pl ON (p.active = IF(product_black.motivo IN (".$productBlackList."),  0,  1) AND p.id_product = pl.id_product AND pl.id_lang = 1 AND pl.id_shop = 1  )
                 INNER JOIN ps_product_shop product_shop ON ( product_shop.active = IF(product_black.motivo IN (".$productBlackList."),  0,  1) AND product_shop.visibility IN ('both', 'search')					                                        
  				AND product_shop.indexed = 1 AND product_shop.id_product = p.id_product AND product_shop.id_shop = 1 )
-  				AND product_shop.id_product = p.id_product AND product_shop.id_shop = 1 )
+  				/*AND product_shop.id_product = p.id_product AND product_shop.id_shop = 1 )*/
                 INNER JOIN ps_category_lang cl ON ( product_shop.id_category_default = cl.id_category AND cl.id_lang = 1 AND cl.id_shop = 1  )
 				INNER JOIN tmp_search_".$alenum." position2 ON ( position2.id_product = p.id_product)
 				LEFT JOIN `ps_tax_rule` tr ON (product_shop.id_tax_rules_group = tr.id_tax_rules_group AND tr.id_tax != 0)
