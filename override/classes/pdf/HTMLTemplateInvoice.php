@@ -549,8 +549,6 @@ WHERE o.id_order = ' . (int) $this->order->id;
 
                 }
 
-var_dump($val_total_de_ivas);
-
         // arsort() ordenar valores mayor a menor
         
         ksort($array_ivas);
@@ -568,8 +566,12 @@ var_dump($val_total_de_ivas);
     $sello_SAT = '';
 
 //echo "<br>this->order->current_state: " . $this->order->current_state;
+        $desdeordervalidar = 918;
+        if ( Configuration::get('INICIO_ORDER_TIMBRADO') ) {
+            $desdeordervalidar = Configuration::get('INICIO_ORDER_TIMBRADO');
+        }
 
-    if ( $this->order->id > 918 ) {
+    if ( $this->order->id > $desdeordervalidar ) {
 
         $factura = new Facturaxion();
 
