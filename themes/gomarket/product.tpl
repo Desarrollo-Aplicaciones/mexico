@@ -350,79 +350,77 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 	<!--product info-->
 	<div class="buy_block">
 		<div class="ctn-product-name" >
-			<h1 id="name_unico_sin_estilo">{$product->name|lower|capitalize}</h1>
+		<h1 id="name_unico_sin_estilo">{$product->name}</h1>
+            </div>
+            
+            {if empty($product->motivo)}
+                
+            <div id="qty_content">
+		<div class="ctn-price">
+                    <span class="word_price">Precio:</span>
+                        {* Precio tachado por descuento *}
+                        {if !$priceDisplay || $priceDisplay == 2}
+                                {assign var='productPrice' value=$product->getPrice(true, $smarty.const.NULL, $priceDisplayPrecision)}
+                                {assign var='productPriceWithoutReduction' value=$product->getPriceWithoutReduct(false, $smarty.const.NULL)}
+                        {elseif $priceDisplay == 1}
+                                {assign var='productPrice' value=$product->getPrice(false, $smarty.const.NULL, $priceDisplayPrecision)}
+                                {assign var='productPriceWithoutReduction' value=$product->getPriceWithoutReduct(true, $smarty.const.NULL)}
+                        {/if}
+                        {if $product->on_sale}
+                                <img src="{$img_dir}onsale_{$lang_iso}.gif" alt="{l s='On sale'}" class="on_sale_img"/>
+                                <span class="on_sale">{l s='On sale!'}</span>
+                        {elseif $product->specificPrice AND $product->specificPrice.reduction AND $productPriceWithoutReduction > $productPrice}
+                                <span class="discount">{l s='Reduced price!'}</span>
+                        {/if}
+                        {if $priceDisplay == 2}
+                                <span id="pretaxe_price"><span id="pretaxe_price_display">{convertPrice price=$product->getPrice(false, $smarty.const.NULL)}</span>&nbsp;{l s='tax excl.'}</span>
+                        {/if}
+                        {* CUANTO FUE EL DESCUENTO--> <p id="reduction_percent" {if !$product->specificPrice OR $product->specificPrice.reduction_type != 'percentage'} style="display:none;"{/if}>
+                        <span id="reduction_percent_display">{if $product->specificPrice AND $product->specificPrice.reduction_type == 'percentage'}-{$product->specificPrice.reduction*100}%{/if}</span></p>
+                        <p id="reduction_amount" {if !$product->specificPrice OR $product->specificPrice.reduction_type != 'amount' && $product->specificPrice.reduction|intval ==0} style="display:none"{/if}><span id="reduction_amount_display">{if $product->specificPrice AND $product->specificPrice.reduction_type == 'amount' && $product->specificPrice.reduction|intval !=0}-{convertPrice price=$product->specificPrice.reduction|floatval}{/if}</span></p> *}
+                        {if $product->specificPrice AND $product->specificPrice.reduction}
+                            <span id="old_price">
+                                {if $priceDisplay >= 0 && $priceDisplay <= 2}
+                                    {if $productPriceWithoutReduction > $productPrice}
+                                        <span id="old_price_display">{convertPrice price=$productPriceWithoutReduction}</span>
+                                    {/if}
+                                {/if} 
+                            </span>
+                        {/if}
+                        {if isset($packItems) && isset($productPrice) && isset($product) && $packItems|@count && $productPrice < $product->getNoPackPrice()}
+                                <p class="pack_price">{l s='instead of'} <span style="text-decoration: line-through;">{convertPrice price=$product->getNoPackPrice()}</span></p>
+                                <br class="clear" />
+                        {/if}
+                        {if $product->ecotax != 0}
+                                <p class="price-ecotax">{l s='include'} <span id="ecotax_price_display">{if $priceDisplay == 2}{$ecotax_tax_exc|convertAndFormatPrice}{else}{$ecotax_tax_inc|convertAndFormatPrice}{/if}</span> {l s='for green tax'}
+                                        {if $product->specificPrice AND $product->specificPrice.reduction}
+                                                <br />{l s='(not impacted by the discount)'}
+                                        {/if}
+                                </p>
+                        {/if}
+                        {if !empty($product->unity) && $product->unit_price_ratio > 0.000000}
+                                {math equation="pprice / punit_price" pprice=$productPrice punit_price=$product->unit_price_ratio assign=unit_price}
+                                <p class="unit-price"><span id="unit_price_display">{convertPrice price=$unit_price}</span> {l s='per'} {$product->unity|escape:'htmlall':'UTF-8'}</p>
+                        {/if}
+                        {* / Precio tachado por descuento *}
+
+                        {* Precio normalito o con el descuento aplicado (si lo tiene)*}
+                        <div class="our_price_display" id="our_price_display2">
+                                {if $priceDisplay >= 0 && $priceDisplay <= 2}{convertPrice price=$productPrice}{/if}
+                        </div>
 		</div>
 
-		<div id="qty_content">
-			
-			<div class="ctn-price">
-				<span class="word_price">Precio:</span>
-
-				{* Precio tachado por descuento *}
-				{if !$priceDisplay || $priceDisplay == 2}
-					{assign var='productPrice' value=$product->getPrice(true, $smarty.const.NULL, $priceDisplayPrecision)}
-					{assign var='productPriceWithoutReduction' value=$product->getPriceWithoutReduct(false, $smarty.const.NULL)}
-				{elseif $priceDisplay == 1}
-					{assign var='productPrice' value=$product->getPrice(false, $smarty.const.NULL, $priceDisplayPrecision)}
-					{assign var='productPriceWithoutReduction' value=$product->getPriceWithoutReduct(true, $smarty.const.NULL)}
-				{/if}
-				{if $product->on_sale}
-					<img src="{$img_dir}onsale_{$lang_iso}.gif" alt="{l s='On sale'}" class="on_sale_img"/>
-					<span class="on_sale">{l s='On sale!'}</span>
-				{elseif $product->specificPrice AND $product->specificPrice.reduction AND $productPriceWithoutReduction > $productPrice}
-					<span class="discount">{l s='Reduced price!'}</span>
-				{/if}
-				{if $priceDisplay == 2}
-					<span id="pretaxe_price"><span id="pretaxe_price_display">{convertPrice price=$product->getPrice(false, $smarty.const.NULL)}</span>&nbsp;{l s='tax excl.'}</span>
-				{/if}
-				{* CUANTO FUE EL DESCUENTO--> <p id="reduction_percent" {if !$product->specificPrice OR $product->specificPrice.reduction_type != 'percentage'} style="display:none;"{/if}>
-				<span id="reduction_percent_display">{if $product->specificPrice AND $product->specificPrice.reduction_type == 'percentage'}-{$product->specificPrice.reduction*100}%{/if}</span></p>
-				<p id="reduction_amount" {if !$product->specificPrice OR $product->specificPrice.reduction_type != 'amount' && $product->specificPrice.reduction|intval ==0} style="display:none"{/if}><span id="reduction_amount_display">{if $product->specificPrice AND $product->specificPrice.reduction_type == 'amount' && $product->specificPrice.reduction|intval !=0}-{convertPrice price=$product->specificPrice.reduction|floatval}{/if}</span></p> *}
-				{if $product->specificPrice AND $product->specificPrice.reduction}
-                                    <span id="old_price">
-                                        {if $priceDisplay >= 0 && $priceDisplay <= 2}
-                                            {if $productPriceWithoutReduction > $productPrice}
-                                                <span id="old_price_display">{convertPrice price=$productPriceWithoutReduction}</span>
-                                            {/if}
-                                        {/if} 
-                                    </span>
-                                {/if}
-				{if isset($packItems) && isset($productPrice) && isset($product) && $packItems|@count && $productPrice < $product->getNoPackPrice()}
-					<p class="pack_price">{l s='instead of'} <span style="text-decoration: line-through;">{convertPrice price=$product->getNoPackPrice()}</span></p>
-					<br class="clear" />
-				{/if}
-				{if $product->ecotax != 0}
-					<p class="price-ecotax">{l s='include'} <span id="ecotax_price_display">{if $priceDisplay == 2}{$ecotax_tax_exc|convertAndFormatPrice}{else}{$ecotax_tax_inc|convertAndFormatPrice}{/if}</span> {l s='for green tax'}
-						{if $product->specificPrice AND $product->specificPrice.reduction}
-							<br />{l s='(not impacted by the discount)'}
-						{/if}
-					</p>
-				{/if}
-				{if !empty($product->unity) && $product->unit_price_ratio > 0.000000}
-					{math equation="pprice / punit_price" pprice=$productPrice punit_price=$product->unit_price_ratio assign=unit_price}
-					<p class="unit-price"><span id="unit_price_display">{convertPrice price=$unit_price}</span> {l s='per'} {$product->unity|escape:'htmlall':'UTF-8'}</p>
-				{/if}
-				{* / Precio tachado por descuento *}
-
-				{* Precio normalito o con el descuento aplicado (si lo tiene)*}
-				<div class="our_price_display" id="our_price_display2">
-					{if $priceDisplay >= 0 && $priceDisplay <= 2}{convertPrice price=$productPrice}{/if}
-				</div>
-				{* / Precio normalito o con el descuento aplicado (si lo tiene)*}
-			</div>
-
-
-			<div class="ctn-quantity">
-				<div id="cantidad">{l s='Quantity2:'}</div>
+		<div class="ctn-quantity">
+			<div id="cantidad">{l s='Quantity2:'}</div>
 				<div class="quantity_input">
 					<a rel="nofollow" class="cart_quantity_down" id="" href="javascript:void(0)" title="{l s='Subtract'}">
-						<div class="btn-cant-sumarrestar"> <span>-</span></div>
-						{* <img src="{$img_dir}pdp/quantity_down.png" alt="{l s='Subtract'}"/> *}
+					<div class="btn-cant-sumarrestar"> <span>-</span></div>
+					{* <img src="{$img_dir}pdp/quantity_down.png" alt="{l s='Subtract'}"/> *}
 					</a>
 					<input type="text" name="qty" id="quantity_wanted" class="text" value="{if isset($quantityBackup)}{$quantityBackup|intval}{else}{if $product->minimal_quantity > 1}{$product->minimal_quantity}{else}1{/if}{/if}" maxlength="3" style="width: 28px;min-width:28px; text-align:center;" {if $product->minimal_quantity > 1}onkeyup="checkMinimalQuantity({$product->minimal_quantity});"{/if} />
 					<a rel="nofollow" class="cart_quantity_up" href="javascript:void(0)" title="{l s='Add'}">
-						<div class="btn-cant-sumarrestar"> <span>+</span></div>
-						{* <img src="{$img_dir}pdp/quantity_up.png" alt="{l s='Add'}"/> *}
+					<div class="btn-cant-sumarrestar"> <span>+</span></div>
+					{* <img src="{$img_dir}pdp/quantity_up.png" alt="{l s='Add'}"/> *}
 					</a>
 				</div>
 			</div>
@@ -443,6 +441,10 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 				<input type="hidden" name="id_product" value="{$product->id|intval}" id="product_page_product_id" />
 				<input type="hidden" name="add" value="1" />
 				<input type="hidden" name="id_product_attribute" id="idCombination" value="" />
+				<div style="display=none;" itemprop="priceSpecification" itemscope itemtype="http://schema.org/PriceSpecification">
+					<meta itemprop="price" content="{convertPrice price=$productPrice}">
+					<meta itemprop="priceCurrency" content="MXN">
+				</div>
 				<div class="proceed">
 					<input type="submit" id="btnComprar" name="Submit" value="{l s='Comprar'}" class="exclusive" />
 				</div>
@@ -459,15 +461,109 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 
 		<div class="ctn-contact-lap" id="contact-lap">
 			<div class="ctn-img-call">
-				<img src="{$img_dir}pdp/faceCall1.jpg" class="img-call">
+			<img src="{$img_dir}pdp/faceCall1.jpg" class="img-call">
+                    </div>
+                    <div class="borde-bajo">
+                        <span class="txt-gray">¿Tienes algúna duda?</span>
+                        <span class="txt-green">Contáctanos</span>
+                        <span class="txt-green"><strong>+</strong></span>
+                    </div>
+		</div>
+            <!---------------  productos en lista negra -------------------->        
+            {else}
+		<div id="qty_content_black_list">
+                    <div class="ctn-price">
+			<div class="color-font-top">
+                            <div class="ctn-black-list color-title-open-regular">
+                                Producto no disponible
+                            </div>
+                            <div class="ctn-black-list color-title-open-bold"> 
+                                {$product->motivo_name}
+                            </div>
 			</div>
-			<div class="borde-bajo">
-				<span class="txt-gray">¿Tienes algúna duda?</span>
-				<span class="txt-green">Contáctanos</span>
-				<span class="txt-green"><strong>+</strong></span>
+			<div class="color-font-medium">
+                            <div class="color-open-regular">
+                                    ¿Deseas que te notifiquemos cuando el producto esté <b>disponible de nuevo</b>?
+                            </div>
+                            <br>
+                            <input type="button" class="buttom-open-bold" value="Deseo ser notificado" name="modal" href="#modal-register-product">
+                        </div>
+			<div class="color-font-bottom">
+                            <div class="text-left-bottom">
+                                    <b>¿Dudas?</b> contáctanos en cualquiera de nuestros canales.
+                            </div>
+                            <div class="icon-right-bottom">
+                                <img src="{$img_dir}Lineas.jpg"  id="contact-lap" style="cursor:pointer;">
+                                <a href="{$base_dir}contactenos" class="txt-gray link"><img src="{$img_dir}Contacto.jpg" id="img1"></a>
+                                <a href="https://secure.livechatinc.com/licence/6077601/open_chat.cgi?groups=4" target="_blank"><img src="{$img_dir}Chat.jpg" id="img1"></a>
+                                <img src="{$img_dir}wasap.jpg" id="contact-lap" style="cursor:pointer;">
+                            </div>
 			</div>
 		</div>
 	</div>
+	<!--------- Muestra modal para productos de lista negra ------------->
+                <div id="modal-register-product" class="farma-modal">
+                    <div class="modal-content">
+                        <div class="close-x modal-close"><span class="exit">&times;</span></div>
+                        <div class="modal-table">                          
+                            <div class="modal-table-cell"><img src="{$img_dir}Ok_lightbox_confirmacion.jpg" class="icon-ligh"></div>
+                            <div class="modal-table-cell modal-title">Déjanos tus datos de <br> contacto</div>
+                        </div>
+                        <div class="body-modal">
+                            <form id="form-modal" method="post" action="{$base_dir_ssl}ajaxs/ajax_customer_product.php">
+                                <div class="form-group">
+                                    <label for="name">Nombre</label>
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="Tu nombre" />
+                                    <div class="error form-error" id="error_name">
+                                        Olvidaste ingresar tu nombre
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                <label for="email">Correo electrónico</label>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="mail@ejemplo.com" />
+                                <div class="error form-error" id="error_email">
+                                  Olvidaste ingresar tu correo electrónico
+                                </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="telefono">Número teléfonico</label>
+                                    <input type="text" onkeyup="if (/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'');" class="form-control" id="telefono" name="telefono" placeholder="Fijo o celular" />
+                                    <div class="error form-error" id="error_telefono">
+                                        Olvidaste ingresar tu número telefónico
+                                    </div>
+                                </div>
+                                <input type="hidden" id="product" name="product" value="{$product->id}"/>
+                                <input type="submit" class="enviar-form" id="enviar" name="Enviar" value="Enviar"/>
+                            </form>
+                        </div>
+                        
+                        <div class="response-modal" id="modal-thanks">
+                            <div class="header-response-modal">
+                              <div class="modal-table-cell"><img src="{$img_dir}Ok-lightbox-confirmacion-2.jpg" id="ok_img"></div>
+                              <div class="modal-table-cell modal-title">Tus datos se <br>registraron con <span class="response-title"> éxito.</span>  </div>
+                            </div>
+                            <div  class="message-response">
+                              <span class="message-alert"> Hemos creado una alerta en nuestro sistema que te notificará automáticamente cuando el producto</span>
+                            </div>
+                            <div  class="message-response">
+                                <span class="img-modal-r"> {$product->name} </span>
+                            </div>
+                            <div  class="message-response">
+                              <img class="img-product-m" src="{$link->getImageLink($product->link_rewrite, $cover.id_image, 'medium_default')}"/>
+                            </div>
+                            <div class="message-response">  
+                              <span class="message-alert"> esté disponible de nuevo en nuestro catálogo </span>
+                            </div>
+                            <div class="message-response"> 
+                              <span class="message-mod">Gracias por confiar en nosotros</span>
+                            </div>
+                            <button type="button" class="modal-close enviar-form" id="Cerrar" style=" margin-top: 25px !important">Cerrar</button>
+                        </div>
+            {/if} 
+                    </div>
+                </div>   
+             <!--fin modal-->
+			 </div>
 	<!--/product info-->
 	{* Contactanos *}
 	<div class="ctn-contact-movile" style="display: none;">
@@ -567,20 +663,19 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 				<ul id="more_info_tabs" class="idTabs idTabsShort clearfix">
 					{if $product->description_short}<li><a id="info_tab_info" href="#idTab0">{l s='Información'}</a></li>{/if}
 					{if $product->description}<li><a id="more_info_tab_more_info" href="#idTab1">{l s='More info'}</a></li>{/if}
-					{if $features}<li><a id="more_info_tab_data_sheet" href="#idTab2">{l s='Data sheet'}</a></li>{/if}
+					{*{if $features}<li><a id="more_info_tab_data_sheet" href="#idTab2">{l s='Data sheet'}</a></li>{/if}*}
 					{if $attachments}<li><a id="more_info_tab_attachments" href="#idTab9">{l s='Download'}</a></li>{/if}
 					{if isset($accessories) AND $accessories}<li><a href="#idTab4">{l s='Accessories'}</a></li>{/if}
 					{if isset($product) && $product->customizable}<li><a href="#idTab10">{l s='Product customization'}</a></li>{/if}
 					<li><a href="#idTab99" id="tab-times-delivery">Tiempos de entrega</a></li>
 					{$HOOK_PRODUCT_TAB}
 				</ul>
-
 				<div id="more_info_sheets" class="sheets align_justify">
 					{if $product->description_short}
 						{* <div class="title_hide_show">{l s='Información'}</div> *}
 						<!--info-->
 						<div id="idTab0" class="rte content_hide_show">
-							<div id="scro">{$product->description_short}</div>
+              <div id="scro"><span class="font-3"><b>{$disponibilidad}</b></span><p style="text-align: justify;" align="justify">&nbsp;</p>{$product->description_short}</div>
 						</div>
 					{/if}
 
@@ -588,7 +683,7 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 						{* <div class="title_hide_show">{l s='Data sheet'}</div> *}
 					{/if}
 
-					{if isset($features) && $features}
+					{*{if isset($features) && $features}
 						<!-- product's features -->
 						<ul id="idTab2" class="rte bullet content_hide_show">
 							<div id="scro">
@@ -602,7 +697,7 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 								{/foreach}
 							</div>
 						</ul>
-					{/if}
+					{/if}*}
 
 					{* {if $attachments}<div class="title_hide_show" style="display:none">{l s='Download'}</div>{/if} *}
 					
@@ -844,3 +939,10 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
 
 	</div>
 </div>
+<script type="text/javascript">
+    var google_tag_params = {
+        ecomm_prodid: {$product->id},
+        ecomm_pagetype: 'product',
+        ecomm_totalvalue: {$product->price}
+    };
+</script>

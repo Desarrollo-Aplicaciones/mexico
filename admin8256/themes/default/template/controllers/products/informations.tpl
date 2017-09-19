@@ -141,6 +141,12 @@
 			<td class="col-left"><label>{$bullet_common_field} {l s='Registro Sanitario: (UPC)'}</label></td>
 			<td style="padding-bottom:5px;">
 				<input size="60" maxlength="50" type="text" name="upc" value="{$product->upc|escape:html:'UTF-8'}" style="width: 130px; margin-right: 5px;" /><sup>*</sup>
+				{if !is_null($product->black_list)}
+					<br><br>
+					<div class="error">
+						{$product->black_list}
+					</div>
+				{/if}
 			</td>
 		</tr>
 	</table>

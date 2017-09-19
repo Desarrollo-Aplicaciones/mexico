@@ -96,7 +96,7 @@
 			<table style="width: 100%;">
 			{foreach from=$order_invoice->getOrderPaymentCollection() item=payment}
 				<tr>
-					<td style="width: 50%">{$payment->payment_method}</td>
+					<td style="width: 50%">{$payment_method}</td>
 					<td style="width: 50%">{displayPrice price=$payment->amount currency=$order->id_currency}</td>
 				</tr>
 			{foreachelse}

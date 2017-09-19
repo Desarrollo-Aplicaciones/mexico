@@ -101,12 +101,16 @@
       <div class="image">
         <img src="{$img_dir}mediosp/tarjetas.png" alt="Tarjetas Farmalisto" id="img-tarjetas-farmalisto"/>
       </div>
-      <div class="ctn-title-medio-pago">Tarjeta de Crédito o Débito</div>
+      <div class="ctn-title-medio-pago"><span id="tarjeta_credito_texto">Tarjeta de Crédito o Débito </span><img id="ayuda_debito" class="icono_ayuda" src="{$img_dir}mediosp/Icono-de-ayuda.png"/></div>
       
       <div class="cont-mas-menos">
         <img id="div2im" src="{$img_dir}mediosp/mas_menos.png">
       </div>
     </div> 
+  </div>
+  <div class="row cuadro_ayuda" id="cuadro_ayuda_debito">
+    <div class="col-lg-10 titulo">Tarjeta de crédito o Débito: <img style="float:right; transform: rotate(45deg);" src="{$img_dir}mediosp/mas_menos.png"></div>
+    <div class="col-lg-12 texto">Sujeto a un proceso de autenticación de seguridad. Para más información consulta nuestro aviso de privacidad.</div>
   </div>
   <div id="divs">
    {if isset($medios_de_pago['Tarjeta_credito']) && $medios_de_pago['Tarjeta_credito'] ==='1'}    
@@ -120,7 +124,7 @@
     {else}
       <div id="div2" style="display: none;">
         {include file="$tpl_dir../../modules/payulatam/tpl/no_disponible.tpl"}
-      </div>             
+      </div>
     {/if}         
   </div>
 </div>

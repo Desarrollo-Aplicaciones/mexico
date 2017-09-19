@@ -1,6 +1,8 @@
 {
   "home":[
-    {"src":"https://www.farmalisto.com.mx/28544-large_default/comprar-elatec-500-mg-caja-con-30-tabletas-insuficiencia-venosa-precio-3594456400103.jpg", "link":"menu.product({id: 118})", "target": "self"},
-    {"src":"https://www.farmalisto.com.co/app/banners/home/confia.jpg", "link":"", "target": ""}
+    {"src":"https://www.farmalisto.com.mx/app/banners/home/cupon.jpg", "link":"", "target": ""},
+    {"src":"https://www.farmalisto.com.mx/app/banners/home/opiniones_clientes.jpg", "link":"", "target": ""},
+    {"src":"https://www.farmalisto.com.mx/app/banners/home/deflagyn.jpg", "link":"menu.product({id: 17983})", "target": "self"},
+    {"src":"https://www.farmalisto.com.mx/app/banners/home/euflexxa.jpg", "link":"menu.product({id: 14648})", "target": "self"}
   ]
 }

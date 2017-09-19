@@ -760,3 +760,15 @@
 
 </script>
 {/literal}
+
+<script type="text/javascript">
+    var productIDs = new Array();
+    {foreach $products as $product}
+        productIDs.push({$product.id_product});
+    {/foreach}
+    var google_tag_params = {
+        ecomm_prodid: productIDs,
+        ecomm_pagetype: 'cart',
+        ecomm_totalvalue: {$cart->getOrderTotal(false)}
+    };
+</script>

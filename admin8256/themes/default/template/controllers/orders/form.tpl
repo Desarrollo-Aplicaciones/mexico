@@ -324,9 +324,11 @@
 		
 		$( "#servier" ).focusout(function() {
 			var id_rep = $(this).val();
-			$.post( "{$base_dir}ajaxs/ajax_servier.php", { id_rep: id_rep })
+			$.post( "{$base_dir}ajaxs/ajax_servier.php", { id_rep: id_rep, id_cart_ini: id_cart })
 			.done(function( data ) {
-				//console.log("Respuesta del ajax:   "+data);
+                            $("#servier_err").show();
+                            $("#servier_err").html(data.mesage + ' ' + data.resultado);
+                            $("#servier_err").css("background","#FFF");
 			}, "json");
 		});
 		
@@ -339,7 +341,6 @@
 					//$("#input-medico").css("background","#FFF url(LoaderIcon.gif) no-repeat 165px");
 				},
 				success: function(data){
-					//console.log(data);
 					$("#suggesstion-box").show();
 					$("#suggesstion-box").html(data);
 					$("#input-medico").css("background","#FFF");
@@ -348,15 +349,22 @@
 		});
 		
 	});
-	//To select country name
+	//To select country name data:'id_medico='+value,'id_cart='+id_cart_med,
 	function selectOption(name, value) {
-		$("#input-medico").val(name);
+		$("#input-medico").val(name);                
 		$.ajax({
 			type: "POST",
 			url: "{$base_dir}ajaxs/ajax_servier_medicos.php",
-			data:'id_medico='+value,
+                        dataType: "json",
+                        data : { 
+                            id_medico: value,
+                            id_cart_ini: id_cart
+                                },
+			
 			success: function(data){
-				//console.log(data);
+                            $("#servier_err").show();
+                            $("#servier_err").html(data);
+                            $("#servier_err").css("background","#FFF");
 			}
 		});
 		$("#suggesstion-box").hide();
@@ -481,12 +489,23 @@
 	function displayQtyInStock(id)
 	{
 		var id_product = $('#id_product').val();
-		if ($('#ipa_' + id_product + ' option').length)
-			var id_product_attribute = $('#ipa_' + id_product).val();
-		else
-			var id_product_attribute = 0;
+		if(motivo[id_product] == null) {
+			/* productos lista negra */
+			$("#add-cart").show();
+			$("#hide-product").hide();
+			$("#hide-product").html('');
+			if ($('#ipa_' + id_product + ' option').length)
+				var id_product_attribute = $('#ipa_' + id_product).val();
+			else
+				var id_product_attribute = 0;
 
-		$('#qty_in_stock').html(stock[id_product][id_product_attribute]);
+			$('#qty_in_stock').html(stock[id_product][id_product_attribute]);
+		} else { 
+			/* productos lista negra */
+			$("#add-cart").hide();
+			$("#hide-product").show();
+			$("#hide-product").html('<div class="error">TEMPORALMENTE NO DISPONIBLE, <b>'+motivo[id_product]+'</b></div>');
+		}
 	}
 
 	function duplicateOrder(id_order)
@@ -688,7 +707,6 @@
 			}
 		});
                 {* Limpiar contenedor de customers *}
-                console.log(arreglo[5] + arreglo[4]);
                 if(arreglo[4] != 0 && arreglo[5] != "null") {
                 	var fraud = "error";
                 	var concatMessage = ' - '+arreglo[5];
@@ -741,9 +759,15 @@
 				var attributes_html = '';
 				var customization_html = '';
 				stock = {};
+				motivo = {};
 
 				if(res.found)
 				{
+                                        if (!Math.round10) {
+                                                Math.round10 = function(profit, exp) {
+                                                return decimalAdjust('round', profit, exp);
+                                            };
+                                        }
 					if (!customization_errors)
 						$('#products_err').hide();
 					else
@@ -752,10 +776,11 @@
 					products_found += '<label>{l s='Product:'}</label><select id="id_product" onclick="display_product_attributes();display_product_customizations();">';
 					attributes_html += '<label>{l s='Combination'}</label>';
 					$.each(res.products, function() {
-						products_found += '<option '+(this.combinations.length > 0 ? 'rel="'+this.qty_in_stock+'"' : '')+' value="'+this.id_product+'">'+this.name+(this.combinations.length == 0 ? ' - '+this.formatted_price : '')+'</option>';
+						products_found += '<option '+(this.active == 0 ? 'style="color:#EA6074; font-weight: bold;"' : '')+' '+(this.combinations.length > 0 ? 'rel="'+this.qty_in_stock+'"' : '')+' value="'+this.id_product+'">'+this.name+(this.combinations.length == 0 ? ' - '+this.formatted_price : '')+'</option>';
 						attributes_html += '<select class="id_product_attribute" id="ipa_'+this.id_product+'" style="display:none;">';
 						var id_product = this.id_product;
 						stock[id_product] = new Array();
+						motivo[id_product] = this.motivo_name;
 						if (this.customizable == '1')
 						{
 							customization_html += '<fieldset class="width3"><legend>{l s='Customization'}</legend><form id="customization_'+id_product+'" class="id_customization" method="post" enctype="multipart/form-data" action="'+admin_cart_link+'" style="display:none;">';
@@ -807,7 +832,27 @@
 				resetBind();
 			}
 		});
+                
 	}
+        
+        function decimalAdjust(type, value, exp) {
+	   
+	    if (typeof exp === 'undefined' || +exp === 0) {
+	      return Math[type](value);
+	    }
+	    value = +value;
+	    exp = +exp;
+	    
+	    if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+	      return NaN;
+	    }
+	    
+	    value = value.toString().split('e');
+	    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+	   
+ 	    value = value.toString().split('e');
+	    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+        }
 
 	function display_product_customizations()
 	{
@@ -1092,7 +1137,6 @@
 				},
 			success : function(res)
 			{
-				//console.log(res);
 				displaySummary(res);
 			}
 		});
@@ -1120,7 +1164,6 @@
 				},
 			success : function(res)
 			{
-				//console.log(res);
 				displaySummary(res);
 			}
 		});
@@ -1180,7 +1223,7 @@
                              if (typeof this.update_address_nocturno != 'undefined' && this.update_address_nocturno == true
                                  && typeof this.entrega_nocturna && this.entrega_nocturna > 0 
                                  && id_address_delivery == this.id_address )
-                                { console.log('Addres bogota: '+this.id_address);
+                                { 
                                  address_delivery_detail = address_delivery_detail +
                                 '<br/> <select id="list_localidades"><option>Localidades</option>'+this.list_localidades+'</select> <br/> <select id="list_barrios"><option>Barrios</option></select>';
                                 }else{
@@ -1356,10 +1399,16 @@
 				</body>
 				</html>
 			</iframe>
-			<p><label for="qty">{l s='Quantity:'}</label><input type="text" name="qty" id="qty" value="1" />&nbsp;<b>{l s='In stock'}</b>&nbsp;<span id="qty_in_stock"></span></p>
-			<div class="margin-form">
-				<p><input type="submit" onclick="addProduct();return false;" class="button" id="submitAddProduct" value="{l s='Add to cart'}"/></p>
+			<div id="add-cart">
+				<p>
+					<label for="qty">{l s='Quantity:'}</label>
+					<input type="text" name="qty" id="qty" value="1" />&nbsp;<b>{l s='In stock'}</b>&nbsp;<span id="qty_in_stock"></span>
+				</p>
+				<div class="margin-form">
+					<p><input type="submit" onclick="addProduct();return false;" class="button" id="submitAddProduct" value="{l s='Add to cart'}"/></p>
+				</div>
 			</div>
+			<div id="hide-product" style="display: none;"></div>
 		</div>
 	</div>
 	<div id="products_err" class="warn" style="display:none;"></div>
@@ -1515,7 +1564,7 @@
 		<label>Ingrese un Médico</label>
 		<input type="text" id="input-medico">
 		<div id="suggesstion-box"></div>
-		<div id="doctor_err" class="warn" style="display:none"></div>
+		<div id="servier_err" class="warn" style="display:none"></div>
 	</p>
 </fieldset>
 <br>

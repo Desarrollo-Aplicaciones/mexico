@@ -500,7 +500,8 @@ class Model extends PaymentModule {
           'name' => $value['name'],
           'price' => $value['price_wt'],
           'img'=> $img,
-          'qty' => (int)$value['cart_quantity']
+          'qty' => (int)$value['cart_quantity'],
+          'id_product_attribute' => (int)$value['id_product_attribute']
         );
         $productsFormula[] = $value['id_product'];
       }
@@ -541,19 +542,64 @@ class Model extends PaymentModule {
         $medios_de_pago = $this->list_medios_de_pago();
       }
 
+      $cart_rules = (array)$this->context->cart->getCartRules(CartRule::FILTER_ACTION_GIFT);
+
+      $gift_products = array();
+      foreach ($cart_rules as $cart_rule) {
+        if ((int)$cart_rule['gift_product']) {
+          foreach ($products as $key => &$product) {
+            if (empty($product['gift'])
+            && (int)$product['id'] === (int)$cart_rule['gift_product']
+            && (int)$product['id_product_attribute'] === (int)$cart_rule['gift_product_attribute']) {
+                $product['qty'] = (int)$product['qty'];
+                $product['qty']--;
+
+              if (!($product['qty'] > 0)) {
+                  unset($products[$key]);
+              }
+
+              $products_app_gift = $this->get_order_datail(false, $product['id']);
+
+              foreach ($products_app_gift as  $value2) {
+                if($value2['id_product'] == $product['id'] ){
+                  $img = $value2['img_url'];  
+                }
+              }
+
+              $gift_product = $product;
+              $gift_product['qty'] = 1;
+              $gift_product['img'] = $img;
+              $gift_product['price'] = 0;
+              $gift_product['gift'] = true;
+
+              $gift_products[] = $gift_product;
+
+              break; // One gift product per cart rule
+            }
+          }
+          //unset($product);
+        }
+      }
+      $products = array_values($products);
+
+      $order_total = $this->context->cart->getOrderTotal();
+      $total_discounts = $this->context->cart->getOrderTotal(TRUE,Cart::ONLY_DISCOUNTS);
+
       $msg = json_decode($this->context->cookie->{'msg_app'});
       return array(
         'id_cart' => (int)$this->context->cart->id,
         'id_customer' => (int)$this->context->cart->id_customer,
         'msg' => $msg,
         'id_address' => (int)$this->context->cart->id_address_invoice,
-        'order_total' => $this->context->cart->getOrderTotal(), 
+        'order_total' => $order_total, 
         'sub_total' => $subtotal,
         'products' => $products,
+        'gift_products' => $gift_products,
         'discounts' => $discounts_return,
-        'total_discounts'=>$this->context->cart->getOrderTotal(TRUE,Cart::ONLY_DISCOUNTS),
+        'total_discounts'=>$total_discounts,
         'shipping_cost' => (float)$this->context->cart->getTotalShippingCost(),
-        'rx' => Cart::prodsHasFormula($productsFormula),'mediosp' => $medios_de_pago
+        'rx' => Cart::prodsHasFormula($productsFormula),
+        'mediosp' => $medios_de_pago
       );
     }
 
@@ -759,7 +805,8 @@ class Model extends PaymentModule {
       WHERE ad.id_customer = ".(int)$id_customer." 
       AND ad.is_rfc = 0 
       AND ad.deleted = 0" .($id_address != NULL ? (" AND ad.id_address = ".(int)$id_address) : "")
-      . " ORDER BY ad.id_address DESC";
+      . " GROUP BY ad.id_address 
+      ORDER BY ad.id_address DESC";
 
     return Db::getInstance()->ExecuteS($sql);
   }
@@ -1241,7 +1288,7 @@ class Model extends PaymentModule {
     }  
   }
 
-  public function get_order_datail($id_order)
+  public function get_order_datail($id_order = FALSE, $id_product = FALSE)
   {
     $sql = " SELECT p.`name`,
       od.product_quantity,
@@ -1254,7 +1301,9 @@ class Model extends PaymentModule {
       LEFT JOIN `ps_product_shop` ps ON (ps.id_product = p.id_product AND ps.id_shop = od.id_shop)
       LEFT JOIN `ps_image` i ON (i.`id_product` = p.`id_product` AND  i.cover = 1)
       LEFT JOIN `ps_image_lang` il ON (i.`id_image` = il.`id_image` AND il.`id_lang` = 0) 
-      WHERE od.`id_order` = ".(int) $id_order. "
+      WHERE 1=1
+      ".(($id_order)?" AND od.id_order = ".(int) $id_order:"")."
+      ".(($id_product)?" AND p.id_product = ".(int) $id_product:"")."
       GROUP BY p.id_product;";
 
     //error_log($sql,0);

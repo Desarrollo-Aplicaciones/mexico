@@ -25,3 +25,12 @@
 
 {$HOOK_HOME}
 {if isset($HOOK_CS_HOME_BOTTOM) && $HOOK_CS_HOME_BOTTOM}{$HOOK_CS_HOME_BOTTOM}{/if}
+
+<script type="text/javascript">
+    var google_tag_params = {
+        ecomm_prodid: '',
+        ecomm_pagetype: 'home',
+        ecomm_totalvalue: ''
+    };
+</script>
+

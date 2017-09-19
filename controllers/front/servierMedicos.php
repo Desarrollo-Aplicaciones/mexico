@@ -46,25 +46,34 @@ class servierMedicosCore extends ObjectModel {
             $html .= '<li onClick="selectOption(\''.$nameComplete.'\',\''.$value["id_servier"].'\');" value="'.$value["id_servier"].'">'.$nameComplete.'<li>';
         }
         $html .= '</ul>';
-        error_log("\n\n El html: ".$html,3,"/tmp/errorcito.log");
+        //error_log("\n\n El html: ".$html,3,"/tmp/errorcito.log");
         return $html;
         
     }
 
-    public function insertMedico( $id_medico, $id_cart ){
-        if( $this->consutarRegistroFromIdCart($id_cart) > 0 ){
-             $result = Db::getInstance()->update('servier_medicos_cart', array(
-                'id_medico' => pSQL($id_medico),
-            ), 'id_cart = '.(int)$id_cart);
-            echo "return 1: ".$result;
-            return $result; 
-        }
-        else {
-            $result = Db::getInstance()->insert('servier_medicos_cart', array(
-                'id_medico' => pSQL($id_medico),
-                'id_cart'      => (int)$id_cart,
-            ));
-            return $result; 
+    public function insertMedico( $id_medico, $id_cart ) {
+        
+        if ( (int)$id_cart != 0 ) {
+            
+            if( $this->consutarRegistroFromIdCart($id_cart) > 0 ){
+                $result = Db::getInstance()->update('servier_medicos_cart', array(
+                    'id_medico' => pSQL($id_medico),
+                ), 'id_cart = '.(int)$id_cart);
+                //echo "return 1: ".$result;
+                error_log("\n insertMedico update id_medico:".pSQL($id_medico)."- id_cart:".(int)$id_cart." | ".$result,3,"/tmp/errorcito.log");
+                return "Medico Servier actualizado en el carrito".(int)$id_cart." - ".$result; 
+            }
+            else {
+                $result = Db::getInstance()->insert('servier_medicos_cart', array(
+                    'id_medico' => pSQL($id_medico),
+                    'id_cart'      => (int)$id_cart,
+                ));
+                error_log("\n insertMedico insert id_medico:".pSQL($id_medico)."- id_cart:".(int)$id_cart." | ".$result,3,"/tmp/errorcito.log");
+                return "Medico Servier ingresado en el carrito".(int)$id_cart." - ".$result; 
+            }
+            
+        } else {
+            return "No fue posible asociar el médico en el carrito ".$id_cart.", para este cliente."; 
         }
                
     }

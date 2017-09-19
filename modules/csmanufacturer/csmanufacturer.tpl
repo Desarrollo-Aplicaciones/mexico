@@ -18,9 +18,14 @@
 </div>
 <script type="text/javascript">
 	$(window).load(function(){
-		$("#scroller").carouFredSel({
-			auto: true,
-			responsive: true,
+		$(".list_manufacturer li a")
+			.off("touchstart")
+			.on("touchstart",function(){ 
+				window.location.href = $(this).attr("href"); 
+			});
+			$("#scroller").carouFredSel({
+				auto: true,
+				responsive: true,
 				width: '100%',
 				height : 'variable',
 				prev: '#prev_cs_manu',
@@ -37,7 +42,7 @@
 					}
 				},
 				scroll: {
-					items : 2 ,       //  The number of items scrolled.
+					items : 1 ,       //  The number of items scrolled.
 					direction : 'left'
 				}
 

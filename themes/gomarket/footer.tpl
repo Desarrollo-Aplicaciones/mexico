@@ -309,8 +309,32 @@ document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/tru
           TrustLogo("https://www.farmalisto.com.mx/themes/gomarket/img/footer/comodo_secure_100x85.png", "SC5", "none");
         </script>-->
         <a href="https://ssl.comodo.com/ev-ssl-certificates.php" id="comodoTL">EV SSL Certificate</a>
-  
-	</body>
+        
+        {literal}
+            <script type="text/javascript">
+                if(typeof(google_tag_params)==undefined) {
+                    var google_tag_params = {
+                        ecomm_prodid: '',
+                        ecomm_pagetype: 'siteview',
+                        ecomm_totalvalue:''
+                    };
+                }
+            </script>
+            <script type="text/javascript">
+                
+                    var google_conversion_id = 929354855;
+                    var google_custom_params = window.google_tag_params;
+                    var google_remarketing_only = true;
+                
+            </script>
+            <script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js"></script>
+            <noscript>
+                <div style="display:inline;">
+                    <img height="1" width="1" style="border-style:none;" alt="" src="//googleads.g.doubleclick.net/pagead/viewthroughconversion/929354855/?value=0&guid=ON&script=0"/>
+                </div>
+            </noscript>
+        {/literal}
+    </body>
 
 
   {* chat 

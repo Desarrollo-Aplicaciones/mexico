@@ -117,8 +117,8 @@ function addcartlightbox( element ) {
                                 <div class="line_catalog_search">
                                     <img src="img/line_catalogo.jpg"/>
                                 </div>
-				<div class="name_product_search"><a href="{$product.link|escape:'htmlall':'UTF-8'}" title="{$product.name|escape:'htmlall':'UTF-8'}">{$product.name|lower|capitalize|truncate:55:'...'}</a></div>
-				<p class="product_desc">{$product.description_short|strip_tags:'UTF-8'|truncate:200:'...'}</p>
+				<div class="name_product_search"><a href="{$product.link|escape:'htmlall':'UTF-8'}" title="{$product.name|escape:'htmlall':'UTF-8'}">{$product.name|truncate:55:'...'}</a></div>
+ 				<p class="product_desc">{$product.description_short|strip_tags:'UTF-8'|truncate:200:'...'}</p>
 				{if (!$PS_CATALOG_MODE AND ((isset($product.show_price) && $product.show_price) || (isset($product.available_for_order) && $product.available_for_order)))}
 				<div class="content_price">
 					{if $product.reduction}<span class="pricee-discount">{displayWtPrice p=$product.price_without_reduction}</span>{/if}
@@ -127,8 +127,8 @@ function addcartlightbox( element ) {
 				{/if}
 				
                                 <div class="add_car_search">
-                                    {if ($product.id_product_attribute == 0 || (isset($add_prod_display) && ($add_prod_display == 1))) && $product.available_for_order && !isset($restricted_country_mode) && $product.minimal_quantity <= 1 && $product.customizable != 2 && !$PS_CATALOG_MODE}
-					{if ($product.allow_oosp || $product.quantity > 0)}
+						{if $product.active == 1 && ($product.id_product_attribute == 0 || (isset($add_prod_display) && ($add_prod_display == 1))) && $product.available_for_order && !isset($restricted_country_mode) && $product.minimal_quantity <= 1 && $product.customizable != 2 && !$PS_CATALOG_MODE} 						
+						{if ($product.allow_oosp || $product.quantity > 0)}
 						{if isset($static_token)}
 							<a imgpro="{$product.id_image}"linkrewrite="{$product.link_rewrite}"namepro="{$product.name}"pricepro="{$product.price}" class="button ajax_add_to_cart_button exclusive" rel="ajax_id_product_{$product.id_product|intval}" href="{$link->getPageLink('cart',false, NULL, "add&amp;id_product={$product.id_product|intval}&amp;token={$static_token}", false)}" title="{l s='Comprar'}">{l s='Comprar'}</a>
 						{else}
@@ -170,11 +170,9 @@ Bienvenido a Farmalisto, tu farmacia online, encontrarás medicamentos con recet
     $(function(){
         $(".ctn-btn-cat").click(function(){
             if( $( '#toggle-category' ).is( ":hidden" ) ){
-                console.log("entre1");
                 $( "#btn-cat" ).css( "transform", "rotate(45deg)" );
             }
             else {
-                console.log("Entre2");
 
                 $( "#btn-cat" ).css( "transform", "rotate(0deg)" );
             }

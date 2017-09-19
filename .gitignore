@@ -69,3 +69,5 @@ img/cms/img/*
 img/m/*
 modules/*
 themes/gomarket/modules/*
+img/cms/*
+.idea/
