@@ -117,7 +117,7 @@ function addcartlightbox( element ) {
                                 <div class="line_catalog_search">
                                     <img src="img/line_catalogo.jpg"/>
                                 </div>
-				<div class="name_product_search"><a href="{$product.link|escape:'htmlall':'UTF-8'}" title="{$product.name|escape:'htmlall':'UTF-8'}">{$product.name|truncate:55:'...'}</a></div>
+				<div class="name_product_search"><h3 style="margin: 0;"><a href="{$product.link|escape:'htmlall':'UTF-8'}" title="{$product.name|escape:'htmlall':'UTF-8'}">{$product.name|truncate:55:'...'}</a></h3></div>
  				<p class="product_desc">{$product.description_short|strip_tags:'UTF-8'|truncate:200:'...'}</p>
 				{if (!$PS_CATALOG_MODE AND ((isset($product.show_price) && $product.show_price) || (isset($product.available_for_order) && $product.available_for_order)))}
 				<div class="content_price">
