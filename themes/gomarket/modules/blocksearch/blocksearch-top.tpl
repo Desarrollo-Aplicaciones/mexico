@@ -29,7 +29,7 @@
 		<a id="header_logo" href="{$base_dir}" title="{$shop_name|escape:'htmlall':'UTF-8'}">
 			<img class="logo_small" src="{$base_dir}img/logo_small.jpg" alt="{$shop_name|escape:'htmlall':'UTF-8'}" />
 			{if $page_name == 'index'}
-				<h1 class="logo" title="Drogueria a domicilio online" alt="Drogueria a domicilio online 24 horas en Bogotá y Medellín. Envíos a Cali, Barranquilla, Bucaramanga, Chía, Cartagena y toda Colombia"></h1>
+				<h1 class="logo" title="Farmacia Online a Domicilio" alt="Farmacia Online a Domicilio en Mexico"></h1>
 			{else}
 				<img class="logo" src="{if isset($logo_url)}{$logo_url}{else}{$base_dir}img/logo.jpg{/if}" alt="{$shop_name|escape:'htmlall':'UTF-8'}" />
 			{/if}
