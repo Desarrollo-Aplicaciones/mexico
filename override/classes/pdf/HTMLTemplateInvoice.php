@@ -567,7 +567,7 @@ WHERE o.id_order = ' . (int) $this->order->id;
 
 //echo "<br>this->order->current_state: " . $this->order->current_state;
         $desdeordervalidar = 918;
-        if ( Configuration::get('INICIO_ORDER_TIMBRADO') ) {
+       if ( Configuration::get('INICIO_ORDER_TIMBRADO') ) {
             $desdeordervalidar = Configuration::get('INICIO_ORDER_TIMBRADO');
         }
 
