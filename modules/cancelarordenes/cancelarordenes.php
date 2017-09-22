@@ -130,7 +130,7 @@ class cancelarordenes extends Module
 				$sql = 'SELECT COUNT(1) AS cant 
 						FROM `'._DB_PREFIX_.'orders` o
 						INNER JOIN `'._DB_PREFIX_.'order_detail` od ON ( o.id_order = od.id_order)
-						WHERE  o.current_state IN ('.(int) Configuration::get('PS_OS_SHIPPING').', '.(int) Configuration::get('PS_OS_DELIVERED').', '.(int) Configuration::get('PICKING').', '.(int) Configuration::get('PS_PACKING').' ) 
+						WHERE  o.current_state IN ('.(int) Configuration::get('PS_OS_SHIPPING').', '.(int) Configuration::get('PS_OS_DELIVERED').', '.(int) Configuration::get('PICKING').', '.(int) Configuration::get('PS_PACKING').', 0 ) 
 						AND o.id_order = '.(int)$_POST['orden_cambio'];
 						//echo "<pre>".print_r($sql,true).'</pre>'; exit();
 				$result = Db::getInstance()->getRow($sql); 
