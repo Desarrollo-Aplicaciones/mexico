@@ -1618,9 +1618,9 @@ public function cancelacion( $order_tot_id, $order_invoice_date ) {
 			$and .= " AND t.timbrado = ".$timb." AND t.cancelado = ".$canc;
 
 			$query->where('t.id_order = '.$id_order.$and);
-			
 			$timbres = Db::getInstance()->executeS($query);
-			
+			//print_r($query->__ToString());
+			//echo "<hr>";
 			if (isset($timbres[0]) && count($timbres[0] ) > 0 ) {
 				return $timbres[0];
 			} else { 
@@ -1685,7 +1685,6 @@ public function cancelacion( $order_tot_id, $order_invoice_date ) {
 				}
 
 				//echo $sql;
-
 				$is_correct = Db::getInstance()->execute($sql);
 				/*echo "<br>is_correct:--".$is_correct."--";
 				print_r($is_correct);
@@ -1706,3 +1705,7 @@ public function cancelacion( $order_tot_id, $order_invoice_date ) {
 }
 
 ?>
+
+
+
+

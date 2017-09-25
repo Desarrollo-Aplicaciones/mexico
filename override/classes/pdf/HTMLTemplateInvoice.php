@@ -602,7 +602,7 @@ WHERE o.id_order = ' . (int) $this->order->id;
 
     //$sello_SAT = $factura->cancelacion( $this->order );
     //echo "<br>cant_rep: ".$cant_rep."<br>";
-    print_r( $sello_SAT );
+   // print_r( $sello_SAT );
     
 //}
 //exit();
@@ -669,7 +669,7 @@ WHERE o.id_order = ' . (int) $this->order->id;
             'ultimos_numeros' => $ultimos4_digitos,
         ));
           
-          $enviartimbradofactura = array(
+         /* $enviartimbradofactura = array(
             'rfcemisor' => $rfcEmisor,
             'rfcreceptor' => $rfcReceptor,
             'sellosat' => $sello_SAT            
@@ -677,7 +677,7 @@ WHERE o.id_order = ' . (int) $this->order->id;
 
           echo "<hr> agua: <pre>";
           print_r($enviartimbradofactura);
-          exit;
+          exit;*/
         //&modo_debug=md_col_09374&obligar_timbrado=true&hacer_debug=true
         //error_log("\n\nIvas: ".print_r($array_ivas,true),3,"/tmp/progresivo.log");
 ///////////////////////////////////////////////////////////////////////
