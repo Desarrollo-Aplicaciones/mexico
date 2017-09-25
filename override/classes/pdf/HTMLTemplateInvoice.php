@@ -580,12 +580,16 @@ WHERE o.id_order = ' . (int) $this->order->id;
         } else {
             $obligar_timbrado = 0;
         }
-        
+        if ( isset( $_GET['hacer_debug'] ) && $_GET['hacer_debug'] == "true") {
+            $hacer_debug = 1;    
+        } else {
+            $hacer_debug = 0;
+        }
         $cant_rep = 0;
 
        // while ( ( $sello_SAT == '' && $cant_rep < 5 ) ) {
                                             //( $metodo_pago, $cupon,          $list_products, $invoice_address, $order_tot ) {
-        $sello_SAT = $factura->solicitud2( $metodo_pago, $cupon_xml_calc, $list_products, $invoice_address, $this->order, $array_ivas, $val_total_de_ivas, $this->order->current_state, $obligar_timbrado);
+        $sello_SAT = $factura->solicitud2( $metodo_pago, $cupon_xml_calc, $list_products, $invoice_address, $this->order, $array_ivas, $val_total_de_ivas, $this->order->current_state, $obligar_timbrado, $hacer_debug);
         $cant_rep++;
         $obligar_timbrado = 0;
         usleep(800000);
@@ -598,7 +602,7 @@ WHERE o.id_order = ' . (int) $this->order->id;
 
     //$sello_SAT = $factura->cancelacion( $this->order );
     //echo "<br>cant_rep: ".$cant_rep."<br>";
-    //print_r( $sello_SAT );
+    print_r( $sello_SAT );
     
 //}
 //exit();
@@ -665,7 +669,16 @@ WHERE o.id_order = ' . (int) $this->order->id;
             'ultimos_numeros' => $ultimos4_digitos,
         ));
           
-        
+          $enviartimbradofactura = array(
+            'rfcemisor' => $rfcEmisor,
+            'rfcreceptor' => $rfcReceptor,
+            'sellosat' => $sello_SAT            
+            );
+
+          echo "<hr> agua: <pre>";
+          print_r($enviartimbradofactura);
+          exit;
+        //&modo_debug=md_col_09374&obligar_timbrado=true&hacer_debug=true
         //error_log("\n\nIvas: ".print_r($array_ivas,true),3,"/tmp/progresivo.log");
 ///////////////////////////////////////////////////////////////////////
   //sirve para mostrar la factura sin imprimir.
