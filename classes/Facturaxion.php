@@ -659,7 +659,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 	 * @return [Array]                  [Retorna la respuesta del timbrado de la factura]
 	 */
 	
-		public function solicitud2( $metodo_pago, $cupon, $list_products, $invoice_address, $order_tot, $array_ivas, $val_total_de_iva, $estado_orden = 0, $obligar_timbrado = 0) {
+		public function solicitud2( $metodo_pago, $cupon, $list_products, $invoice_address, $order_tot, $array_ivas, $val_total_de_iva, $estado_orden = 0, $obligar_timbrado = 0, $hacer_debug = 0) {
 
 			$orden_validar = Configuration::get('FACTURAXION_ORDER_VALIDATE');
                         
@@ -681,7 +681,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 			$xml_previamente_generado = $this->dir_server."xml_timbrado/response/".$invoice_date_t.$this->test_char.$order_tot->id."_response.xml";
 			//echo "<br>xml ruta: ".$xml_previamente_generado;
 			//exit;
-			if ( ( ( !is_array($valor_timbrado) && $valor_timbrado == 0 ) && !file_exists($xml_previamente_generado) && $estado_orden == 5 ) || $obligar_timbrado == 1 )  {
+			if ( ( ( !is_array($valor_timbrado) && $valor_timbrado == 0 ) && !file_exists($xml_previamente_generado) && $estado_orden == 5 ) || $obligar_timbrado == 1 || $hacer_debug == 1)  {
 				
 				if ( $orden_validar == $order_tot->id ) {
 					echo "<br> or: ".$order_tot->id;

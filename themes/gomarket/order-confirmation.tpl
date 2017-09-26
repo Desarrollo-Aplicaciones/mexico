@@ -178,11 +178,3 @@ setTimeout ("redireccionar()", 1000);
 
 {/if}
 
-<script type="text/javascript">
-    var google_tag_params = {
-        ecomm_prodid: '',
-        ecomm_pagetype: 'purchase',
-        ecomm_totalvalue:''
-    };
-</script>
-
