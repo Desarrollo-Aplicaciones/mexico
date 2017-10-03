@@ -1650,3 +1650,7 @@ color-title-open-regular {
     font-family: open sans;
     font-weight: bold;
 }
+.font-h2{
+  color: #646464;
+  font-weight: bold;
+}
