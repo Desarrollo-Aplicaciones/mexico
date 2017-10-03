@@ -1326,6 +1326,7 @@ form#add_address p.textarea   textarea{width:270px;}
 	border-bottom:none
 }
 #order-slip #order-list td.history_invoice {border-right:none}
+#order-slip #order-list td.history_xml {border-right:none}
 
 
 /* ************************************************************************************************

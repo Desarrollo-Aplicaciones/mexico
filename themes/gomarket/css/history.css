@@ -15,6 +15,7 @@ td.history_date {width:11%;text-align: center;}
 td.history_price{width:11%;text-align: right;}
 td.history_state{width:17%;text-align: center;}
 td.history_invoice{width:6%;text-align: center;}
+td.history_xml{width:8%;text-align: center;}
 td.history_detail{width:17%;text-align: center;}
 #order-list td.history_method{padding-left: 3%}
 #block-history table#order-list td.history_link{text-align:center;white-space:nowrap; width: 145px;}

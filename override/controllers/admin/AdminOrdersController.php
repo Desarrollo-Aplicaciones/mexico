@@ -2180,15 +2180,15 @@ protected function get_mensajero_order($id_order){
 public function renderView()
 {   $id_order = Tools::getValue('id_order');
 		if(!isset($id_order) || empty($id_order)) // Si el id_order no existe en la solicitud se toma del contexto de PS
-		$id_order = $this->id_object;
-		$order = new Order($id_order);
+		$id_order = $this->id_object;  
+		$order = new Order($id_order); 
 		if (!Validate::isLoadedObject($order))
 			throw new PrestaShopException('object can\'t be loaded');
 
-		$customer = new Customer($order->id_customer);
+		$customer = new Customer($order->id_customer); 
 		$carrier = new Carrier($order->id_carrier);
 		$products = $this->getProducts($order);
-		$currency = new Currency((int)$order->id_currency);
+		$currency = new Currency((int)$order->id_currency);  
 		// Carrier module call
 		$carrier_module_call = null;
 		if ($carrier->is_module)
