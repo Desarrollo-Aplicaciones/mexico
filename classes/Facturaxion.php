@@ -1,3 +1,4 @@
+
 <?php
 
 if (!class_exists('Facturaxion')) {
@@ -270,6 +271,7 @@ function sellarXML($cfdi, $numero_certificado, $archivo_cer, $archivo_pem, $depu
   }
  
   $this->sello_emisor = $sello = base64_encode($sig);
+
 
   $this->array_xml_a_timbrar['@attributes']['certificado'] = $this->certificado_emisor;
   $this->array_xml_a_timbrar['@attributes']['sello'] = $this->sello_emisor;
@@ -659,7 +661,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 	 * @return [Array]                  [Retorna la respuesta del timbrado de la factura]
 	 */
 	
-		public function solicitud2( $metodo_pago, $cupon, $list_products, $invoice_address, $order_tot, $array_ivas, $val_total_de_iva, $estado_orden = 0, $obligar_timbrado = 0) {
+		public function solicitud2( $metodo_pago, $cupon, $list_products, $invoice_address, $order_tot, $array_ivas, $val_total_de_iva, $estado_orden = 0, $obligar_timbrado = 0, $hacer_debug = 0) {
 
 			$orden_validar = Configuration::get('FACTURAXION_ORDER_VALIDATE');
                         
@@ -681,7 +683,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 			$xml_previamente_generado = $this->dir_server."xml_timbrado/response/".$invoice_date_t.$this->test_char.$order_tot->id."_response.xml";
 			//echo "<br>xml ruta: ".$xml_previamente_generado;
 			//exit;
-			if ( ( ( !is_array($valor_timbrado) && $valor_timbrado == 0 ) && !file_exists($xml_previamente_generado) && $estado_orden == 5 ) || $obligar_timbrado == 1 )  {
+			if ( ( ( !is_array($valor_timbrado) && $valor_timbrado == 0 ) && !file_exists($xml_previamente_generado) && $estado_orden == 5 ) || $obligar_timbrado == 1 || $hacer_debug == 1 )  {
 				
 				if ( $orden_validar == $order_tot->id ) {
 					echo "<br> or: ".$order_tot->id;
@@ -1073,7 +1075,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 
 					$message = $e->getMessage();//echo $message;
 
-				} 
+				}
 
 				try {
 
@@ -1454,7 +1456,7 @@ public function cancelacion( $order_tot_id, $order_invoice_date ) {
 					}
 
 				} catch(Exception $e) {
-					$message = $e->getMessage(); echo $message; 
+					$message = $e->getMessage();  echo $message; 
 				}
 			
 			} else {
@@ -1506,7 +1508,6 @@ public function cancelacion( $order_tot_id, $order_invoice_date ) {
 			//$query->innerJoin('order_invoice_payment', 'oip2',
 			//	'oip2.id_order_payment = oip1.id_order_payment AND oip2.id_order_invoice <> oip1.id_order_invoice');
 			$and = '';
-
 			if ( $this->test_mode == true ) {
 				$and = ' AND t.prueba = 1 ';
 			} else {
@@ -1617,9 +1618,9 @@ public function cancelacion( $order_tot_id, $order_invoice_date ) {
 			$and .= " AND t.timbrado = ".$timb." AND t.cancelado = ".$canc;
 
 			$query->where('t.id_order = '.$id_order.$and);
-			
 			$timbres = Db::getInstance()->executeS($query);
-			
+			//print_r($query->__ToString());
+			//echo "<hr>";
 			if (isset($timbres[0]) && count($timbres[0] ) > 0 ) {
 				return $timbres[0];
 			} else { 
@@ -1684,7 +1685,6 @@ public function cancelacion( $order_tot_id, $order_invoice_date ) {
 				}
 
 				//echo $sql;
-
 				$is_correct = Db::getInstance()->execute($sql);
 				/*echo "<br>is_correct:--".$is_correct."--";
 				print_r($is_correct);
@@ -1705,3 +1705,7 @@ public function cancelacion( $order_tot_id, $order_invoice_date ) {
 }
 
 ?>
+
+
+
+

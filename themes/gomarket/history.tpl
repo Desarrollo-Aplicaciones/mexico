@@ -43,6 +43,7 @@
 				<th class="item">{l s='Payment: '}</th>
 				<th class="item">{l s='Status'}</th>
 				<th class="item">{l s='Invoice'}</th>
+                                <th class="item">{l s='Xml'}</th>
 				<th class="last_item">{l s='Reorder'}</th>
 			</tr>
 		</thead>
@@ -66,6 +67,13 @@
 					<a href="{$link->getPageLink('pdf-invoice', true, NULL, "id_order={$order.id_order}")|escape:'html'}" title="{l s='Invoice'}" class="_blank"><img src="{$img_dir}icon/pdf.gif" alt="{l s='Invoice'}" class="icon" /></a>
 					<a href="{$link->getPageLink('pdf-invoice', true, NULL, "id_order={$order.id_order}")|escape:'html'}" title="{l s='Invoice'}" class="_blank"></a>
 				{else}-{/if}
+				</td>
+                                 {*{$order|@var_dump}*}
+                                <td class="history_xml">
+                                    {if (isset ($order.rutaxml) && $order.rutaxml)}
+                                        <a href="{$order.rutaxml|escape:'htmlall':'UTF-8'}" download="DocumentoXml"  title="{l s='XML'}" class="_blank"><img src="{$img_dir}icon/XML.gif" alt="{l s='XML'}" class="icon" /></a>
+                                    {else}-{/if} 
+				
 				</td>
 				<td class="history_detail">
 					{if isset($opc) && $opc}
