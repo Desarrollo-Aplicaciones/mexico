@@ -1,6 +1,6 @@
 $(document).ready(function() {
   // Cantidad máxima de productos
-  var maxFields = 3;
+  var maxFields = "25";
   
   // Agrega un nuevo producto
   $('#add-product').click(function(e) {
