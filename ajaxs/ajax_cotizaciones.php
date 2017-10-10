@@ -27,27 +27,27 @@ $result = array(
 
 // obteniendo  valores result 
 switch (true) {
-    case !(Validate::isName($name_contributor)) || (empty(Tools::getValue("nombre"))):
+    case !(Validate::isName($name_contributor)) || (empty($name_contributor)):
         $result['form'][] = [
             'input' => 'nombre',
             'message' => 'Ingrese su nombre'
         ];
-    case !(Validate::isName($company_contributor)) || (empty(Tools::getValue("empresa"))):
+    case !(Validate::isName($company_contributor)) || (empty($company_contributor)):
         $result ['form'][] = [
             'input' => 'empresa',
             'message' => 'Ingrese el nombre de la empresa'
         ];
-    case !(Validate::isEmail($email_contributor)) || (empty(Tools::getValue("email"))):
+    case !(Validate::isEmail($email_contributor)) || (empty($email_contributor)):
         $result['form'][] = [
             'input' => 'email',
             'message' => 'Ingrese su e-mail'
         ];
-    case !(Validate::isPhoneNumber($telefono_contributor)) || (empty(Tools::getValue("telefono"))):
+    case !(Validate::isPhoneNumber($telefono_contributor)) || (empty($telefono_contributor)):
         $result['form'][] = [
             'input' => 'telefono',
             'message' => 'Ingrese su número teléfonico'
         ];
-    case (Validate::isPostCode($codpostal_contributor)) || (empty(Tools::getValue("codigpostal"))):
+    case (Validate::isPostCode($codpostal_contributor)) || (empty($codpostal_contributor)):
         $result['form'][] = [
             'input' => 'codigpostal',
             'message' => 'Ingrese su código postal'
@@ -58,78 +58,71 @@ switch (true) {
 header("Access-Control-Allow-Origin: *");
 header('Content-Type: application/json');
 
-
 if (count($result['form']) > 0) {
-    echo json_encode($result);
-    exit(); 
+  exit(json_encode($result));
 }
+
+$sheet = array();
+
+foreach ($products as $key => $product) {
+  $product["exist"] = "No Disponible";  
+
+  $sql = 'SELECT prod.id_product, prod.reference, prol.`name` 
+          FROM '._DB_PREFIX_.'product AS prod
+          INNER JOIN '._DB_PREFIX_.'product_lang AS prol 
+          ON ( prod.id_product = prol.id_product)
+          WHERE  prod.id_product  = '.(int)$product["cod"];
+
+  if ($row = Db::getInstance()->getRow($sql)) {
+    $product["exist"] = "Disponible";
+    $products[$key] = array_merge($product, $row);
+  } 
   
+  $sheet[] = array(    
+    'Nombre' => $name_contributor,
+    'Empresa' => $company_contributor,
+    'Email' => $email_contributor,
+    'Teléfono' => $telefono_contributor,
+    'Código postal' => $codpostal_contributor,
+    'Id producto' => $products[$key]['cod'],
+    'Referencia' => $products[$key]['reference'],
+    'Producto' => $products[$key]['name'],
+    'Cantidad' => $products[$key]['qty'],
+    'Disponibilidad' => $products[$key]['exist']
+  );
+
+}
 $objPHPExcel = new PHPExcel();
 $sheet_number = 0;
 $sheet_name = '';
 $sheet_reg = 0;
 
-$html_products = "";
-$prodNotAvailable = array();
-foreach ($products as $product) {
-    $prod = new Product((int)$product['cod']);
-    if (!isset($prod->id) || empty($prod->id)) {
-        $prodNotAvailable[] = (int)$product['cod'];
-    }
-    $html_products .= "<tr><td>" . $product["cod"] . "</td><td>" . $product["qty"] . "</td></tr>";  
-}
-    $html_products .= "Productos no disponibles (ids):" . implode (", ", $prodNotAvailable);
-
-$mail_params = array(
-    '{nombre}' => $name_contributor,
-    '{empresa}' => $company_contributor,
-    '{email}' => $email_contributor,
-    '{telefono}' => $telefono_contributor,
-    '{codigpostal}' => $codpostal_contributor,
-    '{productos}' => $html_products,
-);
-
 $objPHPExcel->createSheet();
 $objPHPExcel->setActiveSheetIndex($sheet_number);
 $objPHPExcel->getActiveSheet()->setTitle("Cotizacion al por mayor");
-                         
+
+$objPHPExcel->getActiveSheet()->fromArray(array_keys($sheet[0]),NULL,'A1'); //Cabecera de la hoja
+$objPHPExcel->getActiveSheet()->fromArray($sheet, null, 'A2'); // Datos recibidos
+
 $style = array(
         'alignment' => array(
             'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
         )
 );
-$objPHPExcel->getActiveSheet()->getCell("A1")->setValue(' NOMBRE ');
-$objPHPExcel->getActiveSheet()->getCell("B1")->setValue(' EMPRESA ');
-$objPHPExcel->getActiveSheet()->getCell("C1")->setValue(' E-MAIL ');
-$objPHPExcel->getActiveSheet()->getCell("D1")->setValue(' TELÉFONO ');
-$objPHPExcel->getActiveSheet()->getCell("E1")->setValue('CÓDIGO POSTAL ');
-$objPHPExcel->getActiveSheet()->getCell("F1")->setValue('ID PRODUCTO ');
-$objPHPExcel->getActiveSheet()->getCell("G1")->setValue('CANTIDAD ');
-$objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(35);
-$objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(35);
-$objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(35);
-$objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(35);
-$objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(20);
-$objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(20);
+
+$objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(30);
+$objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(30);
+$objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(34);
+$objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(20);
+$objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(15);
+$objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
 $objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
+$objPHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(45);
+$objPHPExcel->getActiveSheet()->getColumnDimension('I')->setWidth(15);
+$objPHPExcel->getActiveSheet()->getColumnDimension('J')->setWidth(20);
 
-$objPHPExcel->getActiveSheet()->setTitle($sheet_name);
-$line = $sheet_reg + 2;
-
-$objPHPExcel->getActiveSheet()->setCellValue('A'.$line, $name_contributor);
-$objPHPExcel->getActiveSheet()->setCellValue('B'.$line, $company_contributor);
-$objPHPExcel->getActiveSheet()->setCellValue('C'.$line, $email_contributor);
-$objPHPExcel->getActiveSheet()->setCellValue('D'.$line, $telefono_contributor);
-$objPHPExcel->getActiveSheet()->setCellValue('E'.$line, $codpostal_contributor);
-$line2 = 2;
-
-foreach ($products as $value) {                          
-    $objPHPExcel->getActiveSheet()->setCellValue('F'.$line2, $value['cod']);
-    $objPHPExcel->getActiveSheet()->setCellValue('G'.$line2, $value['qty']);
-    $line2 = $line + 1;
-}
 $sheet_reg ++;
-$objPHPExcel->setActiveSheetIndex(0);
+
 
 @ob_start();
 $writer = PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel5");
@@ -139,23 +132,35 @@ $data = @ob_get_contents();
 $fileAttachment['content'] = $data;
 $fileAttachment['name'] = "ventas_por_mayoreo.xls";
 $fileAttachment['mime'] = "application/vnd.ms-excel";
-   
-$sendMail = Mail::Send(1, 'cotizaciones', 'cotizaciones por mayoreo', $mail_params, ['leidy.castiblanco@farmalisto.com.co'],
-					null, null, null, $fileAttachment, null, _PS_MAIL_DIR_, false, null,  null, false, '');
+
+//Parametros para enviar el e-mail
+$sendMail = Mail::Send(
+  1, 
+  'cotizaciones', 
+  'cotizaciones por mayoreo', 
+  array(), 
+  ['leidy.castiblanco@farmalisto.com.co'],
+  null, 
+  null, 
+  null, 
+  $fileAttachment, 
+  null, 
+  _PS_MAIL_DIR_, 
+  false, 
+  null, 
+  null,
+  false,
+  ''
+);
   
 if ($sendMail) {
-    echo json_encode(array(
-        'success' => true, 
-        'message' => 'Su cotización ha sido enviada'
-    ));
-    exit(); 
-}  else {
-    echo json_encode(array(
-        'success' => false, 
-        'message' => 'Lo sentimos, no se pudo envíar el correo.'
-    ));
-    exit();
+  exit(json_encode(array(
+    'success' => true, 
+    'message' => 'Su cotización ha sido enviada'
+  ))); 
 }
-//var_dump($sendMail);
 
-
+exit(json_encode(array(
+  'success' => false, 
+  'message' => 'Lo sentimos, ocurrio un error, no se pudo envíar el correo.'
+)));
