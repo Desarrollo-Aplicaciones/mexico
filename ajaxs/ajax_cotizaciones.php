@@ -118,7 +118,7 @@ $sendMail = Mail::Send(
     'cotizaciones',
     'cotizaciones por mayoreo',
     array(),
-    ['leidy.castiblanco@farmalisto.com.co'],
+    ['ventasmayoreo@farmalisto.com.mx'],
     null,
     null,
     null,
