@@ -18,112 +18,92 @@ $email_contributor = Tools::getValue("email");
 $telefono_contributor = Tools::getValue("telefono");
 $codpostal_contributor = Tools::getValue("codigpostal");
 $products = Tools::getValue("products");
-
-$result = array(
-    'success' => false, 
-    'message' => 'Error al validar formulario',
-    'form' => array()
-);
-
-// obteniendo  valores result 
-switch (true) {
-    case !(Validate::isName($name_contributor)) || (empty($name_contributor)):
-        $result['form'][] = [
-            'input' => 'nombre',
-            'message' => 'Ingrese su nombre'
-        ];
-    case !(Validate::isName($company_contributor)) || (empty($company_contributor)):
-        $result ['form'][] = [
-            'input' => 'empresa',
-            'message' => 'Ingrese el nombre de la empresa'
-        ];
-    case !(Validate::isEmail($email_contributor)) || (empty($email_contributor)):
-        $result['form'][] = [
-            'input' => 'email',
-            'message' => 'Ingrese su e-mail'
-        ];
-    case !(Validate::isPhoneNumber($telefono_contributor)) || (empty($telefono_contributor)):
-        $result['form'][] = [
-            'input' => 'telefono',
-            'message' => 'Ingrese su número teléfonico'
-        ];
-    case (Validate::isPostCode($codpostal_contributor)) || (empty($codpostal_contributor)):
-        $result['form'][] = [
-            'input' => 'codigpostal',
-            'message' => 'Ingrese su código postal'
-        ];
-        break;
-}
-
-header("Access-Control-Allow-Origin: *");
-header('Content-Type: application/json');
-
-if (count($result['form']) > 0) {
-  exit(json_encode($result));
-}
-
-$sheet = array();
-
-foreach ($products as $key => $product) {
-  $product["exist"] = "No Disponible";  
-
-  $sql = 'SELECT prod.id_product, prod.reference, prol.`name` 
-          FROM '._DB_PREFIX_.'product AS prod
-          INNER JOIN '._DB_PREFIX_.'product_lang AS prol 
-          ON ( prod.id_product = prol.id_product)
-          WHERE  prod.id_product  = '.(int)$product["cod"];
-
-  if ($row = Db::getInstance()->getRow($sql)) {
-    $product["exist"] = "Disponible";
-    $products[$key] = array_merge($product, $row);
-  } 
   
-  $sheet[] = array(    
-    'Nombre' => $name_contributor,
-    'Empresa' => $company_contributor,
-    'Email' => $email_contributor,
-    'Teléfono' => $telefono_contributor,
-    'Código postal' => $codpostal_contributor,
-    'Id producto' => $products[$key]['cod'],
-    'Referencia' => $products[$key]['reference'],
-    'Producto' => $products[$key]['name'],
-    'Cantidad' => $products[$key]['qty'],
-    'Disponibilidad' => $products[$key]['exist']
-  );
-
-}
 $objPHPExcel = new PHPExcel();
 $sheet_number = 0;
 $sheet_name = '';
 $sheet_reg = 0;
 
-$objPHPExcel->createSheet();
-$objPHPExcel->setActiveSheetIndex($sheet_number);
-$objPHPExcel->getActiveSheet()->setTitle("Cotizacion al por mayor");
+$prodcl = array();
 
-$objPHPExcel->getActiveSheet()->fromArray(array_keys($sheet[0]),NULL,'A1'); //Cabecera de la hoja
-$objPHPExcel->getActiveSheet()->fromArray($sheet, null, 'A2'); // Datos recibidos
+foreach ($products as $key => $product) {
+  $prodcl[ $product['cod'] ]['qty'] = $product['qty'];
+  $prodcl[ $product['cod'] ]['Disponibilidad'] = 'No Disponible';
 
-$style = array(
-        'alignment' => array(
-            'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-        )
-);
+  }
+$prodcot = implode(", ", array_keys($prodcl));
 
-$objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(30);
-$objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(30);
-$objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(34);
-$objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(20);
-$objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(15);
-$objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
-$objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
-$objPHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(45);
-$objPHPExcel->getActiveSheet()->getColumnDimension('I')->setWidth(15);
-$objPHPExcel->getActiveSheet()->getColumnDimension('J')->setWidth(20);
+  $sql = 'SELECT prod.id_product, prod.reference, prol.`name` 
+          FROM '._DB_PREFIX_.'product AS prod
+          INNER JOIN '._DB_PREFIX_.'product_lang AS prol 
+          ON ( prod.id_product = prol.id_product)
+          WHERE  prod.id_product  IN ('.$prodcot.')';
+          $results = Db::getInstance()->ExecuteS($sql);         
+ 
+  foreach ($results as $dataprod){  
+    //print_r($dataprod);
+    if (isset($dataprod['id_product']) && !empty($dataprod['id_product'])) {
+      $prodcl[ $dataprod['id_product']] = 
+        [
+          "reference" => $dataprod['reference'],
+          "name" => $dataprod['name'],
+          "qty" => $prodcl[ $dataprod['id_product']]['qty'],
+          "Disponibilidad" => 'Disponible'
+        ];
+    } 
+  }
+  print_r($prodcl);
+  
+  $objPHPExcel->createSheet();
+  $objPHPExcel->setActiveSheetIndex($sheet_number);
+  $objPHPExcel->getActiveSheet()->setTitle("Cotizacion al por mayor");
+  
+  $style = array(
+          'alignment' => array(
+              'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+              'bold' => true
+          )
+  );
+ 
+  $objPHPExcel->getActiveSheet()->getStyle('A1:A6')->getFont()->setBold(true);
+  $objPHPExcel->getActiveSheet()->getStyle('B6:E6')->getFont()->setBold(true);
+  $objPHPExcel->getActiveSheet()->getStyle('A6:E6')->applyFromArray($style);
+  $objPHPExcel->getActiveSheet()->getCell("A1")->setValue(' Nombre ');
+  $objPHPExcel->getActiveSheet()->getCell("A2")->setValue(' Empresa ');
+  $objPHPExcel->getActiveSheet()->getCell("A3")->setValue(' E-mail ');
+  $objPHPExcel->getActiveSheet()->getCell("A4")->setValue(' Teléfono ');
+  $objPHPExcel->getActiveSheet()->getCell("A5")->setValue('Código postal ');
+  
+  $objPHPExcel->getActiveSheet()->getCell("A6")->setValue('Producto ');
+  $objPHPExcel->getActiveSheet()->getCell("B6")->setValue('Id producto ');
+  $objPHPExcel->getActiveSheet()->getCell("C6")->setValue('Referencia ');
+  $objPHPExcel->getActiveSheet()->getCell("D6")->setValue('Cantidad ');
+  $objPHPExcel->getActiveSheet()->getCell("E6")->setValue('Disponibilidad ');  
+  
+  $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(30);
+  $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(33);
+  $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(15);
+  $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(15);
+  $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(15);
+  $objPHPExcel->getActiveSheet()->setTitle($sheet_name);  
 
+  $objPHPExcel->getActiveSheet()->setCellValue('B1', $name_contributor);
+  $objPHPExcel->getActiveSheet()->setCellValue('B2', $company_contributor);
+  $objPHPExcel->getActiveSheet()->setCellValue('B3', $email_contributor);
+  $objPHPExcel->getActiveSheet()->setCellValue('B4', $telefono_contributor);
+  $objPHPExcel->getActiveSheet()->setCellValue('B5', $codpostal_contributor);
+  $line = 7;
+  
+  foreach ($prodcl as $key => $product) {  
+    $objPHPExcel->getActiveSheet()->setCellValue('A'.$line, $product['name']);
+    $objPHPExcel->getActiveSheet()->setCellValue('B'.$line, $key);
+    $objPHPExcel->getActiveSheet()->setCellValue('C'.$line, $product['reference']);
+    $objPHPExcel->getActiveSheet()->setCellValue('D'.$line, $product['qty']);
+    $objPHPExcel->getActiveSheet()->setCellValue('E'.$line, $product['Disponibilidad']);
+    $line ++;
+  }
 $sheet_reg ++;
-
-
+$objPHPExcel->setActiveSheetIndex(0);
 @ob_start();
 $writer = PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel5");
 $writer->save("php://output");    
@@ -133,34 +113,34 @@ $fileAttachment['content'] = $data;
 $fileAttachment['name'] = "ventas_por_mayoreo.xls";
 $fileAttachment['mime'] = "application/vnd.ms-excel";
 
-//Parametros para enviar el e-mail
 $sendMail = Mail::Send(
-  1, 
-  'cotizaciones', 
-  'cotizaciones por mayoreo', 
-  array(), 
-  ['leidy.castiblanco@farmalisto.com.co'],
-  null, 
-  null, 
-  null, 
-  $fileAttachment, 
-  null, 
-  _PS_MAIL_DIR_, 
-  false, 
-  null, 
-  null,
-  false,
-  ''
-);
-  
-if ($sendMail) {
-  exit(json_encode(array(
-    'success' => true, 
-    'message' => 'Su cotización ha sido enviada'
-  ))); 
-}
+    1,
+    'cotizaciones',
+    'cotizaciones por mayoreo',
+    array(),
+    ['leidy.castiblanco@farmalisto.com.co'],
+    null,
+    null,
+    null,
+    $fileAttachment,
+    null,
+    _PS_MAIL_DIR_,
+    false,
+    null,
+    null,
+    false,
+    '');
 
-exit(json_encode(array(
-  'success' => false, 
-  'message' => 'Lo sentimos, ocurrio un error, no se pudo envíar el correo.'
-)));
+if ($sendMail) {
+    echo json_encode(array(
+        'success' => true, 
+        'message' => 'Su cotización ha sido enviada'
+    ));
+    exit(); 
+}  else {
+    echo json_encode(array(
+        'success' => false, 
+        'message' => 'Lo sentimos, no se pudo envíar el correo.'
+    ));
+    exit();
+}

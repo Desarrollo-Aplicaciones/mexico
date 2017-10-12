@@ -56,7 +56,7 @@ $(document).ready(function() {
     .done(function( data ) {
       console.log( data );
       if (data.success) {
-        alert("Se envia correo");
+        alert("Su cotización ha sido enviada");
       } else {
         // Muetra los errores independiente
         $.each( data.form, function( key, value ) {
