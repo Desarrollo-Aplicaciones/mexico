@@ -19,6 +19,9 @@ $telefono_contributor = Tools::getValue("telefono");
 $codpostal_contributor = Tools::getValue("codigpostal");
 $products = Tools::getValue("products");
   
+header("Access-Control-Allow-Origin: *");
+header('Content-Type: application/json');
+
 $objPHPExcel = new PHPExcel();
 $sheet_number = 0;
 $sheet_name = '';
