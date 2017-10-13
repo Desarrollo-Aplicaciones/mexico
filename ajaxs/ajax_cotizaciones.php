@@ -44,7 +44,7 @@ $prodcot = implode(", ", array_keys($prodcl));
           $results = Db::getInstance()->ExecuteS($sql);         
  
   foreach ($results as $dataprod){  
-    //print_r($dataprod);
+
     if (isset($dataprod['id_product']) && !empty($dataprod['id_product'])) {
       $prodcl[ $dataprod['id_product']] = 
         [
@@ -55,7 +55,6 @@ $prodcot = implode(", ", array_keys($prodcl));
         ];
     } 
   }
-  print_r($prodcl);
   
   $objPHPExcel->createSheet();
   $objPHPExcel->setActiveSheetIndex($sheet_number);
