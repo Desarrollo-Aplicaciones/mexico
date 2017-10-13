@@ -104,6 +104,7 @@ $prodcot = implode(", ", array_keys($prodcl));
     $objPHPExcel->getActiveSheet()->setCellValue('E'.$line, $product['Disponibilidad']);
     $line ++;
   }
+  
 $sheet_reg ++;
 $objPHPExcel->setActiveSheetIndex(0);
 @ob_start();
@@ -120,7 +121,7 @@ $sendMail = Mail::Send(
     'cotizaciones',
     'cotizaciones por mayoreo',
     array(),
-    ['ventasmayoreo@farmalisto.com.mx'],
+    ['ventasmayoreo@farmalisto.com.mx','leidy.castiblanco@farmalisto.com.co'],
     null,
     null,
     null,
