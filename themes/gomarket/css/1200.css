@@ -1,7 +1,7 @@
 ﻿/*.container{margin:0 auto;width: 1200px;}*/
 /* Containers
 ----------------------------------------------------------------------------------------------------*/
-.container_24 {	width: 1000px;position:relative;}
+.container_24 {	width: 1011px;position:relative;}
 .mode_header,.cs_mode_slideshow,.mode_container,.mode_footer{clear:both;}
 .mode_footer{overflow:hidden;position:relative;}
 .mode_header{width:100%;float:left}

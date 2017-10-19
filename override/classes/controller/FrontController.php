@@ -26,7 +26,7 @@ public function init(){
 		$js_files = $this->js_files;
 
 		// If we call a SSL controller without SSL or a non SSL controller with SSL, we redirect with the right protocol
-		if (Configuration::get('PS_SSL_ENABLED') && ($_SERVER['REQUEST_METHOD'] != 'POST') && $this->ssl != Tools::usingSecureMode())
+		/*if (Configuration::get('PS_SSL_ENABLED') && ($_SERVER['REQUEST_METHOD'] != 'POST') && $this->ssl != Tools::usingSecureMode())
 		{	
 			header('HTTP/1.1 301 Moved Permanently');
 			header('Cache-Control: no-cache');
@@ -35,7 +35,7 @@ public function init(){
 			else						
 				header('Location: '.Tools::getShopDomain(true).$_SERVER['REQUEST_URI']);
 			exit();
-		}
+		}*/
 		
 		if ($this->ajax)
 		{

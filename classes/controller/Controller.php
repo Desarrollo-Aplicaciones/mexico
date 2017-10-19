@@ -355,5 +355,16 @@ abstract class ControllerCore
 	{
 		$this->context->cookie->write();
 		$this->context->smarty->display($content);
+
+		if(isset($_GET['forp-webimpacto'])){
+
+				// Stop profiler
+			forp_end();
+
+			// Get JSON and save it into file
+			forp_json_google_tracer("/var/www/farmalisto.com.mx/htdocs/output.json");
+
+
+		}
 	}
 }

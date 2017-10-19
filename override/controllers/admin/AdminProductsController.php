@@ -289,7 +289,7 @@ class AdminProductsController extends AdminProductsControllerCore
 			);
 
 			// Sube las imágenes en AWS S3
-			$path = _PS_PROD_IMG_DIR_ . $obj->getImgFolder();
+			/*$path = _PS_PROD_IMG_DIR_ . $obj->getImgFolder();
 			$files = array_diff(scandir($path), array('.', '..'));
 			$awsObj = new Aws();
 			foreach($files as $img) {
@@ -298,7 +298,7 @@ class AdminProductsController extends AdminProductsControllerCore
 						'error' => "Error al subir la imagen $img a AWS S3, por favor contactar a IT."
 					)));
 				}
-			}
+			}*/
 			// Elimina las imágenes del local
 			$this->deleteDirectory($path);
 

@@ -72,9 +72,9 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 		if ($ajax)
 		{
 
-			//$conn_string = "host=10.0.1.111 port=5432 dbname=farmalisto_mexico user=search password=search123";
-			$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=5432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
-			$dbconn4 = pg_pconnect($conn_string);
+			$conn_string = "host=127.0.0.1 port=15432 dbname=farmalisto_colombia user=search password=search123";
+			//$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=5432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
+			$dbconn4 = pg_pconnect($conn_string) or die ('connection failed');
 			$conn_open = 1;
 
 			/*$query_psql = "SELECT si.id_product, SUM(si.weight) AS peso, ( 100 - ( ( levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) AS porce FROM ps_search_index si
@@ -242,9 +242,9 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 		else if ($order_by == 'date_upd')
 			$alias = 'p.';
 
-		//$conn_string = "host=10.0.1.111 port=5432 dbname=farmalisto_mexico user=search password=search123";
-		$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=5432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
-		$dbconn4 = pg_pconnect($conn_string);
+		$conn_string = "host=127.0.0.1 port=15432 dbname=farmalisto_colombia user=search password=search123";
+		//$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=5432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
+		$dbconn4 = pg_pconnect($conn_string) or die ('connection failed');
 		$conn_open = 1;
 
 		/*$sql = "SELECT si.id_product, SUM(si.weight) AS peso, ( 100 - ( ( levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) AS porce FROM ps_search_index si
@@ -429,9 +429,9 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 			$alias = 'product_shop.';
 
 
-		//$conn_string = "host=10.0.1.111 port=5432 dbname=farmalisto_mexico user=search password=search123";
-		$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=5432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
-		$dbconn4 = pg_pconnect($conn_string);
+		$conn_string = "host=127.0.0.1 port=15432 dbname=farmalisto_colombia user=search password=search123";
+		//$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=5432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
+		$dbconn4 = pg_pconnect($conn_string) or die ('connection failed');
 		$conn_open = 1;
 
 		$sql = "SELECT si.id_product, SUM(si.weight) AS peso FROM
@@ -628,9 +628,9 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 		if ($ajax)
 		{
 
-			//$conn_string = "host=10.0.1.111 port=5432 dbname=farmalisto_mexico user=search password=search123";
-			$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=5432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
-			$dbconn4 = pg_pconnect($conn_string);
+			$conn_string = "host=127.0.0.1 port=15432 dbname=farmalisto_colombia user=search password=search123";
+			//$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=5432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
+			$dbconn4 = pg_pconnect($conn_string) or die ('connection failed');
 			$conn_open = 1;
 
 			/*$query_psql = "SELECT si.id_product, SUM(si.weight) AS peso, ( 100 - ( ( levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) AS porce FROM ps_search_index si
@@ -795,9 +795,9 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 		else if ($order_by == 'date_upd')
 			$alias = 'p.';
 
-		//$conn_string = "host=10.0.1.111 port=5432 dbname=farmalisto_mexico user=search password=search123";
-		$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=5432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
-		$dbconn4 = pg_pconnect($conn_string);
+		$conn_string = "host=127.0.0.1 port=15432 dbname=farmalisto_colombia user=search password=search123";
+		//$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=5432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
+		$dbconn4 = pg_pconnect($conn_string) or die ('connection failed');
 		$conn_open = 1;
 
 		/*$sql = "SELECT si.id_product, SUM(si.weight) AS peso, ( 100 - ( ( levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) AS porce FROM ps_search_index si

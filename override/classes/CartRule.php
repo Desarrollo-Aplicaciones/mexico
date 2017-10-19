@@ -502,7 +502,7 @@ public function getAssociatedRestrictions($type, $active_only, $i18n)
             LEFT JOIN "._DB_PREFIX_."order_cart_rule ocr ON ( cr.id_cart_rule = ocr.id_cart_rule ) ";
             $customer_add = '';
             
-        error_log("\n\n\n\nPrimer Query: \n\n".$query, 3, "/var/www/errors.log");
+        error_log("\n\n\n\nPrimer Query: \n\n".$query, 3, Configuration::get('PATH_UPLOAD')."errors.log");
 
         if ( $id_customer != '' ) {
             $customer_add = " cr.id_customer = ".$id_customer." AND " ;
@@ -514,7 +514,7 @@ public function getAssociatedRestrictions($type, $active_only, $i18n)
             $query.=" AND  cr.id_customer = ". $id_customer ; 
         }
         
-        error_log("\n\n\nSegundo query: \n\n".$query, 3, "/var/www/errors.log");
+        error_log("\n\n\nSegundo query: \n\n".$query, 3, Configuration::get('PATH_UPLOAD')."errors.log");
         //$query.=" GROUP BY med.id_medico ORDER BY med.nombre ASC LIMIT 0,10";
 
         //echo "<br> query: ".$query;

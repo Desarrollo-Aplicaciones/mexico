@@ -87,7 +87,7 @@ public function exist_file($name_file)
 public function pathFiles()
 {
   // Definir directorio donde almacenar los archivos, debe terminar en "/" 
-    $directorio="/home/ubuntu/updateprice/";
+    $directorio=Configuration::get('PATH_UPLOAD')."updateprice/";
 
     try { 
     $path="".$directorio; 

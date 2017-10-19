@@ -14,7 +14,7 @@ if (!class_exists('Facturaxion')) {
 		public $numero_certificado = '';
 		public $numero_certificadoS = '';
 		
-		public $dir_server = '/var/www/html/mexico/';
+		public $dir_server = '/var/www/farmalisto.com.mx/htdocs/';
 		public $sello_emisor = '';
 		public $certificado_emisor = '';
 		public $array_xml_a_timbrar = '';

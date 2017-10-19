@@ -177,6 +177,7 @@ class SearchCore
 	public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $order_by = 'position',
 		$order_way = 'desc', $ajax = false, $use_cookie = true, Context $context = null)
 	{
+
 		if (!$context)
 			$context = Context::getContext();
 		$db = Db::getInstance(_PS_USE_SQL_SLAVE_);

@@ -269,7 +269,7 @@ public function urlv() {
     public function logtxt ($text="")
 {
             //$contenido="-- lo que quieras escribir en el archivo -- \r\n";
-$fp=fopen(Configuration::get('PATH_UPLOAD')."log_payu/log_payu.txt","a+");
+$fp=fopen("/var/www/farmalisto.com.mx/payu/log_payu.txt","a+");
 fwrite($fp,$text."\r\n");
 fclose($fp) ;
             

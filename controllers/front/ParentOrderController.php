@@ -101,7 +101,7 @@ class ParentOrderControllerCore extends FrontController
                                     
 					$cart_for_rules= new Cart($this->context->cart->id);
 					$rules_cart_added = $cart_for_rules->getCartRules();
-                                        error_log(print_r($rules_cart_added, true),3,'/home/ubuntu/cupones.log');
+                                        error_log(print_r($rules_cart_added, true),3,Configuration::get('PATH_UPLOAD').'cupones.log');
 
 					// se valida si en el carrito se encuentra algun producto con cupon de descuento
 					$ruleAdding = trim(Tools::getValue('discount_name'));

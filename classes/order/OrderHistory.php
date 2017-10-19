@@ -492,7 +492,7 @@ class OrderHistoryCore extends ObjectModel
     public function logtxt ($text="")
 {
             //$contenido="-- lo que quieras escribir en el archivo -- \r\n";
-$fp=fopen("/home/ubuntu/log_payu/estado_de_ordenes.txt","a+");
+$fp=fopen(Configuration::get('PATH_UPLOAD')."log_payu/estado_de_ordenes.txt","a+");
 fwrite($fp,$text."\r\n");
 fclose($fp) ;
             

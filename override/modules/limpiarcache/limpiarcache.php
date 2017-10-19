@@ -96,21 +96,21 @@ class limpiarcache extends Module
 					case 'all':
 							
                                             
-$fp=fopen("/var/www/cache_flag/clear_cache","a+");
+$fp=fopen(Configuration::get('PATH_UPLOAD')."cache_flag/clear_cache","a+");
 fwrite($fp,'x');
 fclose($fp) ;
 $output .= $this->displayConfirmation("<br>La cache se eliminara a mas tardar en un minuto.<br>");
 						break;
 
 					case 'OPcache':
-$fp=fopen("/var/www/cache_flag/clear_cache_op","a+");
+$fp=fopen(Configuration::get('PATH_UPLOAD')."cache_flag/clear_cache_op","a+");
 fwrite($fp,'x');
 fclose($fp) ;
 $output .= $this->displayConfirmation("<br>La cache de PHP (OPcache)se eliminara a mas tardar en un minuto.<br>");
 						break;
 
 					case 'per':
-							$output .= $this->displayConfirmation("<br>Permisos<br>".shell_exec('sh /home/ubuntu/cacheps_www.sh'));
+							$output .= $this->displayConfirmation("<br>Permisos<br>".shell_exec('sh '.Configuration::get('PATH_UPLOAD').'cacheps_www.sh'));
 						break;
 					
 					default:
