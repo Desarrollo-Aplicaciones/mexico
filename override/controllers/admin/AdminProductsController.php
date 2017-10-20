@@ -298,9 +298,9 @@ class AdminProductsController extends AdminProductsControllerCore
 						'error' => "Error al subir la imagen $img a AWS S3, por favor contactar a IT."
 					)));
 				}
-			}*/
+			}
 			// Elimina las imágenes del local
-			$this->deleteDirectory($path);
+			$this->deleteDirectory($path);*/
 
 			@unlink(_PS_TMP_IMG_DIR_.'product_'.(int)$obj->id_product.'.jpg');
 			@unlink(_PS_TMP_IMG_DIR_.'product_mini_'.(int)$obj->id_product.'_'.$this->context->shop->id.'.jpg');
