@@ -80,6 +80,10 @@
 	padding:10px 0;
 }
 
+h2#product_name{
+	margin-left: 15px;
+}
+
 #name_unico_sin_estilo {
 	color: #646464  !important;
 	margin: 0 !important;
