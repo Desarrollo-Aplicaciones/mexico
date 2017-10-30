@@ -24,6 +24,15 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
+//trigger_error('TRIGGER CONFIG INC');
+
+$traza = '';
+		$backtrace = debug_backtrace();
+		foreach ($backtrace as $trace) {
+		    $traza .= $trace['file'].' en línea '.$trace['line']." ||| ";
+		}
+//		trigger_error($traza);
+
 require_once(dirname(__FILE__).'/defines.inc.php');
 $start_time = microtime(true);
 
@@ -98,7 +107,8 @@ catch (PrestaShopException $e)
 {
 	$e->displayMessage();
 }
-
+//error_log('baseURI');
+//error_log(print_r($context->shop->getBaseURI(),true));
 define('_THEME_NAME_', $context->shop->getTheme());
 define('__PS_BASE_URI__', $context->shop->getBaseURI());
 
@@ -227,3 +237,6 @@ define('_PS_OS_WS_PAYMENT_', Configuration::get('PS_OS_WS_PAYMENT'));
 /* Get smarty */
 require_once(dirname(__FILE__).'/smarty.config.inc.php');
 $context->smarty = $smarty;
+
+if (strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false)
+       $_SERVER['HTTPS']='on';

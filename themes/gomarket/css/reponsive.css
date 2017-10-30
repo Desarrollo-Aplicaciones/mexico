@@ -1241,7 +1241,7 @@ PASO 4 CHECKOUT MEXICO*/
 		/*-------------barra de leads---------------*/
 		.titulo-pasos{margin-top:85px;margin-bottom:10px}
 		/*-----------------header--------------------*/
-		#header_logo .logo{display:none;}
+		#header_logo .logo{display:none !important;}
 		#header_logo .logo_small{display:block;}
 		.shopping_cart_small{display:inline-block;}
 		.block_permanent_links{height:0;width:0;overflow: hidden;padding:0;}

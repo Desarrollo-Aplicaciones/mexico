@@ -213,7 +213,7 @@ class serverWsPs extends FrontController {
     }
     
     public function logtxt ($text="") {
-        $fp=fopen("/home/ubuntu/log_socket_sugar.txt","a+");
+        $fp=fopen(Configuration::get('PATH_UPLOAD')."log_socket_sugar.txt","a+");
         fwrite($fp,$text."\r\n"); fclose($fp);
 }
 

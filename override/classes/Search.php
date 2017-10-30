@@ -74,7 +74,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 
 			$conn_string = "host=127.0.0.1 port=15432 dbname=farmalisto_colombia user=search password=search123";
 			//$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=5432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
-			$dbconn4 = pg_pconnect($conn_string) or die ('connection failed');
+			$dbconn4 = pg_pconnect($conn_string);
 			$conn_open = 1;
 
 			/*$query_psql = "SELECT si.id_product, SUM(si.weight) AS peso, ( 100 - ( ( levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) AS porce FROM ps_search_index si
@@ -244,7 +244,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 
 		$conn_string = "host=127.0.0.1 port=15432 dbname=farmalisto_colombia user=search password=search123";
 		//$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=5432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
-		$dbconn4 = pg_pconnect($conn_string) or die ('connection failed');
+		$dbconn4 = pg_pconnect($conn_string);
 		$conn_open = 1;
 
 		/*$sql = "SELECT si.id_product, SUM(si.weight) AS peso, ( 100 - ( ( levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) AS porce FROM ps_search_index si
@@ -431,7 +431,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 
 		$conn_string = "host=127.0.0.1 port=15432 dbname=farmalisto_colombia user=search password=search123";
 		//$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=5432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
-		$dbconn4 = pg_pconnect($conn_string) or die ('connection failed');
+		$dbconn4 = pg_pconnect($conn_string);
 		$conn_open = 1;
 
 		$sql = "SELECT si.id_product, SUM(si.weight) AS peso FROM
@@ -630,7 +630,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 
 			$conn_string = "host=127.0.0.1 port=15432 dbname=farmalisto_colombia user=search password=search123";
 			//$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=5432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
-			$dbconn4 = pg_pconnect($conn_string) or die ('connection failed');
+			$dbconn4 = pg_pconnect($conn_string);
 			$conn_open = 1;
 
 			/*$query_psql = "SELECT si.id_product, SUM(si.weight) AS peso, ( 100 - ( ( levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) AS porce FROM ps_search_index si
@@ -797,7 +797,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 
 		$conn_string = "host=127.0.0.1 port=15432 dbname=farmalisto_colombia user=search password=search123";
 		//$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=5432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
-		$dbconn4 = pg_pconnect($conn_string) or die ('connection failed');
+		$dbconn4 = pg_pconnect($conn_string);
 		$conn_open = 1;
 
 		/*$sql = "SELECT si.id_product, SUM(si.weight) AS peso, ( 100 - ( ( levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) AS porce FROM ps_search_index si

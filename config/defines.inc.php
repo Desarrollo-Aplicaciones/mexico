@@ -26,7 +26,7 @@
 
 /* Debug only */
 if ( isset($_GET) && isset($_GET['modo_debug']) && $_GET['modo_debug'] == 'md_col_09374' ) {
-	error_log("\n modo debug si md_col_09374", 3, "/tmp/nevera_error.log");
+	error_log("\n modo debug si md_col_09374");
 	define('_PS_MODE_DEV_', true);
 }
 else {

@@ -28,7 +28,8 @@
  * @since 1.5.0
  */
 
-ini_set("memory_limit","512M");
+//ini_set("memory_limit","512M");
+ini_set("memory_limit","1024M");
 class DbPDOCore extends Db
 {
 	protected static function _getPDO($host, $user, $password, $dbname, $timeout = 5)

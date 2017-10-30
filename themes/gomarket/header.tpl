@@ -71,7 +71,7 @@
 		
 		<link rel="icon" type="image/vnd.microsoft.icon" href="{$favicon_url}?{$img_update_time}" />
 		<link rel="shortcut icon" type="image/x-icon" href="{$favicon_url}?{$img_update_time}" />
-		<script	src="{$base_dir}js/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
+		<script	src="{$base_dir_ssl}js/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
 		<script type="text/javascript">
 			var baseDir = '{$content_dir|addslashes}';
 			var baseUri = '{$base_uri|addslashes}';
@@ -85,7 +85,7 @@
 
 {if isset($css_files)}
 	{foreach from=$css_files key=css_uri item=media}
-	<link href="{$css_uri}" rel="stylesheet" type="text/css" media="{$media}" />
+	<link href="{$css_uri}?v=1.01" rel="stylesheet" type="text/css" media="{$media}" />
 	{/foreach}
 {/if}
 
@@ -109,14 +109,14 @@
 </script>
 {$HOOK_HEADER}
 <!-- Apple Touch Icons-->
-<link rel="apple-touch-icon" href="{$base_dir}img/touch-icon-iphone.png" />
-<link rel="apple-touch-icon" sizes="72x72" href="{$base_dir}img/touch-icon-ipad.png" />
-<link rel="apple-touch-icon" sizes="114x114" href="{$base_dir}img/touch-icon-iphone-retina.png" />
-<link rel="apple-touch-icon" sizes="144x144" href="{$base_dir}img/touch-icon-ipad-retina.png" />
-<link rel="apple-touch-icon" sizes="180x180" href="{$base_dir}img/touch-icon-iphone6P.png" />
-<link rel="icon" sizes="192x192" href="{$base_dir}img/touch-icon-hq.png"/>
-<link rel="icon" sizes="128x128" href="{$base_dir}img/touch-icon-lq.png" />
-<link rel="icon" sizes="40x40" href="{$base_dir}img/touch-icon-40x40.png"/>
+<link rel="apple-touch-icon" href="{$base_dir_ssl}img/touch-icon-iphone.png" />
+<link rel="apple-touch-icon" sizes="72x72" href="{$base_dir_ssl}img/touch-icon-ipad.png" />
+<link rel="apple-touch-icon" sizes="114x114" href="{$base_dir_ssl}img/touch-icon-iphone-retina.png" />
+<link rel="apple-touch-icon" sizes="144x144" href="{$base_dir_ssl}img/touch-icon-ipad-retina.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="{$base_dir_ssl}img/touch-icon-iphone6P.png" />
+<link rel="icon" sizes="192x192" href="{$base_dir_ssl}img/touch-icon-hq.png"/>
+<link rel="icon" sizes="128x128" href="{$base_dir_ssl}img/touch-icon-lq.png" />
+<link rel="icon" sizes="40x40" href="{$base_dir_ssl}img/touch-icon-40x40.png"/>
 
 <script type="application/ld+json">
 {
@@ -148,8 +148,8 @@
 			<div class="close_lightbox_horario_call" onclick="lightbox_hide(); "></div>
 
 			<a href="https://www.farmalisto.com.mx/content/61-Horarios-Diciembre">
-				<img id="img_lightbox_horario_call_1" src="{$base_dir}img/Licghtbox-horario-diciembre-desktop-Mx.jpg" style="width:90%;"/>
-				<img id="img_lightbox_horario_call_2" src="{$base_dir}img/Lightbox-horario-diciembre-movil-Mx.jpg" style="width:90%; display:none;"/>
+				<img id="img_lightbox_horario_call_1" src="{$base_dir_ssl}img/Licghtbox-horario-diciembre-desktop-Mx.jpg" style="width:90%;"/>
+				<img id="img_lightbox_horario_call_2" src="{$base_dir_ssl}img/Lightbox-horario-diciembre-movil-Mx.jpg" style="width:90%; display:none;"/>
 			</a>
 		</div>
 		<script type="text/javascript">
@@ -384,7 +384,7 @@ $(document).ready(function(){
 	border-radius:4px;
 	background-color:#FFFFFF;
 	box-shadow: 0 2px 5px #666666;
-        background: url('{$base_dir}img/cms/landing/newsletter.jpg') no-repeat;
+        background: url('{$base_dir_ssl}img/cms/landing/newsletter.jpg') no-repeat;
 }
 
 .content-news h2 {
@@ -418,7 +418,7 @@ $(document).ready(function(){
 
 
 #hombre1 {
-   //    background:url('{$base_dir}img/bt1.jpg') no-repeat;
+   //    background:url('{$base_dir_ssl}img/bt1.jpg') no-repeat;
 width:80px;
 height:32px;
 margin: 6px 0 0 10px;
@@ -438,7 +438,7 @@ width:80px;
 height:32px;
  margin: 6px 0 0 10px;
 border:none;
-   // background:url('{$base_dir}img/bt1.jpg') no-repeat;
+   // background:url('{$base_dir_ssl}img/bt1.jpg') no-repeat;
   //  -webkit-background-size: 100% 100%;           /* Safari 3.0 */
   //  -moz-background-size: 100% 100%;           /* Gecko 1.9.2 (Firefox 3.6) */
   //  -o-background-size: 100% 100%;           /* Opera 9.5 */
@@ -455,7 +455,7 @@ border:none;
 height:32px;
  margin: 6px 0 0 10px;
  border:none;
-   // background:url('{$base_dir}img/bt2.jpg') no-repeat;
+   // background:url('{$base_dir_ssl}img/bt2.jpg') no-repeat;
   //  -webkit-background-size: 100% 100%;           /* Safari 3.0 */
    // -moz-background-size: 100% 100%;           /* Gecko 1.9.2 (Firefox 3.6) */
    // -o-background-size: 100% 100%;           /* Opera 9.5 */
@@ -471,7 +471,7 @@ width:80px;
 height:32px;
  margin: 6px 0 0 10px;
 border:none;
-  //  background:url('{$base_dir}img/bt2.jpg') no-repeat;
+  //  background:url('{$base_dir_ssl}img/bt2.jpg') no-repeat;
   //  -webkit-background-size: 100% 100%;           /* Safari 3.0 */
   //  -moz-background-size: 100% 100%;           /* Gecko 1.9.2 (Firefox 3.6) */
   //  -o-background-size: 100% 100%;           /* Opera 9.5 */

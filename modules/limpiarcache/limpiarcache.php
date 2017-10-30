@@ -110,7 +110,7 @@ $output .= $this->displayConfirmation("<br>La cache de PHP (OPcache)se eliminara
 						break;
 
 					case 'per':
-							$output .= $this->displayConfirmation("<br>Permisos<br>".shell_exec('sh /home/ubuntu/cacheps_www.sh'));
+							$output .= $this->displayConfirmation("<br>Permisos<br>".shell_exec('sh '.Configuration::get('PATH_UPLOAD').'cacheps_www.sh'));
 						break;
 					
 					default:
