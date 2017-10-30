@@ -210,6 +210,8 @@ $( "#div_beneficio" ).remove();
         {literal}
         //Se genera el id de dispositivo
         var deviceSessionId = OpenPay.deviceData.setup("formPayU", "openpay_device_session_id");
+        $('#formTokenOpenPay #token_openpay_device_session_id').val(deviceSessionId);
+
 
         $('#submit_btn').on('click', function(event) {
             var validator = $( "#formPayU" ).validate();
@@ -398,12 +400,35 @@ function cambiaFecha(){
   {if $medios_de_pago['Tarjeta_credito_max_amount'] == 0.00 || $total_price < $medios_de_pago['Tarjeta_credito_max_amount']}
  {*############  OpenPay ###########*}
  {if $Tarjeta_credito === 'openpay'}
+    <div class="ctn-vlr-total-pedido">
+            El valor total de tu pedido es de <strong class="ctn-vlr-total-pedido-semibold">{displayPrice price=$total_price} (Impuestos incl.)
+            </strong>
+     </div>
+
+
+     {if $op_credit_cards}
+
+     <form  method="POST" action="./modules/payulatam/credit_card.php" id="formTokenOpenPay" autocomplete="off" >
+      <input type="hidden" name="id_credit_cart" id="id_credit_cart">
+      <input type="hidden" id="token_openpay_device_session_id" name="openpay_device_session_id">
+
+     
+        
+           {foreach from=$op_credit_cards item=credit_card}
+      <div class="cont-trust-img">
+            <input type="button" onclick="$('#formTokenOpenPay #id_credit_cart').val($(this).attr('attr_cardid'));$('#formTokenOpenPay').submit()" attr_cardid="{$credit_card.id_card}" class="paymentSubmit boton-pagos-excep" value="PAGAR CON {$credit_card.brand|upper}  {$credit_card.card_number|upper}">
+          </div>
+
+           {/foreach}
+       <hr/>
+    </form>
+
+      {/if}
+
+
     <form  method="POST" action="./modules/payulatam/credit_card.php" id="formPayU" autocomplete="off" >
       <div>
         <div id="formfiles" class="contend-form">
-          <div class="ctn-vlr-total-pedido">
-            El valor total de tu pedido es de <strong class="ctn-vlr-total-pedido-semibold">{displayPrice price=$total_price} (Impuestos incl.)</strong>
-          </div>
           <div class="cardAttr">
             {* <div class="textCard">Número de Tarjeta de Crédito o Débito<span class="purple">*</span>:</div> *}
             <input type="text" name="card" autocomplete="off" data-openpay-card="card_number" id="numerot" placeholder="Número de Tarjeta de Crédito o Débito *"/>
@@ -428,13 +453,14 @@ function cambiaFecha(){
           </div>
           <input type="hidden" name="cuotas" id="cuotas" value="01" />
           {*} <img src="https://test.farmalisto.com.mx/themes/gomarket/img/mediosp/openpay.png"> {*}
+          <input type="checkbox" name="remember_tarjeta" id="remember_tarjeta"> {l s='Recordar Tarjeta' mod='payulatam'}
           <div class="cont-trust-img">
             <input type="button" id="submit_btn" onclick="$('#botoncitosubmit').click();" class="paymentSubmit boton-pagos-excep" value="PAGAR">
           </div>
+
         </div>
       </div>       
       <input type="hidden" name="token_id" id="token_id">
-      <input type="hidden" id="openpay_device_session_id" name="openpay_device_session_id">
     </form>
     {*############  PayuLatm ###########*}
     {elseif $Tarjeta_credito === 'payulatam'}
