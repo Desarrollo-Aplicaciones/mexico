@@ -72,7 +72,7 @@ if ($results = Db::getInstance()->Execute( $query_truncate)) {
 	echo " <br> tabla borrada";
 	
 	$query_insert = " INSERT INTO ps_stock_available_mv
-    SELECT  `sa`.`id_stock_available` AS `id_stock_available`,
+    SELECT  `ps`.`id_product` AS `id_stock_available`,
 				`ps`.`id_product` AS `id_product`, 
 				IF ( isnull( `sod`.`id_product_attribute` ),  0,  `sod`.`id_product_attribute` ) AS `id_product_attribute`,
 				`ps`.`id_shop` AS `id_shop`,
