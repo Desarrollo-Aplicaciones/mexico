@@ -55,7 +55,7 @@ protected function add_customer()
 	$customer = new Customer($this->context->cart->id_customer);
 
 	$customerData = array(
-	                      'external_id' => md5($customer->id).'-'.$this->randomNumber(7),
+	                      'external_id' => $customer->secure_key.'-'.$customer->id,
 	                      'name' => $customer->firstname,
 	                      'last_name' => $customer->lastname,
 	                      'email' => $customer->email,
@@ -80,23 +80,19 @@ try {
 
 	$ob_customer = $this->open_pay->customers->add($customerData);
 
-/*
 	
 
-	$datetime_f = new DateTime($ob_customer->creation_date);
-	$datetime_format = $datetime_f->format('Y-m-d H:i:s');
+	$sql =	"INSERT INTO `"._DB_PREFIX_."openpay_customer` (`id_customer`, `id`, `creation_date`)
+		 	VALUES (".$customer->id.", '".$ob_customer->id."', '".date('Y-m-d H:i:s')."');";
 
-// 	$sql =	"INSERT INTO `"._DB_PREFIX_."openpay_customer` (`id_customer`, `id`, `creation_date`, `status`, `balance`, `clabe`)
-	$sql =	"INSERT INTO `"._DB_PREFIX_."openpay_customer` (`id_customer`, `id`, `creation_date`, `clabe`)
-		 	VALUES (".$customer->id.", '".$ob_customer->id."', '".$datetime_format."', ".$ob_customer->clabe." );";
-//echo('<pre>'.print_r($sql,true).'</pre><br><br>'); exit();
-	    if (Db::getInstance()->Execute($sql) ) {
-	   		
-	   		$this->customer=$ob_customer ;
-	   		return TRUE;
+		 	if (Db::getInstance()->Execute($sql) ) {
+		 		$this->customer=$ob_customer ; 
+		   		return TRUE;
 	    } else {
 	    	// Logger::AddLog('Openpay add_customer, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.' | ERROR en la Creación del Usuario PS-OpenPay, Validar Id_customer Duplicado -> ps_openpay_customer ' , 2, null, null, null, true);
-	    }*/
+	    }
+
+
 	    $this->customer=$ob_customer ;  
 	    return true;
 
@@ -166,64 +162,104 @@ public function get_customer(){
  */
 public function add_charge($post,$contador){
 $this->context = Context::getContext();
-	// if($this->load_customer()){
-	if($this->add_customer()){
+$customer = new Customer($this->context->cart->id_customer);
 
-		$customer = new Customer($this->context->cart->id_customer);
+$this->customer = array_shift($this->open_pay->customers->getList(array('external_id'=>$customer->secure_key.'-'.$customer->id)));
+
+
+if(empty($this->customer)){
+	$this->add_customer();
+}
+
+	// if($this->load_customer()){
+	if(!empty($this->customer)){
+		if(isset($_POST['id_credit_cart'])){
+			$source_id = $_POST['id_credit_cart'];
+		}
+		else{
+			$source_id = $post["token_id"];
+		}
+
+		
 	//$currency = Tools::safeOutput( new Currency(self::$cart->id_currency)->iso_code);
 		$address = new Address($this->context->cart->id_address_delivery);
 
-$chargeRequest = array(
-                       'method' => 'card',
-                       'source_id' => $post["token_id"],
-                       'amount' => $this->context->cart->getOrderTotal(),
-                       'currency' => 'MXN',
-                       'description' => 'Compra en '.Configuration::get('PS_SHOP_NAME').' '.$this->context->country->iso_code,
-                       'order_id' => Configuration::get('PS_SHOP_NAME').'-'.$this->context->country->iso_code.'-'.$this->context->cart->id.'-'.$contador,
-                       'device_session_id' => $post["openpay_device_session_id"],
-                       'metadata' => array(
-                                           'address1' 		=> substr(utf8_encode($address->address1),0,30),
-                                           'address2' 		=> substr(utf8_encode($address->address2),0,30),
-                                           'address3' 		=> (isset($address->other) && $address->other != '')?substr(utf8_encode($address->other),0,30):FALSE,
-                                           'phone'			=> substr(utf8_encode($address->phone_mobile .' '.$address->phone),0,30),
-                                           'fecha_compra' 	=> date("Y-m-d H:i:s"), 
-                                           'total' 		=> $this->context->cart->getOrderTotal(),
-                                           'descuento' 	=> $this->context->cart->getOrderTotal( Cart::ONLY_DISCOUNTS ),
-                                           'iva' 			=> $this->context->cart->getOrderTotals()['total_iva'],
-                                           'nombre' 		=> substr(utf8_encode($customer->firstname.' '.$customer->lastname),0,30),
-                                           'email' 		=> substr($customer->email,0,30)
-                                           )
-);
+		$chargeRequest = array(
+		                       'method' => 'card',
+		                       'source_id' => $source_id,
+		                       'amount' => $this->context->cart->getOrderTotal(),
+		                       'currency' => 'MXN',
+		                       'description' => 'Compra en '.Configuration::get('PS_SHOP_NAME').' '.$this->context->country->iso_code,
+		                       'order_id' => Configuration::get('PS_SHOP_NAME').'-'.$this->context->country->iso_code.'-'.$this->context->cart->id.'-'.$contador,
+		                       'device_session_id' => $post["openpay_device_session_id"],
+		                       'metadata' => array(
+		                                           'address1' 		=> substr(utf8_encode($address->address1),0,30),
+		                                           'address2' 		=> substr(utf8_encode($address->address2),0,30),
+		                                           'address3' 		=> (isset($address->other) && $address->other != '')?substr(utf8_encode($address->other),0,30):FALSE,
+		                                           'phone'			=> substr(utf8_encode($address->phone_mobile .' '.$address->phone),0,30),
+		                                           'fecha_compra' 	=> date("Y-m-d H:i:s"), 
+		                                           'total' 		=> $this->context->cart->getOrderTotal(),
+		                                           'descuento' 	=> $this->context->cart->getOrderTotal( Cart::ONLY_DISCOUNTS ),
+		                                           'iva' 			=> $this->context->cart->getOrderTotals()['total_iva'],
+		                                           'nombre' 		=> substr(utf8_encode($customer->firstname.' '.$customer->lastname),0,30),
+		                                           'email' 		=> substr($customer->email,0,30)
+		                                           )
+		);
 
-//error_log('<$chargeRequest '.print_r($chargeRequest,TRUE).' (charge)>',0);  
-try {
+		//GUARDAR TARJETA
+		if(isset($_POST['remember_tarjeta']) && $_POST['remember_tarjeta']){
 
-	if($this->add_transaction($this->customer->charges->create($chargeRequest))){
-		return TRUE;	
+			try {
+				$cardData = array(
+			  	  'token_id' => $post["token_id"],
+				  'device_session_id' => $post["openpay_device_session_id"]
+				);
+
+				
+				$card = $this->customer->cards->add($cardData);
+
+				$sql =	"INSERT INTO `"._DB_PREFIX_."openpay_cards` (`id_customer`, `id_card`, `brand`, `bank`, `card_number`,`holder_name`,`expiration_year`, `expiration_month`)
+		 	VALUES (".$customer->id.", '".$card->id."', '".$card->brand."', '".$card->bank_name."', '".$card->card_number."', '".$card->holder_name."', '".$card->expiration_year."', '".$card->expiration_month."');";
+
+		 		$test = Db::getInstance()->Execute($sql);
+			}
+
+			catch (Exception $e) { 
+				error_log('<Error en el script Openpay (addCard)>',0);
+				//$this->errors_op[] = $e->getMessage();
+				Logger::AddLog('Openpay add_card, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.'return FALSE; Error en el script: ' . $e->getMessage(), 2, null, null, null, true);	
+			}
+		}
+
+		//error_log('<$chargeRequest '.print_r($chargeRequest,TRUE).' (charge)>',0);  
+		try {
+
+			if($this->add_transaction($this->customer->charges->create($chargeRequest))){
+				return TRUE;	
+			}
+
+		}  catch (OpenpayApiRequestError $e) { error_log('<Error en el script Openpay (charge)>',0); 
+			$this->errors_op[] = $this->get_message_error($e->getErrorCode());
+			Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.'  ERROR en la petición: ' . $e->getMessage(), 2, null, null, null, true);
+			return FALSE;
+		} 	catch (OpenpayApiConnectionError $e) { error_log('<Error en el script Openpay (charge)>',0);
+			$this->errors_op[] = $this->get_message_error($e->getErrorCode());
+			Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.' ERROR en la conexión al API: ' . $e->getMessage(), 2, null, null, null, true);
+			return FALSE;
+		} 	catch (OpenpayApiAuthError $e) { error_log('<Error en el script Openpay (charge)>',0);
+			$this->errors_op[] = $this->get_message_error($e->getErrorCode());
+			Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.' ERROR en la autenticación: ' . $e->getMessage(), 2, null, null, null, true);	
+			return FALSE;	
+		} 	catch (OpenpayApiError $e) { error_log('<Error en el script Openpay (charge)>',0);
+			$this->errors_op[] = $this->get_message_error($e->getErrorCode());
+			Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.' ERROR en el API: ' . $e->getMessage(), 2, null, null, null, true);		
+			return FALSE;	
+		} 	catch (Exception $e) { error_log('<Error en el script Openpay (charge)>',0);
+			$this->errors_op[] = $e->getMessage();
+			Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.'return FALSE; Error en el script: ' . $e->getMessage(), 2, null, null, null, true);	
+			return FALSE;
+		}
 	}
-
-}  catch (OpenpayApiRequestError $e) { error_log('<Error en el script Openpay (charge)>',0); 
-	$this->errors_op[] = $this->get_message_error($e->getErrorCode());
-	Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.'  ERROR en la petición: ' . $e->getMessage(), 2, null, null, null, true);
-	return FALSE;
-} 	catch (OpenpayApiConnectionError $e) { error_log('<Error en el script Openpay (charge)>',0);
-	$this->errors_op[] = $this->get_message_error($e->getErrorCode());
-	Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.' ERROR en la conexión al API: ' . $e->getMessage(), 2, null, null, null, true);
-	return FALSE;
-} 	catch (OpenpayApiAuthError $e) { error_log('<Error en el script Openpay (charge)>',0);
-	$this->errors_op[] = $this->get_message_error($e->getErrorCode());
-	Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.' ERROR en la autenticación: ' . $e->getMessage(), 2, null, null, null, true);	
-	return FALSE;	
-} 	catch (OpenpayApiError $e) { error_log('<Error en el script Openpay (charge)>',0);
-	$this->errors_op[] = $this->get_message_error($e->getErrorCode());
-	Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.' ERROR en el API: ' . $e->getMessage(), 2, null, null, null, true);		
-	return FALSE;	
-} 	catch (Exception $e) { error_log('<Error en el script Openpay (charge)>',0);
-	$this->errors_op[] = $e->getMessage();
-	Logger::AddLog('Openpay add_charge, customer:'.$customer->id.', id_cart:'.$this->context->cart->id.'return FALSE; Error en el script: ' . $e->getMessage(), 2, null, null, null, true);	
-	return FALSE;
-}
-}
 
 return FALSE;
 }
