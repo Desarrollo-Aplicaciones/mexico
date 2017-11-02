@@ -313,10 +313,11 @@ private function _displayWarning() {
                 $customer = new Customer($this->context->cart->id_customer);
                 $credit_cards = Db::getInstance(_PS_USE_SQL_SLAVE_)->ExecuteS("SELECT * FROM "._DB_PREFIX_."openpay_cards where id_customer = ".$customer->id);
 
-                require_once(_PS_MODULE_DIR_ . 'payulatam/payulatam.php');
-                $openpay = Openpay::getInstance($kesy['apilogin_id'], $kesy['apikey_privatekey']);
+                //ddd($kesy);
+                //require_once(_PS_MODULE_DIR_ . 'payulatam/payulatam.php');
+                //$openpay = Openpay::getInstance($kesy['apilogin_id'], $kesy['apikey_privatekey']);
                 
-                $op_customer = array_shift($openpay->customers->getList(array('external_id'=>$customer->secure_key.'-'.$customer->id)));
+               //$op_customer = array_shift($openpay->customers->getList(array('external_id'=>$customer->secure_key.'-'.$customer->id)));
 
                 /*$card = $op_customer->cards->get('k5nwybxlmxcdcaliv2ku');
                 ddd($card);
