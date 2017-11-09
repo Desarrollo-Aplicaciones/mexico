@@ -14,7 +14,7 @@ $image = $_GET['imagen'];
 		// Definimos la ruta donde se almacenan las imágenes y añadimos el nombre imagen que nos interesa 
 		$directorio = Configuration::get('PATH_UP_LOAD');
 
-		$ruta=$directorio."cspublicidadfl/uploads/".$image;
+		$ruta=$directorio."../../htdocs/modules/cspublicidadfl/uploads/".$image;
 		//le informamos al navegador el tipo de documento
 		$ext_file = explode('.', strtolower($image));
 

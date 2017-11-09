@@ -349,6 +349,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 				LEFT JOIN `'._DB_PREFIX_.'image_lang` il ON (i.`id_image` = il.`id_image` AND il.`id_lang` = '.(int)$id_lang.')'.
 				($ret_insert ? ' INNER JOIN tmp_search_'.$alenum.' bt ON ( bt.id_product = p.id_product )' : '').'
 				WHERE p.active = 1 AND product_shop.active = 1 AND p.`id_product` '.$product_pool.'
+				AND p.indexed = 1 AND p.visibility = "both"
 				GROUP BY product_shop.id_product
 				'.$orden_bus.'			
 				LIMIT '.(int)(($page_number - 1) * $page_size).','.(int)$page_size;
