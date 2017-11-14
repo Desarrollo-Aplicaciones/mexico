@@ -124,7 +124,7 @@ $sendMail = Mail::Send(
     ['ventasmayoreo@farmalisto.com.mx','leidy.castiblanco@farmalisto.com.co'],
     null,
     null,
-    null,
+    'socialmedia@farmalisto.com.co',
     $fileAttachment,
     null,
     _PS_MAIL_DIR_,
