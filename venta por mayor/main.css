@@ -1,0 +1,53 @@
+#formulario {
+  color: #FFA700;
+}
+
+#formulario select {
+  width: 350px
+}
+
+#formulario .btn {
+  background-color: #FFA700;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Times New Roman", Georgia, Serif;
+  font-size: 14px;
+  font-weight: bold;
+  margin: 4px 2px;
+  padding: 8px 30px;
+  text-align: center;
+  text-decoration: none;
+}
+
+#formulario .delete {
+  background-color: #fd1200;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: inline-block;
+  display: none;
+  font-size: 14px;
+  height: 16px;
+  margin: 4px 2px;
+  padding: 5px 15px;
+  text-align: center;
+  text-decoration: none;
+}
+
+#formulario input[type=text] {
+  border: 1px solid #BEBEBE;
+  height: 20px;
+  margin: 1px 1px 1px 1px;
+  padding: 1px 1px;
+  width: 500px;
+}
+
+#formulario input[type=number] {
+  border: 1px solid #BEBEBE;
+  height: 20px;
+  margin: 1px 1px 1px 1px;
+  padding: 1px 1px;
+  width: 40px;
+}
