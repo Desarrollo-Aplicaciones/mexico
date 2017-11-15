@@ -11,15 +11,15 @@
     <div id="formulario">
       <form action="http://192.168.10.121:81/ajaxs/ajax_cotizaciones.php" method="post">
       <!--form action="mailto:andres.valencia@farmalisto.com.co" enctype="text/plain" method="post"-->
-        <br>Nombre Completo: <br> <input type="text" name="nombre">
+        <br>Nombre Completo: <br> <input type="text" name="nombre" required>
         <div id="error-nombre" class="form-error"></div>
-        <br>Empresa: <br> <input type="text" name="empresa">
+        <br>Empresa: <br> <input type="text" name="empresa" required>
         <div id="error-empresa" class="form-error"></div>
-        <br>Email: <br> <input type="email" name="email">
+        <br>Email: <br> <input type="email" name="email" required>
         <div id="error-email" class="form-error"></div>
-        <br>Teléfono Celular: <br> <input type="text" name="telefono">
+        <br>Teléfono Celular: <br> <input type="text" name="telefono" required>
         <div id="error-telefono" class="form-error"></div>
-        <br>Código Postal: <br> <input type="text" name="codigpostal">
+        <br>Código Postal: <br> <input type="text" name="codigpostal" required>
         <div id="error-codigpostal" class="form-error"></div>
         <br><br>
         <div class="product"> 
@@ -1271,6 +1271,7 @@
           <a class="btn" href="javascript:window.print();" id="print-summary">Imprime Cotización</a>
           <input class="btn" type="submit" value="Enviar Cotización">
         </div>
+        <div id="message" class="message"></div>
       </form>
     </div>
     <script
