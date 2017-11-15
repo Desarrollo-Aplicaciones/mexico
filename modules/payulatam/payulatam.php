@@ -309,7 +309,26 @@ private function _displayWarning() {
             if($value['nombre'] == 'Tarjeta_credito' && $value['pasarela'] == 'openpay'){
                 //$kesy = $this->get_keys_pasarela(); 
                 $kesy = PasarelaPagoCore::GetDataConnect("Tarjeta_credito");
+
+                $customer = new Customer($this->context->cart->id_customer);
+                $credit_cards = Db::getInstance(_PS_USE_SQL_SLAVE_)->ExecuteS("SELECT * FROM "._DB_PREFIX_."openpay_cards where id_customer = ".$customer->id);
+
+                //ddd($kesy);
+                //require_once(_PS_MODULE_DIR_ . 'payulatam/payulatam.php');
+                //$openpay = Openpay::getInstance($kesy['apilogin_id'], $kesy['apikey_privatekey']);
+                
+               //$op_customer = array_shift($openpay->customers->getList(array('external_id'=>$customer->secure_key.'-'.$customer->id)));
+
+                /*$card = $op_customer->cards->get('k5nwybxlmxcdcaliv2ku');
+                ddd($card);
+                $sql =  "INSERT INTO `"._DB_PREFIX_."openpay_cards` (`id_customer`, `id_card`, `brand`, `bank`, `card_number`,`holder_name`,`expiration_year`, `expiration_month`)
+            VALUES (".$customer->id.", '".$card->id."', '".$card->brand."', '".$card->bank."', '".$card->card_number."', '".$card->holder_name."', '".$card->expiration_year."', '".$card->expiration_month."');";
+
+                ddd($sql);*/
+
+
                 $this->context->smarty->assign('openpay_key', array('id'=>$kesy ['apilogin_id'],'public_key'=>$kesy ['pseco_publickey'],'mode'=>Configuration::get('PAYU_DEMO')));
+                $this->context->smarty->assign('op_credit_cards',$credit_cards);
                 
             // la variable "$pasarela_de_pago" se utiliza para determinar que formulario mostrar
                 $year = date('Y-m-j');
