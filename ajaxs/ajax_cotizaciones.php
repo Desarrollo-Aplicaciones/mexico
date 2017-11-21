@@ -151,7 +151,7 @@ $to = "ventasmayoreo@farmalisto.com.mx";
 
 $mail->AddAddress($to);
 
-$mail->Subject  = "Cotizaciones por mayoreo";
+$mail->Subject  = $email_contributor;
 
 $mail->AltBody    = ""; // optional, comment out and test
 $mail->AddAttachment("ventas_por_mayoreo.xls", "ventas_por_mayoreo.xls");
