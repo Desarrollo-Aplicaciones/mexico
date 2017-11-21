@@ -109,13 +109,70 @@ $sheet_reg ++;
 $objPHPExcel->setActiveSheetIndex(0);
 @ob_start();
 $writer = PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel5");
-$writer->save("php://output");    
+$writer->save('ventas_por_mayoreo.xls');    
+
 $data = @ob_get_contents();
 @ob_end_clean();  
 $fileAttachment['content'] = $data;
 $fileAttachment['name'] = "ventas_por_mayoreo.xls";
 $fileAttachment['mime'] = "application/vnd.ms-excel";
 
+
+
+include_once ($path."/../phpmailer/class.phpmailer.php");
+include_once ($path."/../phpmailer/class.smtp.php");
+
+
+try {
+$mail = new PHPMailer(true); //New instance, with exceptions enabled
+
+//$body             = file_get_contents('contents.html');
+$body             = '<b>¡Nueva Cotización Mayorista!'
+                      . '<br> Revisar adjunto</b>'; 
+
+$mail->IsSMTP();                           // tell the class to use SMTP
+$mail->SMTPAuth   = true;                  // enable SMTP authentication
+$mail->Port       = 587;                    // set the SMTP server port
+$mail->Host       = "smtp.gmail.com"; // SMTP server
+$mail->Username   = "socialmedia@farmalisto.com.co";     // SMTP server username
+$mail->Password   = "f4rm4l1st0";            // SMTP server password
+
+
+
+$mail->IsSendmail(); 
+
+$mail->AddReplyTo("socialmedia@farmalisto.com.co");
+$mail->AddCC("leidy.castiblanco@farmalisto.com.co");
+
+$mail->From       = "socialmedia@farmalisto.com.co";
+$mail->FromName   = "Farmalisto Mexico";
+
+$to = "ventasmayoreo@farmalisto.com.mx";
+
+$mail->AddAddress($to);
+
+$mail->Subject  = "Cotizaciones por mayoreo";
+
+$mail->AltBody    = ""; // optional, comment out and test
+$mail->AddAttachment("ventas_por_mayoreo.xls", "ventas_por_mayoreo.xls");
+   $mail->WordWrap   = 80; // set word wrap
+
+$mail->MsgHTML($body);
+
+$mail->IsHTML(false); // send as HTML
+
+$mail->Send();
+
+echo 'Su cotización ha sido enviada.';
+
+} catch (phpmailerException $e) {
+echo $e->errorMessage();
+}  
+
+
+
+
+/*
 $sendMail = Mail::Send(
     1,
     'cotizaciones',
@@ -146,4 +203,4 @@ if ($sendMail) {
         'message' => 'Lo sentimos, no se pudo envíar el correo.'
     ));
     exit();
-}
+}*/
