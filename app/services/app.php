@@ -57,9 +57,10 @@ class API extends REST {
     $page_size   = $this->_request['page_size'];
     $order_by    = $this->_request['order_by'];
     $order_way   = $this->_request['order_way'];
+    $active      = $this->_request['active'];
 
     $model = new Model();
-    $result = $model->productSearch($this->id_lang_default, $expr, $page_number, $page_size, $order_by,  $order_way);
+    $result = $model->productSearch($this->id_lang_default, $expr, $page_number, $page_size, $order_by,  $order_way,$active);
 
     if (empty($result)) {
       // Si no hay registros, estado "Sin contenido"

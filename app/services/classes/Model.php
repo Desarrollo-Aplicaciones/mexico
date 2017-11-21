@@ -44,14 +44,16 @@ class Model extends PaymentModule {
    * Busca producto(s) por los datos dados
    * @return array
    */
-  public function productSearch($id_lang, $expr, $page_number, $page_size, $order_by, $order_way)
+  public function productSearch($id_lang, $expr, $page_number, $page_size, $order_by, $order_way, $active )
   {
     $page_number = empty($page_number) ? 1 : $page_number;
     $page_size   = empty($page_size) ? 1 : $page_size;
     $order_by    = empty($order_by) ? 'position' : $order_by;
     $order_way   = empty($order_way) ? 'desc' : $order_way;
+    $active      = ((empty($active) && !is_numeric($active)) || $active == 1) ? 1 : $active;
+    $active      = $active == 0 ? 0 : $active;
 
-    $results = Search::findApp($id_lang, $expr, $page_number, $page_size, $order_by, $order_way, FALSE, FALSE);
+    $results = Search::findApp($id_lang, $expr, $page_number, $page_size, $order_by, $order_way, $active, FALSE, FALSE);
     $products = array();
     if ((int) $results['total'] > 0) {
       $total_rows = (int) $results['total'];
@@ -115,6 +117,7 @@ class Model extends PaymentModule {
 
             $array_prod[] = array(
               'id' => (int) $value['id_product'],
+              'active' => (int) $value['active'],
               'reference' => (int) $value['reference'],
               'name' => htmlspecialchars( strtolower(strip_tags($value['name'])), ENT_DISALLOWED ),
               'shortname' => strtolower($textocorto),
