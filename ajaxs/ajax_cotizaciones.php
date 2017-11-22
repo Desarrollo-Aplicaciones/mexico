@@ -163,7 +163,7 @@ $mail->IsHTML(false); // send as HTML
 
 $mail->Send();
 
-echo 'Su cotización ha sido enviada.';
+echo json_encode('Su cotización ha sido enviada.');
 
 } catch (phpmailerException $e) {
 echo $e->errorMessage();
