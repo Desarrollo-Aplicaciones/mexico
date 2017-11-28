@@ -706,7 +706,8 @@
 		/*-------------------------------AUTH3.0------------------*/
 		#authentication .block_permanent_links{display:none;}
 		#authentication .imagenAyuda {margin-right: -30px;}
-		#primerHole{display:none;width: 100%;}
+		/*#primerHole{display:none;width: 100%;}*/
+		#primerHole{width: 100%;}
 		#segundoHole{margin-top: 20px;width: 100%;}
   		#tercerHole{display:none;}
 		#tercerHole_resp{display:block;}
@@ -1044,12 +1045,13 @@ PASO 4 CHECKOUT MEXICO*/
 		/*-------------------------------AUTH3.0------------------*/
 		#authentication .block_permanent_links{display:none;}
 		#authentication .imagenAyuda {margin-right: -30px;}
-		#primerHole{display:none;width: 100%;}
+		/*#primerHole{display:none;width: 100%;}*/
+		#primerHole{width: 100%;}
 		#segundoHole{margin-top: 20px;width: 100%;}
 		#errorHole{width:100%;margin:0;}
   		#tercerHole{display:none;}
 		#tercerHole_resp{display:block;}
-		.contenido{margin-top: 65px;width:100%;}
+		/*.contenido{margin-top: 65px;width:100%;}*/
 		#primerHole, #segundoHole, #tercerHole{margin: 0;}
 		.current{display:none;}
 		.header_bg2{display:none;}
