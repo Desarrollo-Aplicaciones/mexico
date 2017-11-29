@@ -643,16 +643,19 @@ class Model extends PaymentModule {
     return $manufacturers;
   }
 
-  public function getProduct($id) 
+  public function getProduct($id,$quantity) 
   {
+    
     $query = "SELECT 
       p.id_product AS id, 
       pl.`name` AS name, 
       pl.description_short AS 'desc', 
       GROUP_CONCAT( DISTINCT im.id_image ORDER BY im.cover DESC SEPARATOR ',') AS imgs,
       ROUND( ps.price + IF ( t.rate IS NULL , 0 , ps.price * ( ( t.rate/100 ) ) ), 2) AS price,
-      GROUP_CONCAT( DISTINCT CONCAT(pvc.id_supplier,',',ROUND(pvc.price,0) ) SEPARATOR ';' ) AS prov
+      GROUP_CONCAT( DISTINCT CONCAT(pvc.id_supplier,',',ROUND(pvc.price,0) ) SEPARATOR ';' ) AS prov,
+      IF (".$quantity."<= sa.quantity,1,0)  AS quantity
       FROM "._DB_PREFIX_."product p
+      INNER JOIN ps_stock_available_mv sa ON (p.id_product = sa.id_product)
       INNER JOIN "._DB_PREFIX_."product_shop ps ON ( p.id_product = ps.id_product )
       INNER JOIN "._DB_PREFIX_."product_lang pl ON ( p.id_product = pl.id_product )
       LEFT JOIN "._DB_PREFIX_."tax_rule tr ON ( tr.id_tax_rules_group = ps.id_tax_rules_group AND tr.id_tax_rule NOT IN (3,4) )
@@ -661,7 +664,7 @@ class Model extends PaymentModule {
       LEFT JOIN "._DB_PREFIX_."proveedores_costo pvc ON ( p.id_product = pvc.id_product )
       WHERE p.id_product = ".$id." AND  p.active=1 AND ps.active=1
       AND p.is_virtual=0 AND ps.visibility='both' AND (tr.id_tax != 0 OR ISNULL(tr.id_tax))";
-
+    
     $array_img = array();
 
     if ($results = Db::getInstance()->ExecuteS($query)) {

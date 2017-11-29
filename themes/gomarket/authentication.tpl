@@ -147,7 +147,7 @@ $(function(){ldelim}
 		{/if}
 	</div>
 	<div id="errorHole">{include file="$tpl_dir./errors.tpl"}</div>
-	<a href="javascript:void(0);" class="resp_button">Ya estoy registrado</a>
+	<a href="javascript:void(0);" id="btnLogin" class="resp_button" style="display:none" >Ya estoy registrado</a>
 	<div class="contenedor" id="primerHole">
 		<div class="current">
 			<span class="titulo">Ya estoy registrado</span>
@@ -181,8 +181,8 @@ $(function(){ldelim}
 			</fieldset>
 		</form>
 	</div>
-	<a href="javascript:void(0);" class="resp_button">No estoy registrado</a>
-	<div class="contenedor" id="segundoHole">
+	<a href="javascript:void(0);" class="resp_button"  id="no" >No estoy registrado</a>
+	<div class="contenedor" id="segundoHole" >
 
 		{if isset($GUEST_FORM_ENABLED) &&$GUEST_FORM_ENABLED }
 		<div class="currentOpcion" id="titregistrado">
@@ -483,6 +483,7 @@ but it's deprecated
 						value="{l s='Crear cuenta'}" />
 				</div>
 		</form>
+		<a href="javascript:void(0);" id="btnLogin2" class="resp_button" >Ya estoy registrado</a>
 	</div>
 		<!-- quest form --  formulario  modo invitado-->
 		{if isset($GUEST_FORM_ENABLED) &&$GUEST_FORM_ENABLED }

@@ -281,14 +281,16 @@ class API extends REST {
       $this->response('', 406);
     }
 
-    if (!isset($this->_request['id']) 
-        || empty($this->_request['id'])) {
+    if ( (!isset($this->_request['id']) || empty($this->_request['id']) ) && 
+           (!isset($this->_request['quantity']) || empty($this->_request['quantity']) ) ) {
       $this->response('', 204);
     }
 
     $id_prod = $this->_request['id'];
+    $quantity = $this->_request['quantity'];
+    
     $model = new Model();
-    $this->response(json_encode($model->getProduct($id_prod)), 200);
+    $this->response(json_encode($model->getProduct($id_prod,$quantity)), 200);
   }
 
   /**
