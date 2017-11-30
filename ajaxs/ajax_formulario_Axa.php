@@ -29,17 +29,6 @@ $sheet_number = 0;
 $sheet_name = '';
 $sheet_reg = 0;
 
-$results = array();
-/*$results = array(
- 'num_poliza' => $num_poliza,
- 'num_sini' => $num_sini,
- 'num_auto'=> $num_auto,
- 'nombre_prov' => $nombre_prov,
- 'direccion'=> $direccion_prov,
- 'telefono' => $telefono_prov,
- 'email' => $email_prov  
-);*/
-
   $objPHPExcel->createSheet();
   $objPHPExcel->setActiveSheetIndex($sheet_number);
   $objPHPExcel->getActiveSheet()->setTitle("Cotización axa");
