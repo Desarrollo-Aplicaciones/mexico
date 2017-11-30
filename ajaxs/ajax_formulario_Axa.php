@@ -79,8 +79,7 @@ $results = array();
   $objPHPExcel->getActiveSheet()->setCellValue('B6', $email_prov);
   $objPHPExcel->getActiveSheet()->setCellValue('B7', $telefono_prov);
   $line = 7;
-  
- 
+   
  foreach ( $product as $product_pr) {  
  //print_r($dataprov);
   $objPHPExcel->getActiveSheet()->setCellValue('B'.$line, $product_pr['cod']);
@@ -88,14 +87,12 @@ $results = array();
   $line ++;
  }  
   
-  
-  echo 'hola';
 $sheet_reg ++;
 $objPHPExcel->setActiveSheetIndex(0);
-  echo 'hola1';
+
 @ob_start();
 $writer = PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel5");
- echo 'hola2';
+
 $writer->save('cotizaciones_axa.xls');    
 
 $data = @ob_get_contents();
@@ -104,37 +101,50 @@ $fileAttachment['content'] = $data;
 $fileAttachment['name'] = "cotizaciones_axa.xls";
 $fileAttachment['mime'] = "application/vnd.ms-excel";
 
+include_once ($path."/../phpmailer/class.phpmailer.php");
+include_once ($path."/../phpmailer/class.smtp.php");
 
-$sendMail = Mail::Send(
-    1,
-    'cotizaciones',
-    'cotizaciones axa',
-    array(),
-    ['leidy.castiblanco@farmalisto.com.co'],
-    null,
-    null,
-    '',
-    $fileAttachment,
-    null,
-    _PS_MAIL_DIR_,
-    false,
-    null,
-    null,
-    false,
-    '');
+try {
+    $mail = new PHPMailer(true); //New instance, with exceptions enabled
+
+    //$body             = file_get_contents('contents.html');
+    $body             = '<b>¡Nueva Cotización Mayorista!'
+                          . '<br> Revisar adjunto</b>'; 
+
+    $mail->IsSMTP();                           // tell the class to use SMTP
+    $mail->SMTPAuth   = true;                  // enable SMTP authentication
+    $mail->Port       = 587;                    // set the SMTP server port
+    $mail->Host       = "smtp.gmail.com"; // SMTP server
+    $mail->Username   = "socialmedia@farmalisto.com.co";     // SMTP server username
+    $mail->Password   = "f4rm4l1st0";            // SMTP server password
 
 
+    $mail->IsSendmail(); 
 
-if ($sendMail) {
-    echo json_encode(array(
-        'success' => true, 
-        'message' => 'Su cotización ha sido enviada'
-    ));
-    exit(); 
-}  else {
-    echo json_encode(array(
-        'success' => false, 
-        'message' => 'Lo sentimos, no se pudo envíar el correo.'
-    ));
-    exit();
-}
+    $mail->AddReplyTo("contacto@farmalisto.com.mx");
+    $mail->AddCC("leidy.castiblanco@farmalisto.com.co");
+
+    $mail->From       = "socialmedia@farmalisto.com.co";
+    $mail->FromName   = "Farmalisto Mexico";
+
+    $to = "ventasmayoreo@farmalisto.com.mx";
+
+    $mail->AddAddress($to);
+
+    $mail->Subject  = 'Formulario AXA'.$email_prov;
+
+    $mail->AltBody    = ""; // optional, comment out and test
+    $mail->AddAttachment("ventas_por_mayoreo.xls", "ventas_por_mayoreo.xls");
+       $mail->WordWrap   = 80; // set word wrap
+
+    $mail->MsgHTML($body);
+
+    $mail->IsHTML(false); // send as HTML
+
+    $mail->Send();
+
+    echo json_encode('Su cotización ha sido enviada.');
+
+    } catch (phpmailerException $e) {
+    echo $e->errorMessage();
+}  
