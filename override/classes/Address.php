@@ -142,7 +142,7 @@ public  function __construct($id_address = null, $id_lang = null)
            return false;
 
        $Id_address=Db::getInstance()->Insert_ID();
-       error_log("Id_address1 : " . $Id_address);
+//       error_log("Id_address1 : " . $Id_address);
 
        if ($this->id_colonia 
             && (!isset($val_cityid) || !is_numeric($dir_change[0]))) {
@@ -151,7 +151,7 @@ public  function __construct($id_address = null, $id_lang = null)
 
        if($Id_address == 0) {
          $Id_address = $this->id;
-          error_log("Id_address2 : " . $Id_address);
+//          error_log("Id_address2 : " . $Id_address);
       }
 
       if ( !Db::getInstance()->insert('address_city', array('id_address' => (int)$Id_address, 'id_city' => (int)$val_cityid ))) {
@@ -552,10 +552,8 @@ public static function horaDeEntrega()
             if ($hora_in >= $hora_inicio && $hora_out <= $hora_fin && $hora_out > $hora_inicio) { 
                 if($hora_out_min >= 30 && $hora_out == $hora_fin ){
                     $horasSelect[$date_1->format('Y-m-d')][] = ''.$date_1->format('H:i').' a '.$date_2->format('H').':00'; 
-                    error_log("Entro a poner hora menos 30min : ".$date_1->format('H:i')." a ".$date_2->format('H').':00');
                 } else {
                     $horasSelect[$date_1->format('Y-m-d')][] = ''.$date_1->format('H:i').' a '.$date_2->format('H:i').''; 
-                    error_log("Entro a poner hora normal : ".$date_1->format('H:i')." a ".$date_2->format('H:i').", y hora fin,,,: ". $hora_fin);
                 }
             }
 
