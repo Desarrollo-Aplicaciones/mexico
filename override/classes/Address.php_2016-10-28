@@ -476,7 +476,7 @@ public function get_id_custumer_account($billing_account_id, $json = false) {
 
 public static function horaDeEntrega(){
 
-    date_default_timezone_set('America/Bogota');
+    date_default_timezone_set('America/Mexico_City');
 
     $inicio_intervalos = (int) Configuration::get('INIT_INTERVALS');
 

@@ -12,7 +12,7 @@ phpinfo();
  * @license MIT, http://acollington.mit-license.org/
  */
 
-date_default_timezone_set('America/Bogota');
+date_default_timezone_set('America/Mexico_City');
 
 if (!function_exists('opcache_get_status')) {
     die('The Zend OPcache extension does not appear to be installed');

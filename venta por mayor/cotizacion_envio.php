@@ -13,7 +13,7 @@ require($path.'/../config/config.inc.php');
 include_once($path."/../tools/phpexcel/PHPExcel.php");
 require_once $path."/../tools/phpexcel/PHPExcel/IOFactory.php"; 
 echo "\r\nlibrerias"; 
-date_default_timezone_set('America/Bogota');
+date_default_timezone_set('America/Mexico_City');
 
 $objPHPExcel = new PHPExcel();
 $sheet_number = 0;

@@ -10,7 +10,7 @@ require($path.'/../config/config.inc.php');
 include($path.'/../init.php');
 include_once($path."/../tools/phpexcel/PHPExcel.php");
 require_once $path."/../tools/phpexcel/PHPExcel/IOFactory.php";
-date_default_timezone_set('America/Bogota');
+date_default_timezone_set('America/Mexico_City');
 
 $name_contributor = Tools::getValue("nombre");
 $company_contributor = Tools::getValue("empresa");
