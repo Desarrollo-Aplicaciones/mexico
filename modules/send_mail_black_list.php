@@ -11,7 +11,7 @@ require($path.'/../config/config.inc.php');
 include_once($path."/../tools/phpexcel/PHPExcel.php");
 require_once $path."/../tools/phpexcel/PHPExcel/IOFactory.php"; 
 echo "\r\nlibrerias"; 
-date_default_timezone_set('America/Bogota');
+date_default_timezone_set('America/Mexico_City');
 $sqlC = 'SELECT cr.*, p.reference, rpl.id_product_registry, pl.`name`, pbl.motivo FROM ps_customer_registry AS cr 
 INNER JOIN ps_registry_product_list AS rpl ON (cr.id_registry=rpl.id_registry)
 INNER JOIN ps_product AS p ON (p.id_product=rpl.id_product)

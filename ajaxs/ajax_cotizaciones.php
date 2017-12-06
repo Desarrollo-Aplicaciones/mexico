@@ -10,7 +10,7 @@ require($path.'/../config/config.inc.php');
 include($path.'/../init.php');
 include_once($path."/../tools/phpexcel/PHPExcel.php");
 require_once $path."/../tools/phpexcel/PHPExcel/IOFactory.php";
-date_default_timezone_set('America/Bogota');
+date_default_timezone_set('America/Mexico_City');
 
 $name_contributor = Tools::getValue("nombre");
 $company_contributor = Tools::getValue("empresa");
@@ -163,7 +163,7 @@ $mail->IsHTML(false); // send as HTML
 
 $mail->Send();
 
-echo 'Su cotización ha sido enviada.';
+echo json_encode('Su cotización ha sido enviada.');
 
 } catch (phpmailerException $e) {
 echo $e->errorMessage();

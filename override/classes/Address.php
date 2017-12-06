@@ -142,7 +142,7 @@ public  function __construct($id_address = null, $id_lang = null)
            return false;
 
        $Id_address=Db::getInstance()->Insert_ID();
-       error_log("Id_address1 : " . $Id_address);
+//       error_log("Id_address1 : " . $Id_address);
 
        if ($this->id_colonia 
             && (!isset($val_cityid) || !is_numeric($dir_change[0]))) {
@@ -151,7 +151,7 @@ public  function __construct($id_address = null, $id_lang = null)
 
        if($Id_address == 0) {
          $Id_address = $this->id;
-          error_log("Id_address2 : " . $Id_address);
+//          error_log("Id_address2 : " . $Id_address);
       }
 
       if ( !Db::getInstance()->insert('address_city', array('id_address' => (int)$Id_address, 'id_city' => (int)$val_cityid ))) {
@@ -491,7 +491,7 @@ public function get_id_custumer_account($billing_account_id, $json = false) {
 
 public static function horaDeEntrega()
     {    
-        date_default_timezone_set('America/Bogota');
+        date_default_timezone_set('America/Mexico_City');
 
         $inicio_intervalos = (int) Configuration::get('INIT_INTERVALS');
         $fecha = new DateTime(date('Y-m-d H:i:s'));
@@ -546,9 +546,15 @@ public static function horaDeEntrega()
             $date_2->add(new DateInterval('PT'.$ventanaDeHoras.'H'));
             $hora_in = (int)$date_1->format('H');
             $hora_out = (int)$date_2->format('H');
+            $hora_out_min = (int)$date_2->format('i');
+            
 
             if ($hora_in >= $hora_inicio && $hora_out <= $hora_fin && $hora_out > $hora_inicio) { 
-                $horasSelect[$date_1->format('Y-m-d')][] = ''.$date_1->format('H:i').' a '.$date_2->format('H:i').''; 
+                if($hora_out_min >= 30 && $hora_out == $hora_fin ){
+                    $horasSelect[$date_1->format('Y-m-d')][] = ''.$date_1->format('H:i').' a '.$date_2->format('H').':00'; 
+                } else {
+                    $horasSelect[$date_1->format('Y-m-d')][] = ''.$date_1->format('H:i').' a '.$date_2->format('H:i').''; 
+                }
             }
 
         }

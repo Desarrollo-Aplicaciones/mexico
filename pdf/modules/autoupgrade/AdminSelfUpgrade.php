@@ -2020,7 +2020,8 @@ class AdminSelfUpgrade extends AdminSelfTab
 		$mysqlEngine = (defined('_MYSQL_ENGINE_') ? _MYSQL_ENGINE_ : 'MyISAM');
 
 		if (function_exists('date_default_timezone_set'))
-			date_default_timezone_set('Europe/Paris');
+//			date_default_timezone_set('Europe/Paris');
+			date_default_timezone_set('America/Mexico_City');
 
 		// if _PS_ROOT_DIR_ is defined, use it instead of "guessing" the module dir.
 		if (defined('_PS_ROOT_DIR_') AND !defined('_PS_MODULE_DIR_'))
