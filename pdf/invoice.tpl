@@ -30,6 +30,7 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 <div style="font-size: 8pt; color: #444;"><!-- ADDRESSES -->
+<div style="clear:both; margin-top: 25px;"></div>
 <table style="width: 100%;" cellpadding="0px">
 	<tr>		
 	  <td style="width: 49%; vertical-align:top; text-align: left; border: none;">{if !empty($invoice_address)}
@@ -116,9 +117,13 @@
 			  </td>
 			</tr>
 			<tr>
-			  <td style=" background-color: #EAEAEA;  padding:0px; margin:0px; font-size: 6pt; color: #444; width:87px; text-align: center;">En una sola exhibici&oacute;n</td>
+			  <td style=" background-color: #EAEAEA;  padding:0px; margin:0px; font-size: 6pt; color: #444; width:87px; text-align: center;">{if $metodo_pago=='01'}
+							 {$metodo_pago} Efectivo
+						{else $metodo_pago=='04'}
+							 {$metodo_pago} Tarjeta de crédito
+						{/if}</td>
 			  	<td style=" background-color: #FFF;  padding:0px; margin:0px; width:2px; " > </td>
-			  <td style=" background-color: #EAEAEA;  padding:0px; margin:0px; font-size: 6pt; color: #444; width:87px; text-align: center;">{$metodo_pago}</td>
+			  <td style=" background-color: #EAEAEA;  padding:0px; margin:0px; font-size: 6pt; color: #444; width:87px; text-align: center;">PUE En una sola exhibici&oacute;n</td>
 			  	<td style=" background-color: #FFF;  width:2px;" > </td>
 			  <td style=" background-color: #EAEAEA;  padding:0px; margin:0px; font-size: 6pt; color: #444; width:87px; text-align: center;">{dateFormat date=$order->invoice_date full=1}</td>
 			</tr>
@@ -155,7 +160,8 @@
 <br style="line-height:1px;">
 <table style="width: 100%; font-size: 19px;">
 				<tr style="line-height:4px; ">
-					<td style="text-align: left; background-color: #3A9842; color: #FFF; padding-left: 10px; font-weight: bold; width: {if !$tax_excluded_display}48%{else}48%{/if}"><br style="line-height:7px;">{l s='Product / Reference' pdf='true'}</td>
+					<td style="text-align: left; background-color: #3A9842; color: #FFF; padding-left: 10px; font-weight: bold; width: 8%"><br style="line-height:7px;">Clave P/S</td>
+					<td style="text-align: left; background-color: #3A9842; color: #FFF; padding-left: 10px; font-weight: bold; width: {if !$tax_excluded_display}37%{else}37%{/if}"><br style="line-height:7px;">{l s='Product / Reference' pdf='true'}</td>
 
 					<!-- unit price tax excluded is mandatory -->
 					{if !$tax_excluded_display}
@@ -169,7 +175,8 @@
 							 {l s='(Tax Incl.)' pdf='true'}
 						{/if}
 					</td>*}
-					<td style="background-color: #3A9842; color: #FFF; text-align: center; font-size: 17px; font-weight: bold; width: 18%; white-space: nowrap;"><br style="line-height:7px;">	Código EAN </td>
+					<td style="background-color: #3A9842; color: #FFF; text-align: center; font-size: 17px; font-weight: bold; width: 14%; white-space: nowrap;"><br style="line-height:7px;">	Código EAN </td>
+					<td style="text-align: left; background-color: #3A9842; color: #FFF; padding-left: 10px; font-weight: bold; width: 7%"><br style="line-height:7px;">Clave U.</td>
 					<td style="background-color: #3A9842; color: #FFF; text-align: center; font-size: 17px; font-weight: bold; width: 7%; white-space: nowrap;"> Unidad de Medida </td>
 					<td style="background-color: #3A9842; color: #FFF; text-align: center; font-size: 17px; font-weight: bold; width: 4%"><br style="line-height:7px;">{l s='Qty' pdf='true'}</td>
 					<td style="background-color: #3A9842; color: #FFF; text-align: right; font-weight: bold; width: {if !$tax_excluded_display}13%{else}13%{/if}"><br style="line-height:7px;">{l s='SubTotal' pdf='true'}
@@ -182,7 +189,8 @@
 				{foreach $order_details as $order_detail}
 				{cycle values='#FFF,#DDD' assign=bgcolor}
 				<tr style="line-height:6px;">
-					<td style="background-color:{$bgcolor};text-align: left; width: {if !$tax_excluded_display}48%{else}48%{/if}">{$order_detail.product_name}</td>
+					<td style="background-color:{$bgcolor};text-align: center; width: 8%">{$order_detail.ClaveProdServ} {$order_detail.DescProdServ}</td>
+					<td style="background-color:{$bgcolor};text-align: left; width: {if !$tax_excluded_display}37%{else}37%{/if}">{$order_detail.product_name}</td>
 					<!-- unit price tax excluded is mandatory -->
 					{if !$tax_excluded_display}
 						<td style="background-color:{$bgcolor};text-align: right; width: 10%">
@@ -206,7 +214,8 @@
 
 					{/if}
 					</td>*}
-					<td style="background-color:{$bgcolor};text-align: center; width: 18%"> {$order_detail.reference} </td>
+					<td style="background-color:{$bgcolor};text-align: center; width: 14%"> {$order_detail.reference} </td>
+					<td style="background-color:{$bgcolor};text-align: center; width: 7%"> H87 </td>
 					<td style="background-color:{$bgcolor};text-align: center; width: 7%"> PIEZA </td>
 					<td style="background-color:{$bgcolor};text-align: center; width: 4%">{$order_detail.product_quantity}</td>
 					<td style="background-color:{$bgcolor};text-align: right;  width: {if !$tax_excluded_display}13%{else}13%{/if}">
@@ -374,6 +383,9 @@
         	<tr>
            	  <td width="100%" style="text-align:justify; font-size: 21px; font-weight: bold">&nbsp;{$ValorEnLetras}<br></td>
            	</tr>
+			<tr>
+           	  <td width="100%" style="text-align:justify; font-size: 21px; font-weight: bold">&nbsp;Moneda: MXN Pesos Mexicanos<br></td>
+           	</tr>
            	<tr>
            	  <td width="100%" style="text-align:justify; font-size: 21px; font-weight: bold">{if $formu_medical}<p><sup>FM</sup>&nbsp;<em>Apreciado cliente, recuerde que la receta m&eacute;dica es requisito obligatorio para la venta y/o entrega de medicamentos que requieren prescripci&oacute;n m&eacute;dica, sin copia de este documento nuestro transportador no entregar&aacute; el medicamento; recuerde las diferentes opciones con las que cuenta la compa&ntilde;&iacute;a para cumplir con este requisito, m&aacute;s informaci&oacute;n en <strong>www.farmalisto.com.mx</strong></em></p>{/if}</td>
            	</tr>
@@ -381,8 +393,8 @@
            	{if $note != ""}
 	        	<tr><td><br style="line-height:3px;"><br style="line-height:3px;"><strong>Nota:</strong> <em>{$note}</em><br style="line-height:2px;"><br style="line-height:2px;"></td></tr>
 	        {/if}
-	               	
-           	<tr>           	
+
+           	<tr>
            		<td width="285px" style="">{if isset($sellosat.uuid) && $sellosat.uuid != ''}<table width="100%" style="text-align:left; font-size: 19px; border-collapse:collapse; " cellpadding="0px" cellspacing="0px">
 	           	  		<tr>
 	           	  			<td width="88px" height="88px;">{assign var="qr_code" value="http://chart.apis.google.com/chart?cht=qr&chs=150x150&chld=Q|0&chl=%3fre%3d{$rfcemisor}%26rr%3d{$rfcreceptor}%26tt%3d{$order_invoice->total_paid_tax_incl}%26id%3d{$sellosat.uuid}"}<img src="{$qr_code|escape:'url'}" width="88px" height="88px" style="display:block;"></td>

@@ -233,16 +233,16 @@ class HTMLTemplateInvoice extends HTMLTemplateInvoiceCore
                 $formatted_delivery_address .= "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >RFC Receptor: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$rfcReceptor." </td></tr>";
             }
 
-            $formatted_delivery_address .= "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Identificación: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->dni."</td></tr>".
-            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Nombre y apellido: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->firstname." ".$invoice_address->lastname."</td></tr>".
-            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Dirección: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->address1." ".$invoice_address->address2."</td></tr>"./*
-            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >                 </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->address2."</td></tr>".   */     
+            $formatted_delivery_address .= /*"<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Identificación: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->dni."</td></tr>".*/
+            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Nombre y apellido: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->firstname." ".$invoice_address->lastname."</td></tr>";
+            /*"<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Dirección: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->address1." ".$invoice_address->address2."</td></tr>".
+            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >                 </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->address2."</td></tr>".
             "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Colonia: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->colonia_name."</td></tr>".
             "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Código Postal: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->postcode."</td></tr>".
             //"<tr><td width=\"70px\" >País: </td><td>".$invoice_address->country."</td></tr>".
             //"<tr><td width=\"70px\" >Departamento: </td><td>".State::getNameById($invoice_address->id_state)."</td></tr>".
             "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Ciudad/Estado: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->city."/".State::getNameById($invoice_address->id_state)."</td></tr>".
-            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Teléfono: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->phone."</td></tr>";
+            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Teléfono: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->phone."</td></tr>";*/
         
         $fa1 = $invoice_address->city;
         $fa2 = $invoice_address->alias;
@@ -259,9 +259,9 @@ class HTMLTemplateInvoice extends HTMLTemplateInvoiceCore
         $bar_code = '';
 
         //$formatted_invoice_address = AddressFormat::generateAddress($invoice_address, array(), '<br />', ' ');
-        if (isset($contact['phone_mobile']) && $contact['phone_mobile'] != '') {
-            $formatted_delivery_address.="<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\">Móvil: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\">" . $contact['phone_mobile'] . "</td></tr>";
-        }
+        // if (isset($contact['phone_mobile']) && $contact['phone_mobile'] != '') {
+        //     $formatted_delivery_address.="<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\">Móvil: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\">" . $contact['phone_mobile'] . "</td></tr>";
+        // }
 
         $metodo_pago = 'No Identificado';
             $ultimos_digitos = null;
@@ -368,11 +368,12 @@ LEFT JOIN ps_feature_product fea ON (prod.id_product = fea.id_product )
 WHERE fea.id_feature_value =4121
 AND orderd.id_order=' . (int) $this->order->id;
 */
-        $query = 'SELECT o.product_id AS producto, fea.id_product AS formed, tx.rate, odt.unit_amount
+        $query = 'SELECT o.product_id AS producto, fea.id_product AS formed, tx.rate, odt.unit_amount, feav.`value`, fea.id_feature AS fvalue
 FROM '._DB_PREFIX_.'order_detail o
 LEFT JOIN '._DB_PREFIX_.'order_detail_tax odt ON ( o.id_order_detail = odt.id_order_detail )
 LEFT JOIN '._DB_PREFIX_.'tax tx ON ( tx.id_tax = odt.id_tax )
-LEFT JOIN '._DB_PREFIX_.'feature_product fea ON ( o.product_id = fea.id_product AND fea.id_feature = 4121 AND ( fea.id_feature_value = 1 OR fea.id_feature_value = 112 ) )
+LEFT JOIN '._DB_PREFIX_.'feature_product fea ON ( o.product_id = fea.id_product AND fea.id_feature in  ('.Configuration::get('CARACTERISTICAS_FACTURA').') )
+LEFT JOIN '._DB_PREFIX_.'feature_value_lang feav ON ( fea.id_feature_value = feav.id_feature_value )
 WHERE o.id_order = ' . (int) $this->order->id;
 
 
@@ -395,6 +396,18 @@ WHERE o.id_order = ' . (int) $this->order->id;
                             //<img style="height: 10px;" src="' . $urlValidation . '/../img/formulita.png"> 
                             $list_products[$row2]['product_name'] = '<sup>FM</sup> ' . $list_products[$row2]['product_name'];
                             $formu_medical = true;
+                        }
+                        
+                        if($row['fvalue'] == '4137'){
+                            $list_products[$row2]['ClaveProdServ'] = $row['value'];
+                        }else{
+                            $list_products[$row2]['ClaveProdServ'] = '01010101';
+                        }
+
+                        if($row['fvalue'] == '4136'){
+                            $list_products[$row2]['DescProdServ'] = $row['value'];
+                        }else{
+                            $list_products[$row2]['DescProdServ'] = 'No existe en el catálogo';
                         }
 
                         if ( $value['product_id'] == $row['producto'] && $row['rate'] != '' && $row['rate'] != null ) {
@@ -641,7 +654,6 @@ WHERE o.id_order = ' . (int) $this->order->id;
 //        var_dump($xml);
 //        exit(0);
 
-        
         $this->smarty->assign(array(
             'apoyosalud' => $cupon,
             'bar_code' => $bar_code,
