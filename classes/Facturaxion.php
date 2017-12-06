@@ -982,7 +982,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 				//echo "<br><textarea cols=150 rows=20>".str_replace(array("&amp;lt;","&amp;gt;",'&amp;quot;',"&lt;","&gt;",'&quot;'),array("<",">",'"',"<",">",'"') ,$xml_params)."</textarea><br>";
 				//exit;
 				if ( is_array($valor_timbrado) && $valor_timbrado != 0 && $obligar_timbrado == 0 ) {
-					$this->TimbradoNoOk( $order_tot->id, "Timbrado previamente generado ", 1, 0, $xml_params );
+					$this->TimbradoNoOk( $order_tot->id, "Timbrado previamente generado ", 1, 0, $contenido_fichero );
 					//echo "<br> SIIIIIIIIIIII existe registro en la bd ";	
 					return ($valor_timbrado);
 
@@ -1109,7 +1109,7 @@ array(6) {
 						// $sedunda= str_replace("/></Errores></Informacion></Resultado></Timbrado>","&lt;",$sedunda);
 						//echo $sedunda;
 						//$this->TimbradoNoOk( $order_tot->id, $arr['Timbrado']['Resultado']["Informacion"]["Timbre"]["@attributes"], $arr['Timbrado']['Resultado']["Informacion"]["Documento"]["@attributes"] );
-						$this->TimbradoNoOk( $order_tot->id, $responseXML, 1, 0, $xml_params );
+						$this->TimbradoNoOk( $order_tot->id, $responseXML, 1, 0, $contenido_fichero );
 						//return $sedunda;
 
 					}
