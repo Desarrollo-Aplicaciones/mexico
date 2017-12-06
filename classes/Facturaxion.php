@@ -268,7 +268,7 @@ function sellarXML($cfdi, $numero_certificado, $archivo_cer, $archivo_pem, $depu
   	echo "<br> luego funcion transformToXML";
   }
 
-  openssl_sign($cadena_original, $sig, $private);
+  openssl_sign($cadena_original, $sig, $private, OPENSSL_ALGO_SHA256);
   
   if ( $depurar == 1 ) {
   	echo "<br> luego funcion openssl_sign";
@@ -741,7 +741,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 				if ( $order_tot->total_shipping != '0.00' || $order_tot->total_shipping_tax_incl != '0.00' ) {
 					$val_no_iva_envio =  Tools::ps_round( $order_tot->total_shipping / 1.16 ,3);
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['ClaveProdServ'] = '01010101';
-					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['NoIdentificacion'] = '';
+					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['NoIdentificacion'] = '1';
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Cantidad'] = number_format( 1, 6, '.', '');
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['ClaveUnidad'] = 'H87';
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Unidad'] = 'Pieza';
@@ -784,7 +784,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 				$arr_xml_cargar['@attributes']['Version'] = '3.3';
 				$arr_xml_cargar['@attributes']['Fecha'] = date("Y-m-d")."T".date("H:i:s",  strtotime ( '-10 minute' , strtotime ( date("H:i:s") ) ));//'2015-01-14T15:57:16';
 				$arr_xml_cargar['@attributes']['TipoDeComprobante'] = 'I'; //ingreso
-				$arr_xml_cargar['@attributes']['FormaPago'] = $metodo_pago;
+				$arr_xml_cargar['@attributes']['FormaPago'] = explode('-', $metodo_pago)[0];
 				//$arr_xml_cargar['@attributes']['serie'] = 'C';
 				//$arr_xml_cargar['@attributes']['folio'] = '2000';
 				$arr_xml_cargar['@attributes']['MetodoPago'] = 'PUE';//PAGO EN UNA SOLA EXHIBICION
@@ -969,9 +969,9 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 					"Contrasenia" => $contrasenia,
 					"XMLPreCFDI" => $contenido_fichero,
 					"XMLOpcionales" => "",
-					"IdAddenda" => 0,
+					"IdAddenda" => "",
 					"NodoAddenda" => "",
-					"IdLlaveUnico" => 0,
+					"IdLlaveUnico" => "",
 					"UUIDSucursal" => $sucursal,
 					"Mail" => "",
 					"MailCC" => "",
