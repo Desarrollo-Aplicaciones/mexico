@@ -117,13 +117,13 @@
 			  </td>
 			</tr>
 			<tr>
+			  <td style=" background-color: #EAEAEA;  padding:0px; margin:0px; font-size: 6pt; color: #444; width:87px; text-align: center;">PUE En una sola exhibici&oacute;n</td>
+			  	<td style=" background-color: #FFF;  padding:0px; margin:0px; width:2px; " > </td>
 			  <td style=" background-color: #EAEAEA;  padding:0px; margin:0px; font-size: 6pt; color: #444; width:87px; text-align: center;">{if $metodo_pago=='01'}
 							 {$metodo_pago} Efectivo
 						{else $metodo_pago=='04'}
 							 {$metodo_pago} Tarjeta de crédito
 						{/if}</td>
-			  	<td style=" background-color: #FFF;  padding:0px; margin:0px; width:2px; " > </td>
-			  <td style=" background-color: #EAEAEA;  padding:0px; margin:0px; font-size: 6pt; color: #444; width:87px; text-align: center;">PUE En una sola exhibici&oacute;n</td>
 			  	<td style=" background-color: #FFF;  width:2px;" > </td>
 			  <td style=" background-color: #EAEAEA;  padding:0px; margin:0px; font-size: 6pt; color: #444; width:87px; text-align: center;">{dateFormat date=$order->invoice_date full=1}</td>
 			</tr>
