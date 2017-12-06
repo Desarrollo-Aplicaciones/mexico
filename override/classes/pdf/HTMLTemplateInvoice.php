@@ -234,7 +234,7 @@ class HTMLTemplateInvoice extends HTMLTemplateInvoiceCore
             }
 
             $formatted_delivery_address .= "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Identificación: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->dni."</td></tr>".
-            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Nombre y apellido: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->firstname." ".$invoice_address->lastname."</td></tr>";
+            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Nombre y apellido: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->firstname." ".$invoice_address->lastname."</td></tr>".
             "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Dirección: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->address1." ".$invoice_address->address2."</td></tr>".
             "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >                 </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->address2."</td></tr>".
             "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Colonia: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->colonia_name."</td></tr>".
