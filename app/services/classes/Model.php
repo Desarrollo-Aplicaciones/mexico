@@ -643,7 +643,7 @@ class Model extends PaymentModule {
     return $manufacturers;
   }
 
-  public function getProduct($id,$quantity) 
+  public function getProduct($id,$quantity = 0) 
   {
     
     $query = "SELECT 
