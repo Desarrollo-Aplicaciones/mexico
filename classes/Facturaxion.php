@@ -274,7 +274,7 @@ function sellarXML($cfdi, $numero_certificado, $archivo_cer, $archivo_pem, $depu
   	echo "<br> luego funcion openssl_sign";
   }
  
-  $this->sello_emisor = $sello = base64_encode($sig);
+  $this->sello_emisor = $sello = $sig;
 
 
   $this->array_xml_a_timbrar['@attributes']['Certificado'] = $this->certificado_emisor;
