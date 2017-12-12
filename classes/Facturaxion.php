@@ -723,12 +723,11 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Unidad'] = 'Pieza';
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Descripcion'] = $this->trim_all( trim( $this->stripAccents( $list_products[$key_prod]['product_name'] ) ) );
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['ValorUnitario'] = number_format( $list_products[$key_prod]['unit_price_tax_excl'], 2, '.', '');
-					
 					if ($order_tot->total_discounts != null || $order_tot->total_discounts != 0) {
-						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Importe'] = $base+($order_tot->total_discounts/count($list_products));
+						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Importe'] = $base-$order_tot->total_discounts/count($list_products);
 						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Descuento'] = number_format( $order_tot->total_discounts/count($list_products), 2, '.', '');
 					}else{
-						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Importe'] = $base;
+						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Importe'] = $base;						
 					}
 					if($list_products[$key_prod]['tax_rate'] != '0.000'){
 						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Base'] = $base;
@@ -801,13 +800,14 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
                 
 				if ($order_tot->total_discounts != null || $order_tot->total_discounts != 0) {
 					$arr_xml_cargar['@attributes']['Descuento'] = number_format( $order_tot->total_discounts , 2, '.', '');
-					$arr_xml_cargar['@attributes']['SubTotal'] = $order_tot->total_products+$order_tot->total_discounts;
+					$arr_xml_cargar['@attributes']['SubTotal'] = $order_tot->total_products;
+					$arr_xml_cargar['@attributes']['Total'] = number_format( $order_tot->total_paid , 2, '.', '')-$order_tot->total_products;
 				}else{
 					$arr_xml_cargar['@attributes']['Descuento'] = '0.00';
 					$arr_xml_cargar['@attributes']['SubTotal'] = $order_tot->total_products;
+					$arr_xml_cargar['@attributes']['Total'] = number_format( $order_tot->total_paid , 2, '.', '');
 				}
 				
-				$arr_xml_cargar['@attributes']['Total'] = number_format( $order_tot->total_paid , 2, '.', '');
 				$arr_xml_cargar['@attributes']['Moneda'] = 'MXN'; //codigo postal
 				$arr_xml_cargar['@attributes']['LugarExpedicion'] = '11870'; //codigo postal
 
