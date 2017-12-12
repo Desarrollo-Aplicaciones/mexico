@@ -798,11 +798,12 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
                 
 				if ($order_tot->total_discounts != null || $order_tot->total_discounts != 0) {
 					$arr_xml_cargar['@attributes']['Descuento'] = number_format( $order_tot->total_discounts , 2, '.', '');
+					$arr_xml_cargar['@attributes']['SubTotal'] = $order_tot->total_products+$order_tot->total_discounts;
 				}else{
 					$arr_xml_cargar['@attributes']['Descuento'] = '0.00';
+					$arr_xml_cargar['@attributes']['SubTotal'] = $order_tot->total_products;
 				}
 				
-				$arr_xml_cargar['@attributes']['SubTotal'] = $order_tot->total_products;
 				$arr_xml_cargar['@attributes']['Total'] = number_format( $order_tot->total_paid , 2, '.', '');
 				$arr_xml_cargar['@attributes']['Moneda'] = 'MXN'; //codigo postal
 				$arr_xml_cargar['@attributes']['LugarExpedicion'] = '11870'; //codigo postal
