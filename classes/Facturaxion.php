@@ -46,7 +46,7 @@ if (!class_exists('Facturaxion')) {
 				$this->usuarioxml = "FME140730J95";
 				$this->contrasenia = "1130A7374C35496EACF575158BA20DEEF49494A2";
 				$this->proveedor = "FME140730J95";
-				$this->sucursal = ""; //961549
+				$this->sucursal = "3204C082-CE9E-E411-93F6-005056B8554D"; //961549
 				$this->RFCEmisor  = 'FME140730J95';
 				$this->RFCEmisor_nombre = 'FARMATALAM DE MEXICO S DE R.L DE C.V';
 				//Código Proveedor (CP):D4C3825A19DB08FD73C025F9F8A54302F7F7A379
