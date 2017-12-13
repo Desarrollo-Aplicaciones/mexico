@@ -787,7 +787,8 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 				$arr_xml_cargar['@attributes']['Version'] = '3.3';
 				$arr_xml_cargar['@attributes']['Fecha'] = date("Y-m-d")."T".date("H:i:s",  strtotime ( '-10 minute' , strtotime ( date("H:i:s") ) ));//'2015-01-14T15:57:16';
 				$arr_xml_cargar['@attributes']['TipoDeComprobante'] = 'I'; //ingreso
-				$arr_xml_cargar['@attributes']['FormaPago'] = explode('-', $metodo_pago)[0];
+				$metodo_pago_numero = explode('(',explode(')',explode('-', $metodo_pago)[0])[0]);
+				$arr_xml_cargar['@attributes']['FormaPago'] = (isset($metodo_pago_numero[1]))?$metodo_pago_numero[1]:$metodo_pago_numero[0];
 				//$arr_xml_cargar['@attributes']['serie'] = 'C';
 				//$arr_xml_cargar['@attributes']['folio'] = '2000';
 				$arr_xml_cargar['@attributes']['MetodoPago'] = 'PUE';//PAGO EN UNA SOLA EXHIBICION
