@@ -234,15 +234,15 @@ class HTMLTemplateInvoice extends HTMLTemplateInvoiceCore
             }
 
             $formatted_delivery_address .= "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Identificación: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->dni."</td></tr>".
-            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Nombre y apellido: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->firstname." ".$invoice_address->lastname."</td></tr>";
-            /*"<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Dirección: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->address1." ".$invoice_address->address2."</td></tr>".
+            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Nombre y apellido: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->firstname." ".$invoice_address->lastname."</td></tr>".
+            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Dirección: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->address1." ".$invoice_address->address2."</td></tr>".
             "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >                 </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->address2."</td></tr>".
             "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Colonia: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->colonia_name."</td></tr>".
-            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Código Postal: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->postcode."</td></tr>".*/
+            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Código Postal: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->postcode."</td></tr>".
             //"<tr><td width=\"70px\" >País: </td><td>".$invoice_address->country."</td></tr>".
             //"<tr><td width=\"70px\" >Departamento: </td><td>".State::getNameById($invoice_address->id_state)."</td></tr>".
-            /*"<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Ciudad/Estado: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->city."/".State::getNameById($invoice_address->id_state)."</td></tr>".
-            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Teléfono: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->phone."</td></tr>";*/
+            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Ciudad/Estado: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->city."/".State::getNameById($invoice_address->id_state)."</td></tr>".
+            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Teléfono: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->phone."</td></tr>";
         
         $fa1 = $invoice_address->city;
         $fa2 = $invoice_address->alias;
