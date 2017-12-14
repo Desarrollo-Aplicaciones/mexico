@@ -185,7 +185,7 @@
 				{foreach $order_details as $order_detail}
 				{cycle values='#FFF,#DDD' assign=bgcolor}
 				<tr style="line-height:6px;">
-					<td style="background-color:{$bgcolor};text-align: center; width: 8%">{$order_detail.ClaveProdServ} {$order_detail.DescProdServ}</td>
+					<td style="background-color:{$bgcolor};text-align: center; width: 8%; font-size: 32px;">{$order_detail.ClaveProdServ} {$order_detail.DescProdServ}</td>
 					<td style="background-color:{$bgcolor};text-align: left; width: {if !$tax_excluded_display}37%{else}37%{/if}">{$order_detail.product_name}</td>
 					<!-- unit price tax excluded is mandatory -->
 					{if !$tax_excluded_display}
