@@ -203,14 +203,14 @@ class HTMLTemplateInvoice extends HTMLTemplateInvoiceCore
                     $formatted_invoice_address =   "<br style=\"line-height:2px;\"><br style=\"line-height:1px;\"><table style=\"width: 100%; \" cellpadding=\"0px\">
                     <tr><td width=\"50px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" > RFC Receptor: </td><td colspan='2' style=\"width: 74px; font-size: 19px;\" >".$dir_factura[0]['dni']." </td></tr>"./*
                     <tr><td width=\"50px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" > Identificación: </td><td colspan='2' style=\"width: 74px; font-size: 19px;\" >".$dir_factura[0]['dni']."</td></tr>".*/
-                    "<tr><td width=\"50px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" > Nombre: </td><td colspan='2' style=\"width: 74px; font-size: 19px;\" >".$dir_factura[0]['alias']."</td></tr>".
-                    "<tr><td width=\"50px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" > Dirección: </td><td colspan='2' style=\"width: 74px; font-size: 19px;\" >".$dir_factura[0]['address1']."</td></tr>"./*
+                    "<tr><td width=\"50px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" > Nombre: </td><td colspan='2' style=\"width: 74px; font-size: 19px;\" >".$dir_factura[0]['alias']."</td></tr>"/*.
+                    "<tr><td width=\"50px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" > Dirección: </td><td colspan='2' style=\"width: 74px; font-size: 19px;\" >".$dir_factura[0]['address1']."</td></tr>".*//*
                     "<tr><td width=\"50px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >                  </td><td colspan='2' style=\"width: 74px; font-size: 19px;\" >".$invoice_address->address2."</td></tr>".   */     
-                    "<tr><td width=\"50px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" > Colonia: </td><td colspan='2' style=\"width: 74px; font-size: 19px;\" >". $dir_factura[0]['colonia_name']."</td></tr>".
-                    "<tr><td width=\"50px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" > Código Postal: </td><td colspan='2' style=\"width: 74px; font-size: 19px;\" >".$dir_factura[0]['postcode']."</td></tr>".
+                    /*"<tr><td width=\"50px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" > Colonia: </td><td colspan='2' style=\"width: 74px; font-size: 19px;\" >". $dir_factura[0]['colonia_name']."</td></tr>".
+                    "<tr><td width=\"50px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" > Código Postal: </td><td colspan='2' style=\"width: 74px; font-size: 19px;\" >".$dir_factura[0]['postcode']."</td></tr>".*/
                     //"<tr><td width=\"70px\" >País: </td><td>".$invoice_address->country."</td></tr>".
                     //"<tr><td width=\"70px\" >Departamento: </td><td>".State::getNameById($invoice_address->id_state)."</td></tr>".
-                    "<tr><td width=\"50px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" > Ciudad/Estado: </td><td colspan='2' style=\"width: 74px; font-size: 19px;\" >".$dir_factura[0]['city']."/".State::getNameById($dir_factura[0]['id_state'])."</td></tr>"/*.
+                    /*"<tr><td width=\"50px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" > Ciudad/Estado: </td><td colspan='2' style=\"width: 74px; font-size: 19px;\" >".$dir_factura[0]['city']."/".State::getNameById($dir_factura[0]['id_state'])."</td></tr>"*//*.
                     "<tr><td width=\"50px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" > Teléfono: </td><td colspan='2' style=\"width: 74px; font-size: 19px;\" >".$invoice_address->phone."</td></tr>"*/;
 
                     $original_address = 1;
