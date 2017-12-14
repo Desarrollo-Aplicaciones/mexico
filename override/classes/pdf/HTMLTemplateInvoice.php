@@ -397,17 +397,21 @@ WHERE o.id_order = ' . (int) $this->order->id;
                             $list_products[$row2]['product_name'] = '<sup>FM</sup> ' . $list_products[$row2]['product_name'];
                             $formu_medical = true;
                         }
-                        
-                        if($row['fvalue'] == '4137'){
-                            $list_products[$row2]['ClaveProdServ'] = $row['value'];
-                        }else{
-                            $list_products[$row2]['ClaveProdServ'] = '01010101';
+
+                        if(!isset($list_products[$row2]['ClaveProdServ']) || $list_products[$row2]['ClaveProdServ'] == '01010101'){
+                            if($value['product_id'] == $row['producto'] && $row['fvalue'] == '4137'){
+                                $list_products[$row2]['ClaveProdServ'] = $row['value'];
+                            }else{
+                                $list_products[$row2]['ClaveProdServ'] = '01010101';
+                            }
                         }
 
-                        if($row['fvalue'] == '4136'){
-                            $list_products[$row2]['DescProdServ'] = $row['value'];
-                        }else{
-                            $list_products[$row2]['DescProdServ'] = 'No existe en el catálogo';
+                        if(!isset($list_products[$row2]['DescProdServ']) || $list_products[$row2]['DescProdServ'] == 'No existe en el catálogo'){
+                            if($value['product_id'] == $row['producto'] && $row['fvalue'] == '4136'){
+                                $list_products[$row2]['DescProdServ'] = $row['value'];
+                            }else{
+                                $list_products[$row2]['DescProdServ'] = 'No existe en el catálogo';
+                            }
                         }
 
                         if ( $value['product_id'] == $row['producto'] && $row['rate'] != '' && $row['rate'] != null ) {
