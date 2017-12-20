@@ -714,6 +714,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 				$total_productos = 0;
 				$hjys='';
 				$totalDescuentoConceptos = 0;
+				$totalImportes = 0;
 
 				foreach ($list_products as $key_prod => $value) {
 					if($list_products[$key_prod]['unit_price_tax_excl'] != 0){
@@ -733,19 +734,21 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['ValorUnitario'] = number_format( $list_products[$key_prod]['unit_price_tax_excl'], 2, '.', '');
 						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Importe'] = $base;
 						if ($order_tot->total_discounts != null || $order_tot->total_discounts != 0) {
-							$descuentoConcepto = $order_tot->total_discounts/$total_productos;
-							$totalDescuentoConceptos = $totalDescuentoConceptos+$descuentoConcepto;
+							$descuentoConcepto = number_format( $order_tot->total_discounts/$total_productos, 2, '.', '');
+							$totalDescuentoConceptos += $descuentoConcepto;
 							if ($totalDescuentoConceptos > $order_tot->total_discounts) {
-								$descuentoConcepto = number_format( $descuentoConcepto, 2, '.', '')-00.01;
+								$descuentoConcepto = number_format( $descuentoConcepto, 2, '.', '')-($totalDescuentoConceptos-$order_tot->total_discounts);
 							}
 							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Descuento'] = number_format( $descuentoConcepto, 2, '.', '');
 						}
 						if($list_products[$key_prod]['tax_rate'] != '0.000'){
+							$importe = number_format(($list_products[$key_prod]['total_price_tax_excl']*$list_products[$key_prod]['tax_rate'])/100, 2, '.', '');
 							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Base'] = $base;
 							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Impuesto'] = "002";
 							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['TipoFactor'] = "Tasa";
 							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['TasaOCuota'] = number_format($list_products[$key_prod]['tax_rate']/100, 6, '.', '');
-							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Importe'] = number_format(($list_products[$key_prod]['total_price_tax_excl']*$list_products[$key_prod]['tax_rate'])/100, 2, '.', '');
+							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Importe'] = $importe;
+							$totalImportes += $importe;
 						}
 						$order_tot->total_products += $base;
 						$cant_prods++;
@@ -770,6 +773,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['TipoFactor'] = "Tasa";
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['TasaOCuota'] = "0.160000";
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Importe'] = number_format(($val_no_iva_envio*16)/100, 2, '.', '');
+					$totalImportes += number_format(($val_no_iva_envio*16)/100, 2, '.', '');
 					$order_tot->total_products += Tools::ps_round( $val_no_iva_envio ,2);
 				}
 
@@ -791,9 +795,9 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 					}
 				}
 
-				foreach ($array_ivas as $key => $value) {
-					$order_tot->total_paid = $order_tot->total_products+$value;
-				}
+				//foreach ($array_ivas as $key => $value) {
+					$order_tot->total_paid = $order_tot->total_products+$totalImportes;
+				//}
 
 				$arr_xml_cargar['@attributes']['xmlns_cfdi'] = 'http://www.sat.gob.mx/cfd/3';
 				$arr_xml_cargar['@attributes']['xmlns_xsi'] = 'http://www.w3.org/2001/XMLSchema-instance';
@@ -901,7 +905,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['Impuesto'] = '002';
 						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['TipoFactor'] = 'Tasa';
 						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['TasaOCuota'] = number_format($key/100, 6, '.', '');
-						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['Importe'] = number_format($value, 2, '.', '');
+						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['Importe'] = $totalImportes;
 						$cant_taxs++;
 					}
 
