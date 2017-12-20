@@ -716,7 +716,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 				$descuentoConcepto = 0;
 
 				foreach ($list_products as $key_prod => $value) {
-					if($list_products[$key_prod]['unit_price_tax_excl'] != 0){}
+					if($list_products[$key_prod]['unit_price_tax_excl'] != 0){
 						$total_productos = $total_productos+1;
 					}
 				}
