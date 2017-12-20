@@ -711,22 +711,34 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 
 				$cant_prods = 0;
 				$order_tot->total_products = 0;
-
+				$total_productos = 0;
 				$hjys='';
+				$descuentoConcepto = 0;
+
+				foreach ($list_products as $key_prod => $value) {
+					if($list_products[$key_prod]['unit_price_tax_excl'] != 0){}
+						$total_productos = $total_productos+1;
+					}
+				}
 				foreach ($list_products as $key_prod => $value) {
 					if($list_products[$key_prod]['unit_price_tax_excl'] != 0){
 						$base = number_format( $list_products[$key_prod]['total_price_tax_excl'], 2, '.', '');
 						//$hjys .= "<br>".$list_products[$key_prod]['product_name'];
 						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['ClaveProdServ'] = $list_products[$key_prod]['ClaveProdServ'];
-						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['NoIdentificacion'] = $this->trim_all( $list_products[$key_prod]['product_supplier_reference'] );
+						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['NoIdentificacion'] = $this->trim_all( $list_products[$key_prod]['product_reference'] );
 						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Cantidad'] = number_format( $list_products[$key_prod]['product_quantity'], 6, '.', '');
 						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['ClaveUnidad'] = 'H87';
 						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Unidad'] = 'Pieza';
 						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Descripcion'] = $this->trim_all( trim( $this->stripAccents( $list_products[$key_prod]['product_name'] ) ) );
 						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['ValorUnitario'] = number_format( $list_products[$key_prod]['unit_price_tax_excl'], 2, '.', '');
-						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Importe'] = $base;						
+						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Importe'] = $base;
 						if ($order_tot->total_discounts != null || $order_tot->total_discounts != 0) {
-							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Descuento'] = number_format( $order_tot->total_discounts/count($list_products), 2, '.', '');
+							$descuentoConcepto = $order_tot->total_discounts/$total_productos;
+							$totalDescuentoConceptos = $descuentoConcepto+$descuentoConcepto;
+							if ($totalDescuentoConceptos > $order_tot->total_discounts) {
+								$descuentoConcepto = $descuentoConcepto-00.01;
+							}
+							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Descuento'] = number_format( $descuentoConcepto, 2, '.', '');
 						}
 						if($list_products[$key_prod]['tax_rate'] != '0.000'){
 							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Base'] = $base;
