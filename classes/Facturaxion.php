@@ -718,7 +718,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 
 				foreach ($list_products as $key_prod => $value) {
 					if($list_products[$key_prod]['unit_price_tax_excl'] != 0){
-						$total_productos = $total_productos+1;
+						$total_productos += 1;
 					}
 				}
 				foreach ($list_products as $key_prod => $value) {
@@ -736,8 +736,8 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 						if ($order_tot->total_discounts != null || $order_tot->total_discounts != 0) {
 							$descuentoConcepto = number_format( $order_tot->total_discounts/$total_productos, 2, '.', '');
 							$totalDescuentoConceptos += $descuentoConcepto;
-							if ($totalDescuentoConceptos > $order_tot->total_discounts) {
-								$descuentoConcepto = number_format( $descuentoConcepto, 2, '.', '')-($totalDescuentoConceptos-$order_tot->total_discounts);
+							if ( $cant_prods == ( $total_productos-1 ) ) {
+								$descuentoConcepto = abs( number_format( $descuentoConcepto, 2, '.', '' )-( $totalDescuentoConceptos-$order_tot->total_discounts ) );
 							}
 							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Descuento'] = number_format( $descuentoConcepto, 2, '.', '');
 						}
@@ -896,7 +896,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 
 				$arr_xml_cargar =  array_merge($arr_xml_cargar,$arr_xml_cargar_p); // UNIMOS ARRAY DE PRODUCTOS Y EL INICIAL DEL XML
 				$arr_xml_cargar['ar6to67be_Impuestos']['@attributes']['TotalImpuestosRetenidos'] = '0.00';
-				$arr_xml_cargar['ar6to67be_Impuestos']['@attributes']['TotalImpuestosTrasladados'] = number_format($val_total_de_iva, 2, '.', '');
+				$arr_xml_cargar['ar6to67be_Impuestos']['@attributes']['TotalImpuestosTrasladados'] = $totalImportes;
 
 				$cant_taxs = 0;
 
