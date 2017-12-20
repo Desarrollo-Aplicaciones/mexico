@@ -103,7 +103,7 @@ class FrontControllerCore extends Controller
 		 * Use the Context to access objects instead.
 		 * Example: $this->context->cart
 		 */
-		global $useSSL, $cookie, $smarty, $cart, $iso, $defaultCountry, $protocol_link, $protocol_content, $link, $css_files, $js_files, $currency;
+		global $useSSL, $cookie, $smarty, $cart, $iso, $defaultCountry, $protocol_link, $protocol_content, $link, $css_files, $js_files, $js_files_footer, $currency;
 
 		if (self::$initialized)
 			return;
@@ -118,7 +118,8 @@ class FrontControllerCore extends Controller
 		// For compatibility with globals, DEPRECATED as of version 1.5
 		$css_files = $this->css_files;
 		$js_files = $this->js_files;
-
+                $js_files_footer = $this->js_files_footer;
+                
 		// If we call a SSL controller without SSL or a non SSL controller with SSL, we redirect with the right protocol
 		if (Configuration::get('PS_SSL_ENABLED') && ($_SERVER['REQUEST_METHOD'] != 'POST') && $this->ssl != Tools::usingSecureMode())
 		{	
@@ -524,6 +525,7 @@ class FrontControllerCore extends Controller
 
 		$this->context->smarty->assign('css_files', $this->css_files);
 		$this->context->smarty->assign('js_files', array_unique($this->js_files));
+                $this->context->smarty->assign('js_files_footer', array_unique($this->js_files_footer));
 		$this->context->smarty->assign(array(
 			'errors' => $this->errors,
 			'display_header' => $this->display_header,
@@ -964,7 +966,7 @@ class FrontControllerCore extends Controller
 	 *
 	 * @see Controller::addJS()
 	 */
-	public function addJS($js_uri)
+	public function addJS($js_uri, $footer = false)
 	{
 		if (!is_array($js_uri))
 			$js_uri = array($js_uri);
@@ -980,7 +982,7 @@ class FrontControllerCore extends Controller
 			}
 		}
 
-		return parent::addJS($js_uri);
+		return parent::addJS($js_uri, $footer);
 	}
 
 	protected function recoverCart()

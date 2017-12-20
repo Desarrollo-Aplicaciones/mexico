@@ -767,8 +767,8 @@ class Blocktopmenu extends Module
 			$this->smarty->assign('this_path', $this->_path);
 		}
 
-		$this->context->controller->addJS($this->_path.'js/hoverIntent.js');
-		$this->context->controller->addJS($this->_path.'js/superfish-modified.js');
+		$this->context->controller->addJS($this->_path.'js/hoverIntent.js',true);
+		$this->context->controller->addJS($this->_path.'js/superfish-modified.js',true);
 		$this->context->controller->addCSS($this->_path.'css/superfish-modified.css');
 
 		$html = $this->display(__FILE__, 'blocktopmenu.tpl', $this->getCacheId());

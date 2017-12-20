@@ -35,18 +35,18 @@ class CsThemeScript extends Module
 		$this->context->controller->addJs($this->_path.'js/jquery.cookie-plugin.js');
 		$this->context->controller->addJs($this->_path.'js/jquery.carouFredSel-6.1.0.js');
 		$this->context->controller->addJs($this->_path.'js/jquery.touchSwipe.min.js');
-		$this->context->controller->addJs($this->_path.'js/easing.js');
+		$this->context->controller->addJs($this->_path.'js/easing.js',true);
 		$this->context->controller->addJs($this->_path.'js/jquery.ba-throttle-debounce.min.js');
 		$this->context->controller->addJs($this->_path.'js/jquery.mousewheel.min.js');
-		$this->context->controller->addJs($this->_path.'js/jquery.ui.totop.js');
-		$this->context->controller->addJs($this->_path.'js/getwidthbrowser.js');
-		$this->context->controller->addJs($this->_path.'js/codespot.js');
+		$this->context->controller->addJs($this->_path.'js/jquery.ui.totop.js',true);
+		$this->context->controller->addJs($this->_path.'js/getwidthbrowser.js',true);
+		$this->context->controller->addJs($this->_path.'js/codespot.js',true);
 		
 		
 		/* Load custom js files*/
 		if ($smarty->tpl_vars['page_name']->value != 'index' && $smarty->tpl_vars['page_name']->value != 'product')
 		{
-			$this->context->controller->addJs($this->_path.'js/list.gird.js');
+			$this->context->controller->addJs($this->_path.'js/list.gird.js',true);
 		}
 		if ($smarty->tpl_vars['page_name']->value == 'products-comparison')
 		{
