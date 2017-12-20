@@ -713,7 +713,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 				$order_tot->total_products = 0;
 				$total_productos = 0;
 				$hjys='';
-				$descuentoConcepto = 0;
+				$totalDescuentoConceptos = 0;
 
 				foreach ($list_products as $key_prod => $value) {
 					if($list_products[$key_prod]['unit_price_tax_excl'] != 0){
@@ -734,9 +734,9 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Importe'] = $base;
 						if ($order_tot->total_discounts != null || $order_tot->total_discounts != 0) {
 							$descuentoConcepto = $order_tot->total_discounts/$total_productos;
-							$totalDescuentoConceptos = $descuentoConcepto+$descuentoConcepto;
+							$totalDescuentoConceptos = $totalDescuentoConceptos+$descuentoConcepto;
 							if ($totalDescuentoConceptos > $order_tot->total_discounts) {
-								$descuentoConcepto = $descuentoConcepto-00.01;
+								$descuentoConcepto = number_format( $descuentoConcepto, 2, '.', '')-00.01;
 							}
 							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Descuento'] = number_format( $descuentoConcepto, 2, '.', '');
 						}
