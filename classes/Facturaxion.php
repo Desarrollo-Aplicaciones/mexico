@@ -721,6 +721,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 						$total_productos += 1;
 					}
 				}
+
 				foreach ($list_products as $key_prod => $value) {
 					if($list_products[$key_prod]['unit_price_tax_excl'] != 0){
 						$base = number_format( $list_products[$key_prod]['total_price_tax_excl'], 2, '.', '');
@@ -733,14 +734,6 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Descripcion'] = $this->trim_all( trim( $this->stripAccents( $list_products[$key_prod]['product_name'] ) ) );
 						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['ValorUnitario'] = number_format( $list_products[$key_prod]['unit_price_tax_excl'], 2, '.', '');
 						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Importe'] = $base;
-						if ($order_tot->total_discounts != null || $order_tot->total_discounts != 0) {
-							$descuentoConcepto = number_format( $order_tot->total_discounts/$total_productos, 2, '.', '');
-							$totalDescuentoConceptos += $descuentoConcepto;
-							if ( $cant_prods == ( $total_productos-1 ) ) {
-								$descuentoConcepto = abs( number_format( $descuentoConcepto, 2, '.', '' )-( $totalDescuentoConceptos-$order_tot->total_discounts ) );
-							}
-							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Descuento'] = number_format( $descuentoConcepto, 2, '.', '');
-						}
 						if($list_products[$key_prod]['tax_rate'] != '0.000'){
 							$importe = number_format(($list_products[$key_prod]['total_price_tax_excl']*$list_products[$key_prod]['tax_rate'])/100, 2, '.', '');
 							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Base'] = $base;
@@ -753,7 +746,6 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 						$order_tot->total_products += $base;
 						$cant_prods++;
 					}
-					
 				}
 				
 				/******************  ENVIO DE PRODUCTOS... DOMICILIO ******************/
@@ -828,6 +820,22 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 				$arr_xml_cargar['@attributes']['Moneda'] = 'MXN'; //codigo postal
 				$arr_xml_cargar['@attributes']['LugarExpedicion'] = '11870'; //codigo postal
 
+				//se insertan los descuentos según el porcentaje del valor de cada producto por aparte
+				$cant_prods = 0;
+				foreach ( $list_products as $key_prod => $value ) {
+					if( $list_products[$key_prod]['unit_price_tax_excl'] != 0 ){
+						$base = number_format( $list_products[$key_prod]['total_price_tax_excl'], 2, '.', '' );
+						if ( $order_tot->total_discounts != null || $order_tot->total_discounts != 0 ) {
+							$descuentoConcepto = number_format( $order_tot->total_discounts*( $base/$arr_xml_cargar['@attributes']['SubTotal'] ), 2, '.', '' );
+							$totalDescuentoConceptos += $descuentoConcepto;
+							if ( $cant_prods == ( $total_productos-1 ) ) {
+								$descuentoConcepto = number_format( $descuentoConcepto, 2, '.', '' )-( $totalDescuentoConceptos-$order_tot->total_discounts );
+							}
+							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Descuento'] = number_format( $descuentoConcepto, 2, '.', '' );
+						}
+						$cant_prods++;
+					}
+				}
 
 					$arr_xml_cargar['ar6to67be_Emisor']['@attributes']['Rfc'] = $this->RFCEmisor;
 					$arr_xml_cargar['ar6to67be_Emisor']['@attributes']['Nombre'] = $this->RFCEmisor_nombre;
