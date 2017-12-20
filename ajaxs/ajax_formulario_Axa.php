@@ -185,7 +185,7 @@ try {
 
     $mail->IsSendmail(); 
 
-    $mail->AddReplyTo("contacto@farmalisto.com.mx");
+    $mail->AddReplyTo("socialmedia@farmalisto.com.co");
     $mail->AddCC("jessica.radilla@farmalisto.com.mx");
 
     $mail->From       = "socialmedia@farmalisto.com.co";
