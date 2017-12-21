@@ -43,14 +43,13 @@
 
 
 <!-- Footer -->
-
+    {$HOOK_HOMEBOTCEN}
     <div class="mode_footer">
         <div class="ctn-gray-footer">
     		<div class="container_24">
     			{* <div id="footer" class="grid_24 clearfix  omega alpha"> *}
                     {include file="ctn-gray-footer.tpl"}
     				{if isset($HOOK_CS_FOOTER_TOP) && $HOOK_CS_FOOTER_TOP}{$HOOK_CS_FOOTER_TOP}{/if}
-                    {$HOOK_HOMEBOTCEN}
     				{$HOOK_FOOTER}
                     {* Este es el cms que carga el texto largo del footer *}
                     <div id="ctn-footer-display" style="display: none;">
