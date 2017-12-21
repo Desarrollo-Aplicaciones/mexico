@@ -310,7 +310,17 @@ document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/tru
           TrustLogo("https://www.farmalisto.com.mx/themes/gomarket/img/footer/comodo_secure_100x85.png", "SC5", "none");
         </script>-->
         <a href="https://ssl.comodo.com/ev-ssl-certificates.php" id="comodoTL">EV SSL Certificate</a>
-        
+    {if isset($js_files_footer)}
+ 	{foreach from=$js_files_footer item=js_uri}	
+ 		{if isset($settings->column) && $settings->column == '1_column'}
+ 			{if !strpos($js_uri,"blocklayered.js")}
+ 				<script type="text/javascript" src='{$js_uri|replace:"http:":"https:"}'></script>
+ 			{/if}
+ 		{else}
+ 			<script type="text/javascript" src='{$js_uri|replace:"http:":"https:"}'></script>
+ 		{/if}
+ 	{/foreach}
+ {/if}    
     </body>
 
 
