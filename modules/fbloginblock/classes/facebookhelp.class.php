@@ -1,19 +1,19 @@
 <?php
 /**
- * StorePrestaModules SPM LLC.
+ * 2011 - 2017 StorePrestaModules SPM LLC.
+ *
+ * MODULE fbloginblock
+ *
+ * @author    SPM <kykyryzopresto@gmail.com>
+ * @copyright Copyright (c) permanent, SPM
+ * @license   Addons PrestaShop license limitation
+ * @version   1.7.7
+ * @link      http://addons.prestashop.com/en/2_community-developer?contributor=61669
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the EULA
- * that is bundled with this package in the file LICENSE.txt.
- *
- /*
- * 
- * @author    StorePrestaModules SPM
- * @category social_networks
- * @package fbloginblock
- * @copyright Copyright StorePrestaModules SPM
- * @license   StorePrestaModules SPM
+ * Don't use this module on several shops. The license provided by PrestaShop Addons
+ * for all its modules is valid only once for a single shop.
  */
 
 class facebookhelp extends Module{
@@ -21,15 +21,23 @@ class facebookhelp extends Module{
 	private $_width = 400;
 	private $_height = 400;
 	private $_name = 'fbloginblock';
+	private $_http_host;
+    private $_social_type = 1;
 	
 	public function __construct(){
 	
 		$name = "fbloginblock";
 	
-		if (version_compare(_PS_VERSION_, '1.5', '<')){
-			require_once(_PS_MODULE_DIR_.$name.'/backward_compatibility/backward.php');
+		if(version_compare(_PS_VERSION_, '1.6', '>')){
+			$this->_http_host = Tools::getShopDomainSsl(true, true).__PS_BASE_URI__;
+		} else {
+			$this->_http_host = _PS_BASE_URL_SSL_.__PS_BASE_URI__;
 		}
-	
+		
+
+        if (version_compare(_PS_VERSION_, '1.7', '<')){
+            require_once(_PS_MODULE_DIR_.$name.'/backward_compatibility/backward.php');
+        }
 	
 		$this->initContext();
 	}
@@ -59,7 +67,7 @@ class facebookhelp extends Module{
 		WHERE `type` = '.$type_large.' AND `id_shop` = '.(int)($id_shop).'';
 		$data_facebook = Db::getInstance()->GetRow($sql);
 		$img_blockfacebook = (isset($data_facebook['img'])?$data_facebook['img']:'');
-		$img_facebook = dirname(__FILE__).DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."upload".DIRECTORY_SEPARATOR.$this->_name.DIRECTORY_SEPARATOR.$img_blockfacebook;
+		$img_facebook = _PS_ROOT_DIR_.DIRECTORY_SEPARATOR."upload".DIRECTORY_SEPARATOR.$this->_name.DIRECTORY_SEPARATOR.$img_blockfacebook;
 			
 			
 		$uploaded_img = 0;
@@ -80,7 +88,7 @@ class facebookhelp extends Module{
 		WHERE `type` = '.$type_medium.' AND `id_shop` = '.(int)($id_shop).'';
 		$data_facebooksmall = Db::getInstance()->GetRow($sql);
 		$img_blockfacebooksmall = (isset($data_facebooksmall['img'])?$data_facebooksmall['img']:'');
-		$img_facebooksmall = dirname(__FILE__).DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."upload".DIRECTORY_SEPARATOR.$this->_name.DIRECTORY_SEPARATOR.$img_blockfacebooksmall;
+		$img_facebooksmall = _PS_ROOT_DIR_.DIRECTORY_SEPARATOR."upload".DIRECTORY_SEPARATOR.$this->_name.DIRECTORY_SEPARATOR.$img_blockfacebooksmall;
 			
 			
 		$uploaded_imgsmall = 0;
@@ -103,7 +111,7 @@ class facebookhelp extends Module{
 		WHERE `type` = '.$type_small.' AND `id_shop` = '.(int)($id_shop).'';
 		$data_facebooklarge_small = Db::getInstance()->GetRow($sql);
 		$img_blockfacebooklarge_small = (isset($data_facebooklarge_small['img'])?$data_facebooklarge_small['img']:'');
-		$img_facebooklarge_small = dirname(__FILE__).DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."upload".DIRECTORY_SEPARATOR.$this->_name.DIRECTORY_SEPARATOR.$img_blockfacebooklarge_small;
+		$img_facebooklarge_small = _PS_ROOT_DIR_.DIRECTORY_SEPARATOR."upload".DIRECTORY_SEPARATOR.$this->_name.DIRECTORY_SEPARATOR.$img_blockfacebooklarge_small;
 			
 			
 		$uploaded_imglarge_small = 0;
@@ -125,7 +133,7 @@ class facebookhelp extends Module{
 		WHERE `type` = '.$type_very_small.' AND `id_shop` = '.(int)($id_shop).'';
 		$data_facebookmicro_small = Db::getInstance()->GetRow($sql);
 		$img_blockfacebookmicro_small = (isset($data_facebookmicro_small['img'])?$data_facebookmicro_small['img']:'');
-		$img_facebookmicro_small = dirname(__FILE__).DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."upload".DIRECTORY_SEPARATOR.$this->_name.DIRECTORY_SEPARATOR.$img_blockfacebookmicro_small;
+		$img_facebookmicro_small = _PS_ROOT_DIR_.DIRECTORY_SEPARATOR."upload".DIRECTORY_SEPARATOR.$this->_name.DIRECTORY_SEPARATOR.$img_blockfacebookmicro_small;
 		
 		
 		$uploaded_imgmicro_small = 0;
@@ -467,7 +475,214 @@ class facebookhelp extends Module{
 	         $amazonmicro_small = $data_amazon['micro_small'];
 	         $img_blockamazonmicro_small = $data_amazon['blockmicro_small'];
 	         	
+	         
+	         
+	         // dropbox connect image
+	          
+	         $data_dropbox = $this->_getConnectImages(
+	         		array(
+	         				'http_host'=>$_http_host,
+	         				'id_shop'=>$id_shop,
+	         				'type_large'=>53,
+	         				'type_medium'=>54,
+	         				'type_small'=>55,
+	         				'type_very_small'=>56,
+	         				'prefix'=>'dropbox',
+	         		)
+	         );
+	         $dropbox = $data_dropbox['large'];
+	         $img_blockdropbox = $data_dropbox['blocklarge'];
+	         $dropboxsmall = $data_dropbox['small'];
+	         $img_blockdropboxsmall = $data_dropbox['blocksmall'];
+	         $dropboxlarge_small = $data_dropbox['large_small'];
+	         $img_blockdropboxlarge_small = $data_dropbox['blocklarge_small'];
+	         $dropboxmicro_small = $data_dropbox['micro_small'];
+	         $img_blockdropboxmicro_small = $data_dropbox['blockmicro_small'];
 			
+	         
+	         // scoop connect image
+	          
+	         $data_scoop = $this->_getConnectImages(
+	         		array(
+	         				'http_host'=>$_http_host,
+	         				'id_shop'=>$id_shop,
+	         				'type_large'=>57,
+	         				'type_medium'=>58,
+	         				'type_small'=>59,
+	         				'type_very_small'=>60,
+	         				'prefix'=>'scoop',
+	         		)
+	         );
+	         $scoop = $data_scoop['large'];
+	         $img_blockscoop = $data_scoop['blocklarge'];
+	         $scoopsmall = $data_scoop['small'];
+	         $img_blockscoopsmall = $data_scoop['blocksmall'];
+	         $scooplarge_small = $data_scoop['large_small'];
+	         $img_blockscooplarge_small = $data_scoop['blocklarge_small'];
+	         $scoopmicro_small = $data_scoop['micro_small'];
+	         $img_blockscoopmicro_small = $data_scoop['blockmicro_small'];
+	         
+	         
+	         // wordpress connect image
+	          
+	         $data_wordpress = $this->_getConnectImages(
+	         		array(
+	         				'http_host'=>$_http_host,
+	         				'id_shop'=>$id_shop,
+	         				'type_large'=>61,
+	         				'type_medium'=>62,
+	         				'type_small'=>63,
+	         				'type_very_small'=>64,
+	         				'prefix'=>'wordpress',
+	         		)
+	         );
+	         $wordpress = $data_wordpress['large'];
+	         $img_blockwordpress = $data_wordpress['blocklarge'];
+	         $wordpresssmall = $data_wordpress['small'];
+	         $img_blockwordpresssmall = $data_wordpress['blocksmall'];
+	         $wordpresslarge_small = $data_wordpress['large_small'];
+	         $img_blockwordpresslarge_small = $data_wordpress['blocklarge_small'];
+	         $wordpressmicro_small = $data_wordpress['micro_small'];
+	         $img_blockwordpressmicro_small = $data_wordpress['blockmicro_small'];
+	         
+	         // tumblr connect image
+	          
+	         $data_tumblr = $this->_getConnectImages(
+	         		array(
+	         				'http_host'=>$_http_host,
+	         				'id_shop'=>$id_shop,
+	         				'type_large'=>65,
+	         				'type_medium'=>66,
+	         				'type_small'=>67,
+	         				'type_very_small'=>68,
+	         				'prefix'=>'tumblr',
+	         		)
+	         );
+	         $tumblr = $data_tumblr['large'];
+	         $img_blocktumblr = $data_tumblr['blocklarge'];
+	         $tumblrsmall = $data_tumblr['small'];
+	         $img_blocktumblrsmall = $data_tumblr['blocksmall'];
+	         $tumblrlarge_small = $data_tumblr['large_small'];
+	         $img_blocktumblrlarge_small = $data_tumblr['blocklarge_small'];
+	         $tumblrmicro_small = $data_tumblr['micro_small'];
+	         $img_blocktumblrmicro_small = $data_tumblr['blockmicro_small'];
+	         
+	         
+	         // pinterest connect image
+	          
+	         $data_pinterest = $this->_getConnectImages(
+	         		array(
+	         				'http_host'=>$_http_host,
+	         				'id_shop'=>$id_shop,
+	         				'type_large'=>69,
+	         				'type_medium'=>70,
+	         				'type_small'=>71,
+	         				'type_very_small'=>72,
+	         				'prefix'=>'pinterest',
+	         		)
+	         );
+	         $pinterest = $data_pinterest['large'];
+	         $img_blockpinterest = $data_pinterest['blocklarge'];
+	         $pinterestsmall = $data_pinterest['small'];
+	         $img_blockpinterestsmall = $data_pinterest['blocksmall'];
+	         $pinterestlarge_small = $data_pinterest['large_small'];
+	         $img_blockpinterestlarge_small = $data_pinterest['blocklarge_small'];
+	         $pinterestmicro_small = $data_pinterest['micro_small'];
+	         $img_blockpinterestmicro_small = $data_pinterest['blockmicro_small'];
+	         
+	         
+	         // oklass connect image
+	          
+	         $data_oklass = $this->_getConnectImages(
+	         		array(
+	         				'http_host'=>$_http_host,
+	         				'id_shop'=>$id_shop,
+	         				'type_large'=>73,
+	         				'type_medium'=>74,
+	         				'type_small'=>75,
+	         				'type_very_small'=>76,
+	         				'prefix'=>'oklass',
+	         		)
+	         );
+	         $oklass = $data_oklass['large'];
+	         $img_blockoklass = $data_oklass['blocklarge'];
+	         $oklasssmall = $data_oklass['small'];
+	         $img_blockoklasssmall = $data_oklass['blocksmall'];
+	         $oklasslarge_small = $data_oklass['large_small'];
+	         $img_blockoklasslarge_small = $data_oklass['blocklarge_small'];
+	         $oklassmicro_small = $data_oklass['micro_small'];
+	         $img_blockoklassmicro_small = $data_oklass['blockmicro_small'];
+	         
+	         
+	         // mailru connect image
+	          
+	         $data_mailru = $this->_getConnectImages(
+	         		array(
+	         				'http_host'=>$_http_host,
+	         				'id_shop'=>$id_shop,
+	         				'type_large'=>77,
+	         				'type_medium'=>78,
+	         				'type_small'=>79,
+	         				'type_very_small'=>80,
+	         				'prefix'=>'mailru',
+	         		)
+	         );
+	         $mailru = $data_mailru['large'];
+	         $img_blockmailru = $data_mailru['blocklarge'];
+	         $mailrusmall = $data_mailru['small'];
+	         $img_blockmailrusmall = $data_mailru['blocksmall'];
+	         $mailrularge_small = $data_mailru['large_small'];
+	         $img_blockmailrularge_small = $data_mailru['blocklarge_small'];
+	         $mailrumicro_small = $data_mailru['micro_small'];
+	         $img_blockmailrumicro_small = $data_mailru['blockmicro_small'];
+	         
+	         
+	         
+	         // yandex connect image
+	          
+	         $data_yandex = $this->_getConnectImages(
+	         		array(
+	         				'http_host'=>$_http_host,
+	         				'id_shop'=>$id_shop,
+	         				'type_large'=>81,
+	         				'type_medium'=>82,
+	         				'type_small'=>83,
+	         				'type_very_small'=>84,
+	         				'prefix'=>'yandex',
+	         		)
+	         );
+	         $yandex = $data_yandex['large'];
+	         $img_blockyandex = $data_yandex['blocklarge'];
+	         $yandexsmall = $data_yandex['small'];
+	         $img_blockyandexsmall = $data_yandex['blocksmall'];
+	         $yandexlarge_small = $data_yandex['large_small'];
+	         $img_blockyandexlarge_small = $data_yandex['blocklarge_small'];
+	         $yandexmicro_small = $data_yandex['micro_small'];
+	         $img_blockyandexmicro_small = $data_yandex['blockmicro_small'];
+
+
+        // vkontakte connect image
+
+        $data_vkontakte = $this->_getConnectImages(
+            array(
+                'http_host'=>$_http_host,
+                'id_shop'=>$id_shop,
+                'type_large'=>45,
+                'type_medium'=>46,
+                'type_small'=>47,
+                'type_very_small'=>48,
+                'prefix'=>'vkontakte',
+            )
+        );
+        $vkontakte = $data_vkontakte['large'];
+        $img_blockvkontakte = $data_vkontakte['blocklarge'];
+        $vkontaktesmall = $data_vkontakte['small'];
+        $img_blockvkontaktesmall = $data_vkontakte['blocksmall'];
+        $vkontaktelarge_small = $data_vkontakte['large_small'];
+        $img_blockvkontaktelarge_small = $data_vkontakte['blocklarge_small'];
+        $vkontaktemicro_small = $data_vkontakte['micro_small'];
+        $img_blockvkontaktemicro_small = $data_vkontakte['blockmicro_small'];
+	         	
 				
 			return array('facebook'=>$facebook,'facebook_block'=> $img_blockfacebook, 
 						 'facebooksmall'=>$facebooksmall, 'facebook_blocksmall' => $img_blockfacebooksmall,
@@ -528,10 +743,56 @@ class facebookhelp extends Module{
 						 'disquslarge_small'=>$disquslarge_small, 'disqus_blocklarge_small' => $img_blockdisquslarge_small,
 						 'disqusmicro_small'=>$disqusmicro_small, 'disqus_blockmicro_small' => $img_blockdisqusmicro_small,
 					
-					'amazon' => $amazon, 'amazon_block' => $img_blockamazon,
-					'amazonsmall' => $amazonsmall, 'amazon_blocksmall' => $img_blockamazonsmall,
-					'amazonlarge_small'=>$amazonlarge_small, 'amazon_blocklarge_small' => $img_blockamazonlarge_small,
-					'amazonmicro_small'=>$amazonmicro_small, 'amazon_blockmicro_small' => $img_blockamazonmicro_small,
+						 'amazon' => $amazon, 'amazon_block' => $img_blockamazon,
+						 'amazonsmall' => $amazonsmall, 'amazon_blocksmall' => $img_blockamazonsmall,
+						 'amazonlarge_small'=>$amazonlarge_small, 'amazon_blocklarge_small' => $img_blockamazonlarge_small,
+						 'amazonmicro_small'=>$amazonmicro_small, 'amazon_blockmicro_small' => $img_blockamazonmicro_small,
+					
+					
+						 'dropbox' => $dropbox, 'dropbox_block' => $img_blockdropbox,
+						 'dropboxsmall' => $dropboxsmall, 'dropbox_blocksmall' => $img_blockdropboxsmall,
+						 'dropboxlarge_small'=>$dropboxlarge_small, 'dropbox_blocklarge_small' => $img_blockdropboxlarge_small,
+						 'dropboxmicro_small'=>$dropboxmicro_small, 'dropbox_blockmicro_small' => $img_blockdropboxmicro_small,
+					
+						 'scoop' => $scoop, 'scoop_block' => $img_blockscoop,
+						 'scoopsmall' => $scoopsmall, 'scoop_blocksmall' => $img_blockscoopsmall,
+						 'scooplarge_small'=>$scooplarge_small, 'scoop_blocklarge_small' => $img_blockscooplarge_small,
+						 'scoopmicro_small'=>$scoopmicro_small, 'scoop_blockmicro_small' => $img_blockscoopmicro_small,
+					
+						 'wordpress' => $wordpress, 'wordpress_block' => $img_blockwordpress,
+						 'wordpresssmall' => $wordpresssmall, 'wordpress_blocksmall' => $img_blockwordpresssmall,
+						 'wordpresslarge_small'=>$wordpresslarge_small, 'wordpress_blocklarge_small' => $img_blockwordpresslarge_small,
+						 'wordpressmicro_small'=>$wordpressmicro_small, 'wordpress_blockmicro_small' => $img_blockwordpressmicro_small,
+					
+						 'tumblr' => $tumblr, 'tumblr_block' => $img_blocktumblr,
+						 'tumblrsmall' => $tumblrsmall, 'tumblr_blocksmall' => $img_blocktumblrsmall,
+						 'tumblrlarge_small'=>$tumblrlarge_small, 'tumblr_blocklarge_small' => $img_blocktumblrlarge_small,
+						 'tumblrmicro_small'=>$tumblrmicro_small, 'tumblr_blockmicro_small' => $img_blocktumblrmicro_small,
+					
+						 'pinterest' => $pinterest, 'pinterest_block' => $img_blockpinterest,
+						 'pinterestsmall' => $pinterestsmall, 'pinterest_blocksmall' => $img_blockpinterestsmall,
+						 'pinterestlarge_small'=>$pinterestlarge_small, 'pinterest_blocklarge_small' => $img_blockpinterestlarge_small,
+						 'pinterestmicro_small'=>$pinterestmicro_small, 'pinterest_blockmicro_small' => $img_blockpinterestmicro_small,
+						
+						 'oklass' => $oklass, 'oklass_block' => $img_blockoklass,
+						 'oklasssmall' => $oklasssmall, 'oklass_blocksmall' => $img_blockoklasssmall,
+						 'oklasslarge_small'=>$oklasslarge_small, 'oklass_blocklarge_small' => $img_blockoklasslarge_small,
+						 'oklassmicro_small'=>$oklassmicro_small, 'oklass_blockmicro_small' => $img_blockoklassmicro_small,
+					
+						 'mailru' => $mailru, 'mailru_block' => $img_blockmailru,
+						 'mailrusmall' => $mailrusmall, 'mailru_blocksmall' => $img_blockmailrusmall,
+						 'mailrularge_small'=>$mailrularge_small, 'mailru_blocklarge_small' => $img_blockmailrularge_small,
+						 'mailrumicro_small'=>$mailrumicro_small, 'mailru_blockmicro_small' => $img_blockmailrumicro_small,
+					
+						 'yandex' => $yandex, 'yandex_block' => $img_blockyandex,
+						 'yandexsmall' => $yandexsmall, 'yandex_blocksmall' => $img_blockyandexsmall,
+						 'yandexlarge_small'=>$yandexlarge_small, 'yandex_blocklarge_small' => $img_blockyandexlarge_small,
+						 'yandexmicro_small'=>$yandexmicro_small, 'yandex_blockmicro_small' => $img_blockyandexmicro_small,
+
+                'vkontakte' => $vkontakte, 'vkontakte_block' => $img_blockvkontakte,
+                'vkontaktesmall' => $vkontaktesmall, 'vkontakte_blocksmall' => $img_blockvkontaktesmall,
+                'vkontaktelarge_small'=>$vkontaktelarge_small, 'vkontakte_blocklarge_small' => $img_blockvkontaktelarge_small,
+                'vkontaktemicro_small'=>$vkontaktemicro_small, 'vkontakte_blockmicro_small' => $img_blockvkontaktemicro_small,
 					
 						 );
 			}
@@ -723,12 +984,130 @@ class facebookhelp extends Module{
 							$type_page = 52;
 							$img_old_del = $data_img ['amazon_blockmicro_small'];
 						
-						}
+						} elseif ($custom_type_img == "dropbox") {
+							$type_page = 53;
+							$img_old_del = $data_img ['dropbox_block'];
+						} elseif ($custom_type_img == "dropboxsmall") {
+							$type_page = 54;
+							$img_old_del = $data_img ['dropbox_blocksmall'];
+						} elseif ($custom_type_img == "dropboxlarge_small") {
+							$type_page = 55;
+							$img_old_del = $data_img ['dropbox_blocklarge_small'];
+						} elseif ($custom_type_img == "dropboxmicro_small") {
+							$type_page = 56;
+							$img_old_del = $data_img ['dropbox_blockmicro_small'];
+						
+						} elseif ($custom_type_img == "scoop") {
+							$type_page = 57;
+							$img_old_del = $data_img ['scoop_block'];
+						} elseif ($custom_type_img == "scoopsmall") {
+							$type_page = 58;
+							$img_old_del = $data_img ['scoop_blocksmall'];
+						} elseif ($custom_type_img == "scooplarge_small") {
+							$type_page = 59;
+							$img_old_del = $data_img ['scoop_blocklarge_small'];
+						} elseif ($custom_type_img == "scoopmicro_small") {
+							$type_page = 60;
+							$img_old_del = $data_img ['scoop_blockmicro_small'];
+						
+						} elseif ($custom_type_img == "wordpress") {
+							$type_page = 61;
+							$img_old_del = $data_img ['wordpress_block'];
+						} elseif ($custom_type_img == "wordpresssmall") {
+							$type_page = 62;
+							$img_old_del = $data_img ['wordpress_blocksmall'];
+						} elseif ($custom_type_img == "wordpresslarge_small") {
+							$type_page = 63;
+							$img_old_del = $data_img ['wordpress_blocklarge_small'];
+						} elseif ($custom_type_img == "wordpressmicro_small") {
+							$type_page = 64;
+							$img_old_del = $data_img ['wordpress_blockmicro_small'];
+						
+						} elseif ($custom_type_img == "tumblr") {
+							$type_page = 65;
+							$img_old_del = $data_img ['tumblr_block'];
+						} elseif ($custom_type_img == "tumblrsmall") {
+							$type_page = 66;
+							$img_old_del = $data_img ['tumblr_blocksmall'];
+						} elseif ($custom_type_img == "tumblrlarge_small") {
+							$type_page = 67;
+							$img_old_del = $data_img ['tumblr_blocklarge_small'];
+						} elseif ($custom_type_img == "tumblrmicro_small") {
+							$type_page = 68;
+							$img_old_del = $data_img ['tumblr_blockmicro_small'];
+						
+						} elseif ($custom_type_img == "pinterest") {
+							$type_page = 69;
+							$img_old_del = $data_img ['pinterest_block'];
+						} elseif ($custom_type_img == "pinterestsmall") {
+							$type_page = 70;
+							$img_old_del = $data_img ['pinterest_blocksmall'];
+						} elseif ($custom_type_img == "pinterestlarge_small") {
+							$type_page = 71;
+							$img_old_del = $data_img ['pinterest_blocklarge_small'];
+						} elseif ($custom_type_img == "pinterestmicro_small") {
+							$type_page = 72;
+							$img_old_del = $data_img ['pinterest_blockmicro_small'];
+						
+						} elseif ($custom_type_img == "oklass") {
+							$type_page = 73;
+							$img_old_del = $data_img ['oklass_block'];
+						} elseif ($custom_type_img == "oklasssmall") {
+							$type_page = 74;
+							$img_old_del = $data_img ['oklass_blocksmall'];
+						} elseif ($custom_type_img == "oklasslarge_small") {
+							$type_page = 75;
+							$img_old_del = $data_img ['oklass_blocklarge_small'];
+						} elseif ($custom_type_img == "oklassmicro_small") {
+							$type_page = 76;
+							$img_old_del = $data_img ['oklass_blockmicro_small'];
+						
+						} elseif ($custom_type_img == "mailru") {
+							$type_page = 77;
+							$img_old_del = $data_img ['mailru_block'];
+						} elseif ($custom_type_img == "mailrusmall") {
+							$type_page = 78;
+							$img_old_del = $data_img ['mailru_blocksmall'];
+						} elseif ($custom_type_img == "mailrularge_small") {
+							$type_page = 79;
+							$img_old_del = $data_img ['mailru_blocklarge_small'];
+						} elseif ($custom_type_img == "mailrumicro_small") {
+							$type_page = 80;
+							$img_old_del = $data_img ['mailru_blockmicro_small'];
+						
+						} elseif ($custom_type_img == "yandex") {
+							$type_page = 81;
+							$img_old_del = $data_img ['yandex_block'];
+						} elseif ($custom_type_img == "yandexsmall") {
+							$type_page = 82;
+							$img_old_del = $data_img ['yandex_blocksmall'];
+						} elseif ($custom_type_img == "yandexlarge_small") {
+							$type_page = 83;
+							$img_old_del = $data_img ['yandex_blocklarge_small'];
+						} elseif ($custom_type_img == "yandexmicro_small") {
+							$type_page = 84;
+							$img_old_del = $data_img ['yandex_blockmicro_small'];
+						
+						}elseif ($custom_type_img == "vkontakte") {
+                            $type_page = 45;
+                            $img_old_del = $data_img ['vkontakte_block'];
+                        } elseif ($custom_type_img == "vkontaktesmall") {
+                            $type_page = 46;
+                            $img_old_del = $data_img ['vkontakte_blocksmall'];
+                        } elseif ($custom_type_img == "vkontaktelarge_small") {
+                            $type_page = 47;
+                            $img_old_del = $data_img ['vkontakte_blocklarge_small'];
+                        } elseif ($custom_type_img == "vkontaktemicro_small") {
+                            $type_page = 48;
+                            $img_old_del = $data_img ['vkontakte_blockmicro_small'];
+
+                        }
+    					
     					
     					
 				  		if(Tools::strlen($img_old_del)>0){
 				  			// delete old img
-				  			unlink(dirname(__FILE__).DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."upload".DIRECTORY_SEPARATOR.$this->_name.DIRECTORY_SEPARATOR.$img_old_del);
+				  			unlink(_PS_ROOT_DIR_.DIRECTORY_SEPARATOR."upload".DIRECTORY_SEPARATOR.$this->_name.DIRECTORY_SEPARATOR.$img_old_del);
 				  		} 
 					
 				  			
@@ -737,7 +1116,7 @@ class facebookhelp extends Module{
 					 	$type_one = Tools::substr($type_one,6,Tools::strlen($type_one)-6);
 					 	$filename = $uniq_name_image.'.'.$type_one; 
 					 	
-						move_uploaded_file($files['tmp_name'], dirname(__FILE__).DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."upload".DIRECTORY_SEPARATOR.$this->_name.DIRECTORY_SEPARATOR.$filename);
+						move_uploaded_file($files['tmp_name'], _PS_ROOT_DIR_.DIRECTORY_SEPARATOR."upload".DIRECTORY_SEPARATOR.$this->_name.DIRECTORY_SEPARATOR.$filename);
 						
 						
 						$img_return = $uniq_name_image.'.jpg';
@@ -816,11 +1195,376 @@ class facebookhelp extends Module{
 				Db::getInstance()->Execute($sql);
 			
 		
-		@unlink(dirname(__FILE__).DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."upload".DIRECTORY_SEPARATOR.$this->_name.DIRECTORY_SEPARATOR.$img_delete);
+		@unlink(_PS_ROOT_DIR_.DIRECTORY_SEPARATOR."upload".DIRECTORY_SEPARATOR.$this->_name.DIRECTORY_SEPARATOR.$img_delete);
 				  		
 	}
 	
 	
 	
+	public function facebookLogin($_data){
+		
+		
+		$http_referer = isset($_data['http_referer_custom'])?$_data['http_referer_custom']:'';
+			
+		
+	    if (version_compare(_PS_VERSION_, '1.5', '>')){
+			$cookie = new Cookie('ref');
+			$cookie->http_referer_custom = $http_referer;
+		}
+		
+		
+		$name_module = $this->_name;
+		//$cookie = Context::getContext()->cookie;
+		
+		
+		//$me = array();
+		
+		
+		$appid = Configuration::get($name_module.'appid');
+        $appid = trim($appid);
+		$secret = Configuration::get($name_module.'secret');
+		$secret = trim($secret);
+
+
+        if(Tools::strlen($appid)==0 || Tools::strlen($secret)==0){
+            include_once(_PS_MODULE_DIR_.$this->_name.'/'.$this->_name.'.php');
+			$obj = new $this->_name();
+			$data_tr = $obj->translateCustom();
+			echo $data_tr['facebook'];exit;
+		}
+
+
+
+
+
+
+
+
+
+        ### fix for oauth 18.10.2017 ###
+        include_once(_PS_MODULE_DIR_.$this->_name.'/classes/facebookSdkCustomhelper.class.php');
+        $facebookSdkCustomhelper = new facebookSdkCustomhelper();
+        $data_facebookSdkCustomhelper = $facebookSdkCustomhelper->connectionSDKCustom(array('appid'=>$appid,'secret'=>$secret));
+
+        $me = $data_facebookSdkCustomhelper['me'];
+        $access_token = $data_facebookSdkCustomhelper['access_token'];
+        ### fix for oauth 18.10.2017 ###
+
+
+
+
+
+		/*
+
+
+		#### new facebook api ###
+		include_once _PS_MODULE_DIR_.$this->_name.'/lib/microsoft/http.php';
+		include_once _PS_MODULE_DIR_.$this->_name.'/lib/microsoft/oauth_client.php';
+
+
+        ## fixed bug, when customer declined Facebook email permissions and try login again ###
+        if(!empty($_SESSION['OAUTH_ACCESS_TOKEN']))
+            unset($_SESSION['OAUTH_ACCESS_TOKEN']);
+        ## fixed bug, when customer declined Facebook email permissions and try login again ###
+
+
+		 $client = new oauth_client_class();
+		$client->server = 'Facebook';
+		
+
+		include_once _PS_MODULE_DIR_.$this->_name.'/'.$name_module.'.php';
+		$obj_module = new $name_module();
+		$redirect_uri = $obj_module->getRedirectURL(array('typelogin'=>'facebook','is_settings'=>1));
+        $client->redirect_uri = $redirect_uri;
+			
+		$client->client_id = $appid;
+		$client->client_secret = $secret;
+		
+		//API permissions
+
+		$client->scope = 'public_profile,email,user_birthday';
+		if(($success = $client->Initialize()))
+		{
+			if(($success = $client->Process()))
+			{
+				if(Tools::strlen($client->authorization_error))
+				{
+					$client->error = $client->authorization_error;
+					$success = false;
+				}
+				elseif(Tools::strlen($client->access_token))
+				{
+					$access_token = $client->access_token;
+					$success = $client->CallAPI(
+							'https://graph.facebook.com/me', 'GET', array(), array('FailOnAccessError' => true), $user);
+				}
+			}
+			$success = $client->Finalize($success);
+		}
+		if($client->exit)
+			exit;
+		if($success)
+		{
+			 
+			$me = (array)$user;
+			
+		
+		}
+		else
+		{
+			echo 'Error:'.HtmlSpecialChars($client->error);exit;
+		}*/
+		
+
+
+
+        /*## upadte api 16/10/2017 ##
+        $code = Tools::getValue('code');
+        $permissions = "email";
+
+        include_once _PS_MODULE_DIR_.$this->_name.'/'.$name_module.'.php';
+        $obj_module = new $name_module();
+        $redirect_uri = $obj_module->getRedirectURL(array('typelogin'=>'facebook','is_settings'=>1));
+
+
+        if(!$code){
+            $start_url = "https://www.facebook.com/v2.10/dialog/oauth";
+
+            $redirect_uri = urlencode($redirect_uri);
+            $permissions = $permissions;
+
+            $state = md5(uniqid(rand(), true));
+
+            $start_url .= '?client_id=' . $appid  . '&redirect_uri=' . $redirect_uri . '&scope=' . $permissions.'&state=' . $state;
+
+
+            header('location:' . $start_url);
+            exit;
+
+        } else {
+
+            $graph_url = 'https://graph.facebook.com/oauth/access_token';
+            $graph_url .= '?client_id=' . $appid  . '&redirect_uri=' . urlencode($redirect_uri) . '&client_secret=' . $secret;
+
+            $access_token_data = Tools::file_get_contents($graph_url . '&code=' . $code);
+
+            $access_token_data = json_decode($access_token_data);
+
+
+            $access_token = $access_token_data->access_token;
+
+            $permissions_me = "email,id,first_name,last_name,name,birthday,gender";
+
+            $user_data = Tools::file_get_contents('https://graph.facebook.com/v2.10/me?access_token=' . $access_token . '&fields=' . $permissions_me);
+
+            $user_data = json_decode($user_data);
+            $me = (array)$user_data;
+        }
+
+        ## upadte api 16/10/2017 ##*/
+
+
+
+		
+		if(version_compare(_PS_VERSION_, '1.5', '>')){
+			$id_shop = Context::getContext()->shop->id;
+		} else {
+			$id_shop = 0;
+		}
+
+		### fix for updated API ###
+		if(empty($me['email'])){
+			
+				$url_fix = 'https://graph.facebook.com/me?access_token='.$access_token.'&fields=email,id,first_name,last_name,name,birthday,gender';
+			
+				if (ini_get('allow_url_fopen') && function_exists('file_get_contents')) {
+					$data = Tools::file_get_contents($url_fix);
+				} else {
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_URL, $url_fix);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+					$data = curl_exec($ch);
+				}
+				$me = json_decode($data);
+                //echo "<pre>"; var_dump($me);
+				$me = (array)$me;
+		}
+
+		### fix for updated API ###
+
+        $is_false_generated = 0;
+        if(empty($me['email'])){
+            srand((double)microtime()*1000000);
+            $em = Tools::substr(uniqid(rand()),0,12);
+            $me['email'] = $em.'@api-not-provide-email-'.$this->_social_type.'.com';
+            $is_false_generated = 1;
+        }
+
+		
+		
+		if (is_array($me)) {
+			
+			$sql= 'SELECT `customer_id`
+							FROM `'._DB_PREFIX_.'fb_customer`
+							WHERE `fb_id` = '.pSQL($me['id']).' AND `id_shop` = '.(int)($id_shop).'
+							LIMIT 1';
+			$result = Db::getInstance()->ExecuteS($sql);
+			
+			if(sizeof($result)>0)
+				$customer_id = $result[0]['customer_id'];
+			else
+				$customer_id = 0;
+		
+		}
+		
+		$exists_mail = 0;
+		//chek for dublicate
+		if(!empty($me['email'])){
+            if(version_compare(_PS_VERSION_, '1.5', '>')){
+                $sql = 'SELECT * FROM `'._DB_PREFIX_   .'customer`
+                                WHERE `email` = \''.pSQL($me['email']).'\'
+                                AND `deleted` = 0 '.(defined('_MYSQL_ENGINE_')?"AND `is_guest` = 0":"").' AND `id_shop` = '.(int)($id_shop).'';
+            } else {
+                $sql = 'SELECT * FROM `'._DB_PREFIX_   .'customer`
+                                WHERE  `email` = \''.pSQL($me['email']).'\'
+                                AND `deleted` = 0 '.(defined('_MYSQL_ENGINE_')?"AND `is_guest` = 0":"").'';
+            }
+			$result_exists_mail = Db::getInstance()->GetRow($sql);
+			if($result_exists_mail)
+			    $exists_mail = 1;
+
+            ## if customer already registered with facebook, but deleted in admin panel -> Customers ##
+            if($customer_id) {
+                if (version_compare(_PS_VERSION_, '1.5', '>')) {
+                    $sql = 'SELECT * FROM `' . _DB_PREFIX_ . 'customer`
+                                WHERE `id_customer` = ' . (int)($customer_id) . '
+                                AND `deleted` = 0 ' . (defined('_MYSQL_ENGINE_') ? "AND `is_guest` = 0" : "") . ' AND `id_shop` = ' . (int)($id_shop) . '';
+                } else {
+                    $sql = 'SELECT * FROM `' . _DB_PREFIX_ . 'customer`
+                                WHERE `id_customer` = ' . (int)($customer_id) . '
+                                AND `deleted` = 0 ' . (defined('_MYSQL_ENGINE_') ? "AND `is_guest` = 0" : "") . '';
+                }
+                $result_mail = Db::getInstance()->GetRow($sql);
+                $email_for_exists_customer = isset($result_mail['email'])?$result_mail['email']:null;
+
+                if(!empty($email_for_exists_customer)){
+                    $me['email']= $email_for_exists_customer;
+                    $exists_mail = 1;
+                }
+            }
+            ## if customer already registered with facebook, but deleted in admin panel -> Customers ##
+
+		}
+
+
+		
+		$auth = 0;
+		if($customer_id && $exists_mail){
+
+            ## if customer disabled ##
+            if(!empty($result_exists_mail) && $result_exists_mail['active'] == 0){
+                include_once(_PS_MODULE_DIR_.$this->_name.'/'.$this->_name.'.php');
+                $obj = new $this->_name();
+                $data_tr = $obj->translateCustom();
+                echo $data_tr['disabled'];exit;
+            }
+            ## if customer disabled ##
+
+        	$auth = 1;
+		}
+		
+		if(empty($customer_id) &&  $exists_mail){
+			// insert record into customerXfacebook table
+			$sql = 'INSERT into `'._DB_PREFIX_.'fb_customer` SET
+							customer_id = '.(int)$result_exists_mail['id_customer'].',
+							fb_id = '.pSQL($me['id']).',
+							id_shop = '.(int)$id_shop.' ';
+			Db::getInstance()->Execute($sql);
+			
+			$auth = 1;
+		}
+
+
+        ## add new functional for auth and create user ##
+        $gender = ($me['gender'] == 'male')?1:2;
+        $first_name = isset($me['first_name'])?pSQL($me['first_name']):'';
+        $last_name = isset($me['first_name'])?pSQL($me['last_name']):'';
+        $email = isset($me['email'])?$me['email']:'';
+        $birthday = isset($me['birthday'])?$me['birthday']:'';
+
+        $data_profile = array(
+                                'email'=>$email,
+                                'first_name'=>$first_name,
+                                'last_name'=>$last_name,
+                                'gender'=>$gender,
+                                'birthday'=>$birthday,
+
+
+                              );
+
+        include_once _PS_MODULE_DIR_.$this->_name.'/classes/userhelp.class.php';
+        $userhelp = new userhelp();
+        $userhelp->userLog(
+            array(
+                'data_profile'=>$data_profile,
+                'http_referer_custom'=>$http_referer,
+                'is_false_generated'=>$is_false_generated,
+                'me_facebook_id'=>$me['id'],
+                'auth'=>$auth,
+                'type'=>$this->_social_type,
+            )
+        );
+
+
+        ## add new functional for auth and create user ##
+
+
+
+		
+		
+	}
+
+
+    public  function insertCustomerXFacebook($data){
+
+
+        $me_facebook_id = $data['me_facebook_id'];
+        $insert_id = $data['insert_id'];
+
+
+        $id_shop = $data['id_shop'];
+
+        // insert record into customerXfacebook table
+        $sql_exists= 'SELECT `customer_id`
+								FROM `'._DB_PREFIX_.'fb_customer`
+								WHERE `fb_id` = '.(int)($me_facebook_id).' AND `id_shop` = '.(int)($id_shop).'
+								LIMIT 1';
+        $result_exists = Db::getInstance()->ExecuteS($sql_exists);
+        if(sizeof($result_exists)>0)
+            $customer_id = $result_exists[0]['customer_id'];
+        else
+            $customer_id = 0;
+
+        if($customer_id){
+            $sql_del = 'DELETE FROM `'._DB_PREFIX_.'fb_customer` WHERE `customer_id` = '.(int)$customer_id.' AND `id_shop` = '.(int)$id_shop.'';
+            Db::getInstance()->Execute($sql_del);
+
+        }
+
+        $sql = 'INSERT into `'._DB_PREFIX_.'fb_customer` SET
+							customer_id = '.(int)$insert_id.', fb_id = '.(int)$me_facebook_id.', id_shop = '.(int)$id_shop.' ';
+        Db::getInstance()->Execute($sql);
+
+        //// end create new user ///
+    }
+
+
+
+
+
+
+
 	
 }
+
+

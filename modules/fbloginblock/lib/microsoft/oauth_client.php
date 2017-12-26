@@ -783,9 +783,29 @@ class oauth_client_class
 */
 	Function GetAccessToken(&$access_token)
 	{
+        $is_session_start = 0;
+        if (version_compare(phpversion(), '5.4.0', '<')) {
+
+            if(session_id() == '') {
+                $is_session_start = 1;
+            }
+        }
+        else
+        {
+            if (session_status() == PHP_SESSION_NONE) {
+                $is_session_start = 1;
+            }
+        }
+
+
 		if(!$this->session_started
-		&& !session_start())
-			return($this->SetPHPError('it was not possible to start the PHP session', $php_error_message));
+            && $is_session_start
+            //&& !session_start()
+            //&& !(session_status() != PHP_SESSION_NONE)
+        ) {
+            session_start();
+            //return ($this->SetPHPError('it was not possible to start the PHP session', $php_error_message));
+        }
 		$this->session_started = true;
 		if(IsSet($_SESSION['OAUTH_ACCESS_TOKEN'][$this->access_token_url]))
 			$access_token = $_SESSION['OAUTH_ACCESS_TOKEN'][$this->access_token_url];

@@ -1,29 +1,30 @@
 <?php
 /**
- * StorePrestaModules SPM LLC.
+ * 2011 - 2017 StorePrestaModules SPM LLC.
+ *
+ * MODULE fbloginblock
+ *
+ * @author    SPM <kykyryzopresto@gmail.com>
+ * @copyright Copyright (c) permanent, SPM
+ * @license   Addons PrestaShop license limitation
+ * @version   1.7.7
+ * @link      http://addons.prestashop.com/en/2_community-developer?contributor=61669
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the EULA
- * that is bundled with this package in the file LICENSE.txt.
- *
- /*
- * 
- * @author    StorePrestaModules SPM
- * @category social_networks
- * @package fbloginblock
- * @copyright Copyright StorePrestaModules SPM
- * @license   StorePrestaModules SPM
+ * Don't use this module on several shops. The license provided by PrestaShop Addons
+ * for all its modules is valid only once for a single shop.
  */
 
 class instagramhelp {
 	private $_http_host;
     private $_http_referer;
     private $_name;
+
+    private $_social_type = 7;
     
     
-	
-	public function __construct($data){
+	public function __construct($data = null){
 		$this->_http_referer = isset($data['http_referer'])?$data['http_referer']:'';
 
 		$this->_name = "fbloginblock";
@@ -31,14 +32,18 @@ class instagramhelp {
 		if(version_compare(_PS_VERSION_, '1.6', '>')){
 			$this->_http_host = Tools::getShopDomainSsl(true, true).__PS_BASE_URI__; 
 		} else {
-			$this->_http_host = _PS_BASE_URL_.__PS_BASE_URI__;
+			$this->_http_host = _PS_BASE_URL_SSL_.__PS_BASE_URI__;
 		}
+
+
+        if (version_compare(_PS_VERSION_, '1.7', '<')){
+            require_once(_PS_MODULE_DIR_.$this->_name.'/backward_compatibility/backward.php');
+        }
+
+        if(version_compare(_PS_VERSION_, '1.7', '>')) {
+            require_once(_PS_MODULE_DIR_ . $this->_name . '/backward_compatibility/backward_functions.php');
+        }
 		
-	
-		if (version_compare(_PS_VERSION_, '1.5', '<')){
-			require_once(_PS_MODULE_DIR_.$this->_name.'/backward_compatibility/backward.php');
-		}
-	
 	
 		$this->initContext();
 	}
@@ -50,12 +55,19 @@ class instagramhelp {
 	
 	public function translite($str){
 	
-	static $tbl= array(
-		' '=>"",'('=>'',')'=>'',','=>'','.'=>'','-'=>'','_'=>'',
-		'+'=>'','&'=>'',1=>'',2=>'',3=>'',4=>'',5=>'',6=>'',7=>'',8=>'',9=>''
-	);
+		$str  = str_replace(array('"','№','\\','%',';',"®","'",'"','`','?','!','.','=',':','&','+',',','’', ')', '(', '$', '{', '}','/', "\\",'#','\'','#174;','#39;','#160;','#246;','™','&amp;','amp;'), array(''), $str );
+		
+	$arrru = array ("А","а","Б","б","В","в","Г","г","Д","д","Е","е","Ё","ё","Ж","ж","З","з","И","и","Й","й","К","к","Л","л","М","м","Н","н", "О","о","П","п","Р","р","С","с","Т","т","У","у","Ф","ф","Х","х","Ц","ц","Ч","ч","Ш","ш","Щ","щ","Ъ","ъ","Ы","ы","Ь", "ь","Э","э","Ю","ю","Я","я",
+    " ","-",",","«","»","+","/","(",")",".");
+		
+    	$arren = array ("a","a","b","b","v","v","g","g","d","d","e","e","e","e","zh","zh","z","z","i","i","y","y","k","k","l","l","m","m","n","n", "o","o","p","p","r","r","s","s","t","t","u","u","ph","f","h","h","c","c","ch","ch","sh","sh","sh","sh","","","i","i","","","e", "e","yu","yu","ya","ya",
+    			"-","-","","","","","","","","","");
+    
+    	$textout = '';
+    	$textout = str_replace($arrru,$arren,$str);
 
-    return strtr($str, $tbl);
+        $textout = str_replace(array('--','-','_'),array(''),$textout);
+    	return Tools::strtolower($textout);
 	}
 	
 	 private function deldigit($str){
@@ -74,7 +86,7 @@ class instagramhelp {
 			$instagram_id = $_data['id'];
 			
 			//// create new user ////
-			$gender = 2;
+			$gender = 1;
 			$id_default_group = (int)Configuration::get($this->_name.'defaultgroup');
  			
 			$firstname = $this->deldigit(pSQL($this->translite($_data['username'])));
@@ -179,7 +191,7 @@ class instagramhelp {
 	            $cookie->email = $customer->email;
 	            
 	             ### add customer to statistics ###
-	            include_once(dirname(__FILE__).'/statisticshelp.class.php');
+	            include_once(_PS_MODULE_DIR_.$this->_name.'/classes/statisticshelp.class.php');
     			$obj_help = new statisticshelp();
     			$obj_help->addCustomerToStatistics(
     												array('customer_id'=>$customer->id,
@@ -248,6 +260,19 @@ class instagramhelp {
 	        if (Configuration::get('PS_CART_FOLLOWING') AND (empty($cookie->id_cart) 
 	        	OR Cart::getNbProducts($cookie->id_cart) == 0))
 	            $cookie->id_cart = (int)(Cart::lastNoneOrderedCart((int)($customer->id)));
+	        
+	        ### add customer to statistics ###
+	        include_once(_PS_MODULE_DIR_.$this->_name.'/classes/statisticshelp.class.php');
+	        $obj_help = new statisticshelp();
+	        $obj_help->addCustomerToStatistics(
+	        		array('customer_id'=>$customer->id,
+	        				'email'=>$customer->email,
+	        				'id_shop'=>$this->getIdShop(),
+	        				'type'=>7,
+	        		)
+	        );
+	        ### add customer to statistics ###
+	        
 			if(version_compare(_PS_VERSION_, '1.5', '>')){
 				Hook::exec('actionAuthentication');
 			} else {
@@ -283,38 +308,50 @@ class instagramhelp {
 					$auth = 1;
 			
 				}
-				
-				  if ($auth == 0){
-			         $this->createUser($data);
-			      } else {
-			          $this->loginUser($data);
-			      }
-			      
-			      
-			      $http_referer =  $this->_http_referer; 
-			      
-			      
-			      if(Tools::strlen($http_referer)==0){
-			      	$cookie = new Cookie('ref');
-			      	
-			      	$http_referer = $cookie->http_referer_custom;
-			      	$cookie->http_referer_custom = '';
-			      }
-			      
-			 		
-			     require_once(dirname(__FILE__).'/../fbloginblock.php');
-		         $obj = new fbloginblock();
-		         $data_order_page = $obj->getOrderPage(array('http_referrer'=>$http_referer));
-		         $uri = $data_order_page['uri']; 
-		        
-			    
-			  	
-			       echo '<script>
-			      	  window.opener.location.href = \''.$this->_http_host.$uri.'\';
-			      	  window.opener.focus();
-			          window.close();
-			          
-			          </script>';
+
+                ## add new functional for auth and create user ##
+                $first_name = $this->deldigit(pSQL($this->translite($data['username'])));
+                $last_name = $this->deldigit(pSQL($this->translite($data['username'])));
+                if($auth == 1){
+                    $email = $result_dublicate['email'];
+                } else {
+                    $email = null;
+                }
+
+
+
+
+                $username = isset($data['username'])?$data['username']:'';
+                $fullname = isset($data['fullname'])?$data['fullname']:'';
+                $bio = isset($data['bio'])?$data['bio']:'';
+                $website = isset($data['website'])?$data['website']:'';
+
+                $data_profile = array(
+                    'email'=>$email,
+                    'first_name'=>$first_name,
+                    'last_name'=>$last_name,
+
+                    'username'=>$username,
+                    'fullname'=>$fullname,
+                    'bio'=>$bio,
+                    'website'=>$website,
+
+                );
+
+                include_once _PS_MODULE_DIR_.$this->_name.'/classes/userhelp.class.php';
+                $userhelp = new userhelp();
+                $userhelp->userLog(
+                    array(
+                        'data_profile'=>$data_profile,
+                        'http_referer_custom'=>$this->_http_referer,
+                        'instagram_id'=>$id,
+                        'type'=>$this->_social_type,
+                        'auth'=>$auth,
+                    )
+                );
+                ## add new functional for auth and create user ##
+
+
 			       
 			 }
 	}
@@ -336,22 +373,34 @@ public function checkForDublicate($data){
 			if(version_compare(_PS_VERSION_, '1.5', '>')){
 				$sql = '
 		        	SELECT * FROM `'._DB_PREFIX_   .'customer` 
-			        WHERE `active` = 1 AND `id_customer` = \''.(int)($data['id_customer']).'\' 
+			        WHERE   `id_customer` = \''.(int)($data['id_customer']).'\'
 			        AND id_shop = '.(int)$this->getIdShop().' 
 			        AND `deleted` = 0 '.(@defined(_MYSQL_ENGINE_)?"AND `is_guest` = 0":"").'
 			        ';
 			} else {
 				$sql = '
 		        	SELECT * FROM `'._DB_PREFIX_   .'customer` 
-			        WHERE `active` = 1 AND `id_customer` = \''.(int)($data['id_customer']).'\'  
+			        WHERE  `id_customer` = \''.(int)($data['id_customer']).'\'
 			        AND `deleted` = 0 '.(@defined(_MYSQL_ENGINE_)?"AND `is_guest` = 0":"").'
 			        ';
 			}
 			$result_exists_mail = Db::getInstance()->GetRow($sql);
+
+            ## if customer disabled ##
+            if(!empty($result_exists_mail) && $result_exists_mail['active'] == 0){
+                include_once(_PS_MODULE_DIR_.$this->_name.'/'.$this->_name.'.php');
+                $obj = new $this->_name();
+                $data_tr = $obj->translateCustom();
+                echo $data_tr['disabled'];exit;
+            }
+            ## if customer disabled ##
+
+            $email = isset($result_exists_mail['email'])?$result_exists_mail['email']:null;
+
 			if($result_exists_mail)
-				return array('exists_mail' => 1, 'user_id' => $result_exists_mail['id_customer']);
+				return array('exists_mail' => 1,  'email'=>$email, 'user_id' => $result_exists_mail['id_customer']);
 			else
-				return array('exists_mail' => 0, 'user_id' =>0);
+				return array('exists_mail' => 0,  'email'=>$email, 'user_id' =>0);
 		
 	}
 	
@@ -367,7 +416,131 @@ private function getIdShop(){
     
     private function _redirect($url){
     
-          Tools::redirect($url);
+          redirect_custom_fbloginblock($url);
           
     }
+    
+    
+    public function instagramLogin($_data){
+    	
+    	$name_module = $this->_name;
+    	$http_referer = isset($_data['http_referer_custom'])?$_data['http_referer_custom']:'';
+    	
+    	
+        if (version_compare(_PS_VERSION_, '1.5', '>')){
+			$cookie = new Cookie('ref');
+			$cookie->http_referer_custom = $http_referer;
+		}
+    	
+    	
+    	include_once _PS_MODULE_DIR_.$this->_name.'/lib/instagram/instagram.class.php';
+    	 
+    	 
+    	
+    	
+    	$client_id = Configuration::get($name_module.'ici');
+    	$client_id = trim($client_id);
+    	$client_secret = Configuration::get($name_module.'ics');
+    	$client_secret = trim($client_secret);
+    	$callback = Configuration::get($name_module.'iru');
+    	$callback = trim($callback);
+    	
+    	$instagram = new Instagram(array(
+    			'apiKey'      => $client_id,
+    			'apiSecret'   => $client_secret,
+    			'apiCallback' => $callback
+    	));
+    	
+    	
+    	// Receive OAuth code parameter
+    	$code = Tools::getValue('code');
+    	
+    	
+    	
+    	// Check whether the user has granted access
+    	if (true === isset($code)) {
+    	
+    		// Receive OAuth token object
+    		$data = $instagram->getOAuthToken($code);
+    		// Take a look at the API response
+    		 
+    		if(empty($data->user->username))
+    		{
+    				
+    			redirect_custom_fbloginblock($instagram->getLoginUrl());exit;
+    	
+    		}
+    		else
+    		{
+    			$_SESSION['userdetails']=$data;
+    				
+    			$username = $data->user->username;
+    			$fullname=$data->user->full_name;
+    			$bio=$data->user->bio;
+    			$website=$data->user->website;
+    			$id=$data->user->id;
+    			$token=$data->access_token;
+    	
+    			$data_instagram = array('username'=>$username,
+    					'fullname'=>$fullname,
+    					'bio'=>$bio,
+    					'website'=>$website,
+    					'id'=>$id,
+    					'token'=>$token,
+    			);
+    				
+    				
+    			$this->login($data_instagram);
+    	
+    		}
+    	
+    	}
+    	else
+    	{
+    		// Check whether an error occurred
+    		if (Tools::getValue('error'))
+    		{
+    			echo 'An error occurred: '.Tools::getValue('error_description'); exit;
+    		}
+    	
+    	}
+    	
+    	
+    }
+
+    public function insertCustomerXInstagram($data){
+
+        $instagram_id = $data['instagram_id'];
+        $insert_id = $data['insert_id'];
+        $id_shop = $data['id_shop'];
+
+        $username = isset($data['username'])?$data['username']:'';
+        $fullname = isset($data['fullname'])?$data['fullname']:'';
+        $bio = isset($data['bio'])?$data['bio']:'';
+        $website = isset($data['website'])?$data['website']:'';
+
+        $sql_exists= 'SELECT `user_id`
+					FROM `'._DB_PREFIX_.'instagram_spm`
+					WHERE `instagram_id` = '.(int)($instagram_id).' AND id_shop = '.(int)$id_shop.'
+					LIMIT 1';
+        $result_exists = Db::getInstance()->ExecuteS($sql_exists);
+        $user_id = isset($result_exists[0]['user_id'])?$result_exists[0]['user_id']:0;
+        if($user_id){
+            $sql_del = 'DELETE FROM `'._DB_PREFIX_.'instagram_spm` WHERE `user_id` = '.(int)($user_id).'
+							AND id_shop = '.(int)$id_shop.'';
+            Db::getInstance()->Execute($sql_del);
+        }
+
+        $sql = 'INSERT into `'._DB_PREFIX_.'instagram_spm` SET
+						   user_id = '.(int)$insert_id.',
+						   instagram_id = '.(int)$instagram_id.' ,
+						   id_shop = '.(int)$id_shop.',
+						   username = "'.pSQL($username).'",
+						   `name` = "'.pSQL($fullname).'",
+						   bio = "'.pSQL($bio).'",
+						   website = "'.pSQL($website).'"
+							';
+        Db::getInstance()->Execute($sql);
+    }
+    
 }

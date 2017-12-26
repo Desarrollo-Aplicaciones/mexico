@@ -1,19 +1,19 @@
 <?php
 /**
- * StorePrestaModules SPM LLC.
+ * 2011 - 2017 StorePrestaModules SPM LLC.
+ *
+ * MODULE fbloginblock
+ *
+ * @author    SPM <kykyryzopresto@gmail.com>
+ * @copyright Copyright (c) permanent, SPM
+ * @license   Addons PrestaShop license limitation
+ * @version   1.7.7
+ * @link      http://addons.prestashop.com/en/2_community-developer?contributor=61669
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the EULA
- * that is bundled with this package in the file LICENSE.txt.
- *
- /*
- * 
- * @author    StorePrestaModules SPM
- * @category social_networks
- * @package fbloginblock
- * @copyright Copyright StorePrestaModules SPM
- * @license   StorePrestaModules SPM
+ * Don't use this module on several shops. The license provided by PrestaShop Addons
+ * for all its modules is valid only once for a single shop.
  */
 
 class statisticshelp extends Module{
@@ -88,10 +88,13 @@ public function getCustomers($data){
 			$_id_customer = isset($_item['id'])?$_item['id']:0;
 			if($_id_customer == 0)continue;
 			
-			$types_avaiable = $this->getAvaiableTypes();
+			$types_avaiable = $this->getAvaiableTypesStat();
 			
-			foreach($types_avaiable as $text_type => $id_type){
-			
+			foreach($types_avaiable as $data_prefix){
+
+                $text_type = $data_prefix['prefix'];
+                $id_type = $data_prefix['type'];
+
 				$sql_is_exist = 'select COUNT(*) as count from `'. _DB_PREFIX_ . 'customers_statistics_spm` 
         					where customer_id = '.(int)$_id_customer.'  
         					 AND type = '.(int)$id_type;
@@ -213,9 +216,12 @@ public function getCustomers($data){
 			
 			$_id_customer = $_item['id'];
 			
-			$types_avaiable = $this->getAvaiableTypes();
+			$types_avaiable = $this->getAvaiableTypesStat();
 			
-			foreach($types_avaiable as $text_type => $id_type){
+			foreach($types_avaiable as $data_prefix){
+
+                    $text_type = $data_prefix['prefix'];
+                    $id_type = $data_prefix['type'];
 			
 				$sql_is_exist = 'select COUNT(*) as count from `'. _DB_PREFIX_ . 'customers_statistics_spm` 
         					where customer_id = '.(int)$_id_customer.'  
@@ -307,8 +313,14 @@ public function getCustomers($data){
     			');
     		
     	$count_types_array = array();
-    	foreach($this->getAvaiableTypes() as $key_text => $value_id){
-    		$data_type = Db::getInstance()
+
+        foreach($this->getAvaiableTypesStat() as $data_prefix){
+
+            $key_text = $data_prefix['prefix'];
+            $value_id = $data_prefix['type'];
+
+
+            $data_type = Db::getInstance()
     		->getRow('select COUNT(*) as count from `'. _DB_PREFIX_ . 'customers_statistics_spm` css left join `'. _DB_PREFIX_ . 'customer`  c
     				on (c.id_customer = css.customer_id) where c.deleted = 0 and
     				css.type = '.(int)$value_id);
@@ -318,11 +330,11 @@ public function getCustomers($data){
     	return array('count_all' => $data_all['count'],'count_types'=>$count_types_array);
     }
 	
-	public function getAvaiableTypes(){
-		include_once(dirname(__FILE__).'/../fbloginblock.php');
+	public function getAvaiableTypesStat(){
+		include_once(_PS_MODULE_DIR_.$this->_name.'/fbloginblock.php');
 		$obj = new fbloginblock();
 			
-		return $obj->getAvaiableTypes();
+		return $obj->getConnetsArrayPrefix();
 	}
 	
 	public function addCustomerToStatistics($data){
@@ -331,11 +343,45 @@ public function getCustomers($data){
 			$email = $data['email'];
 			$id_shop = $data['id_shop'];
 			$type = $data['type'];
+			
+			
+			$sql_exists = 'select count(*) as count from `'._DB_PREFIX_.'customers_statistics_spm` where 
+								  customer_id = \''.(int)$customer_id.'\' and id_shop = \''.(int)$id_shop.'\'';
+			$data_exists = Db::getInstance()->getRow($sql_exists);
+			if($data_exists['count']==0){
+
+                ## fixed bug, when admin delete user from admin panel, and user again try register on the site ##
+                $sql_delete = 'delete from `'._DB_PREFIX_.'customers_statistics_spm` where
+							    '.(version_compare(_PS_VERSION_, '1.5', '>')?'email_stat':'email').' = \''.pSQL($email).'\' AND
+							   id_shop = \''.(int)$id_shop.'\' AND type = \''.(int)$type.'\' ';
+                Db::getInstance()->Execute($sql_delete);
+                ## fixed bug, when admin delete user from admin panel, and user again try register on the site ##
+
 		
-			$sql = 'insert into `'._DB_PREFIX_.'customers_statistics_spm` SET 
-						   customer_id = \''.(int)$customer_id.'\', email = \''.pSQL($email).'\',
-						   id_shop = \''.(int)$id_shop.'\', type = \''.(int)$type.'\' ';
-			Db::getInstance()->Execute($sql);
+				$sql = 'insert into `'._DB_PREFIX_.'customers_statistics_spm` SET 
+							   customer_id = \''.(int)$customer_id.'\', '.(version_compare(_PS_VERSION_, '1.5', '>')?'email_stat':'email').' = \''.pSQL($email).'\',
+							   id_shop = \''.(int)$id_shop.'\', type = \''.(int)$type.'\' ';
+				Db::getInstance()->Execute($sql);
+				
+			}
 	}
-	
+
+    public function updateEmail($data){
+
+
+        $email = $data['email'];
+        $id_shop = $data['id_shop'];
+        $id_customer = $data['id_customer'];
+
+
+        $sql = 'UPDATE `'._DB_PREFIX_.'customers_statistics_spm`
+						SET
+						email = \''.pSQL($email).'\'
+						WHERE id_customer = '.(int)$id_customer.' and id_shop = '.(int)($id_shop).'
+						';
+        Db::getInstance()->Execute($sql);
+
+    }
+
+
 }

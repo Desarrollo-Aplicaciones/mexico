@@ -1,31 +1,33 @@
 <?php
 /**
- * StorePrestaModules SPM LLC.
+ * 2011 - 2017 StorePrestaModules SPM LLC.
+ *
+ * MODULE fbloginblock
+ *
+ * @author    SPM <kykyryzopresto@gmail.com>
+ * @copyright Copyright (c) permanent, SPM
+ * @license   Addons PrestaShop license limitation
+ * @version   1.7.7
+ * @link      http://addons.prestashop.com/en/2_community-developer?contributor=61669
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the EULA
- * that is bundled with this package in the file LICENSE.txt.
- *
- /*
- * 
- * @author    StorePrestaModules SPM
- * @category social_networks
- * @package fbloginblock
- * @copyright Copyright StorePrestaModules SPM
- * @license   StorePrestaModules SPM
+ * Don't use this module on several shops. The license provided by PrestaShop Addons
+ * for all its modules is valid only once for a single shop.
  */
 
-include(dirname(__FILE__).'/../../../config/config.inc.php');
-include(dirname(__FILE__).'/../../../init.php');
+include_once(dirname(__FILE__).'/../../../config/config.inc.php');
+include_once(_PS_ROOT_DIR_.'../../../init.php');
 ob_start(); 
 $status = 'success';
 $message = '';
 
-include_once(dirname(__FILE__).'/../classes/facebookhelp.class.php');
+$module_name = 'fbloginblock';
+
+include_once(_PS_MODULE_DIR_.$module_name.'/classes/facebookhelp.class.php');
 $obj_facebookhelp = new facebookhelp();
 
-$action = $_REQUEST['action'];
+$action = $_REQUEST['action_custom'];
 
 switch ($action){
 	case 'returnimage':
@@ -138,7 +140,88 @@ switch ($action){
 		}  elseif($type == "amazonmicro_small"){
 			$obj_facebookhelp->deleteImage(array('type'=>52));
 			
-		}
+		} elseif($type == "dropbox"){
+			$obj_facebookhelp->deleteImage(array('type'=>53));
+		} elseif($type == "dropboxsmall"){
+			$obj_facebookhelp->deleteImage(array('type'=>54));
+		} elseif($type == "dropboxlarge_small"){
+			$obj_facebookhelp->deleteImage(array('type'=>55));
+		}  elseif($type == "dropboxmicro_small"){
+			$obj_facebookhelp->deleteImage(array('type'=>56));
+			
+		} elseif($type == "scoop"){
+			$obj_facebookhelp->deleteImage(array('type'=>57));
+		} elseif($type == "scoopsmall"){
+			$obj_facebookhelp->deleteImage(array('type'=>58));
+		} elseif($type == "scooplarge_small"){
+			$obj_facebookhelp->deleteImage(array('type'=>59));
+		}  elseif($type == "scoopmicro_small"){
+			$obj_facebookhelp->deleteImage(array('type'=>60));
+			
+		} elseif($type == "wordpress"){
+			$obj_facebookhelp->deleteImage(array('type'=>61));
+		} elseif($type == "wordpresssmall"){
+			$obj_facebookhelp->deleteImage(array('type'=>62));
+		} elseif($type == "wordpresslarge_small"){
+			$obj_facebookhelp->deleteImage(array('type'=>63));
+		}  elseif($type == "wordpressmicro_small"){
+			$obj_facebookhelp->deleteImage(array('type'=>64));
+			
+		} elseif($type == "tumblr"){
+			$obj_facebookhelp->deleteImage(array('type'=>65));
+		} elseif($type == "tumblrsmall"){
+			$obj_facebookhelp->deleteImage(array('type'=>66));
+		} elseif($type == "tumblrlarge_small"){
+			$obj_facebookhelp->deleteImage(array('type'=>67));
+		}  elseif($type == "tumblrmicro_small"){
+			$obj_facebookhelp->deleteImage(array('type'=>68));
+			
+		} elseif($type == "pinterest"){
+			$obj_facebookhelp->deleteImage(array('type'=>69));
+		} elseif($type == "pinterestsmall"){
+			$obj_facebookhelp->deleteImage(array('type'=>70));
+		} elseif($type == "pinterestlarge_small"){
+			$obj_facebookhelp->deleteImage(array('type'=>71));
+		}  elseif($type == "pinterestmicro_small"){
+			$obj_facebookhelp->deleteImage(array('type'=>72));
+			
+		} elseif($type == "oklass"){
+			$obj_facebookhelp->deleteImage(array('type'=>73));
+		} elseif($type == "oklasssmall"){
+			$obj_facebookhelp->deleteImage(array('type'=>74));
+		} elseif($type == "oklasslarge_small"){
+			$obj_facebookhelp->deleteImage(array('type'=>75));
+		}  elseif($type == "oklassmicro_small"){
+			$obj_facebookhelp->deleteImage(array('type'=>76));
+			
+		} elseif($type == "mailru"){
+			$obj_facebookhelp->deleteImage(array('type'=>77));
+		} elseif($type == "mailrusmall"){
+			$obj_facebookhelp->deleteImage(array('type'=>78));
+		} elseif($type == "mailrularge_small"){
+			$obj_facebookhelp->deleteImage(array('type'=>79));
+		}  elseif($type == "mailrumicro_small"){
+			$obj_facebookhelp->deleteImage(array('type'=>80));
+			
+		} elseif($type == "yandex"){
+			$obj_facebookhelp->deleteImage(array('type'=>81));
+		} elseif($type == "yandexsmall"){
+			$obj_facebookhelp->deleteImage(array('type'=>82));
+		} elseif($type == "yandexlarge_small"){
+			$obj_facebookhelp->deleteImage(array('type'=>83));
+		}  elseif($type == "yandexmicro_small"){
+			$obj_facebookhelp->deleteImage(array('type'=>84));
+			
+		}  elseif($type == "vkontakte"){
+            $obj_facebookhelp->deleteImage(array('type'=>45));
+        } elseif($type == "vkontaktesmall"){
+            $obj_facebookhelp->deleteImage(array('type'=>46));
+        } elseif($type == "vkontaktelarge_small"){
+            $obj_facebookhelp->deleteImage(array('type'=>47));
+        }  elseif($type == "vkontaktemicro_small"){
+            $obj_facebookhelp->deleteImage(array('type'=>48));
+
+        }
 	break;
 	default:
 		$status = 'error';
@@ -153,6 +236,6 @@ $response->status = $status;
 $response->message = $message;	
 $response->params = array('content' => $content);
 
-echo Tools::jsonEncode($response);
+echo json_encode($response);
 
 ?>

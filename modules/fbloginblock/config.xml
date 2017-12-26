@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <module>
+            <name>fbloginblock</name>
+            <displayName><![CDATA[Social Connects 16 in 1 + Statistics]]></displayName>
+            <version><![CDATA[1.8.0]]></version>
+            <description><![CDATA[Add Social Connects 16 in 1 + Statistics]]></description>
+            <author><![CDATA[SPM]]></author>
+            <tab><![CDATA[social_networks]]></tab>
+	<confirmUninstall>¿Está seguro que desea eliminarlo ? Tenga cuidado , se perderán todos su configuración y sus datos</confirmUninstall>
+            <is_configurable>1</is_configurable>
+            <need_instance>0</need_instance>
+	<limited_countries></limited_countries>
+        </module>
