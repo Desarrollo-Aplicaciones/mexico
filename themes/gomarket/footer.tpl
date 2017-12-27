@@ -44,6 +44,7 @@
 
 <!-- Footer -->
     {$HOOK_HOMEBOTCEN}
+    
     <div class="mode_footer">
         <div class="ctn-gray-footer">
     		<div class="container_24">
