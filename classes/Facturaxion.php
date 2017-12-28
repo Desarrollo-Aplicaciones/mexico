@@ -751,7 +751,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 				}
 				
 				/******************  ENVIO DE PRODUCTOS... DOMICILIO ******************/
-				
+				$infoFlete = "";
 				if ( $order_tot->total_shipping != '0.00' || $order_tot->total_shipping_tax_incl != '0.00' ) {
 					$val_no_iva_envio =  Tools::ps_round( $order_tot->total_shipping / 1.16 ,3);
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['ClaveProdServ'] = '01010101';
@@ -769,6 +769,8 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Importe'] = number_format(($val_no_iva_envio*16)/100, 2, '.', '');
 					$totalImportes += number_format(($val_no_iva_envio*16)/100, 2, '.', '');
 					$order_tot->total_products += Tools::ps_round( $val_no_iva_envio ,2);
+					$fleteTemporal = $arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods];
+					$infoFlete = "01010101|1|".$fleteTemporal['@attributes']['Cantidad']."|H87|Pieza|FLETE ENVIO|".$fleteTemporal['@attributes']['ValorUnitario']."|".$fleteTemporal['@attributes']['Importe']."|".$fleteTemporal['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Base']."|002|Tasa|0.160000|".$fleteTemporal['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Importe'];
 				}
 
 				/**
@@ -923,12 +925,12 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['TipoFactor'] = 'Tasa';
 						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['TasaOCuota'] = number_format($key/100, 6, '.', '');
 						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['Importe'] = $totalImportes;
-						$infoTaxes .= "002|Tasa|".$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['TasaOCuota']."|".$totalImportes."|";
+						$infoTaxes = "002|Tasa|".$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['TasaOCuota']."|".$totalImportes;
 						$cant_taxs++;
 					}
 					
 				}
-				$this->cadena_original = "||3.3|".$arr_xml_cargar['@attributes']['Fecha']."|".$arr_xml_cargar['@attributes']['FormaPago']."|".$this->numero_certificado."|".$arr_xml_cargar['@attributes']['SubTotal']."|".$arr_xml_cargar['@attributes']['Descuento']."|MXN|".$arr_xml_cargar['@attributes']['Total']."|I|PUE|11870|".$this->RFCEmisor."|".$this->RFCEmisor_nombre."|601|".$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Rfc']."|".$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre']."|G01|".$infoConceptos."0.00|".$infoTaxes.$totalImportes."||";
+				$this->cadena_original = "||3.3|".$arr_xml_cargar['@attributes']['Fecha']."|".$arr_xml_cargar['@attributes']['FormaPago']."|".$this->numero_certificado."|".$arr_xml_cargar['@attributes']['SubTotal']."|".$arr_xml_cargar['@attributes']['Descuento']."|MXN|".$arr_xml_cargar['@attributes']['Total']."|I|PUE|11870|".$this->RFCEmisor."|".$this->RFCEmisor_nombre."|601|".$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Rfc']."|".$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre']."|G01|".$infoConceptos.$infoFlete."|0.00|".$infoTaxes."|".$totalImportes."||";
 
 				$serie='C';
 				$folio='2000';
