@@ -418,14 +418,6 @@
 {if isset($sellosat.uuid) && $sellosat.uuid != ''}
 	<table>
 		<tr>
-			<td width="100%" style="color: grey; font-size: 6pt;"><hr>Ruta XML		
-			</td>
-		</tr>
-		<tr>
-			<td width="100%" style="font-size: 6pt;">{$sellosat.rutaxml}
-			<br></td>
-		</tr>
-		<tr>
 			<td width="100%" style="color: grey; font-size: 6pt;"><hr>Cadena Original Del Complemento De Certificación Digital Del SAT			
 			</td>
 		</tr>

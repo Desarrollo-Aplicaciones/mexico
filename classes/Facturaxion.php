@@ -28,6 +28,7 @@ if (!class_exists('Facturaxion')) {
 		public $RFCEmisor  = '';
 		public $RFCEmisor_nombre = '';
 		public $regimenfiscal = "";
+		public $cadena_original = "";
 
 
 
@@ -262,13 +263,13 @@ function sellarXML($cfdi, $numero_certificado, $archivo_cer, $archivo_pem, $depu
   	echo "<br> luego funcion importStyleSheet";
   }
   
-  $cadena_original = $proc->transformToXML($xdoc);    
+  $cadena_original = $proc->transformToXML($xdoc);
   
   if ( $depurar == 1 ) {
   	echo "<br> luego funcion transformToXML";
   }
 
-  openssl_sign($cadena_original, $sig, $private, OPENSSL_ALGO_SHA256);
+  openssl_sign($this->cadena_original, $sig, $private, OPENSSL_ALGO_SHA256);
   
   if ( $depurar == 1 ) {
   	echo "<br> luego funcion openssl_sign";
@@ -715,6 +716,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 				$hjys='';
 				$totalDescuentoConceptos = 0;
 				$totalImportes = 0;
+				$infoConceptos = '';
 
 				foreach ($list_products as $key_prod => $value) {
 					if($list_products[$key_prod]['unit_price_tax_excl'] != 0){
@@ -805,7 +807,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 				//$arr_xml_cargar['@attributes']['condicionesDePago'] = 'Parcialidades';
 				$arr_xml_cargar['@attributes']['Sello'] = '';
 				$arr_xml_cargar['@attributes']['NoCertificado'] = $this->numero_certificado;
-				$arr_xml_cargar['@attributes']['Certificado'] = ('MIIEdDCCA1ygAwIBAgIUMjAwMDEwMDAwMDAxMDAwMDU4NjcwDQYJKoZIhvcNAQEFBQAwggFvMRgwFgYDVQQDDA9BLkMuIGRlIHBydWViYXMxLzAtBgNVBAoMJlNlcnZpY2lvIGRlIEFkbWluaXN0cmFjacOzbiBUcmlidXRhcmlhMTgwNgYDVQQLDC9BZG1pbmlzdHJhY2nDs24gZGUgU2VndXJpZGFkIGRlIGxhIEluZm9ybWFjacOzbjEpMCcGCSqGSIb3DQEJARYaYXNpc25ldEBwcnVlYmFzLnNhdC5nb2IubXgxJjAkBgNVBAkMHUF2LiBIaWRhbGdvIDc3LCBDb2wuIEd1ZXJyZXJvMQ4wDAYDVQQRDAUwNjMwMDELMAkGA1UEBhMCTVgxGTAXBgNVBAgMEERpc3RyaXRvIEZlZGVyYWwxEjAQBgNVBAcMCUNveW9hY8OhbjEVMBMGA1UELRMMU0FUOTcwNzAxTk4zMTIwMAYJKoZIhvcNAQkCDCNSZXNwb25zYWJsZTogSMOpY3RvciBPcm5lbGFzIEFyY2lnYTAeFw0xMjA3MjcxNzAyMDBaFw0xNjA3MjcxNzAyMDBaMIHbMSkwJwYDVQQDEyBBQ0NFTSBTRVJWSUNJT1MgRU1QUkVTQVJJQUxFUyBTQzEpMCcGA1UEKRMgQUNDRU0gU0VSVklDSU9TIEVNUFJFU0FSSUFMRVMgU0MxKTAnBgNVBAoTIEFDQ0VNIFNFUlZJQ0lPUyBFTVBSRVNBUklBTEVTIFNDMSUwIwYDVQQtExxBQUEwMTAxMDFBQUEgLyBIRUdUNzYxMDAzNFMyMR4wHAYDVQQFExUgLyBIRUdUNzYxMDAzTURGUk5OMDkxETAPBgNVBAsTCFVuaWRhZCAxMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC2TTQSPONBOVxpXv9wLYo8jezBrb34i/tLx8jGdtyy27BcesOav2c1NS/Gdv10u9SkWtwdy34uRAVe7H0a3VMRLHAkvp2qMCHaZc4T8k47Jtb9wrOEh/XFS8LgT4y5OQYo6civfXXdlvxWU/gdM/e6I2lg6FGorP8H4GPAJ/qCNwIDAQABox0wGzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIGwDANBgkqhkiG9w0BAQUFAAOCAQEATxMecTpMbdhSHo6KVUg4QVF4Op2IBhiMaOrtrXBdJgzGotUFcJgdBCMjtTZXSlq1S4DG1jr8p4NzQlzxsdTxaB8nSKJ4KEMgIT7E62xRUj15jI49qFz7f2uMttZLNThipunsN/NF1XtvESMTDwQFvas/Ugig6qwEfSZc0MDxMpKLEkEePmQwtZD+zXFSMVa6hmOu4M+FzGiRXbj4YJXn9Myjd8xbL/c+9UIcrYoZskxDvMxc6/6M3rNNDY3OFhBK+V/sPMzWWGt8S1yjmtPfXgFs1t65AZ2hcTwTAuHrKwDatJ1ZPfa482ZBROAAX1waz7WwXp0gso7sDCm2/yUVww==');
+				$arr_xml_cargar['@attributes']['Certificado'] = str_replace(array('\n', '\r'), '', base64_encode(file_get_contents($this->dir_server.$this->archivo_cer)));
                 
 				if ($order_tot->total_discounts != null || $order_tot->total_discounts != 0) {
 					$arr_xml_cargar['@attributes']['Descuento'] = number_format( $order_tot->total_discounts , 2, '.', '');
@@ -819,12 +821,14 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 				
 				$arr_xml_cargar['@attributes']['Moneda'] = 'MXN'; //codigo postal
 				$arr_xml_cargar['@attributes']['LugarExpedicion'] = '11870'; //codigo postal
-
+				
 				//se insertan los descuentos según el porcentaje del valor de cada producto por aparte
 				$cant_prods = 0;
 				foreach ( $list_products as $key_prod => $value ) {
 					if( $list_products[$key_prod]['unit_price_tax_excl'] != 0 ){
 						$base = number_format( $list_products[$key_prod]['total_price_tax_excl'], 2, '.', '' );
+						$conceptoTemporal = $arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods];
+						$infoConceptos .= $conceptoTemporal['@attributes']['ClaveProdServ']."|".$conceptoTemporal['@attributes']['NoIdentificacion']."|".$conceptoTemporal['@attributes']['Cantidad']."|H87|Pieza|".$conceptoTemporal['@attributes']['Descripcion']."|".$conceptoTemporal['@attributes']['ValorUnitario']."|".$conceptoTemporal['@attributes']['Importe']."|";
 						if ( $order_tot->total_discounts != null || $order_tot->total_discounts != 0 ) {
 							$descuentoConcepto = number_format( $order_tot->total_discounts*( $base/$arr_xml_cargar['@attributes']['SubTotal'] ), 2, '.', '' );
 							$totalDescuentoConceptos += $descuentoConcepto;
@@ -832,92 +836,97 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 								$descuentoConcepto = number_format( $descuentoConcepto, 2, '.', '' )-( $totalDescuentoConceptos-$order_tot->total_discounts );
 							}
 							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Descuento'] = number_format( $descuentoConcepto, 2, '.', '' );
+							$infoConceptos .= number_format( $descuentoConcepto, 2, '.', '' )."|";
 						}
+						$infoConceptos .= $conceptoTemporal['@attributes']['Base']."|002|Tasa|".$conceptoTemporal['@attributes']['TasaOCuota']."|".['@attributes']['Importe']."|";
 						$cant_prods++;
 					}
 				}
-
-					$arr_xml_cargar['ar6to67be_Emisor']['@attributes']['Rfc'] = $this->RFCEmisor;
-					$arr_xml_cargar['ar6to67be_Emisor']['@attributes']['Nombre'] = $this->RFCEmisor_nombre;
-					$arr_xml_cargar['ar6to67be_Emisor']['@attributes']['RegimenFiscal'] = '601';
-
-
-
+				
+				$arr_xml_cargar['ar6to67be_Emisor']['@attributes']['Rfc'] = $this->RFCEmisor;
+				$arr_xml_cargar['ar6to67be_Emisor']['@attributes']['Nombre'] = $this->RFCEmisor_nombre;
+				$arr_xml_cargar['ar6to67be_Emisor']['@attributes']['RegimenFiscal'] = '601';
+				
+				
+				
+				/********     ASIGNAR    RFC    DE    COMPRA    CON    FACTURA   is_rfc  ********/
+				
+				$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['UsoCFDI'] = 'G01';       
+				$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Rfc'] = 'XAXX010101000';
+				$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] = 'MOSTRADOR';
+				
+				
+				if ( $this->stripAccents( $invoice_address->firstname ) != '' && $this->stripAccents( $invoice_address->firstname ) != null ) {
+					
+					$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] =  $this->trim_all($this->stripAccents( $invoice_address->firstname )); //'Nombre del Receptor';
+					
+				}
+				
+				if (  $this->stripAccents( $invoice_address->lastname ) != '' &&  $this->stripAccents( $invoice_address->lastname ) != null ) {
+					
+					if ( $arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] != '' ) {
+						
+						$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] .= " ". $this->trim_all( $this->stripAccents( $invoice_address->lastname )); //'Nombre del Receptor';
+						
+					} else {
+						
+						$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] =  $this->trim_all( $this->stripAccents( $invoice_address->lastname )); //'Nombre del Receptor';
+						
+					}
+				}
+				
+				/***************************************************** CAMBIO PARA RFC ******************************************************************/
+				
+				
+				if ( isset( $invoice_address->id_customer ) && $invoice_address->id_customer != '' && $invoice_address->id_customer != null  ) {						
+					
+					$query = new DbQuery();
+					$query->select(' is_rfc, dni, alias, address1, cpp.nombre AS colonia_name, address2, postcode, firstname, lastname ');
+					$query->from('address', 'a');
+					$query->leftJoin('cod_postal', 'cpp', 'cpp.id_codigo_postal = a.id_colonia' );
+					$query->where(' a.id_customer = '.$invoice_address->id_customer. ' AND a.is_rfc = 1' );
+					$query->limit('1');
+					
+					if ( $dir_factura = Db::getInstance()->executeS($query) ) {
+						
 						/********     ASIGNAR    RFC    DE    COMPRA    CON    FACTURA   is_rfc  ********/
 						
-						$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['UsoCFDI'] = 'G01';       
-						$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Rfc'] = 'XAXX010101000';
-						$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] = 'MOSTRADOR';
-
-
-						if ( $this->stripAccents( $invoice_address->firstname ) != '' && $this->stripAccents( $invoice_address->firstname ) != null ) {
-
-							$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] =  $this->trim_all($this->stripAccents( $invoice_address->firstname )); //'Nombre del Receptor';
-
-						}
-
-						if (  $this->stripAccents( $invoice_address->lastname ) != '' &&  $this->stripAccents( $invoice_address->lastname ) != null ) {
-
-							if ( $arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] != '' ) {
-
-								$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] .= " ". $this->trim_all( $this->stripAccents( $invoice_address->lastname )); //'Nombre del Receptor';
-
-							} else {
-
-								$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] =  $this->trim_all( $this->stripAccents( $invoice_address->lastname )); //'Nombre del Receptor';
-
-							}
-						}
-
-						/***************************************************** CAMBIO PARA RFC ******************************************************************/
-
-
-						if ( isset( $invoice_address->id_customer ) && $invoice_address->id_customer != '' && $invoice_address->id_customer != null  ) {						
-
-							$query = new DbQuery();
-							$query->select(' is_rfc, dni, alias, address1, cpp.nombre AS colonia_name, address2, postcode, firstname, lastname ');
-							$query->from('address', 'a');
-							$query->leftJoin('cod_postal', 'cpp', 'cpp.id_codigo_postal = a.id_colonia' );
-							$query->where(' a.id_customer = '.$invoice_address->id_customer. ' AND a.is_rfc = 1' );
-							$query->limit('1');
-
-							if ( $dir_factura = Db::getInstance()->executeS($query) ) {
-
-								/********     ASIGNAR    RFC    DE    COMPRA    CON    FACTURA   is_rfc  ********/
+						if ( isset( $dir_factura[0]['is_rfc'] ) && $dir_factura[0]['is_rfc'] == 1 ) {
 							
-								if ( isset( $dir_factura[0]['is_rfc'] ) && $dir_factura[0]['is_rfc'] == 1 ) {
-
-									$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Rfc'] = strtoupper( $dir_factura[0]['dni'] );
-
-									$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] = 'MOSTRADOR';
-
-
-									if (  $this->stripAccents( $dir_factura[0]['alias'] ) != '' &&  $this->stripAccents( $dir_factura[0]['alias'] ) != null ) {
-										$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] = $this->trim_all( $this->stripAccents( $dir_factura[0]['alias'] ));
-									}
-
-								}							
+							$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Rfc'] = strtoupper( $dir_factura[0]['dni'] );
+							
+							$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] = 'MOSTRADOR';
+							
+							
+							if (  $this->stripAccents( $dir_factura[0]['alias'] ) != '' &&  $this->stripAccents( $dir_factura[0]['alias'] ) != null ) {
+								$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] = $this->trim_all( $this->stripAccents( $dir_factura[0]['alias'] ));
 							}
-						}
-
-						/********     ASIGNAR    RFC    DE    COMPRA    CON    FACTURA     ********/
-
+							
+						}							
+					}
+				}
+				
+				/********     ASIGNAR    RFC    DE    COMPRA    CON    FACTURA     ********/
+				
 				$arr_xml_cargar =  array_merge($arr_xml_cargar,$arr_xml_cargar_p); // UNIMOS ARRAY DE PRODUCTOS Y EL INICIAL DEL XML
 				$arr_xml_cargar['ar6to67be_Impuestos']['@attributes']['TotalImpuestosRetenidos'] = '0.00';
 				$arr_xml_cargar['ar6to67be_Impuestos']['@attributes']['TotalImpuestosTrasladados'] = $totalImportes;
-
+				
 				$cant_taxs = 0;
-
+				$infoTaxes = "";
+				
 				foreach ($array_ivas as $key => $value) {
 					if($value > 0){
 						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['Impuesto'] = '002';
 						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['TipoFactor'] = 'Tasa';
 						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['TasaOCuota'] = number_format($key/100, 6, '.', '');
 						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['Importe'] = $totalImportes;
+						$infoTaxes .= "002|Tasa|".$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['TasaOCuota']."|".$totalImportes."|";
 						$cant_taxs++;
 					}
-
+					
 				}
+				$this->cadena_original = "||3.3|".$arr_xml_cargar['@attributes']['Fecha']."|".$arr_xml_cargar['@attributes']['FormaPago']."|".$this->numero_certificado."|".$arr_xml_cargar['@attributes']['SubTotal']."|".$arr_xml_cargar['@attributes']['Descuento']."|MXN|".$arr_xml_cargar['@attributes']['Total']."|I|PUE|11870|".$this->RFCEmisor."|".$this->RFCEmisor_nombre."|601|".$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Rfc']."|".$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre']."|G01|".$infoConceptos."0.00|".$infoTaxes.$totalImportes."||";
 
 				$serie='C';
 				$folio='2000';
@@ -1087,7 +1096,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 									$contenido_fichero = str_replace("<","&amp;lt;",$contenido_fichero);
 									$contenido_fichero = str_replace(">","&amp;gt;",$contenido_fichero);
 									$contenido_fichero = str_replace('"','&amp;quot;',$contenido_fichero);
-
+*/
 
 /*
 
