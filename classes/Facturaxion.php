@@ -838,7 +838,9 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Descuento'] = number_format( $descuentoConcepto, 2, '.', '' );
 							$infoConceptos .= number_format( $descuentoConcepto, 2, '.', '' )."|";
 						}
-						$infoConceptos .= $conceptoTemporal['@attributes']['Base']."|002|Tasa|".$conceptoTemporal['@attributes']['TasaOCuota']."|".['@attributes']['Importe']."|";
+						if($list_products[$key_prod]['tax_rate'] != '0.000'){
+							$infoConceptos .= $conceptoTemporal['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Base']."|002|Tasa|".$conceptoTemporal['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['TasaOCuota']."|".$conceptoTemporal['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Importe']."|";
+						}
 						$cant_prods++;
 					}
 				}
