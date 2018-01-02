@@ -11,6 +11,17 @@ include($path.'/../init.php');
 include_once($path."/../tools/phpexcel/PHPExcel.php");
 require_once $path."/../tools/phpexcel/PHPExcel/IOFactory.php";
 
+$nombreasegurado = Tools::getValue("nombre");
+$num_auto = Tools::getValue("num_auto");
+$coaseg = Tools::getValue("coaseg");
+$products = Tools::getValue("products");
+/* 
+products[0][cod]
+products[0][qty]
+*/
+$otros = Tools::getValue("otros");
+
+/*
 $num_poliza = Tools::getValue("num_poliza");
 $num_sini = Tools::getValue("num_sini");
 $num_auto = Tools::getValue("num_auto");
@@ -19,10 +30,38 @@ $direccion_prov = Tools::getValue("direccion");
 $telefono_prov = Tools::getValue("telefono");
 $email_prov = Tools::getValue("email");
 $products = Tools::getValue("products");
- 
+*/
+/*
+echo "POST\r\n<hr>";
+print_r($_POST);
+echo "FILES\r\n<hr>";
+print_r($_FILES);
+echo "Attachment<hr>";
+print_r($_FILES["_attachments"]);
+echo "\r\n<hr>";
+
+echo " ---".$check = getimagesize($_FILES["_attachments"]["tmp_name"]);
+*/
 
 header("Access-Control-Allow-Origin: *");
 header('Content-Type: application/json');
+
+$fileok = 0;
+
+if ( isset($_FILES) && isset($_FILES["_attachments"]) && $_FILES["_attachments"]["error"] == 0 ) {
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mime = finfo_file($finfo, $_FILES['_attachments']['tmp_name']);
+
+    if ( $mime != "application/pdf" && $mime != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" &&  $mime != "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ) {
+        echo json_encode('El archivo adjunto no tiene un formato Valido <br>( .pdf, .doc, .xlsx, .docx) ');
+        exit;
+    } else { 
+      $fileok = 1;
+    }
+}
+
+
+
 
 $objPHPExcel = new PHPExcel();
 $sheet_number = 0;
@@ -39,7 +78,40 @@ $sheet_reg = 0;
               'bold' => true
           )
   );
- 
+
+  $objPHPExcel->getActiveSheet()->getStyle('A1:A6')->getFont()->setBold(true);
+  $objPHPExcel->getActiveSheet()->getStyle('B6:E6')->getFont()->setBold(true);
+  $objPHPExcel->getActiveSheet()->getStyle('A6:E6')->applyFromArray($style);
+  $objPHPExcel->getActiveSheet()->getCell("A1")->setValue(' Nombre del Asegurado ');
+  $objPHPExcel->getActiveSheet()->getCell("A2")->setValue(' Número de Autorización ');
+  $objPHPExcel->getActiveSheet()->getCell("A3")->setValue(' Coaseguro ');
+  $objPHPExcel->getActiveSheet()->getCell("A4")->setValue(' Otros productos autorizados ');
+ /* $objPHPExcel->getActiveSheet()->getCell("A5")->setValue('Dirección ');
+  $objPHPExcel->getActiveSheet()->getCell("A6")->setValue('Email ');
+  $objPHPExcel->getActiveSheet()->getCell("A7")->setValue('Teléfono ');
+  */
+  $objPHPExcel->getActiveSheet()->getCell("A6")->setValue('cod Producto ');
+  $objPHPExcel->getActiveSheet()->getCell("B6")->setValue('Cantidad ');
+
+  //$objPHPExcel->getActiveSheet()->getCell("c8")->setValue('Cantidad ');  
+  
+  $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(33);
+  $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(33);
+  //$objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(15);
+  $objPHPExcel->getActiveSheet()->setTitle($sheet_name);  
+
+  $objPHPExcel->getActiveSheet()->setCellValue('B1', $nombreasegurado);
+  $objPHPExcel->getActiveSheet()->setCellValue('B2', $num_auto);
+  $objPHPExcel->getActiveSheet()->setCellValue('B3', $coaseg);
+  $objPHPExcel->getActiveSheet()->setCellValue('B4', $otros);
+  /*
+  $objPHPExcel->getActiveSheet()->setCellValue('B5', $direccion_prov);
+  $objPHPExcel->getActiveSheet()->setCellValue('B6', $email_prov);
+  $objPHPExcel->getActiveSheet()->setCellValue('B7', $telefono_prov);
+*/
+
+
+ /*
   $objPHPExcel->getActiveSheet()->getStyle('A1:A6')->getFont()->setBold(true);
   $objPHPExcel->getActiveSheet()->getStyle('B6:E6')->getFont()->setBold(true);
   $objPHPExcel->getActiveSheet()->getStyle('A6:E6')->applyFromArray($style);
@@ -67,12 +139,15 @@ $sheet_reg = 0;
   $objPHPExcel->getActiveSheet()->setCellValue('B5', $direccion_prov);
   $objPHPExcel->getActiveSheet()->setCellValue('B6', $email_prov);
   $objPHPExcel->getActiveSheet()->setCellValue('B7', $telefono_prov);
+  */
+
+
   $line = 7;
    
- foreach ( $product as $product_pr) {  
+ foreach ( $products as $product_pr) {  
  //print_r($dataprov);
-  $objPHPExcel->getActiveSheet()->setCellValue('B'.$line, $product_pr['cod']);
-  $objPHPExcel->getActiveSheet()->setCellValue('D'.$line, $product_pr['qty']);
+  $objPHPExcel->getActiveSheet()->setCellValue('A'.$line, $product_pr['cod']);
+  $objPHPExcel->getActiveSheet()->setCellValue('B'.$line, $product_pr['qty']);
   $line ++;
  }  
   
@@ -97,7 +172,7 @@ try {
     $mail = new PHPMailer(true); //New instance, with exceptions enabled
 
     //$body             = file_get_contents('contents.html');
-    $body             = '<b>¡Nueva Cotización Mayorista!'
+    $body             = '<b>¡Nueva Solicitud Medicamentos AXA!'
                           . '<br> Revisar adjunto</b>'; 
 
     $mail->IsSMTP();                           // tell the class to use SMTP
@@ -110,30 +185,33 @@ try {
 
     $mail->IsSendmail(); 
 
-    $mail->AddReplyTo("contacto@farmalisto.com.mx");
-    $mail->AddCC("leidy.castiblanco@farmalisto.com.co");
+    $mail->AddReplyTo("socialmedia@farmalisto.com.co");
+    $mail->AddCC("jessica.radilla@farmalisto.com.mx");
 
     $mail->From       = "socialmedia@farmalisto.com.co";
     $mail->FromName   = "Farmalisto Mexico";
 
     $to = "ventasmayoreo@farmalisto.com.mx";
+    //$to = "ewing.vasquez@farmalisto.com.co";
 
     $mail->AddAddress($to);
 
     $mail->Subject  = 'Formulario AXA'.$email_prov;
 
     $mail->AltBody    = ""; // optional, comment out and test
-    $mail->AddAttachment("ventas_por_mayoreo.xls", "ventas_por_mayoreo.xls");
+    $mail->AddAttachment("cotizaciones_axa.xls", "solicitd_ventas_por_mayoreo_axa.xls");
        $mail->WordWrap   = 80; // set word wrap
-
+    if( $fileok == 1 ) {
+      $mail->AddAttachment($_FILES["_attachments"]["tmp_name"] , $_FILES["_attachments"]["name"]);
+    }
     $mail->MsgHTML($body);
 
     $mail->IsHTML(false); // send as HTML
 
     $mail->Send();
 
-    echo json_encode('Su cotización ha sido enviada.');
+    echo json_encode('Su Solicitud ha sido enviada.');
 
     } catch (phpmailerException $e) {
-    echo $e->errorMessage();
+    echo json_encode( $e->errorMessage() );
 }  

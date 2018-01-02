@@ -228,7 +228,7 @@ class ParentOrderController extends ParentOrderControllerCore  {
         parent::setMedia();
 
         if (Module::isEnabled('quantitydiscountpro') && ((int)(Configuration::get('PS_BLOCK_CART_AJAX')) || Configuration::get('PS_ORDER_PROCESS_TYPE') == 1 || Tools::getValue('step') == 2)) {
-            $this->addJS(_MODULE_DIR_.'quantitydiscountpro/views/js/qdp.js');
+            $this->addJS(_MODULE_DIR_.'quantitydiscountpro/views/js/qdp.js',true);
         }
     }
 

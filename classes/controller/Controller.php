@@ -43,6 +43,11 @@ abstract class ControllerCore
 	 * @var array list of javascript files
 	 */
 	public $js_files = array();
+        
+        /**
+ 	 * @var array list of javascript files footer
+ 	 */
+ 	public $js_files_footer = array();
 
 	/**
 	 * @var bool check if header will be displayed
@@ -265,20 +270,30 @@ abstract class ControllerCore
 	 * @param mixed $js_uri
 	 * @return void
 	 */
-	public function addJS($js_uri)
+	public function addJS($js_uri, $footer = false)
 	{
 		if (is_array($js_uri))
 			foreach ($js_uri as $js_file)
 			{
 				$js_path = Media::getJSPath($js_file);
-				if ($js_path && !in_array($js_path, $this->js_files))
-					$this->js_files[] = $js_path;
+				if($footer) {
+                                    if ($js_path && !in_array($js_path, $this->js_files_footer))
+                                        $this->js_files_footer[] = $js_path;
+                                 } else {
+                                    if ($js_path && !in_array($js_path, $this->js_files))
+                                        $this->js_files[] = $js_path;
+                                 }
 			}
 		else
 		{
 			$js_path = Media::getJSPath($js_uri);
-			if ($js_path)
-				$this->js_files[] = $js_path;
+			if ($js_path) {
+                            if($footer) {
+ 				$this->js_files_footer[] = $js_path;
+                            } else {
+                                $this->js_files[] = $js_path;
+                            }
+                         }
 		}
 	}
 

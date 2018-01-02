@@ -1,69 +1,58 @@
 <?php
 /**
- * StorePrestaModules SPM LLC.
+ * 2011 - 2017 StorePrestaModules SPM LLC.
+ *
+ * MODULE fbloginblock
+ *
+ * @author    SPM <kykyryzopresto@gmail.com>
+ * @copyright Copyright (c) permanent, SPM
+ * @license   Addons PrestaShop license limitation
+ * @version   1.7.7
+ * @link      http://addons.prestashop.com/en/2_community-developer?contributor=61669
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the EULA
- * that is bundled with this package in the file LICENSE.txt.
- *
- /*
- * 
- * @author    StorePrestaModules SPM
- * @category social_networks
- * @package fbloginblock
- * @copyright Copyright StorePrestaModules SPM
- * @license   StorePrestaModules SPM
+ * Don't use this module on several shops. The license provided by PrestaShop Addons
+ * for all its modules is valid only once for a single shop.
  */
 
-include(dirname(__FILE__).'/../../config/config.inc.php');
-	include(dirname(__FILE__).'/../../init.php');
+include_once(dirname(__FILE__).'/../../config/config.inc.php');
+include_once(_PS_ROOT_DIR_.'/init.php');
 
-	require_once(dirname(__FILE__).'/backward_compatibility/backward.php');
-	
-	
-    include_once dirname(__FILE__).'/lib/oAuth/linkedinoAuth.php';
-    include_once dirname(__FILE__).'/classes/linkedinhelp.class.php';
-    
-    $name_module = "fbloginblock";
-	$http_referer = isset($_REQUEST['http_referer'])?$_REQUEST['http_referer']:'';
-	
-	$cookie = new Cookie('ref');
-	$cookie->http_referer_custom = $http_referer;
-	
-	
-	$lapikey = Configuration::get($name_module.'lapikey');
-	$lapikey = trim($lapikey);
-	$lsecret = Configuration::get($name_module.'lsecret');
-	$lsecret = trim($lsecret);
-	
-	$data = array(
-				  'access' => $lapikey,
-				  'secret' => $lsecret, 
-				);
-	
-				
-	//var_dump($data); exit;			
-	$linkedinhelp = new linkedinhelp();			
-    $_http_host = $linkedinhelp->getBaseUrlCustom();
-				
-				
-	$config = $data;
-	
-	if(Tools::strlen($config['access'])==0 || Tools::strlen($config['secret'])==0)
-	 die("Error: Please fill LinkedIn API Key and LinkedIn Secret Key in the settings of the module.");
-	
-    # First step is to initialize with your consumer key and secret. We'll use an out-of-band oauth_callback
-    $linkedin = new LinkedIn($config['access'], $config['secret'], $_http_host . 'modules/'.$name_module.'/linkedinauth.php' );
-	//    $linkedin->debug = true;
 
-    # Now we retrieve a request token. It will be set as $linkedin->request_token
-    $linkedin->getRequestToken();
-    $_SESSION['requestToken'] = serialize($linkedin->request_token);
-  
-    # With a request token in hand, we can generate an authorization URL, which we'll direct the user to
-    ## echo "Authorization URL: " . $linkedin->generateAuthorizeUrl() . "\n\n";
-    $url = $linkedin->generateAuthorizeUrl();
-   	Tools::redirect($url);
+$name_module = 'fbloginblock';
+
+if (version_compare(_PS_VERSION_, '1.7', '<')){
+    require_once(_PS_MODULE_DIR_.$name_module.'/backward_compatibility/backward.php');
+}
+
+
+if(version_compare(_PS_VERSION_, '1.7', '>')) {
+    require_once(_PS_MODULE_DIR_.$name_module. '/backward_compatibility/backward_functions.php');
+    session_start_fbloginblock();
+}
+
+
+	
+    $http_referer = isset($_REQUEST['http_referer'])?$_REQUEST['http_referer']:'';
+	
+    	if (version_compare(_PS_VERSION_, '1.5', '>')){
+			$cookie = new Cookie('ref');
+			$cookie->http_referer_custom = $http_referer;
+		}
+
+
+    include_once(_PS_MODULE_DIR_.$name_module.'/fbloginblock.php');
+    $obj_fbloginblock_ps14_13 = new fbloginblock();
+    $obj_fbloginblock_ps14_13->setCookieForPrestashop14_13();
+
+
+
+
+    include_once(_PS_MODULE_DIR_.$name_module.'/classes/linkedinhelp.class.php');
+	$obj = new linkedinhelp();
+	$obj->linkedinLogin();
+	
+	
    
 ?>

@@ -1649,8 +1649,8 @@ class CsMegaMenu extends Module
 			'CS_MEGA_MENU' => Hook::Exec('csmegamenu')
 		));
 		$this->context->controller->addCSS(($this->_path).'css/csmegamenu_front.css', 'all');
-		$this->context->controller->addJS(($this->_path).'js/csmegamenu_front.js');
-		$this->context->controller->addJS(($this->_path).'js/csmegamenu_addmore.js');
+		$this->context->controller->addJS(($this->_path).'js/csmegamenu_front.js',true);
+		$this->context->controller->addJS(($this->_path).'js/csmegamenu_addmore.js',true);
 	}
 	
 	function hookCsMegaMenu($params)

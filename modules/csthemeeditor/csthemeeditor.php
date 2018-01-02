@@ -398,11 +398,11 @@ class CsThemeEditor extends Module
 		$this->context->controller->addCss($this->_path.'css/colorpicker.css', 'all');
 		$this->context->controller->addCss($this->_path.'css/admin/style.css', 'all');
 		$this->context->controller->addCss($this->_path.'css/admin/tab.css', 'all');
-		$this->context->controller->addJs($this->_path.'js/colorpicker.js');
-		$this->context->controller->addJs($this->_path.'js/eye.min.js');
-		$this->context->controller->addJs($this->_path.'js/utils.js');
-		$this->context->controller->addJs($this->_path.'js/admin/csthemeeditor.js');
-		$this->context->controller->addJS($this->_path.'js/admin/tab.js');
+		$this->context->controller->addJs($this->_path.'js/colorpicker.js',true);
+		$this->context->controller->addJs($this->_path.'js/eye.min.js',true);
+		$this->context->controller->addJs($this->_path.'js/utils.js',true);
+		$this->context->controller->addJs($this->_path.'js/admin/csthemeeditor.js',true);
+		$this->context->controller->addJS($this->_path.'js/admin/tab.js',true);
 		if(!Configuration::get('CS_COLOR_TEMPLATE',null,Shop::getGroupFromShop($id_shop),$id_shop))
 			Configuration::updateValue('CS_COLOR_TEMPLATE','default',false,Shop::getGroupFromShop($id_shop),$id_shop);
 		$color_config = Configuration::get('CS_COLOR_TEMPLATE',null,Shop::getGroupFromShop($id_shop),$id_shop);
@@ -620,10 +620,10 @@ class CsThemeEditor extends Module
 		$this->_html .= '<script type="text/javascript" src="'.$this->_path.'config.js.php"></script>';
 		//$this->context->controller->addJS($this->_path.'js/frontend/jquery.cookie.js');
 		$this->context->controller->addCss($this->_path.'css/colorpicker.css', 'all');
-		$this->context->controller->addJs($this->_path.'js/colorpicker.js');
-		$this->context->controller->addJs($this->_path.'js/eye.min.js');
-		$this->context->controller->addJs($this->_path.'js/utils.js');
-		$this->context->controller->addJs($this->_path.'js/frontend/setconfig.js');
+		$this->context->controller->addJs($this->_path.'js/colorpicker.js',true);
+		$this->context->controller->addJs($this->_path.'js/eye.min.js',true);
+		$this->context->controller->addJs($this->_path.'js/utils.js',true);
+		$this->context->controller->addJs($this->_path.'js/frontend/setconfig.js',true);
 		if(in_array($color_tp,$this->color_list))
 			$path = dirname(__FILE__).'/settings/default/';
 		else

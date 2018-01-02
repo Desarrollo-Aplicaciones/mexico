@@ -1,35 +1,40 @@
 <?php
 /**
- * StorePrestaModules SPM LLC.
+ * 2011 - 2017 StorePrestaModules SPM LLC.
+ *
+ * MODULE fbloginblock
+ *
+ * @author    SPM <kykyryzopresto@gmail.com>
+ * @copyright Copyright (c) permanent, SPM
+ * @license   Addons PrestaShop license limitation
+ * @version   1.7.7
+ * @link      http://addons.prestashop.com/en/2_community-developer?contributor=61669
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the EULA
- * that is bundled with this package in the file LICENSE.txt.
- *
- /*
- * 
- * @author    StorePrestaModules SPM
- * @category social_networks
- * @package fbloginblock
- * @copyright Copyright StorePrestaModules SPM
- * @license   StorePrestaModules SPM
+ * Don't use this module on several shops. The license provided by PrestaShop Addons
+ * for all its modules is valid only once for a single shop.
  */
 
+include_once(dirname(__FILE__).'/../lib/twitteroauth/twitteroauth.php');
+ 
 class twitter {
-	 private $consumer_key;
+	private $consumer_key;
     private $consumer_secret;
     private $oauth_callback;
     private $_http_host;
     private $_http_referer;
     private $_name;
+    private $_redirect_url;
+
+    private $_social_type = 2;
     
     
 	
-	public function __construct($data){
-		$this->consumer_key = $data['key'];
-		$this->consumer_secret = $data['secret'];
-		$this->oauth_callback = $data['callback'];
+	public function __construct($data = null){
+		$this->consumer_key = isset($data['key'])?$data['key']:'';
+		$this->consumer_secret = isset($data['secret'])?$data['secret']:'';
+		$this->oauth_callback = isset($data['callback'])?$data['callback']:'';
 		$this->_http_referer = isset($data['http_referer'])?$data['http_referer']:'';
 
 		$this->_name = "fbloginblock";
@@ -37,14 +42,21 @@ class twitter {
 		if(version_compare(_PS_VERSION_, '1.6', '>')){
 			$this->_http_host = Tools::getShopDomainSsl(true, true).__PS_BASE_URI__; 
 		} else {
-			$this->_http_host = _PS_BASE_URL_.__PS_BASE_URI__;
+			$this->_http_host = _PS_BASE_URL_SSL_.__PS_BASE_URI__;
 		}
 		
-	
-		if (version_compare(_PS_VERSION_, '1.5', '<')){
-			require_once(_PS_MODULE_DIR_.$this->_name.'/backward_compatibility/backward.php');
-		}
-	
+		
+		include_once _PS_MODULE_DIR_.$this->_name.'/'.$this->_name.'.php';
+		$obj_module = new $this->_name();
+		$this->_redirect_url = $obj_module->getRedirectURL(array('typelogin'=>'twitter'));
+
+        if (version_compare(_PS_VERSION_, '1.7', '<')){
+            require_once(_PS_MODULE_DIR_.$this->_name.'/backward_compatibility/backward.php');
+        }
+
+        if(version_compare(_PS_VERSION_, '1.7', '>')) {
+            require_once(_PS_MODULE_DIR_ . $this->_name . '/backward_compatibility/backward_functions.php');
+        }
 	
 		$this->initContext();
 	}
@@ -56,12 +68,22 @@ class twitter {
 	
 	public function translite($str){
 	
-	static $tbl= array(
-		' '=>"",'('=>'',')'=>'',','=>'','.'=>'','-'=>'','_'=>'',
-		'+'=>'','&'=>'',1=>'',2=>'',3=>'',4=>'',5=>'',6=>'',7=>'',8=>'',9=>''
-	);
 
-    return strtr($str, $tbl);
+    
+    $str  = str_replace(array('@','"','№','\\','%',';',"®","'",'"','`','?','!','.','=',':','&','+',',','’', ')', '(', '$', '{', '}','/', "\\",'#','\'','#174;','#39;','#160;','#246;','™','&amp;','amp;'), array(''), $str );
+		
+	$arrru = array ("А","а","Б","б","В","в","Г","г","Д","д","Е","е","Ё","ё","Ж","ж","З","з","И","и","Й","й","К","к","Л","л","М","м","Н","н", "О","о","П","п","Р","р","С","с","Т","т","У","у","Ф","ф","Х","х","Ц","ц","Ч","ч","Ш","ш","Щ","щ","Ъ","ъ","Ы","ы","Ь", "ь","Э","э","Ю","ю","Я","я",
+    " ","-",",","«","»","+","/","(",")",".");
+		
+    $arren = array ("a","a","b","b","v","v","g","g","d","d","e","e","e","e","zh","zh","z","z","i","i","y","y","k","k","l","l","m","m","n","n", "o","o","p","p","r","r","s","s","t","t","u","u","ph","f","h","h","c","c","ch","ch","sh","sh","sh","sh","","","i","i","","","e", "e","yu","yu","ya","ya",
+    		"-","-","","","","","","","","","");
+    
+    $textout = '';
+    $textout = str_replace($arrru,$arren,$str);
+    
+    $textout = str_replace(array('--','-','_'),array(''),$textout);
+    return Tools::strtolower($textout);
+    
 	}
 	
 	 private function deldigit($str){
@@ -75,185 +97,8 @@ class twitter {
     }
     
 	
-	public function createTwitterUser($_data){
-				
-			$twitter_id = $_data->id;
-			
-			//// create new user ////
-			$gender = 2;
-			$id_default_group = (int)Configuration::get($this->_name.'defaultgroup');
- 			
-			$firstname = $this->deldigit(pSQL($this->translite($_data->name)));
-			$lastname = $this->deldigit(pSQL($this->translite($_data->name)));
-			#### show popup for twitter customer which not changed email address  #####
-			$email = Tools::strtolower($this->translite($_data->name))."@twitter.com";
-			#### show popup for twitter customer which not changed email address  #####
 
-			// generate passwd
-			srand((double)microtime()*1000000);
-			$passwd = Tools::substr(uniqid(rand()),0,12);
-			$real_passwd = $passwd; 
-			$passwd = md5(pSQL(_COOKIE_KEY_.$passwd)); 
-			
-			$last_passwd_gen = date('Y-m-d H:i:s', strtotime('-'.Configuration::get('PS_PASSWD_TIME_FRONT').'minutes'));
-			$secure_key = md5(uniqid(rand(), true));
-			$active = 1;
-			$date_add = date('Y-m-d H:i:s'); //'2011-04-04 18:29:15';
-			$date_upd = $date_add;
-			
-		
-			if(version_compare(_PS_VERSION_, '1.5', '>')){
-				
-			$id_shop_group = (int)Configuration::get($this->_name.'defaultgroup');
-				if(!$id_shop_group)
-					$id_shop_group = Context::getContext()->shop->id_shop_group;
-				
-			$sql = 'insert into `'._DB_PREFIX_.'customer` SET
-						id_shop = '.(int)$this->getIdShop().', id_shop_group = '.(int)$id_shop_group.',
-						id_gender = '.(int)$gender.', id_default_group = '.(int)$id_default_group.',
-						firstname = \''.pSQL($firstname).'\', lastname = \''.pSQL($lastname).'\',
-						email = \''.pSQL($email).'\', passwd = \''.pSQL($passwd).'\',
-						last_passwd_gen = \''.pSQL($last_passwd_gen).'\',
-						secure_key = \''.pSQL($secure_key).'\', active = '.(int)$active.',
-						date_add = \''.pSQL($date_add).'\', date_upd = \''.pSQL($date_upd).'\' ';
-			
-			} else {
 
-			$sql = 'insert into `'._DB_PREFIX_.'customer` SET
-							id_gender = '.(int)$gender.', id_default_group = '.(int)$id_default_group.',
-							firstname = \''.pSQL($firstname).'\', lastname = \''.pSQL($lastname).'\',
-							email = \''.pSQL($email).'\', passwd = \''.pSQL($passwd).'\',
-							last_passwd_gen = \''.pSQL($last_passwd_gen).'\',
-							secure_key = \''.pSQL($secure_key).'\', active = '.(int)$active.',
-							date_add = \''.pSQL($date_add).'\', date_upd = \''.pSQL($date_upd).'\' ';
-			
-			}
-			
-			Db::getInstance()->Execute($sql);
-			
-			$insert_id = Db::getInstance()->Insert_ID();
-			
-			// insert record in customer group
-			$id_group = (int)Configuration::get($this->_name.'defaultgroup');
-			
-			$sql = 'INSERT into `'._DB_PREFIX_.'customer_group` SET 
-						   id_customer = '.(int)$insert_id.', id_group = '.(int)$id_group.' ';
-			Db::getInstance()->Execute($sql);
-			
-			
-			// insert record into customerXfacebook table
-			$sql_exists= 'SELECT `user_id`
-					FROM `'._DB_PREFIX_.'tw_customer`
-					WHERE `twitter_id` = '.(int)($twitter_id).' AND id_shop = '.(int)$this->getIdShop().'
-					LIMIT 1';
-			$result_exists = Db::getInstance()->ExecuteS($sql_exists);
-			$user_id = isset($result_exists[0]['user_id'])?$result_exists[0]['user_id']:0;
-			if($user_id){
-				$sql_del = 'DELETE FROM `'._DB_PREFIX_.'tw_customer` WHERE `user_id` = '.(int)($user_id).' 
-							AND id_shop = '.(int)$this->getIdShop().'';
-				Db::getInstance()->Execute($sql_del);
-			}
-			
-			$sql = 'INSERT into `'._DB_PREFIX_.'tw_customer` SET
-						   user_id = '.(int)$insert_id.', twitter_id = '.(int)$twitter_id.' , id_shop = '.(int)$this->getIdShop().'';
-			Db::getInstance()->Execute($sql);
-			//// end create new user ///
-			
-			
-			
-			// auth customer
-			$cookie = $this->context->cookie;
-			$customer = new Customer();
-	        $authentication = $customer->getByEmail(trim($email), trim($real_passwd));
-	        if (!$authentication OR !$customer->id) {
-	        	//$status = 'error';
-				echo 'authentication failed!';
-	        }
-	        else
-	        {
-	            $cookie->id_customer = (int)($customer->id);
-	            $cookie->customer_lastname = $customer->lastname;
-	            $cookie->customer_firstname = $customer->firstname;
-	            $cookie->logged = 1;
-	            $cookie->passwd = $customer->passwd;
-	            $cookie->email = $customer->email;
-	            
-	             ### add customer to statistics ###
-	            include_once(dirname(__FILE__).'/statisticshelp.class.php');
-    			$obj_help = new statisticshelp();
-    			$obj_help->addCustomerToStatistics(
-    												array('customer_id'=>$customer->id,
-    													  'email'=>$customer->email,
-    												      'id_shop'=>$this->getIdShop(),
-    													  'type'=>2,
-    													  )
-    											   );
-    			### add customer to statistics ###
-    			
-	            
-	            if (Configuration::get('PS_CART_FOLLOWING') AND (empty($cookie->id_cart) OR Cart::getNbProducts($cookie->id_cart) == 0))
-	                $cookie->id_cart = (int)(Cart::lastNoneOrderedCart((int)($customer->id)));
-		        if(version_compare(_PS_VERSION_, '1.5', '>')){
-					Hook::exec('actionAuthentication');
-				} else {
-				    Module::hookExec('authentication');
-				}
-	        }
-			
-			
-	}
-	
-	public function loginTwitterUser($_data){
-
-			
-			$twitter_id = $_data->id;
-			$cookie = $this->context->cookie;
-			// authentication
-			
-			if(version_compare(_PS_VERSION_, '1.5', '>')){
-			$sql = '
-	        	SELECT c.* FROM `'._DB_PREFIX_   .'customer` c 
-	        		left join '._DB_PREFIX_.'tw_customer tc
-	        		on(tc.user_id = c.id_customer)
-		        WHERE c.`active` = 1 AND tc.`twitter_id` = '.(int)($twitter_id).'  AND c.id_shop = '.(int)$this->getIdShop().'
-		        AND tc.id_shop = '.(int)$this->getIdShop().'
-		        AND c.`deleted` = 0 '.(defined('_MYSQL_ENGINE_')?'AND c.`is_guest` = 0':'').'
-		        ';
-			} else {
-				$sql = '
-	        	SELECT c.* FROM `'._DB_PREFIX_   .'customer` c 
-	        		left join '._DB_PREFIX_.'tw_customer tc
-	        		on(tc.user_id = c.id_customer)
-		        WHERE c.`active` = 1 AND tc.`twitter_id` = '.(int)($twitter_id).'
-		        AND c.`deleted` = 0 '.(defined('_MYSQL_ENGINE_')?'AND c.`is_guest` = 0':'').'
-		        ';
-			}
-			$result = Db::getInstance()->GetRow($sql);
-			
-			if ($result){
-			    $customer = new Customer();
-			    
-			    $customer->id = $result['id_customer'];
-		        foreach ($result AS $key => $value)
-		            if (key_exists($key, $customer))
-		                $customer->{$key} = $value;
-	        }
-	        
-	        $cookie->id_customer = (int)($customer->id);
-	        $cookie->customer_lastname = $customer->lastname;
-	        $cookie->customer_firstname = $customer->firstname;
-	        $cookie->logged = 1;
-	        $cookie->passwd = $customer->passwd;
-	        $cookie->email = $customer->email;
-	        if (Configuration::get('PS_CART_FOLLOWING') AND (empty($cookie->id_cart) 
-	        	OR Cart::getNbProducts($cookie->id_cart) == 0))
-	            $cookie->id_cart = (int)(Cart::lastNoneOrderedCart((int)($customer->id)));
-			if(version_compare(_PS_VERSION_, '1.5', '>')){
-				Hook::exec('actionAuthentication');
-			} else {
-			       	Module::hookExec('authentication');
-			}
-	}
 	
 	public function connect(){
 		
@@ -285,14 +130,18 @@ class twitter {
 	}
 	
 	public function callback(){
-		
+
+        $prefix_uri = '?';
+        if(version_compare(_PS_VERSION_, '1.6', '>')){
+            $prefix_uri = "&";
+        }
+
 	 	if (isset($_REQUEST['oauth_token']) && $_SESSION['oauth_token'] !== $_REQUEST['oauth_token']) {
           $_SESSION['oauth_status'] = 'oldtoken';
-	 	  if(defined('_MYSQL_ENGINE_')){
-          	 $this->_redirect($this->_http_host.'modules/'.$this->_name.'/twitter.php?action=connect');
-          } else {
-          	 $this->_redirect($this->_http_host.'twitter.php?action=connect');
-          }
+          
+          
+          $this->_redirect($this->_redirect_url.$prefix_uri.'action=connect');
+	 	  
           
         }
 
@@ -314,23 +163,21 @@ class twitter {
         if (200 == $connection->http_code) {
           /* The user has been verified and the access tokens can be saved for future use */
           $_SESSION['status'] = 'verified';
-          if(defined('_MYSQL_ENGINE_')){
-          	  $this->_redirect($this->_http_host.'modules/'.$this->_name.'/twitter.php?action=login');
-          } else {
-          	 $this->_redirect($this->_http_host.'twitter.php?action=login');
-          }
+         
+          
+          $this->_redirect($this->_redirect_url.$prefix_uri.'action=login');
          
         } else {
           /* Save HTTP status for error dialog on connnect page.*/
-            if(defined('_MYSQL_ENGINE_')){
-          		 $this->_redirect($this->_http_host.'modules/'.$this->_name.'/twitter.php?action=connect');
-        	 } else {
-        	 	 $this->_redirect($this->_http_host.'twitter.php?action=connect');
-        	 }
+
+            $this->_redirect($this->_redirect_url.$prefix_uri.'action=connect');
           
         }
 		
 	}
+	
+	
+	
 	
 	public function login(){
 		
@@ -351,17 +198,24 @@ class twitter {
 			   								$access_token['oauth_token_secret']);
 			      								
 			  /* If method is set change API call made. Test is called by default. */
-			  $content = $connection->get('account/verify_credentials'); 
+			  $content = $connection->get('account/verify_credentials',array('include_email' => 'true'));
+
+
+
 			  
 	  if ($content->id){
 			  		
 			  	$result = $this->checkExist($content->id);
+
+                $email_current = isset($content->email)?$content->email:null;
 			         
 			  	$result_dublicate = $this->checkForDublicate(
 			    	array(//'email'=>Tools::strtolower($this->translite($content->name))."@twitter.com"
 			    		 'id_customer'=>$result)
 			    );
 			    $exists_mail = $result_dublicate['exists_mail'];
+
+
 			        
 			    $auth = 0;
 				if($result && $exists_mail){
@@ -378,38 +232,43 @@ class twitter {
 					$auth = 1;
 			
 				}
-				
-				  if ($auth == 0){
-			         $this->createTwitterUser($content);
-			      } else {
-			          $this->loginTwitterUser($content);
-			      }
+
+                  ## add new functional for auth and create user ##
+                  $first_name = $this->deldigit(pSQL($this->translite($content->name)));
+                  $last_name = $this->deldigit(pSQL($this->translite($content->name)));
+                  if($auth == 1){
+                      $email = $result_dublicate['email'];
+                  } else {
+                      $email = null;
+                  }
+
+
+                  $data_profile = array(
+                      'email'=>isset($email_current)?$email_current:$email,
+                      'first_name'=>$first_name,
+                      'last_name'=>$last_name,
+
+
+                  );
+
+                    include_once _PS_MODULE_DIR_.$this->_name.'/classes/userhelp.class.php';
+                  $userhelp = new userhelp();
+                  $userhelp->userLog(
+                      array(
+                          'data_profile'=>$data_profile,
+                          'http_referer_custom'=>$this->_http_referer,
+                          'twitter_id'=>$content->id,
+                          'type'=>$this->_social_type,
+                          'auth'=>$auth,
+
+                      )
+                  );
+
+
+                  ## add new functional for auth and create user ##
+
+
 			      
-			      
-			      $http_referer =  $this->_http_referer; 
-			      
-			      
-			      if(Tools::strlen($http_referer)==0){
-			      	$cookie = new Cookie('ref');
-			      	
-			      	$http_referer = $cookie->http_referer_custom;
-			      	$cookie->http_referer_custom = '';
-			      }
-			      
-			 		
-			     require_once(dirname(__FILE__).'/../fbloginblock.php');
-		         $obj = new fbloginblock();
-		         $data_order_page = $obj->getOrderPage(array('http_referrer'=>$http_referer));
-		         $uri = $data_order_page['uri']; 
-		        
-			    
-			  	
-			       echo '<script>
-			      	  window.opener.location.href = \''.$this->_http_host.$uri.'\';
-			      	  window.opener.focus();
-			          window.close();
-			          
-			          </script>';
 			       
 			 }
 	}
@@ -431,26 +290,39 @@ public function checkForDublicate($data){
 			if(version_compare(_PS_VERSION_, '1.5', '>')){
 				$sql = '
 		        	SELECT * FROM `'._DB_PREFIX_   .'customer` 
-			        WHERE `active` = 1 AND `id_customer` = \''.(int)($data['id_customer']).'\' 
+			        WHERE `id_customer` = \''.(int)($data['id_customer']).'\'
 			        AND id_shop = '.(int)$this->getIdShop().' 
 			        AND `deleted` = 0 '.(@defined(_MYSQL_ENGINE_)?"AND `is_guest` = 0":"").'
 			        ';
 			} else {
 				$sql = '
 		        	SELECT * FROM `'._DB_PREFIX_   .'customer` 
-			        WHERE `active` = 1 AND `id_customer` = \''.(int)($data['id_customer']).'\'  
+			        WHERE `id_customer` = \''.(int)($data['id_customer']).'\'
 			        AND `deleted` = 0 '.(@defined(_MYSQL_ENGINE_)?"AND `is_guest` = 0":"").'
 			        ';
 			}
 			$result_exists_mail = Db::getInstance()->GetRow($sql);
+
+
+            ## if customer disabled ##
+            if(!empty($result_exists_mail) && $result_exists_mail['active'] == 0){
+                include_once(_PS_MODULE_DIR_.$this->_name.'/'.$this->_name.'.php');
+                $obj = new $this->_name();
+                $data_tr = $obj->translateCustom();
+                echo $data_tr['disabled'];exit;
+            }
+            ## if customer disabled ##
+
+            $email = isset($result_exists_mail['email'])?$result_exists_mail['email']:null;
+
 			if($result_exists_mail)
-				return array('exists_mail' => 1, 'user_id' => $result_exists_mail['id_customer']);
+				return array('exists_mail' => 1, 'email'=>$email, 'user_id' => $result_exists_mail['id_customer']);
 			else
-				return array('exists_mail' => 0, 'user_id' =>0);
+				return array('exists_mail' => 0, 'email'=>$email, 'user_id' =>0);
 		
 	}
 	
-private function getIdShop(){
+	private function getIdShop(){
     	if(version_compare(_PS_VERSION_, '1.5', '>')){
         	$id_shop = Context::getContext()->shop->id;
         } else {
@@ -462,7 +334,60 @@ private function getIdShop(){
     
     private function _redirect($url){
     
-          Tools::redirect($url);
+          redirect_custom_fbloginblock($url);
           
+    }
+    
+    
+    
+    public function twitterLogin($_data){
+    	
+    	$action = $_data['action'];
+
+
+        if(version_compare(_PS_VERSION_, '1.7', '>')) {
+            session_start_fbloginblock();
+        }
+    	
+    	switch($action){
+    		case 'callback':
+    			$this->callback();
+    			break;
+    		case 'connect':
+    			$this->connect();
+    			break;
+    		case 'login':
+    			$this->login();
+    			break;
+    		default:
+    			$this->login();
+    	
+    			
+    		break;
+    	}
+    }
+
+
+    public function insertCustomerXTwitter($data){
+
+        $twitter_id = $data['twitter_id'];
+        $insert_id = $data['insert_id'];
+        $id_shop = $data['id_shop'];
+
+        $sql_exists= 'SELECT `user_id`
+					FROM `'._DB_PREFIX_.'tw_customer`
+					WHERE `twitter_id` = '.(int)($twitter_id).' AND id_shop = '.(int)$id_shop.'
+					LIMIT 1';
+        $result_exists = Db::getInstance()->ExecuteS($sql_exists);
+        $user_id = isset($result_exists[0]['user_id'])?$result_exists[0]['user_id']:0;
+        if($user_id){
+            $sql_del = 'DELETE FROM `'._DB_PREFIX_.'tw_customer` WHERE `user_id` = '.(int)($user_id).'
+							AND id_shop = '.(int)$id_shop.'';
+            Db::getInstance()->Execute($sql_del);
+        }
+
+        $sql = 'INSERT into `'._DB_PREFIX_.'tw_customer` SET
+						   user_id = '.(int)$insert_id.', twitter_id = '.(int)$twitter_id.' , id_shop = '.(int)$id_shop.'';
+        Db::getInstance()->Execute($sql);
     }
 }

@@ -1,0 +1,10 @@
+.item-help-info{padding:0px 0px 5px 10px}
+.way-color{font-weight:bold;color:green;text-decoration:underline;margin-top:5px}
+
+
+.custom-social-button-5 i.fa-disqus::before{
+    content: url("../img/disqus-custom-micro-small.png")!important;
+
+}
+
+

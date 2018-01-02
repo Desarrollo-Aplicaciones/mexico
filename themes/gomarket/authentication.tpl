@@ -138,13 +138,12 @@ $(function(){ldelim}
 	<div class="contenedor" id="tercerHole_resp">
 		<span class="current_resp">Ingreso</span>
 		{if !isset($smarty.cookies.validamobile)}
-		{*	<a href="javascript:void(0);" class="fb_connect_button">
+			{*<a href="javascript:void(0);" class="fb_connect_button">
 				<img src="{$base_uri}/themes/gomarket/img/my-account/fb+.png" alt="iniciar sesión con Facebook"/>Iniciar sesión
 			</a>
 			<a href="javascript:void(0);" class="g_connect_button">
 				<img src="{$base_uri}/themes/gomarket/img/my-account/G+.png" alt="iniciar sesión con Google"/>Iniciar sesión
-			</a>
-		*}	
+			</a>*}
 		{/if}
 	</div>
 	<div id="errorHole">{include file="$tpl_dir./errors.tpl"}</div>
@@ -495,14 +494,12 @@ but it's deprecated
 <div class="contenedor" id="tercerHole">
 	<a href="javascript:void(0);" class="toggleHoles"><span>No</span> estoy registrado</a>
 	{if !isset($smarty.cookies.validamobile)}
-	{*$HOOK_ACCOUNTSOCIAL*}
-	{*	<a href="javascript:void(0);" class="fb_connect_button">
+		{*<a href="javascript:void(0);" class="fb_connect_button">
 			<img src="{$base_uri}/themes/gomarket/img/my-account/fb-.png" alt="iniciar sesión con Facebook"/>Iniciar sesión
 		</a>
 		<a href="javascript:void(0);" class="g_connect_button">
 			<img src="{$base_uri}/themes/gomarket/img/my-account/G-.png" alt="iniciar sesión con Google"/>Iniciar sesión
-		</a>
-	*}	
+		</a>*}
 	{/if}
 </div>
 </div>
