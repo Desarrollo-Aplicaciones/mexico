@@ -155,7 +155,7 @@ function addcartlightbox( element ) {
 Bienvenido a Farmalisto, tu droguería online, encontrarás productos de farmacia, salud, nutrición, cuidado personal y para la familia.  Acá te decimos para qué sirve<label id="tituloCategoryProd"></label> En Farmalisto Puedes comprar con varios medios de pago, tarjeta d&eacute;bito, tarjeta de cr&eacute;dito, OXXO, cuenta de ahorros, efectivo, ten seguridad en cada una de tus transacciones a trav&eacute;s de Symantec Powered by verisign un completo sistema de seguridad en tus compras. Nuestros beneficios: Mejor precio garantizado, No m&aacute;s filas, ya no tendr&aacute;s que hacer filas al salir de tu m&eacute;dico, Discreci&oacute;n en todas tus compras, total confidencialidad en todas tus transacciones. Tu f&oacute;rmula m&eacute;dica completa en un s&oacute;lo lugar. Contamos con profesionales certificados de la farmacolog&iacute;a ofreciendo as&iacute; garant&iacute;a total en tu experiencia de compra, somos una droguer&iacute;a 100% online en donde encontrar&aacute;s todo lo que necesitas. No te auto mediques, somos responsables por la salud de nuestros clientes, exigimos un soporte certificado (f&oacute;rmula m&eacute;dica) por t&uacute; m&eacute;dico en el que autorice la venta del medicamento, la dosis, presentaci&oacute;n del producto, fecha, advertencias, caracter&iacute;sticas, posolog&iacute;a, indicaciones y contraindicaciones es responsabilidad de t&uacute; m&eacute;dico y no nos responsabilizamos por ello.
 </div>  *}
 
-<div class="back-ctn-btn-cat">
+<div class="back-ctn-btn-cat" style="display: none;">
     <div class="ctn-btn-cat">
         <div class="btn-cat" id="btn-cat">+</div>
     </div>
