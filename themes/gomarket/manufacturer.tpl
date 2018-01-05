@@ -49,7 +49,7 @@
 			{include file="./nbr-product-page.tpl"}
 		</div>
 		</div>
-	<h1>{l s='List of products by manufacturer'}&nbsp;{$manufacturer->name|escape:'htmlall':'UTF-8'}</h1>
+	<h2>{l s='List of products by manufacturer'}&nbsp;{$manufacturer->name|escape:'htmlall':'UTF-8'}</h2>
 	{include file="./product-list.tpl" products=$products}
 
 	<div class="content_sortPagiBar bottom">
