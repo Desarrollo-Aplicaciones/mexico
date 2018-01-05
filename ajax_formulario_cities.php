@@ -1,7 +1,7 @@
 <?php
 require(dirname(__FILE__).'/config/config.inc.php');
 
-$id_state = $_REQUEST['id_state'];		//4200
+$id_state = $_POST['id_state'];		//4200
 
 $selected = isset($_REQUEST['selected']) ? $_REQUEST['selected'] : '';
 
