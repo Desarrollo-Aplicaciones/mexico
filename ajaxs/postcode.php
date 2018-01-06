@@ -1,7 +1,7 @@
 <?php
 include(dirname(__FILE__) . '/../config/config.inc.php');
 
-$postcode = $_POST['postcode']; 	
+$postcode = $_GET['postcode']; 	
 
 		if ($result = City::getIdCodPosIdCityIdStateByPostcode($postcode) ) {
 			//print_r($result);
