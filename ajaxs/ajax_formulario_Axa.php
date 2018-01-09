@@ -12,6 +12,8 @@ include_once($path."/../tools/phpexcel/PHPExcel.php");
 require_once $path."/../tools/phpexcel/PHPExcel/IOFactory.php";
 
 $nombreasegurado = Tools::getValue("nombre");
+$email_prov = Tools::getValue("email");
+$telefono_prov = Tools::getValue("telefono");
 $num_auto = Tools::getValue("num_auto");
 $coaseg = Tools::getValue("coaseg");
 $products = Tools::getValue("products");
@@ -83,15 +85,17 @@ $sheet_reg = 0;
   $objPHPExcel->getActiveSheet()->getStyle('B6:E6')->getFont()->setBold(true);
   $objPHPExcel->getActiveSheet()->getStyle('A6:E6')->applyFromArray($style);
   $objPHPExcel->getActiveSheet()->getCell("A1")->setValue(' Nombre del Asegurado ');
-  $objPHPExcel->getActiveSheet()->getCell("A2")->setValue(' Número de Autorización ');
-  $objPHPExcel->getActiveSheet()->getCell("A3")->setValue(' Coaseguro ');
-  $objPHPExcel->getActiveSheet()->getCell("A4")->setValue(' Otros productos autorizados ');
+  $objPHPExcel->getActiveSheet()->getCell("A2")->setValue(' Email ');
+  $objPHPExcel->getActiveSheet()->getCell("A3")->setValue(' Teléfono ');
+  $objPHPExcel->getActiveSheet()->getCell("A4")->setValue(' Número de Autorización ');
+  $objPHPExcel->getActiveSheet()->getCell("A5")->setValue(' Coaseguro ');
+  $objPHPExcel->getActiveSheet()->getCell("A6")->setValue(' Otros productos autorizados ');
  /* $objPHPExcel->getActiveSheet()->getCell("A5")->setValue('Dirección ');
   $objPHPExcel->getActiveSheet()->getCell("A6")->setValue('Email ');
   $objPHPExcel->getActiveSheet()->getCell("A7")->setValue('Teléfono ');
   */
-  $objPHPExcel->getActiveSheet()->getCell("A6")->setValue('cod Producto ');
-  $objPHPExcel->getActiveSheet()->getCell("B6")->setValue('Cantidad ');
+  $objPHPExcel->getActiveSheet()->getCell("A8")->setValue('cod Producto ');
+  $objPHPExcel->getActiveSheet()->getCell("B8")->setValue('Cantidad ');
 
   //$objPHPExcel->getActiveSheet()->getCell("c8")->setValue('Cantidad ');  
   
@@ -101,9 +105,12 @@ $sheet_reg = 0;
   $objPHPExcel->getActiveSheet()->setTitle($sheet_name);  
 
   $objPHPExcel->getActiveSheet()->setCellValue('B1', $nombreasegurado);
-  $objPHPExcel->getActiveSheet()->setCellValue('B2', $num_auto);
-  $objPHPExcel->getActiveSheet()->setCellValue('B3', $coaseg);
-  $objPHPExcel->getActiveSheet()->setCellValue('B4', $otros);
+  $objPHPExcel->getActiveSheet()->setCellValue('B2', $email_prov);
+  $objPHPExcel->getActiveSheet()->setCellValue('B3', $telefono_prov);
+  $objPHPExcel->getActiveSheet()->setCellValueExplicit('B4', $num_auto, PHPExcel_Cell_DataType::TYPE_STRING);
+
+  $objPHPExcel->getActiveSheet()->setCellValue('B5', $coaseg);
+  $objPHPExcel->getActiveSheet()->setCellValue('B6', $otros);
   /*
   $objPHPExcel->getActiveSheet()->setCellValue('B5', $direccion_prov);
   $objPHPExcel->getActiveSheet()->setCellValue('B6', $email_prov);
@@ -142,11 +149,12 @@ $sheet_reg = 0;
   */
 
 
-  $line = 7;
+  $line = 9;
    
  foreach ( $products as $product_pr) {  
  //print_r($dataprov);
-  $objPHPExcel->getActiveSheet()->setCellValue('A'.$line, $product_pr['cod']);
+  //$objPHPExcel->getActiveSheet()->setCellValue('A'.$line, $product_pr['cod'] );
+  $objPHPExcel->getActiveSheet()->setCellValueExplicit('A'.$line, $product_pr['cod'], PHPExcel_Cell_DataType::TYPE_STRING);
   $objPHPExcel->getActiveSheet()->setCellValue('B'.$line, $product_pr['qty']);
   $line ++;
  }  
@@ -180,7 +188,7 @@ try {
     $mail->Port       = 587;                    // set the SMTP server port
     $mail->Host       = "smtp.gmail.com"; // SMTP server
     $mail->Username   = "socialmedia@farmalisto.com.co";     // SMTP server username
-    $mail->Password   = "f4rm4l1st0";            // SMTP server password
+    $mail->Password   = "Soporte2017";//f4rm4l1st0";            // SMTP server password
 
 
     $mail->IsSendmail(); 
@@ -196,7 +204,7 @@ try {
 
     $mail->AddAddress($to);
 
-    $mail->Subject  = 'Formulario AXA'.$email_prov;
+    $mail->Subject  = 'Formulario AXA - '.$email_prov;
 
     $mail->AltBody    = ""; // optional, comment out and test
     $mail->AddAttachment("cotizaciones_axa.xls", "solicitd_ventas_por_mayoreo_axa.xls");

@@ -830,7 +830,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 					if( $list_products[$key_prod]['unit_price_tax_excl'] != 0 ){
 						$base = number_format( $list_products[$key_prod]['total_price_tax_excl'], 2, '.', '' );
 						$conceptoTemporal = $arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods];
-						$infoConceptos .= $conceptoTemporal['@attributes']['ClaveProdServ']."|".$conceptoTemporal['@attributes']['NoIdentificacion']."|".$conceptoTemporal['@attributes']['Cantidad']."|H87|Pieza|".$conceptoTemporal['@attributes']['Descripcion']."|".$conceptoTemporal['@attributes']['ValorUnitario']."|".$conceptoTemporal['@attributes']['Importe']."|";
+						$infoConceptos .= $conceptoTemporal['@attributes']['ClaveProdServ']."|".$conceptoTemporal['@attributes']['NoIdentificacion']."|".$conceptoTemporal['@attributes']['Cantidad']."|H87|Pieza|".trim($conceptoTemporal['@attributes']['Descripcion'])."|".$conceptoTemporal['@attributes']['ValorUnitario']."|".$conceptoTemporal['@attributes']['Importe']."|";
 						if ( $order_tot->total_discounts != null || $order_tot->total_discounts != 0 ) {
 							$descuentoConcepto = number_format( $order_tot->total_discounts*( $base/$arr_xml_cargar['@attributes']['SubTotal'] ), 2, '.', '' );
 							$totalDescuentoConceptos += $descuentoConcepto;
