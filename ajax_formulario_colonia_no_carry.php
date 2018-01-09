@@ -3,7 +3,7 @@ require(dirname(__FILE__).'/config/config.inc.php');
 
 $id_ciudad = $_POST['city'];		//4200
 
-$selected = isset($_REQUEST['selected']) ? $_REQUEST['selected'] : '';
+$selected = isset($_POST['selected']) ? $_POST['selected'] : '';
 
 $str_cities = '<option value="">- Colonia-</option>';
 $cities = City::getColoniaByIdCity($id_ciudad);
