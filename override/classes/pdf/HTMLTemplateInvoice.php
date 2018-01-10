@@ -242,7 +242,8 @@ class HTMLTemplateInvoice extends HTMLTemplateInvoiceCore
             //"<tr><td width=\"70px\" >País: </td><td>".$invoice_address->country."</td></tr>".
             //"<tr><td width=\"70px\" >Departamento: </td><td>".State::getNameById($invoice_address->id_state)."</td></tr>".
             "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Ciudad/Estado: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->city."/".State::getNameById($invoice_address->id_state)."</td></tr>".
-            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Teléfono: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->phone."</td></tr>";
+            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Teléfono: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->phone."</td></tr>".
+            "<tr><td width=\"".$ancho_dir1."px;\" style=\"text-align: left; font-weight: bold; font-size: 17px;\" >Celular: </td><td colspan='2' style=\"width: ".$ancho_dir2."px; font-size: 19px;\" >".$invoice_address->phone_mobile."</td></tr>";
         
         $fa1 = $invoice_address->city;
         $fa2 = $invoice_address->alias;
@@ -342,7 +343,6 @@ class HTMLTemplateInvoice extends HTMLTemplateInvoiceCore
         }
         $formatted_delivery_address.="</table>";
         //$formatted_delivery_address = '';
-        
         
 
         if ($this->order->id_address_delivery != $this->order->id_address_invoice) {
