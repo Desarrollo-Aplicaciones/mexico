@@ -65,7 +65,7 @@ class Product extends ProductCore {
 
 		$sql = new DbQuery();
 		$productBlackList = Configuration::get('PRODUCT_BLACK_LIST_SHOW');
-		$sql->select('p.`id_product`, pl.`name`, p.`active`, p.`reference`, m.`name` AS manufacturer_name, stock.`quantity`, product_shop.advanced_stock_management, p.`customizable`, prod_black.motivo AS motivo, UPPER(black_motivo.name) AS motivo_name');
+		$sql->select('p.`id_product`, pl.`name`, p.`active`, p.`reference`, m.`name` AS manufacturer_name, stock.`quantity`, stock.reserve_on_stock AS "reserve", product_shop.advanced_stock_management, p.`customizable`, /*ROUND(((p.price - sod.unit_price_te) / p.price )*100,2) AS gmc*/ prod_black.motivo AS motivo, UPPER(black_motivo.name) AS motivo_name');
 		$sql->from('category_product', 'cp');
 		$sql->leftJoin('product', 'p', 'p.`id_product` = cp.`id_product`');
 		$sql->join(Shop::addSqlAssociation('product', 'p'));
