@@ -570,8 +570,10 @@ group By od.id_supply_order_detail;
                 self::debug_to_console($result3[0]['reserve_on_stock'], " result3[0][reserve_on_stock]  ");
                 if ($res['id_estado_icr'] == 2 && $result3[0]['reserve_on_stock'] != NULL) {
                     $this->updateReserveProduct();
+                    $reserve_on_stock = $result3[0]['reserve_on_stock'] - 1;
                 } else {
                     $this->getOrdersDiscountIcr();
+                    $reserve_on_stock = $result3[0]['reserve_on_stock'] + 1;
                 }
 
                 self::debug_to_console(json_encode($productStockMv), "    Add stock MV ");
