@@ -1356,18 +1356,12 @@ public function processAjax()
 											{
 												$payment_module = Module::getInstanceByName($module_name);
 												$cart = new Cart((int)$id_cart);
-                                                                                                $order = new Order();
 												Context::getContext()->currency = new Currency((int)$cart->id_currency);
 												Context::getContext()->customer = new Customer((int)$cart->id_customer);
 												$employee = new Employee((int)Context::getContext()->cookie->id_employee);
 												$cod_pagar = Tools::getValue('cod_pagar');
 												$private_message = Tools::getValue('private_message');
                                                                                                 
-                                                                                                $productsCart = new DbQuery();
-                                                                                                $productsCart->select('pp.id_product, pp.quantity');
-                                                                                                $productsCart->from('cart_product', 'pp');
-                                                                                                $productsCart->where('pp.id_cart = ' . pSQL($id_cart));
-                                                                                                $resultProductsCart = Db::getInstance()->executeS($productsCart);
 												if($payment_module->validateOrder(
 												   (int)$cart->id, (int)$id_order_state,
 												   $cart->getOrderTotal(true, Cart::BOTH), !empty($cod_pagar) ? $cod_pagar : $payment_module->displayName, $this->l('Manual order -- Employee:').
