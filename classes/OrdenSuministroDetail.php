@@ -549,7 +549,7 @@ group By od.id_supply_order_detail;
             FROM ps_icr i 
             INNER JOIN `ps_supply_order_load_icr` ol
             ON ( i.id_icr = ol.id_icr )";
-          self::debug_to_console($query2, " query 2");
+          //self::debug_to_console($query2, " query 2");
           if ($result = DB::getInstance()->executeS($query2)) {
             foreach ($result as $res) {
               //self::debug_to_console($res['id_icr'], " res[id_icr]");
