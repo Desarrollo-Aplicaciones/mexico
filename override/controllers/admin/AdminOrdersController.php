@@ -1354,6 +1354,7 @@ public function processAjax()
 										{
 											if ($this->tabAccess['edit'] === '1')
 											{
+                                                                                            
 												$payment_module = Module::getInstanceByName($module_name);
 												$cart = new Cart((int)$id_cart);
 												Context::getContext()->currency = new Currency((int)$cart->id_currency);
