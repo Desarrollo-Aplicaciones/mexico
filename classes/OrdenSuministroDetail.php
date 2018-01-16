@@ -613,7 +613,7 @@ group By od.id_supply_order_detail;
             ON (oli.id_supply_order = od.id_supply_order AND oli.id_product = od.id_product) 
             WHERE oli.id_supply_order = ".(int)$this->supply_order."
             GROUP BY (od.id_supply_order_detail)";
-            self::debug_to_console($ins_history, " ins_history ");
+            //self::debug_to_console($ins_history, " ins_history ");
           DB::getInstance()->execute($ins_history);
         } else {
           $this->errors[] = Tools::displayError($this->l("Error Actualizando el Stock disponible y los reservados, No se pudo ingresar registro en Histórico orden de suministro recibida"));
