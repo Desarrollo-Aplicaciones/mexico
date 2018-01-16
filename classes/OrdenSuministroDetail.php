@@ -542,7 +542,7 @@ group By od.id_supply_order_detail;
                       
         DB::getInstance()->execute($query);
         
-        self::debug_to_console($query, " query ");
+        //self::debug_to_console($query, " query ");
         $update_ok = false;
         if (DB::getInstance()->execute($query)) {
           $query2 = "SELECT i.id_icr AS id_icr, i.id_estado_icr AS id_estado_icr, i.cod_icr AS cod_icr 
@@ -552,14 +552,14 @@ group By od.id_supply_order_detail;
           self::debug_to_console($query2, " query 2");
           if ($result = DB::getInstance()->executeS($query2)) {
             foreach ($result as $res) {
-              self::debug_to_console($res['id_icr'], " res[id_icr]");
+              //self::debug_to_console($res['id_icr'], " res[id_icr]");
               if (isset($res['id_icr'])) {
                 $query3 = "SELECT samv.reserve_on_stock  AS reserve_on_stock, samv.id_product
                   FROM `ps_stock_available_mv` samv 
                   INNER JOIN ps_supply_order_detail sod ON (samv.id_product = sod.id_product)		
                   INNER JOIN ps_supply_order_icr soi ON (soi.id_supply_order_detail = sod.id_supply_order_detail)
                   WHERE soi.id_icr = " . $res['id_icr'];
-                self::debug_to_console($query3, " Query 3");
+                //self::debug_to_console($query3, " Query 3");
                 $result3 = DB::getInstance()->executeS($query3);
 
                 $productStockMv = $this->getProductStockMv($result3[0]['id_product']);
@@ -567,7 +567,7 @@ group By od.id_supply_order_detail;
                 //      return var_dump("result3 t", var_dump($result3));
     //              var_dump("ID ICR: ",$res['id_icr'],"reserve_on_stock: ",$result3[0]['reserve_on_stock']);
     //              if (isset($result3)) {
-                self::debug_to_console($result3[0]['reserve_on_stock'], " result3[0][reserve_on_stock]  ");
+                //self::debug_to_console($result3[0]['reserve_on_stock'], " result3[0][reserve_on_stock]  ");
                 if ($res['id_estado_icr'] == 2 && $result3[0]['reserve_on_stock'] != NULL) {
                     $this->updateReserveProduct();
                     $reserve_on_stock = $result3[0]['reserve_on_stock'] - 1;
@@ -576,16 +576,16 @@ group By od.id_supply_order_detail;
                     $reserve_on_stock = $result3[0]['reserve_on_stock'] + 1;
                 }
 
-                self::debug_to_console(json_encode($productStockMv), "    Add stock MV ");
+                //self::debug_to_console(json_encode($productStockMv), "    Add stock MV ");
                 setcookie("add_stock_mv", json_encode($productStockMv), time()+3600);
 
                 $query5 = "CALL update_stock_available_mv(" . $res['id_icr'] . "," . $result3[0]['reserve_on_stock'] . ",'".Configuration::get('PS_NOT_IN_WAREHOUSE_ICR')."')";
 
-                self::debug_to_console($query5, " Query5 ");
+                //self::debug_to_console($query5, " Query5 ");
                 //            return var_dump("RESULT2 : id_icr: ", $result2[0]['id_icr'], "id_estado_icr: ", $result2[0]['id_estado_icr'], $id_order, $result3[0]['reserve_on_stock'], "QUERY:", $query4);
                 if (DB::getInstance()->execute($query5)) {
     //                  return true;
-                    self::debug_to_console($update_ok, " Update_ok ");              
+                    //self::debug_to_console($update_ok, " Update_ok ");              
                     $update_ok = true;
     //                 var_dump("RESULT2 SI", $res['id_icr'], $result3[0]['reserve_on_stock'], "QUERY:", $query5);
                 } else {
