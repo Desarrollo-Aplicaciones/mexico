@@ -93,8 +93,10 @@ class OrderHistory extends OrderHistoryCore
                                                                   SET current_state = 9
                                                                   WHERE id_order = ' . $order->id;
                                   Db::getInstance()->executeS($change_status_order);
-                                  $historyStateOrder = "INSERT INTO ps_order_history(id_order, id_order_state, date_add) VALUES(".$order->id.", 9, '".date('Y-m-d H:i:s')."')";
-                                  DB::getInstance()->execute($historyStateOrder);
+                                  if((int)$result['id_order_state'] !== 9) {
+                                    $historyStateOrder = "INSERT INTO ps_order_history(id_order, id_order_state, date_add) VALUES(".$order->id.", 9, '".date('Y-m-d H:i:s')."')";
+                                    DB::getInstance()->execute($historyStateOrder);
+                                  }
                                 }
                             }
                         }
