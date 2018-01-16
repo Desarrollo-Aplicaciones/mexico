@@ -36,61 +36,66 @@ class OrderHistory extends OrderHistoryCore
                             $sql->select('pp.id_product, pp.quantity');
                             $sql->from('orders', 'po');
                             $sql->leftJoin('cart_product', 'pp', 'po.id_cart = pp.id_cart');
-                            $sql->where('po.id_cart = ' . pSQL($order->id_cart));
+                            $sql->where('po.id_cart = ' . pSQL($order->id_cart).' AND pp.id_product NOT IN (
+                            SELECT rp.id_product FROM ps_reserve_product rp
+                            WHERE rp.id_product = pp.id_product AND rp.id_order = po.id_order
+                            )');
                             $result = Db::getInstance()->executeS($sql);
                             $sin_stock = false;
-                            foreach ($result as $row) {
-                              $sql = new DbQuery();
-                              $sql->select('s.quantity, s.reserve_on_stock');
-                              $sql->from('stock_available_mv', 's');
-                              $sql->where('s.id_product = ' . pSQL($row['id_product']));
-                              $result2 = Db::getInstance()->executeS($sql);
-                              if($result2[0]['quantity'] < ($result2[0]['reserve_on_stock'] + $row['quantity'])) {
-                                  $sin_stock = true;
-                              }
-                              $sqlReserve = new DbQuery();
-                              $sqlReserve->select('SUM(quantity_reserve) AS quantity_reserve');
-                              $sqlReserve->from('reserve_product');
-                              $sqlReserve->where('id_product = ' . pSQL($row['id_product']));
-                              $sqlReserve->groupBy('id_product');
-                              $resultReserve = Db::getInstance()->executeS($sqlReserve);
-                              if(count($resultReserve) > 0) {
-                                  $quantity_reserve = $resultReserve[0]['quantity_reserve'];
-                              } else {
-                                  $quantity_reserve = 0;
-                              }
-                              $stock = $result2[0]['quantity'] - $result2[0]['reserve_on_stock'];
-                              $totalStock = ($stock < 0 ? 0 : $stock);
-                              if($quantity_reserve >= $result2[0]['quantity']) {
-                                  $reserve = 0;
-                                  $missing = $row['quantity'];
-                              } else if($row['quantity'] >= $totalStock) {
-                                  $reserve = $totalStock;
-                                  $missing = $row['quantity'] - ($totalStock < 0 ? 0 : $totalStock);
-                              } else {
-                                  $reserve = $row['quantity'];
-                                  $missing = 0;
-                              }
-                              if (isset($result2[0])) {
-                                  $newReserveOnStock = $result2[0]['reserve_on_stock'] + $row['quantity'];
-                                  $sql_new_reserve = 'UPDATE ' . _DB_PREFIX_ . 'stock_available_mv
-                                                                  SET reserve_on_stock = ' . $newReserveOnStock . '
-                                                                  WHERE id_product = ' . pSQL($row['id_product']);
-                                  Db::getInstance()->executeS($sql_new_reserve);
-                              }
-                              if($missing > 0) {
-                                  $reserve_products = 'INSERT INTO ' . _DB_PREFIX_ . 'reserve_product(id_order, id_product, quantity_reserve, missing_quantity)
-                                                      VALUES('.$order->id.','.pSQL($row['id_product']).',' . $reserve . ',' . $missing . ')';
-                                  Db::getInstance()->executeS($reserve_products);
-                              }
-                            }
-                            if($sin_stock) {
-                              $change_status_order = 'UPDATE ' . _DB_PREFIX_ . 'orders
-                                                              SET current_state = 9
-                                                              WHERE id_order = ' . $order->id;
-                              Db::getInstance()->executeS($change_status_order);
-                              $historyStateOrder = "INSERT INTO ps_order_history(id_order, id_order_state, date_add) VALUES(".$order->id.", 9, '".date('Y-m-d H:i:s')."')";
-                              DB::getInstance()->execute($historyStateOrder);
+                            if(count($result) > 0) {
+                                foreach ($result as $row) {
+                                  $sql = new DbQuery();
+                                  $sql->select('s.quantity, s.reserve_on_stock');
+                                  $sql->from('stock_available_mv', 's');
+                                  $sql->where('s.id_product = ' . pSQL($row['id_product']));
+                                  $result2 = Db::getInstance()->executeS($sql);
+                                  if($result2[0]['quantity'] < ($result2[0]['reserve_on_stock'] + $row['quantity'])) {
+                                      $sin_stock = true;
+                                  }
+                                  $sqlReserve = new DbQuery();
+                                  $sqlReserve->select('SUM(quantity_reserve) AS quantity_reserve');
+                                  $sqlReserve->from('reserve_product');
+                                  $sqlReserve->where('id_product = ' . pSQL($row['id_product']));
+                                  $sqlReserve->groupBy('id_product');
+                                  $resultReserve = Db::getInstance()->executeS($sqlReserve);
+                                  if(count($resultReserve) > 0) {
+                                      $quantity_reserve = $resultReserve[0]['quantity_reserve'];
+                                  } else {
+                                      $quantity_reserve = 0;
+                                  }
+                                  $stock = $result2[0]['quantity'] - $result2[0]['reserve_on_stock'];
+                                  $totalStock = ($stock < 0 ? 0 : $stock);
+                                  if($quantity_reserve >= $result2[0]['quantity']) {
+                                      $reserve = 0;
+                                      $missing = $row['quantity'];
+                                  } else if($row['quantity'] >= $totalStock) {
+                                      $reserve = $totalStock;
+                                      $missing = $row['quantity'] - ($totalStock < 0 ? 0 : $totalStock);
+                                  } else {
+                                      $reserve = $row['quantity'];
+                                      $missing = 0;
+                                  }
+                                  if (isset($result2[0])) {
+                                      $newReserveOnStock = $result2[0]['reserve_on_stock'] + $row['quantity'];
+                                      $sql_new_reserve = 'UPDATE ' . _DB_PREFIX_ . 'stock_available_mv
+                                                                      SET reserve_on_stock = ' . $newReserveOnStock . '
+                                                                      WHERE id_product = ' . pSQL($row['id_product']);
+                                      Db::getInstance()->executeS($sql_new_reserve);
+                                  }
+                                  if($missing > 0) {
+                                      $reserve_products = 'INSERT INTO ' . _DB_PREFIX_ . 'reserve_product(id_order, id_product, quantity_reserve, missing_quantity)
+                                                          VALUES('.$order->id.','.pSQL($row['id_product']).',' . $reserve . ',' . $missing . ')';
+                                      Db::getInstance()->executeS($reserve_products);
+                                  }
+                                }
+                                if($sin_stock) {
+                                  $change_status_order = 'UPDATE ' . _DB_PREFIX_ . 'orders
+                                                                  SET current_state = 9
+                                                                  WHERE id_order = ' . $order->id;
+                                  Db::getInstance()->executeS($change_status_order);
+                                  $historyStateOrder = "INSERT INTO ps_order_history(id_order, id_order_state, date_add) VALUES(".$order->id.", 9, '".date('Y-m-d H:i:s')."')";
+                                  DB::getInstance()->execute($historyStateOrder);
+                                }
                             }
                         }
                     }
