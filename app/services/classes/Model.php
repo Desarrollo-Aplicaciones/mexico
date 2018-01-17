@@ -1021,12 +1021,13 @@ class Model extends PaymentModule {
       }
     }
     
+    $currency         = Configuration::get('PS_CURRENCY_DEFAULT');
     $minimal_purchase = Tools::convertPrice((float) Configuration::get('PS_PURCHASE_MINIMUM'), $currency);
 
-    if ($context->cart->getOrderTotal(false, Cart::ONLY_PRODUCTS) < $minimal_purchase) {
+    if ($this->context->cart->getOrderTotal(false, Cart::ONLY_PRODUCTS) < $minimal_purchase) {
       return array(
-        'success' => false,
-        'message' => sprintf(Tools::displayError('A minimum purchase total of %1s (tax excl.) is required to validate your order, current purchase total is %2s (tax excl.).'), Tools::displayPrice($minimal_purchase, $currency), Tools::displayPrice($context->cart->getOrderTotal(false, Cart::ONLY_PRODUCTS), $currency))
+        'success' => FALSE,
+        'message' => sprintf(Tools::displayError('Se requiere una compra total mínima de %1s (sin impuestos) para validar su pedido.'), $minimal_purchase)
       );
     }
     // Enviando el pago a una pasarela de pago
