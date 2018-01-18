@@ -1020,6 +1020,16 @@ class Model extends PaymentModule {
         break;
       }
     }
+    
+    $currency         = Configuration::get('PS_CURRENCY_DEFAULT');
+    $minimal_purchase = Tools::convertPrice((float) Configuration::get('PS_PURCHASE_MINIMUM'), $currency);
+
+    if ($this->context->cart->getOrderTotal(false, Cart::ONLY_PRODUCTS) < $minimal_purchase) {
+      return array(
+        'success' => FALSE,
+        'message' => sprintf(Tools::displayError('Se requiere una compra total mínima de %1s (sin impuestos) para validar su pedido.'), $minimal_purchase)
+      );
+    }
     // Enviando el pago a una pasarela de pago
     if ($flg) {
       $data_payment = array(
