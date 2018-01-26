@@ -122,9 +122,52 @@ class AdminSupplyOrdersControllerCore extends AdminController
 		$this->warehouses = Warehouse::getWarehouses(true);
 		// gets the final list of warehouses
 		array_unshift($this->warehouses, array('id_warehouse' => -1, 'name' => $this->l('All Warehouses')));
-
+                
+                if(isset($_COOKIE['add_stock_mv'])) {
+                    $dataProductStock = json_decode($_COOKIE['add_stock_mv']);
+                    $validateProductStock = $this->getProductStockMv($dataProductStock[0]->id_product);
+                    if(count($validateProductStock) == 0) {
+                        $this->addProductStockMv($dataProductStock);
+                    }
+                    unset($_COOKIE['add_stock_mv']);
+                }
+                
 		parent::__construct();
 	}
+        
+        /**
+         * Obtengo la información del producto en la tabla stock_avilable_mv
+         * @param int $id_product
+         * @return array
+         */
+        public function getProductStockMv($id_product) {
+ 
+            $validayteStockAvailableMv = new DbQuery();
+            $validayteStockAvailableMv->select('*');
+            $validayteStockAvailableMv->from('stock_available_mv', 'sa');
+            $validayteStockAvailableMv->where(' sa.id_product = ' . pSQL($id_product));
+            $resultValidayteStockAvailableMv = Db::getInstance()->executeS($validayteStockAvailableMv);
+            return $resultValidayteStockAvailableMv;
+        }
+ 
+        /**
+         * Inserto el producto en la tabla stock_avialable_mv
+         * @param array $valueStock
+         */
+        public function addProductStockMv($valueStock) {
+ 
+            $sqlStock = "INSERT INTO ps_stock_available_mv (id_stock_available,id_product,id_product_attribute,id_shop,id_shop_group,quantity,depends_on_stock,out_of_stock,reserve_on_stock) "
+                            . "VALUES ('".$valueStock[0]->id_product."',"
+                            . "'".$valueStock[0]->id_product."',"
+                            . "'".$valueStock[0]->id_product_attribute."',"
+                            . "'".$valueStock[0]->id_shop."',"
+                            . "'".$valueStock[0]->id_shop_group."',"
+                            . "'".($valueStock[0]->quantity - 1)."',"
+                            . "'".$valueStock[0]->depends_on_stock."',"
+                            . "'".$valueStock[0]->out_of_stock."',"
+                            . "'".$valueStock[0]->reserve_on_stock."')";
+            Db::getInstance()->Execute($sqlStock);
+        }
 
 	/**
 	 * AdminController::init() override

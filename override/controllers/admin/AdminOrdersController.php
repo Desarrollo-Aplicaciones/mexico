@@ -432,6 +432,26 @@ public function processAjax()
 
                 			/* START mail quality score */
                 			if ( $_GET['opcion_cancelacion'] != 4 ) {
+                                            $order = new Order($this->id_object);
+                                            $product_list = $order->getProducts();
+                                            foreach ($product_list as $product) {
+                                              $sql_reserve = 'SELECT reserve_on_stock FROM ' . _DB_PREFIX_ . 'stock_available_mv
+                                              WHERE id_product = ' . $product['product_id'];
+                                              $resultReserve = Db::getInstance()->executeS($sql_reserve);
+                                              $newReserveOnStock = $resultReserve[0]['reserve_on_stock'] - $product['product_quantity'];
+                                              if ($newReserveOnStock < 0) {
+                                                $newReserveOnStock = 0;
+                                              }
+                                              $sql_new_reserve = 'UPDATE ' . _DB_PREFIX_ . 'stock_available_mv
+                                              SET reserve_on_stock = ' . $newReserveOnStock . '
+                                              WHERE id_product = ' . $product['product_id'];
+                                              Db::getInstance()->executeS($sql_new_reserve);
+
+                                              $deleteReserve = 'DELETE FROM ' . _DB_PREFIX_ . 'reserve_product
+                                              WHERE id_product = ' . $product['product_id'] . ' AND id_order = '.$_GET['id_order'];
+                                              Db::getInstance()->executeS($deleteReserve);
+
+                                            }
                 				$order = new Order($this->id_object);
                 				$template_vars['{firstname}'] = $this->context->customer->firstname;
                 				$template_vars['{lastname}'] = $this->context->customer->lastname;
@@ -1334,6 +1354,7 @@ public function processAjax()
 										{
 											if ($this->tabAccess['edit'] === '1')
 											{
+                                                                                            
 												$payment_module = Module::getInstanceByName($module_name);
 												$cart = new Cart((int)$id_cart);
 												Context::getContext()->currency = new Currency((int)$cart->id_currency);
@@ -1341,6 +1362,7 @@ public function processAjax()
 												$employee = new Employee((int)Context::getContext()->cookie->id_employee);
 												$cod_pagar = Tools::getValue('cod_pagar');
 												$private_message = Tools::getValue('private_message');
+                                                                                                
 												if($payment_module->validateOrder(
 												   (int)$cart->id, (int)$id_order_state,
 												   $cart->getOrderTotal(true, Cart::BOTH), !empty($cod_pagar) ? $cod_pagar : $payment_module->displayName, $this->l('Manual order -- Employee:').
@@ -2261,6 +2283,17 @@ public function renderView()
                 $flagStockDisplayOption = false;
 		foreach ($products as &$product)
 		{
+                    $sql = new DbQuery();
+                    $sql->select('s.quantity, s.reserve_on_stock');
+                    $sql->from('stock_available_mv', 's');
+                    $sql->where('s.id_product = ' . pSQL($product['product_id']));
+                    $result2 = Db::getInstance()->executeS($sql);
+
+                    $quatintyProduct[$product['product_id']]['quantity'] = $result2[0]['quantity'];
+                    $quatintyProduct[$product['product_id']]['reserve_on_stock'] = $result2[0]['reserve_on_stock'];
+                    $totalStock = $product['current_stock'] - $result2[0]['reserve_on_stock'];
+                    $quatintyProduct[$product['product_id']]['available_stock'] = $totalStock < 0 ? 0 : $totalStock;
+                    
 			$product['current_stock'] = StockAvailable::getQuantityAvailableByProduct($product['product_id'], $product['product_attribute_id'], $product['id_shop']);
 			
 			$resume = OrderSlip::getProductSlipResume($product['id_order_detail']);
@@ -2353,7 +2386,8 @@ public function renderView()
 			"formula_medica" => Utilities::is_formula($cart,$this->context),
 			"imgs_formula_medica" =>  Utilities::getImagenesFormula($order->id),
                         'flagStockDisplayOption' => $flagStockDisplayOption,
-                        'estadosValidos' =>  $estadosValidos
+                        'estadosValidos' =>  $estadosValidos,
+                        'quatintyProduct' => $quatintyProduct
 			);
 $this->motivo_cancelcion();
 $this->get_mensajero_order($this->id_object);

@@ -541,24 +541,272 @@ group By od.id_supply_order_detail;
             SET i.id_estado_icr = '.$this->status_icr;
                       
         DB::getInstance()->execute($query);
+        
+        //self::debug_to_console($query, " query ");
+        $update_ok = false;
+        if (DB::getInstance()->execute($query)) {
+          $query2 = "SELECT i.id_icr AS id_icr, i.id_estado_icr AS id_estado_icr, i.cod_icr AS cod_icr 
+            FROM ps_icr i 
+            INNER JOIN `ps_supply_order_load_icr` ol
+            ON ( i.id_icr = ol.id_icr )";
+          //self::debug_to_console($query2, " query 2");
+          if ($result = DB::getInstance()->executeS($query2)) {
+            foreach ($result as $res) {
+              //self::debug_to_console($res['id_icr'], " res[id_icr]");
+              if (isset($res['id_icr'])) {
+                $query3 = "SELECT samv.reserve_on_stock  AS reserve_on_stock, samv.id_product
+                  FROM `ps_stock_available_mv` samv 
+                  INNER JOIN ps_supply_order_detail sod ON (samv.id_product = sod.id_product)		
+                  INNER JOIN ps_supply_order_icr soi ON (soi.id_supply_order_detail = sod.id_supply_order_detail)
+                  WHERE soi.id_icr = " . $res['id_icr'];
+                //self::debug_to_console($query3, " Query 3");
+                $result3 = DB::getInstance()->executeS($query3);
 
-        $ins_history = "
-        INSERT INTO ps_supply_order_receipt_history (id_supply_order_detail, id_employee, employee_lastname, 
-        employee_firstname, id_supply_order_state, quantity, date_add)
+                $productStockMv = $this->getProductStockMv($result3[0]['id_product']);
 
-        SELECT od.id_supply_order_detail, ".$this->getId_employee().", '".$this->lastnameEmployee."', '".$this->firstnameEmployee." (".$this->accion_icr.")', IF (od.quantity_expected = od.quantity_received, 5, 
-        IF(od.quantity_expected > od.quantity_received, 4, 
-        IF(od.quantity_expected < od.quantity_received, 4, 3) ) ) AS state,
-        COUNT(oli.id_product) AS canti, NOW()
-        FROM ps_supply_order_detail od
-        INNER JOIN ps_supply_order_load_icr oli 
-        ON (oli.id_supply_order = od.id_supply_order AND oli.id_product = od.id_product) 
-        WHERE oli.id_supply_order = ".(int)$this->supply_order."
-        GROUP BY (od.id_supply_order_detail)";
+                //      return var_dump("result3 t", var_dump($result3));
+    //              var_dump("ID ICR: ",$res['id_icr'],"reserve_on_stock: ",$result3[0]['reserve_on_stock']);
+    //              if (isset($result3)) {
+                //self::debug_to_console($result3[0]['reserve_on_stock'], " result3[0][reserve_on_stock]  ");
+                if ($res['id_estado_icr'] == 2 && $result3[0]['reserve_on_stock'] != NULL) {
+                    $this->updateReserveProduct();
+                    $reserve_on_stock = $result3[0]['reserve_on_stock'] - 1;
+                } else {
+                    $this->getOrdersDiscountIcr();
+                    $reserve_on_stock = $result3[0]['reserve_on_stock'] + 1;
+                }
 
+                //self::debug_to_console(json_encode($productStockMv), "    Add stock MV ");
+                setcookie("add_stock_mv", json_encode($productStockMv), time()+3600);
+
+                $query5 = "CALL update_stock_available_mv(" . $res['id_icr'] . "," . $reserve_on_stock . ",'".Configuration::get('PS_NOT_IN_WAREHOUSE_ICR')."')";
+
+                //self::debug_to_console($query5, " Query5 ");
+                //            return var_dump("RESULT2 : id_icr: ", $result2[0]['id_icr'], "id_estado_icr: ", $result2[0]['id_estado_icr'], $id_order, $result3[0]['reserve_on_stock'], "QUERY:", $query4);
+                if (DB::getInstance()->execute($query5)) {
+    //                  return true;
+                    //self::debug_to_console($update_ok, " Update_ok ");              
+                    $update_ok = true;
+    //                 var_dump("RESULT2 SI", $res['id_icr'], $result3[0]['reserve_on_stock'], "QUERY:", $query5);
+                } else {
+                    $this->errores_cargue[] = "Error Actualizando el Stock disponible y los reservados, en el ingreso del ICR: " . $res['cod_icr'];
+                    return false;
+                }
+
+    //              }
+    //            }
+              }
+            }
+          }
+        }
+        if ($update_ok) {
+            $ins_history = "
+            INSERT INTO ps_supply_order_receipt_history (id_supply_order_detail, id_employee, employee_lastname, 
+            employee_firstname, id_supply_order_state, quantity, date_add)
+
+            SELECT od.id_supply_order_detail, ".$this->getId_employee().", '".$this->lastnameEmployee."', '".$this->firstnameEmployee." (".$this->accion_icr.")', IF (od.quantity_expected = od.quantity_received, 5, 
+            IF(od.quantity_expected > od.quantity_received, 4, 
+            IF(od.quantity_expected < od.quantity_received, 4, 3) ) ) AS state,
+            COUNT(oli.id_product) AS canti, NOW()
+            FROM ps_supply_order_detail od
+            INNER JOIN ps_supply_order_load_icr oli 
+            ON (oli.id_supply_order = od.id_supply_order AND oli.id_product = od.id_product) 
+            WHERE oli.id_supply_order = ".(int)$this->supply_order."
+            GROUP BY (od.id_supply_order_detail)";
+            //self::debug_to_console($ins_history, " ins_history ");
+          DB::getInstance()->execute($ins_history);
+        } else {
+          $this->errors[] = Tools::displayError($this->l("Error Actualizando el Stock disponible y los reservados, No se pudo ingresar registro en Histórico orden de suministro recibida"));
+        }
        // DB::getInstance()->execute($ins_history);
 
 
+    }
+    
+    /**
+     * Obtengo la información del producto en la tabla stock_avilable_mv
+     * @param int $id_product
+     * @return array
+     */
+    public function getProductStockMv($id_product) {
+        
+        $validayteStockAvailableMv = new DbQuery();
+        $validayteStockAvailableMv->select('*');
+        $validayteStockAvailableMv->from('stock_available_mv', 'sa');
+        $validayteStockAvailableMv->where(' sa.id_product = ' . pSQL($id_product));
+        $resultValidayteStockAvailableMv = Db::getInstance()->executeS($validayteStockAvailableMv);
+        return $resultValidayteStockAvailableMv;
+    }
+    
+    /**
+     * Trae las ordenes desde la mas nueva a la mas vieja para realizar el descuento del ICR
+     * @return array Retorna las ordenes con sus productos para descontar los ICR
+     */
+    public function getOrdersDiscountIcr() {
+        $ordersDiscount = "SELECT rp.id_order, rp.id_product, rp.id_reserve, od.product_quantity AS solicitados, rp.quantity_reserve AS warehouse_quantity, 
+                            rp.missing_quantity AS faltantes, hr.quantity_icrs 
+                            FROM " . _DB_PREFIX_ . "orders AS o 
+                            INNER JOIN " . _DB_PREFIX_ . "address AS a ON ( o.id_address_delivery = a.id_address ) 
+                            INNER JOIN " . _DB_PREFIX_ . "order_detail AS od ON ( o.id_order = od.id_order) 
+                            INNER JOIN " . _DB_PREFIX_ . "product AS p ON ( p.id_product = od.product_id) 
+                            LEFT JOIN " . _DB_PREFIX_ . "manufacturer AS m ON ( m.id_manufacturer = p.id_manufacturer) 
+                            INNER JOIN " . _DB_PREFIX_ . "stock_available_mv AS sam ON ( sam.id_product = p.id_product ) 
+                            INNER JOIN " . _DB_PREFIX_ . "reserve_product AS rp ON (rp.id_order = o.id_order AND rp.id_product = p.id_product) 
+                            INNER JOIN " . _DB_PREFIX_ . "history_reserve AS hr ON (hr.id_order = o.id_order)
+                            WHERE current_state IN (".Configuration::get('PS_STATES_RESERVE_HISTORY').") 
+                            AND hr.quantity_icrs > 0
+                            ORDER BY o.id_order DESC";
+        $orders = Db::getInstance()->ExecuteS($ordersDiscount);
+        
+        $this->validateOrderDiscount($orders);
+    }
+    
+    public function validateOrderDiscount($orders) {
+        if(count($orders) > 0) {
+            $updateQuantityOrder = "UPDATE " . _DB_PREFIX_ . "history_reserve SET "
+                    . "quantity_icrs = quantity_icrs - 1 "
+                    . "WHERE id_order = '".$orders[0]['id_order']."' AND id_product = '".$orders[0]['id_product']."'";
+            
+            DB::getInstance()->execute($updateQuantityOrder);
+            
+            $updateReserve = "UPDATE " . _DB_PREFIX_ . "reserve_product"
+                  . " SET missing_quantity = missing_quantity + 1, quantity_reserve = quantity_reserve - 1 "
+                  . "WHERE id_reserve = '".$orders[0]['id_reserve']."'";
+            
+            DB::getInstance()->execute($updateReserve);
+            
+            $this->changeCurrentStateOrder($orders[0]['id_order'], 9);
+            $this->addHistoryOrder($orders[0]['id_order'], 9);
+        }
+    }
+  
+    /**
+    * Se obtiene la información de todas las ordenes y sus productos faltantes por compra.
+    */
+    public function getOrdersToProducts() {
+        $ordersSql = 'SELECT  rp.id_reserve, rp.id_order, rp.id_product
+	        FROM ' . _DB_PREFIX_ . 'orders AS  o 
+	        INNER JOIN ' . _DB_PREFIX_ . 'address AS a ON ( o.id_address_delivery = a.id_address )
+	        INNER JOIN ' . _DB_PREFIX_ . 'order_detail AS od  ON ( o.id_order = od.id_order)
+	        INNER JOIN ' . _DB_PREFIX_ . 'product AS p ON ( p.id_product = od.product_id)
+	        LEFT JOIN ' . _DB_PREFIX_ . 'manufacturer AS m ON ( m.id_manufacturer = p.id_manufacturer)
+	        INNER JOIN ' . _DB_PREFIX_ . 'stock_available_mv AS sam ON ( sam.id_product = p.id_product )
+                INNER JOIN ' . _DB_PREFIX_ . 'reserve_product AS rp ON (rp.id_order = o.id_order AND rp.id_product = p.id_product)
+	        WHERE  current_state = 9 AND rp.missing_quantity > 0 AND rp.id_product IN (' . implode(",", $this->productos) . ')
+	        ORDER BY o.id_order ASC';
+        return $orders = Db::getInstance()->ExecuteS($ordersSql);
+    }
+    
+    /**
+    * Inserto el producto en la tabla stock_avialable_mv
+    * @param array $valueStock
+    */
+    public function addProductStockMv($valueStock) {
+       $sqlStock = "INSERT INTO ps_stock_available_mv (id_stock_available,id_product,id_product_attribute,id_shop,id_shop_group,quantity,depends_on_stock,out_of_stock,reserve_on_stock) "
+                       . "VALUES ('".$valueStock[0]->id_product."',"
+                       . "'".$valueStock[0]->id_product."',"
+                       . "'".$valueStock[0]->id_product_attribute."',"
+                       . "'".$valueStock[0]->id_shop."',"
+                       . "'".$valueStock[0]->id_shop_group."',"
+                       . "'".($valueStock[0]->quantity - 1)."',"
+                       . "'".$valueStock[0]->depends_on_stock."',"
+                       . "'".$valueStock[0]->out_of_stock."',"
+                       . "'".$valueStock[0]->reserve_on_stock."')";
+       Db::getInstance()->Execute($sqlStock);
+    }
+    
+    /**
+    * Se obtiene los productos de una orden para revisar si ya se cumplieron las cantidades y realizar la actualización 
+    * del estado.
+    * @param int $id_order
+    */
+    public function getProductsReserve($id_order) {
+        
+        $ordersSql = 'SELECT  rp.id_reserve, rp.id_order, rp.missing_quantity FROM ' . _DB_PREFIX_ . 'reserve_product AS rp '
+                . 'WHERE  rp.id_order = '.$id_order;
+        return $orders = Db::getInstance()->ExecuteS($ordersSql);
+    }
+    
+    /**
+     * Realizo el update a los productos para ir restando por cada ICR agregado
+     */
+    public function updateReserveProduct() {
+        if(isset($_COOKIE['add_stock_mv'])) {
+            $dataProductStock = json_decode($_COOKIE['add_stock_mv']);
+            $validateProductStock = $this->getProductStockMv($dataProductStock[0]->id_product);
+            if(count($validateProductStock) == 0) {
+                $this->addProductStockMv($dataProductStock);
+            }
+        }
+        $ordersProduct = $this->getOrdersToProducts();
+      
+        if(count($ordersProduct) > 0) {
+            $updateReserve = "UPDATE " . _DB_PREFIX_ . "reserve_product"
+                  . " SET missing_quantity = missing_quantity - 1, quantity_reserve = quantity_reserve + 1 "
+                  . "WHERE id_reserve = '".$ordersProduct[0]['id_reserve']."' AND missing_quantity > 0";
+            DB::getInstance()->execute($updateReserve);
+            
+            $historyReserve = "SELECT * FROM " . _DB_PREFIX_ . "history_reserve"
+                    . " WHERE id_order = ".$ordersProduct[0]['id_order']." AND id_product = ".$ordersProduct[0]['id_product']."";
+            $resultHistory = DB::getInstance()->executeS($historyReserve);
+            
+            if(count($resultHistory) > 0) {
+                $updateQuantityOrder = "UPDATE " . _DB_PREFIX_ . "history_reserve SET "
+                    . "quantity_icrs = quantity_icrs + 1 "
+                    . "WHERE id_order = '".$ordersProduct[0]['id_order']."' AND id_product = '".$ordersProduct[0]['id_product']."'";
+            
+                DB::getInstance()->execute($updateQuantityOrder);
+            } else {
+                $addQuantityOrder = "INSERT INTO " . _DB_PREFIX_ . "history_reserve(id_order, id_product, quantity_icrs) "
+                    . " VALUES(".$ordersProduct[0]['id_order'].", ".$ordersProduct[0]['id_product'].", 1)";
+            
+                DB::getInstance()->execute($addQuantityOrder);
+            }
+            
+            $this->validateMissingProducts($ordersProduct);
+        } 
+    }
+    
+    /**
+     * Valido si se cumplen las cantidades de los productos en una orden
+     * @param Obj $resultOrdersBuy Objeto con la información de la orden y sus productos a validar
+     */
+    public function validateMissingProducts($resultOrdersBuy) {
+        $resultOrdersProducts = $this->getProductsReserve($resultOrdersBuy[0]['id_order']);
+        if(count($resultOrdersProducts) > 0) {
+            $i = 0;
+            foreach($resultOrdersProducts as $key => $value){
+                if($value['missing_quantity'] == 0) {
+                    $i++;
+                }
+            }
+            
+            if($i == count($resultOrdersProducts)) {
+                $this->changeCurrentStateOrder($resultOrdersBuy[0]['id_order'], 3);
+                $this->addHistoryOrder($resultOrdersBuy[0]['id_order'], 3);
+            }
+        }
+    }
+    
+    /**
+     * Verifico si la orden ya cumplio con todos los productos para cambiar el estado
+     * @param Int id_order
+     */
+    public function changeCurrentStateOrder($id_order, $current_state) {
+        $changeCurrent = "UPDATE " . _DB_PREFIX_ . "orders SET current_state = '".$current_state."' WHERE id_order = '".$id_order."'";
+        DB::getInstance()->execute($changeCurrent);
+    }
+    
+    /**
+     * Agregado el historial de la orden con su estado correspondiente
+     * @param type $id_order
+     * @param type $id_state
+     */
+    public function addHistoryOrder($id_order, $id_state) {
+        $addHistory = "INSERT INTO " . _DB_PREFIX_ . "order_history(id_employee, id_order, id_order_state, date_add) "
+                . "VALUES(0, '".$id_order."','".$id_state."', '".date("Y-m-d H:i:s")."')";
+        
+        DB::getInstance()->execute($addHistory);
     }
 
 
