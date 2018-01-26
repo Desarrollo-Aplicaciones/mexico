@@ -30,7 +30,7 @@ class OrderHistory extends OrderHistoryCore
 		{
                     if ($order->id) {       
                         if ( (int)$result['id_order_state'] !== 8 && (int)$result['id_order_state'] !== 18 && (int)$result['id_order_state'] !== 6 && (int)$result['id_order_state'] !== 4 
-                                && (int)$result['id_order_state'] !== 22 && (int)$result['id_order_state'] !== 20) {
+                                && (int)$result['id_order_state'] !== 22 && (int)$result['id_order_state'] !== 20 && (int)$result['id_order_state'] !== 5) {
                             // Genrenando el descuento de los reservados en el stock
                             $sql = new DbQuery();
                             $sql->select('pp.id_product, pp.quantity');
