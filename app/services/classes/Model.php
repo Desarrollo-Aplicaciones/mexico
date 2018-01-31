@@ -1020,6 +1020,17 @@ class Model extends PaymentModule {
         break;
       }
     }
+
+    $reglas_medios_pago = $this->list_medios_de_pago($args['id_address']);
+
+    foreach($reglas_medios_pago as $medio_pago => $regla){
+      if($medio_pago == $args['payment']['method'] && $regla == '0'){
+        return array(
+          'success' => FALSE,
+          'message' => "Este medio de pago no se encuentra válido para la dirección ingresada por favor selecciona uno diferente"
+        );
+      }
+    }
     
     $currency         = Configuration::get('PS_CURRENCY_DEFAULT');
     $minimal_purchase = Tools::convertPrice((float) Configuration::get('PS_PURCHASE_MINIMUM'), $currency);
@@ -1462,6 +1473,11 @@ class Model extends PaymentModule {
 
     $output = array();
     parse_str($str_list, $output);
+
+    if($output['cashondelivery'] == '1'){
+      $output['COD-Tarjeta'] = '1';
+      $output['COD-Efectivo'] = '1';
+    }
 
     return $output;
   }
