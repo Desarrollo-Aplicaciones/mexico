@@ -46,9 +46,9 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$lang_iso}">
 <head>
-		<title>{$meta_title|escape:'htmlall':'UTF-8'}</title>
+		<title>{$meta_title|escape:'UTF-8'}</title>
 {if isset($meta_description) AND $meta_description}
-		<meta name="description" content="{$meta_description|escape:html:'UTF-8'}" />
+		<meta name="description" content="{$meta_description|escape:'UTF-8'}" />
 {/if}
 {if isset($meta_keywords) AND $meta_keywords}
 		<meta name="keywords" content="{$meta_keywords|escape:html:'UTF-8'}" />
