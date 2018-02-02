@@ -1,33 +1,43 @@
 <?php
 /**
- * StorePrestaModules SPM LLC.
+ * 2011 - 2017 StorePrestaModules SPM LLC.
+ *
+ * MODULE fbloginblock
+ *
+ * @author    SPM <kykyryzopresto@gmail.com>
+ * @copyright Copyright (c) permanent, SPM
+ * @license   Addons PrestaShop license limitation
+ * @version   1.7.7
+ * @link      http://addons.prestashop.com/en/2_community-developer?contributor=61669
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the EULA
- * that is bundled with this package in the file LICENSE.txt.
- *
- /*
- * 
- * @author    StorePrestaModules SPM
- * @category social_networks
- * @package fbloginblock
- * @copyright Copyright StorePrestaModules SPM
- * @license   StorePrestaModules SPM
+ * Don't use this module on several shops. The license provided by PrestaShop Addons
+ * for all its modules is valid only once for a single shop.
  */
 
-include(dirname(__FILE__).'/../../config/config.inc.php');
-	include(dirname(__FILE__).'/../../init.php');
+include_once(dirname(__FILE__).'/../../config/config.inc.php');
+include_once(_PS_ROOT_DIR_.'/init.php');
 
-	require_once(dirname(__FILE__).'/backward_compatibility/backward.php');
-	
 
-    require_once(dirname(__FILE__).'/lib/oAuth/linkedinoAuth.php');
-    require_once(dirname(__FILE__).'/lib/oAuth/class.linkedClass.php');
-    include_once dirname(__FILE__).'/classes/linkedinhelp.class.php';
+$name_module = 'fbloginblock';
+
+if (version_compare(_PS_VERSION_, '1.7', '<')){
+    require_once(_PS_MODULE_DIR_.$name_module.'/backward_compatibility/backward.php');
+}
+
+
+if(version_compare(_PS_VERSION_, '1.7', '>')) {
+    require_once(_PS_MODULE_DIR_.$name_module. '/backward_compatibility/backward_functions.php');
+    session_start_fbloginblock();
+}
+
+    require_once(_PS_MODULE_DIR_.$name_module.'/lib/oAuth/linkedinoAuth.php');
+    require_once(_PS_MODULE_DIR_.$name_module.'/lib/oAuth/class.linkedClass.php');
+    include_once(_PS_MODULE_DIR_.$name_module.'/classes/linkedinhelp.class.php');
     $linkedinhelp = new linkedinhelp();		
     
-    $name_module = "fbloginblock";
+
 	$http_referer = isset($_REQUEST['http_referer'])?$_REQUEST['http_referer']:'';
 	
 	$lapikey = Configuration::get($name_module.'lapikey');
@@ -64,31 +74,33 @@ include(dirname(__FILE__).'/../../config/config.inc.php');
 
    
     $xml   = simplexml_load_string($content1);
-    
+
+
     
     $first_name = '';
     $last_name = '';
     $email_address = '';
-    
+
     foreach ($xml as $name => $element) {
-    	switch($name){
-    	case 'first-name':
-    		$first_name = $element;
-    	break;
-    	case 'last-name':
-    		$last_name = $element;
-    	break;
-    	case 'email-address':
-    		$email_address = $element;
-    	break;
-    	}
+        switch($name){
+            case 'first-name':
+                $first_name = (string) $element;
+                break;
+            case 'last-name':
+                $last_name = (string) $element;
+                break;
+            case 'email-address':
+                $email_address = (string) $element;
+                break;
+        }
     }
     
     $data_profile = array('first_name'=>$first_name,
     					  'last_name'=>$last_name,
     					  'email'=>$email_address
     					 );
-    
+
+
     $linkedinhelp->userLog(
     					 array('data'=>$data_profile, 
     						   'http_referer_custom'=>$http_referer 

@@ -26,7 +26,7 @@
  ********************************************************************************************************/
 
 //Default Timezone
-define('DEFAULT_TIMEZONE', 'America/Bogota');
+define('DEFAULT_TIMEZONE', 'America/Mexico_City');
 
 //Default Timezone
 if (!ini_get('date.timezone'))

@@ -30,7 +30,7 @@
  */
 
 if (!isset($_SESSION)) {
-	session_start();
+    session_start();
 }
 // Get out if the context is already defined
 if (!in_array('Context', get_declared_classes()))
@@ -62,4 +62,77 @@ $this->smarty = $this->context->smarty;
 $this->cookie = $this->context->cookie;
 $this->done = $done;
 $this->currentindex = $currentIndex;
+
+
+function variables_fbloginblock14(){
+	global $currentIndex;
+	return array(
+			'currentindex' => $currentIndex
+	);
+}
+
+
+function redirect_custom_fbloginblock($url){
+    if(version_compare(_PS_VERSION_, '1.5', '>')){
+        Tools::redirect($url);
+    } else {
+        header('Location: '.$url);
+    }
+}
+
+function custom_copy_fbloginblock($file, $file_to){
+	if(version_compare(_PS_VERSION_, '1.5', '>')){
+		Tools::copy($file, $file_to);
+	} else {
+		copy($file, $file_to);
+	}
+}
+
+
+function setcookie_fbloginblock($data){
+    $value = $data['value'];
+    $type= isset($data['type'])?$data['type']:'';
+    if (!isset($_SESSION)) {
+        session_start();
+    }
+    switch($type){
+        case 'linksocialaccount':
+            $_COOKIE['linksocialaccount'] = $value;
+         break;
+
+    }
+
+
+}
+
+function getcookie_fbloginblock($data = null){
+    $type= isset($data['type'])?$data['type']:'';
+    if (!isset($_SESSION)) {
+        session_start();
+    }
+
+    switch($type){
+        case 'linksocialaccount':
+            $value = $_COOKIE['linksocialaccount'];
+        break;
+
+    }
+
+    return array('value'=>$value);
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

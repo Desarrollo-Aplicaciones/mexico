@@ -1,9 +1,9 @@
 <?php
 require(dirname(__FILE__).'/config/config.inc.php');
 
-$id_state = $_REQUEST['id_state'];		//4200
+$id_state = $_POST['id_state'];		//4200
 
-$selected = isset($_REQUEST['selected']) ? $_REQUEST['selected'] : '';
+$selected = isset($_POST['selected']) ? $_POST['selected'] : '';
 
 $str_cities = '<option value="">- Ciudad -</option>';
 $cities = City::getCitiesByStateAvailableCP($id_state);

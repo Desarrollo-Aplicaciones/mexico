@@ -73,7 +73,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 		{
 
 			$conn_string = "host=127.0.0.1 port=15432 dbname=farmalisto_colombia user=search password=search123";
-			//$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=5432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
+			//$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=15432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
 			$dbconn4 = pg_pconnect($conn_string);
 			$conn_open = 1;
 
@@ -349,6 +349,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 				LEFT JOIN `'._DB_PREFIX_.'image_lang` il ON (i.`id_image` = il.`id_image` AND il.`id_lang` = '.(int)$id_lang.')'.
 				($ret_insert ? ' INNER JOIN tmp_search_'.$alenum.' bt ON ( bt.id_product = p.id_product )' : '').'
 				WHERE p.active = 1 AND product_shop.active = 1 AND p.`id_product` '.$product_pool.'
+				AND p.indexed = 1 AND p.visibility = "both"
 				GROUP BY product_shop.id_product
 				'.$orden_bus.'			
 				LIMIT '.(int)(($page_number - 1) * $page_size).','.(int)$page_size;
@@ -430,7 +431,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 
 
 		$conn_string = "host=127.0.0.1 port=15432 dbname=farmalisto_colombia user=search password=search123";
-		//$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=5432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
+		//$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=15432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
 		$dbconn4 = pg_pconnect($conn_string);
 		$conn_open = 1;
 
@@ -556,7 +557,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 	} 
 
 	public static function findApp($id_lang, $expr, $page_number = 1, $page_size = 1, $order_by = 'position',
-	$order_way = 'desc', $ajax = false, $use_cookie = true, Context $context = null)
+	$order_way = 'desc',$active = 1, $ajax = false, $use_cookie = true, Context $context = null)
 	{
 
 		// error_log("expr: ".$expr);
@@ -629,7 +630,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 		{
 
 			$conn_string = "host=127.0.0.1 port=15432 dbname=farmalisto_colombia user=search password=search123";
-			//$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=5432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
+			//$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=15432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
 			$dbconn4 = pg_pconnect($conn_string);
 			$conn_open = 1;
 
@@ -796,7 +797,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 			$alias = 'p.';
 
 		$conn_string = "host=127.0.0.1 port=15432 dbname=farmalisto_colombia user=search password=search123";
-		//$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=5432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
+		//$conn_string = "host=search.cuznbgafgkfl.us-east-1.rds.amazonaws.com port=15432 dbname=farmalisto_colombia user=bus_col password='nyT.19*xS'";
 		$dbconn4 = pg_pconnect($conn_string);
 		$conn_open = 1;
 
@@ -886,7 +887,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 		$product_pool = ((strpos($product_pool, ',') === false) ? (' = '.(int)$product_pool.' ') : (' IN ('.rtrim($product_pool, ',').') '));
 
 
-		$sql = 'SELECT p.id_product, p.reference, stock.out_of_stock, IFNULL(stock.quantity, 0) as quantity, 
+		$sql = 'SELECT p.id_product,p.active, p.reference, stock.out_of_stock, IFNULL(stock.quantity, 0) as quantity, 
 				/*pl.`description_short`, pl.`available_now`, pl.`available_later`,*/ pl.`link_rewrite`, lower(pl.`name`) AS name,
 			 MAX(image_shop.`id_image`) id_image, il.`legend`, m.id_manufacturer AS id_lab, lower(m.`name`) AS lab, cat.name AS cat, cat.id_category AS id_cat,
 			  p.id_tax_rules_group AS taxgr, t.rate,
@@ -911,7 +912,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 				Shop::addSqlAssociation('image', 'i', false, 'image_shop.cover=1').'
 				LEFT JOIN `'._DB_PREFIX_.'image_lang` il ON (i.`id_image` = il.`id_image` AND il.`id_lang` = '.(int)$id_lang.')'.
 				($ret_insert ? ' INNER JOIN tmp_search_'.$alenum.' bt ON ( bt.id_product = p.id_product )' : '').'
-				WHERE p.active = 1 AND product_shop.active = 1 AND p.`id_product` '.$product_pool.'
+				WHERE p.active = '. (int)$active .' AND product_shop.active = '. (int)$active .' AND p.`id_product` '.$product_pool.'
 				GROUP BY product_shop.id_product
 				'.$orden_bus.'			
 				LIMIT '.(int)(($page_number - 1) * $page_size).','.(int)$page_size;

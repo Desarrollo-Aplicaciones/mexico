@@ -470,7 +470,7 @@ class cspublicidadfl extends Module
 
         		}
         		
-        		if ( $datos['imagen'] != '' && (file_exists(Configuration::get('PATH_UP_LOAD')."cspublicidadfl/uploads/".$datos['imagen']) &&  $datos['tipo'] == 'banner' ) || $datos['tipo'] == 'adsense' ) {
+        		if ( $datos['imagen'] != '' && (file_exists(Configuration::get('PATH_UP_LOAD')."../../htdocs/modules/cspublicidadfl/uploads/".$datos['imagen']) &&  $datos['tipo'] == 'banner' ) || $datos['tipo'] == 'adsense' ) {
         			//echo "<br>si file";
         			return true;
         		} else {

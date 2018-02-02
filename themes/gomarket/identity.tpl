@@ -223,7 +223,7 @@
 		{if !isset($rfc.dni)}<a id="rfc_save" href="javascript:void(0)">Guardar</a>{/if}
 	</div>
 	<div class="information">
-		<img src="{$img_dir}ayuda.png" class="imagenAyuda"/> 
+		<img src="{$img_dir}ayuda.png" class="imagenAyuda" style ="height: 158px;" /> 
 		<p class="tituloAyuda">¿Necesitas Ayuda?</p>
 		<p><br /></p>
 		<p class="ciudadAyuda">Líneas de Atención y Ventas Nacional sin costo:</p>

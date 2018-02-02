@@ -57,9 +57,10 @@ class API extends REST {
     $page_size   = $this->_request['page_size'];
     $order_by    = $this->_request['order_by'];
     $order_way   = $this->_request['order_way'];
+    $active      = $this->_request['active'];
 
     $model = new Model();
-    $result = $model->productSearch($this->id_lang_default, $expr, $page_number, $page_size, $order_by,  $order_way);
+    $result = $model->productSearch($this->id_lang_default, $expr, $page_number, $page_size, $order_by,  $order_way,$active);
 
     if (empty($result)) {
       // Si no hay registros, estado "Sin contenido"
@@ -280,14 +281,15 @@ class API extends REST {
       $this->response('', 406);
     }
 
-    if (!isset($this->_request['id']) 
-        || empty($this->_request['id'])) {
+    if ( (!isset($this->_request['id']) || empty($this->_request['id']) ) ) {
       $this->response('', 204);
     }
 
     $id_prod = $this->_request['id'];
+    $quantity = isset($this->_request['quantity'])?$this->_request['quantity']:0;
+    
     $model = new Model();
-    $this->response(json_encode($model->getProduct($id_prod)), 200);
+    $this->response(json_encode($model->getProduct($id_prod,$quantity)), 200);
   }
 
   /**

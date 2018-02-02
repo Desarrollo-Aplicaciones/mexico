@@ -1,18 +1,18 @@
 /**
- * StorePrestaModules SPM LLC.
+ * 2011 - 2017 StorePrestaModules SPM LLC.
+ *
+ * MODULE fbloginblock
+ *
+ * @author    SPM <kykyryzopresto@gmail.com>
+ * @copyright Copyright (c) permanent, SPM
+ * @license   Addons PrestaShop license limitation
+ * @version   1.7.7
+ * @link      http://addons.prestashop.com/en/2_community-developer?contributor=61669
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the EULA
- * that is bundled with this package in the file LICENSE.txt.
- *
- /*
- * 
- * @author    StorePrestaModules SPM
- * @category social_networks
- * @package fbloginblock
- * @copyright Copyright StorePrestaModules SPM
- * @license   StorePrestaModules SPM
+ * Don't use this module on several shops. The license provided by PrestaShop Addons
+ * for all its modules is valid only once for a single shop.
  */
 
 function return_default_img(type,text){
@@ -126,10 +126,113 @@ function return_default_img(type,text){
             if(type=="amazonmicro_small")
             	$('#imageamicro_small').css('opacity',0.5); 
             
-        	
-        	$.post('../modules/fbloginblock/ajax/admin_image.php', {
-        		action:'returnimage',
-        		type : type
+            
+            if(type=="dropbox")
+            	$('#imagedb').css('opacity',0.5);
+            if(type=="dropboxsmall")
+            	$('#imagedbsmall').css('opacity',0.5);
+            if(type=="dropboxlarge_small")
+            	$('#imagedblarge_small').css('opacity',0.5);
+            if(type=="dropboxmicro_small")
+            	$('#imagedbmicro_small').css('opacity',0.5);
+            
+            
+            if(type=="scoop")
+            	$('#images').css('opacity',0.5);
+            if(type=="scoopsmall")
+            	$('#imagessmall').css('opacity',0.5);
+            if(type=="scooplarge_small")
+            	$('#imageslarge_small').css('opacity',0.5);
+            if(type=="scoopmicro_small")
+            	$('#imagesmicro_small').css('opacity',0.5);
+            
+            
+            if(type=="wordpress")
+            	$('#imagew').css('opacity',0.5);
+            if(type=="wordpresssmall")
+            	$('#imagewsmall').css('opacity',0.5);
+            if(type=="wordpresslarge_small")
+            	$('#imagewlarge_small').css('opacity',0.5);
+            if(type=="wordpressmicro_small")
+            	$('#imagewmicro_small').css('opacity',0.5);
+            
+            
+            if(type=="tumblr")
+            	$('#imagetu').css('opacity',0.5);
+            if(type=="tumblrsmall")
+            	$('#imagetusmall').css('opacity',0.5);
+            if(type=="tumblrlarge_small")
+            	$('#imagetularge_small').css('opacity',0.5);
+            if(type=="tumblrmicro_small")
+            	$('#imagetumicro_small').css('opacity',0.5);
+            
+            
+            if(type=="pinterest")
+            	$('#imagepi').css('opacity',0.5);
+            if(type=="pinterestsmall")
+            	$('#imagepismall').css('opacity',0.5);
+            if(type=="pinterestlarge_small")
+            	$('#imagepilarge_small').css('opacity',0.5);
+            if(type=="pinterestmicro_small")
+            	$('#imagepimicro_small').css('opacity',0.5);
+            
+            
+            if(type=="oklass")
+            	$('#imageo').css('opacity',0.5);
+            if(type=="oklasssmall")
+            	$('#imageosmall').css('opacity',0.5);
+            if(type=="oklasslarge_small")
+            	$('#imageolarge_small').css('opacity',0.5);
+            if(type=="oklassmicro_small")
+            	$('#imageomicro_small').css('opacity',0.5);
+            
+            
+            if(type=="mailru")
+            	$('#imagema').css('opacity',0.5);
+            if(type=="mailrusmall")
+            	$('#imagemasmall').css('opacity',0.5);
+            if(type=="mailrularge_small")
+            	$('#imagemalarge_small').css('opacity',0.5);
+            if(type=="mailrumicro_small")
+            	$('#imagemamicro_small').css('opacity',0.5);
+            
+            
+            if(type=="yandex")
+            	$('#imageya').css('opacity',0.5);
+            if(type=="yandexsmall")
+            	$('#imageyasmall').css('opacity',0.5);
+            if(type=="yandexlarge_small")
+            	$('#imageyalarge_small').css('opacity',0.5);
+            if(type=="yandexmicro_small")
+            	$('#imageyamicro_small').css('opacity',0.5);
+
+                if(type=="paypal")
+                    $('#imagep').css('opacity',0.5);
+                if(type=="paypalsmall")
+                    $('#imagepsmall').css('opacity',0.5);
+                if(type=="paypallarge_small")
+                    $('#imageplarge_small').css('opacity',0.5);
+                if(type=="paypalmicro_small")
+                    $('#imagepmicro_small').css('opacity',0.5);
+
+
+                if(type=="vkontakte")
+                    $('#imagev').css('opacity',0.5);
+                if(type=="vkontaktesmall")
+                    $('#imagevsmall').css('opacity',0.5);
+                if(type=="vkontaktelarge_small")
+                    $('#imagevlarge_small').css('opacity',0.5);
+                if(type=="vkontaktemicro_small")
+                    $('#imagevmicro_small').css('opacity',0.5);
+
+
+                $.post(ajax_link_fbloginblock, {
+                        action_custom:'returnimage',
+                        type : type,
+                        token: token_fbloginblock,
+                        ajax : true,
+                        controller : 'AdminFbloginblockajax',
+                        action : 'FbloginblockAjax',
         	}, 
         	function (data) {
         		if (data.status == 'success') {
@@ -476,6 +579,322 @@ function return_default_img(type,text){
             			document.getElementById('imagedmicro_small').src = "../modules/fbloginblock/views/img/disqus-small-micro.png?re=" + count;
             			$('#imaged-clickmicro_small').remove();
         			}
+        			
+        			
+        			
+        			if(type=="dropbox"){
+                		$('#imagedb').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagedb').src = "";
+            			document.getElementById('imagedb').src = "../modules/fbloginblock/views/img/dropbox.png?re=" + count;
+            			$('#imagedb-click').remove();
+        			}
+        			
+        			if(type=="dropboxsmall"){
+                		$('#imagedbsmall').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagedbsmall').src = "";
+            			document.getElementById('imagedbsmall').src = "../modules/fbloginblock/views/img/dropbox-small.png?re=" + count;
+            			$('#imagedb-clicksmall').remove();
+        			}
+        			if(type=="dropboxlarge_small"){
+                		$('#imagedblarge_small').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagedblarge_small').src = "";
+            			document.getElementById('imagedblarge_small').src = "../modules/fbloginblock/views/img/dropbox-large-small.png?re=" + count;
+            			$('#imagedb-clicklarge_small').remove();
+        			}
+        			if(type=="dropboxmicro_small"){
+                		$('#imagedbmicro_small').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagedbmicro_small').src = "";
+            			document.getElementById('imagedbmicro_small').src = "../modules/fbloginblock/views/img/dropbox-small-micro.png?re=" + count;
+            			$('#imagedb-clickmicro_small').remove();
+        			}
+        			if(type=="dropbox"){
+                		$('#imagedb').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagedb').src = "";
+            			document.getElementById('imagedb').src = "../modules/fbloginblock/views/img/dropbox.png?re=" + count;
+            			$('#imagedb-click').remove();
+        			}
+        			
+        			
+        			
+        			if(type=="scoopsmall"){
+                		$('#imagessmall').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagessmall').src = "";
+            			document.getElementById('imagessmall').src = "../modules/fbloginblock/views/img/scoop-small.png?re=" + count;
+            			$('#images-clicksmall').remove();
+        			}
+        			if(type=="scooplarge_small"){
+                		$('#imageslarge_small').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imageslarge_small').src = "";
+            			document.getElementById('imageslarge_small').src = "../modules/fbloginblock/views/img/scoop-large-small.png?re=" + count;
+            			$('#images-clicklarge_small').remove();
+        			}
+        			if(type=="scoopmicro_small"){
+                		$('#imagesmicro_small').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagesmicro_small').src = "";
+            			document.getElementById('imagesmicro_small').src = "../modules/fbloginblock/views/img/scoop-small-micro.png?re=" + count;
+            			$('#images-clickmicro_small').remove();
+        			}
+        			if(type=="scoop"){
+                		$('#images').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('images').src = "";
+            			document.getElementById('images').src = "../modules/fbloginblock/views/img/scoop.png?re=" + count;
+            			$('#images-click').remove();
+        			}
+        			
+        			
+        			
+        			if(type=="wordpresssmall"){
+                		$('#imagewsmall').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagewsmall').src = "";
+            			document.getElementById('imagewsmall').src = "../modules/fbloginblock/views/img/wordpress-small.png?re=" + count;
+            			$('#imagew-clicksmall').remove();
+        			}
+        			if(type=="wordpresslarge_small"){
+                		$('#imagewlarge_small').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagewlarge_small').src = "";
+            			document.getElementById('imagewlarge_small').src = "../modules/fbloginblock/views/img/wordpress-large-small.png?re=" + count;
+            			$('#imagew-clicklarge_small').remove();
+        			}
+        			if(type=="wordpressmicro_small"){
+                		$('#imagewmicro_small').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagewmicro_small').src = "";
+            			document.getElementById('imagewmicro_small').src = "../modules/fbloginblock/views/img/wordpress-small-micro.png?re=" + count;
+            			$('#imagew-clickmicro_small').remove();
+        			}
+        			if(type=="wordpress"){
+                		$('#imagew').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagew').src = "";
+            			document.getElementById('imagew').src = "../modules/fbloginblock/views/img/wordpress.png?re=" + count;
+            			$('#imagew-click').remove();
+        			}
+        			
+        			
+        			
+        			if(type=="tumblrsmall"){
+                		$('#imagetusmall').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagetusmall').src = "";
+            			document.getElementById('imagetusmall').src = "../modules/fbloginblock/views/img/tumblr-small.png?re=" + count;
+            			$('#imagetu-clicksmall').remove();
+        			}
+        			if(type=="tumblrlarge_small"){
+                		$('#imagetularge_small').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagetularge_small').src = "";
+            			document.getElementById('imagetularge_small').src = "../modules/fbloginblock/views/img/tumblr-large-small.png?re=" + count;
+            			$('#imagetu-clicklarge_small').remove();
+        			}
+        			if(type=="tumblrmicro_small"){
+                		$('#imagetumicro_small').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagetumicro_small').src = "";
+            			document.getElementById('imagetumicro_small').src = "../modules/fbloginblock/views/img/tumblr-small-micro.png?re=" + count;
+            			$('#imagetu-clickmicro_small').remove();
+        			}
+        			if(type=="tumblr"){
+                		$('#imagetu').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagetu').src = "";
+            			document.getElementById('imagetu').src = "../modules/fbloginblock/views/img/tumblr.png?re=" + count;
+            			$('#imagetu-click').remove();
+        			}
+        			
+        			
+        			
+        			if(type=="pinterestsmall"){
+                		$('#imagepismall').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagepismall').src = "";
+            			document.getElementById('imagepismall').src = "../modules/fbloginblock/views/img/pinterest-small.png?re=" + count;
+            			$('#imagepi-clicksmall').remove();
+        			}
+        			if(type=="pinterestlarge_small"){
+                		$('#imagepilarge_small').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagepilarge_small').src = "";
+            			document.getElementById('imagepilarge_small').src = "../modules/fbloginblock/views/img/pinterest-large-small.png?re=" + count;
+            			$('#imagepi-clicklarge_small').remove();
+        			}
+        			if(type=="pinterestmicro_small"){
+                		$('#imagepimicro_small').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagepimicro_small').src = "";
+            			document.getElementById('imagepimicro_small').src = "../modules/fbloginblock/views/img/pinterest-small-micro.png?re=" + count;
+            			$('#imagepi-clickmicro_small').remove();
+        			}
+        			if(type=="pinterest"){
+                		$('#imagepi').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagepi').src = "";
+            			document.getElementById('imagepi').src = "../modules/fbloginblock/views/img/pinterest.png?re=" + count;
+            			$('#imagepi-click').remove();
+        			}
+        			
+        			
+        			
+        			if(type=="oklasssmall"){
+                		$('#imageosmall').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imageosmall').src = "";
+            			document.getElementById('imageosmall').src = "../modules/fbloginblock/views/img/oklass-small.png?re=" + count;
+            			$('#imageo-clicksmall').remove();
+        			}
+        			if(type=="oklasslarge_small"){
+                		$('#imageolarge_small').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imageolarge_small').src = "";
+            			document.getElementById('imageolarge_small').src = "../modules/fbloginblock/views/img/oklass-large-small.png?re=" + count;
+            			$('#imageo-clicklarge_small').remove();
+        			}
+        			if(type=="oklassmicro_small"){
+                		$('#imageomicro_small').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imageomicro_small').src = "";
+            			document.getElementById('imageomicro_small').src = "../modules/fbloginblock/views/img/oklass-small-micro.png?re=" + count;
+            			$('#imageo-clickmicro_small').remove();
+        			}
+        			if(type=="oklass"){
+                		$('#imageo').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imageo').src = "";
+            			document.getElementById('imageo').src = "../modules/fbloginblock/views/img/oklass.png?re=" + count;
+            			$('#imageo-click').remove();
+        			}
+        			
+        			
+        			
+        			if(type=="mailrusmall"){
+                		$('#imagemasmall').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagemasmall').src = "";
+            			document.getElementById('imagemasmall').src = "../modules/fbloginblock/views/img/mailru-small.png?re=" + count;
+            			$('#imagema-clicksmall').remove();
+        			}
+        			if(type=="mailrularge_small"){
+                		$('#imagemalarge_small').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagemalarge_small').src = "";
+            			document.getElementById('imagemalarge_small').src = "../modules/fbloginblock/views/img/mailru-large-small.png?re=" + count;
+            			$('#imagema-clicklarge_small').remove();
+        			}
+        			if(type=="mailrumicro_small"){
+                		$('#imagemamicro_small').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagemamicro_small').src = "";
+            			document.getElementById('imagemamicro_small').src = "../modules/fbloginblock/views/img/mailru-small-micro.png?re=" + count;
+            			$('#imagema-clickmicro_small').remove();
+        			}
+        			if(type=="mailru"){
+                		$('#imagema').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imagema').src = "";
+            			document.getElementById('imagema').src = "../modules/fbloginblock/views/img/mailru.png?re=" + count;
+            			$('#imagema-click').remove();
+        			}
+        			
+        			
+        			
+        			if(type=="yandexsmall"){
+                		$('#imageyasmall').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imageyasmall').src = "";
+            			document.getElementById('imageyasmall').src = "../modules/fbloginblock/views/img/yandex-small.png?re=" + count;
+            			$('#imageya-clicksmall').remove();
+        			}
+        			if(type=="yandexlarge_small"){
+                		$('#imageyalarge_small').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imageyalarge_small').src = "";
+            			document.getElementById('imageyalarge_small').src = "../modules/fbloginblock/views/img/yandex-large-small.png?re=" + count;
+            			$('#imageya-clicklarge_small').remove();
+        			}
+        			if(type=="yandexmicro_small"){
+                		$('#imageyamicro_small').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imageyamicro_small').src = "";
+            			document.getElementById('imageyamicro_small').src = "../modules/fbloginblock/views/img/yandex-small-micro.png?re=" + count;
+            			$('#imageya-clickmicro_small').remove();
+        			}
+        			if(type=="yandex"){
+                		$('#imageya').css('opacity',1);
+                		var count = Math.random();
+            			document.getElementById('imageya').src = "";
+            			document.getElementById('imageya').src = "../modules/fbloginblock/views/img/yandex.png?re=" + count;
+            			$('#imageya-click').remove();
+        			}
+
+
+                    if(type=="paypal"){
+                        $('#imagep').css('opacity',1);
+                        var count = Math.random();
+                        document.getElementById('imagep').src = "";
+                        document.getElementById('imagep').src = "../modules/fbloginblock/views/img/paypal.png?re=" + count;
+                        $('#imagep-click').remove();
+                    }
+
+                    if(type=="paypalsmall"){
+                        $('#imagepsmall').css('opacity',1);
+                        var count = Math.random();
+                        document.getElementById('imagepsmall').src = "";
+                        document.getElementById('imagepsmall').src = "../modules/fbloginblock/views/img/paypal-small.png?re=" + count;
+                        $('#imagep-clicksmall').remove();
+                    }
+                    if(type=="paypallarge_small"){
+                        $('#imageplarge_small').css('opacity',1);
+                        var count = Math.random();
+                        document.getElementById('imageplarge_small').src = "";
+                        document.getElementById('imageplarge_small').src = "../modules/fbloginblock/views/img/paypal-large-small.png?re=" + count;
+                        $('#imagep-clicklarge_small').remove();
+                    }
+                    if(type=="paypalmicro_small"){
+                        $('#imagepmicro_small').css('opacity',1);
+                        var count = Math.random();
+                        document.getElementById('imagepmicro_small').src = "";
+                        document.getElementById('imagepmicro_small').src = "../modules/fbloginblock/views/img/paypal-small-micro.png?re=" + count;
+                        $('#imagep-clickmicro_small').remove();
+                    }
+
+                    if(type=="vkontakte"){
+                        $('#imagev').css('opacity',1);
+                        var count = Math.random();
+                        document.getElementById('imagev').src = "";
+                        document.getElementById('imagev').src = "../modules/fbloginblock/views/img/vkontakte.png?re=" + count;
+                        $('#imagev-click').remove();
+                    }
+                    if(type=="vkontaktesmall"){
+                        $('#imagevsmall').css('opacity',1);
+                        var count = Math.random();
+                        document.getElementById('imagevsmall').src = "";
+                        document.getElementById('imagevsmall').src = "../modules/fbloginblock/views/img/vkontakte-small.png?re=" + count;
+                        $('#imagev-clicksmall').remove();
+                    }
+                    if(type=="vkontaktelarge_small"){
+                        $('#imagevlarge_small').css('opacity',1);
+                        var count = Math.random();
+                        document.getElementById('imagevlarge_small').src = "";
+                        document.getElementById('imagevlarge_small').src = "../modules/fbloginblock/views/img/vkontakte-large-small.png?re=" + count;
+                        $('#imagev-clicklarge_small').remove();
+                    }
+                    if(type=="vkontaktemicro_small"){
+                        $('#imagevmicro_small').css('opacity',1);
+                        var count = Math.random();
+                        document.getElementById('imagevmicro_small').src = "";
+                        document.getElementById('imagevmicro_small').src = "../modules/fbloginblock/views/img/vkontakte-small-micro.png?re=" + count;
+                        $('#imagev-clickmicro_small').remove();
+                    }
                 	
         		} else {
         			
@@ -590,7 +1009,103 @@ function return_default_img(type,text){
         			if(type=="amazonmicro_small")
                 		$('#imageamicro_small').css('opacity',1);
         			
+        			if(type=="dropbox")
+                		$('#imagedb').css('opacity',1);	
+        			if(type=="dropboxsmall")
+                		$('#imagedbsmall').css('opacity',1);
+        			if(type=="dropboxlarge_small")
+                		$('#imagedblarge_small').css('opacity',1);
+        			if(type=="dropboxmicro_small")
+                		$('#imagedbmicro_small').css('opacity',1);
         			
+        			
+        			if(type=="scoop")
+                		$('#images').css('opacity',1);	
+        			if(type=="scoopsmall")
+                		$('#imagessmall').css('opacity',1);
+        			if(type=="scooplarge_small")
+                		$('#imageslarge_small').css('opacity',1);
+        			if(type=="scoopmicro_small")
+                		$('#imagesmicro_small').css('opacity',1);
+        			
+        			
+        			if(type=="wordpress")
+                		$('#imagew').css('opacity',1);	
+        			if(type=="wordpresssmall")
+                		$('#imagewsmall').css('opacity',1);
+        			if(type=="wordpresslarge_small")
+                		$('#imagewlarge_small').css('opacity',1);
+        			if(type=="wordpressmicro_small")
+                		$('#imagewmicro_small').css('opacity',1);
+        			
+        			
+        			if(type=="tumblr")
+                		$('#imagetu').css('opacity',1);	
+        			if(type=="tumblrsmall")
+                		$('#imagetusmall').css('opacity',1);
+        			if(type=="tumblrlarge_small")
+                		$('#imagetularge_small').css('opacity',1);
+        			if(type=="tumblrmicro_small")
+                		$('#imagetumicro_small').css('opacity',1);
+        			
+        			
+        			if(type=="pinterest")
+                		$('#imagepi').css('opacity',1);	
+        			if(type=="pinterestsmall")
+                		$('#imagepismall').css('opacity',1);
+        			if(type=="pinterestlarge_small")
+                		$('#imagepilarge_small').css('opacity',1);
+        			if(type=="pinterestmicro_small")
+                		$('#imagepimicro_small').css('opacity',1);
+        			
+        			
+        			if(type=="oklass")
+                		$('#imageo').css('opacity',1);	
+        			if(type=="oklasssmall")
+                		$('#imageosmall').css('opacity',1);
+        			if(type=="oklasslarge_small")
+                		$('#imageolarge_small').css('opacity',1);
+        			if(type=="oklassmicro_small")
+                		$('#imageomicro_small').css('opacity',1);
+        			
+        			
+        			if(type=="mailru")
+                		$('#imagema').css('opacity',1);	
+        			if(type=="mailrusmall")
+                		$('#imagemasmall').css('opacity',1);
+        			if(type=="mailrularge_small")
+                		$('#imagemalarge_small').css('opacity',1);
+        			if(type=="mailrumicro_small")
+                		$('#imagemamicro_small').css('opacity',1);
+        			
+        			
+        			if(type=="yandex")
+                		$('#imageya').css('opacity',1);	
+        			if(type=="yandexsmall")
+                		$('#imageyasmall').css('opacity',1);
+        			if(type=="yandexlarge_small")
+                		$('#imageyalarge_small').css('opacity',1);
+        			if(type=="yandexmicro_small")
+                		$('#imageyamicro_small').css('opacity',1);
+
+                    if(type=="paypal")
+                        $('#imagep').css('opacity',1);
+                    if(type=="paypalsmall")
+                        $('#imagepsmall').css('opacity',1);
+                    if(type=="paypallarge_small")
+                        $('#imageplarge_small').css('opacity',1);
+                    if(type=="paypalmicro_small")
+                        $('#imagepmicro_small').css('opacity',1);
+
+
+                    if(type=="vkontakte")
+                        $('#imagev').css('opacity',1);
+                    if(type=="vkontaktesmall")
+                        $('#imagevsmall').css('opacity',1);
+                    if(type=="vkontaktelarge_small")
+                        $('#imagevlarge_small').css('opacity',1);
+                    if(type=="vkontaktemicro_small")
+                        $('#imagevmicro_small').css('opacity',1);
         			
         			alert(data.message);
         		}
@@ -599,3 +1114,5 @@ function return_default_img(type,text){
         	}
 
         }
+
+

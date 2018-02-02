@@ -1,39 +1,43 @@
 <?php
 /**
- * StorePrestaModules SPM LLC.
+ * 2011 - 2017 StorePrestaModules SPM LLC.
+ *
+ * MODULE fbloginblock
+ *
+ * @author    SPM <kykyryzopresto@gmail.com>
+ * @copyright Copyright (c) permanent, SPM
+ * @license   Addons PrestaShop license limitation
+ * @version   1.7.7
+ * @link      http://addons.prestashop.com/en/2_community-developer?contributor=61669
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the EULA
- * that is bundled with this package in the file LICENSE.txt.
- *
- /*
- * 
- * @author    StorePrestaModules SPM
- * @category social_networks
- * @package fbloginblock
- * @copyright Copyright StorePrestaModules SPM
- * @license   StorePrestaModules SPM
+ * Don't use this module on several shops. The license provided by PrestaShop Addons
+ * for all its modules is valid only once for a single shop.
  */
 
-include(dirname(__FILE__).'/../../config/config.inc.php');
-include(dirname(__FILE__).'/../../init.php');
-
-require_once(dirname(__FILE__).'/backward_compatibility/backward.php');
-
+include_once(dirname(__FILE__).'/../../config/config.inc.php');
+include_once(_PS_ROOT_DIR_.'/init.php');
 
 $action = isset($_REQUEST['action'])?$_REQUEST['action']:'';
 $http_referer = isset($_REQUEST['http_referer'])?urldecode($_REQUEST['http_referer']):'';
 
-
-$name_module = 'fbloginblock';
-
+if (version_compare(_PS_VERSION_, '1.5', '>')){
 $cookie = new Cookie('ref');
 $cookie->http_referer_custom = $http_referer;
+}
+
+$name_module = "fbloginblock";
+
+include_once(_PS_MODULE_DIR_.$name_module.'/fbloginblock.php');
+$obj_fbloginblock_ps14_13 = new fbloginblock();
+$obj_fbloginblock_ps14_13->setCookieForPrestashop14_13();
 
 
-include(dirname(__FILE__).'/lib/twitteroauth/twitteroauth.php');
-include(dirname(__FILE__).'/classes/twitter.class.php');
+
+
+include_once(_PS_MODULE_DIR_.$name_module.'/classes/twitter.class.php');
+
 
 $consumer_key = Configuration::get($name_module.'twitterconskey');
 $consumer_key = trim($consumer_key);
@@ -41,33 +45,21 @@ $consumer_secret = Configuration::get($name_module.'twitterconssecret');
 $consumer_secret = trim($consumer_secret);
 $callback = "";
 
-$obj_twitter = new twitter(array('key'=>$consumer_key,
-								 'secret' =>$consumer_secret,
-								 'callback' => $callback,
-								 'http_referer'=>$http_referer )
-						   );
 
-switch($action){
-	case 'callback':
-		$obj_twitter->callback();
-	break;
-	case 'connect':
-		$obj_twitter->connect();
-	break;
-	case 'login':
-		$obj_twitter->login();
-	break;
-	default:
-		$obj_twitter->login();
-		
-		if(version_compare(_PS_VERSION_, '1.6', '>')){
-			$_http_host = Tools::getShopDomainSsl(true, true).__PS_BASE_URI__; 
-		} else {
-			$_http_host = _PS_BASE_URL_.__PS_BASE_URI__;
-		}
-	break;
-}						   
-						   
+if(Tools::strlen($consumer_key)==0 || Tools::strlen($consumer_secret)==0){
+    echo "Error: Please fill Twitter Consumer key, Twitter Consumer secret in the module settings!";
+    exit;
+}
+
+$data = array('key'=>$consumer_key,
+		'secret' =>$consumer_secret,
+		'callback' => $callback,
+		'http_referer'=>$http_referer
+);
+
+$obj = new twitter($data);
+$obj->twitterLogin(array('action'=>$action));
+
 
         
 ?>

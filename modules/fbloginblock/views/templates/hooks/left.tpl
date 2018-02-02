@@ -1,41 +1,54 @@
 {*
-/**
- * StorePrestaModules SPM LLC.
+ *
+ * 2011 - 2017 StorePrestaModules SPM LLC.
+ *
+ * MODULE fbloginblock
+ *
+ * @author    SPM <kykyryzopresto@gmail.com>
+ * @copyright Copyright (c) permanent, SPM
+ * @license   Addons PrestaShop license limitation
+ * @version   1.7.7
+ * @link      http://addons.prestashop.com/en/2_community-developer?contributor=61669
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the EULA
- * that is bundled with this package in the file LICENSE.txt.
+ * Don't use this module on several shops. The license provided by PrestaShop Addons
+ * for all its modules is valid only once for a single shop.
  *
- /*
- * 
- * @author    StorePrestaModules SPM
- * @category social_networks
- * @package fbloginblock
- * @copyright Copyright StorePrestaModules SPM
- * @license   StorePrestaModules SPM
- */
 *}
 
-{if $fbloginblock_leftcolumnf == "leftcolumnf" || $fbloginblock_leftcolumng == "leftcolumng"  
-|| $fbloginblock_leftcolumnt == "leftcolumnt" 
-|| $fbloginblock_leftcolumny == "leftcolumny" || $fbloginblock_leftcolumnl == "leftcolumnl"
-|| $fbloginblock_leftcolumnm == "leftcolumnm" || $fbloginblock_leftcolumni == "leftcolumni"
-|| $fbloginblock_leftcolumnfs == "leftcolumnfs" || $fbloginblock_leftcolumngi == "leftcolumngi"
-|| $fbloginblock_leftcolumnd == "leftcolumnd" || $fbloginblock_leftcolumna == "leftcolumna"}
+{if $fbloginblock_lcblock == "lcblock"}
+
+{if ($fbloginblock_leftcolumnf == "leftcolumnf" && $fbloginblockf_on == 1) ||
+    ($fbloginblock_leftcolumng == "leftcolumng" && $fbloginblockg_on == 1) ||
+    ($fbloginblock_leftcolumnt == "leftcolumnt" && $fbloginblockt_on == 1) ||
+    ($fbloginblock_leftcolumny == "leftcolumny" && $fbloginblocky_on == 1) ||
+    ($fbloginblock_leftcolumnl == "leftcolumnl" && $fbloginblockl_on == 1) ||
+    ($fbloginblock_leftcolumnm == "leftcolumnm" && $fbloginblockm_on == 1) ||
+    ($fbloginblock_leftcolumnfs == "leftcolumnfs" && $fbloginblockfs_on == 1) ||
+    ($fbloginblock_leftcolumngi == "leftcolumngi" && $fbloginblockgi_on == 1) ||
+    ($fbloginblock_leftcolumnd == "leftcolumnd" && $fbloginblockd_on == 1) ||
+    ($fbloginblock_leftcolumna == "leftcolumna" && $fbloginblocka_on == 1) ||
+    ($fbloginblock_leftcolumndb == "leftcolumndb" && $fbloginblockdb_on == 1) ||
+    ($fbloginblock_leftcolumnw == "leftcolumnw" && $fbloginblockw_on == 1) ||
+    ($fbloginblock_leftcolumntu == "leftcolumntu" && $fbloginblockw_on == 1) ||
+    ($fbloginblock_leftcolumnpi == "leftcolumnpi" && $fbloginblockpi_on == 1) ||
+    ($fbloginblock_leftcolumnp == "leftcolumnp" && $fbloginblockp_on == 1) ||
+    ($fbloginblock_leftcolumnv == "leftcolumnv" && $fbloginblockv_on == 1)}
+{*|| $fbloginblock_leftcolumni == "leftcolumni" || $fbloginblock_leftcolumno == "leftcolumno" || $fbloginblock_leftcolumnma == "leftcolumnma" || $fbloginblock_leftcolumnya == "leftcolumnya" || $fbloginblock_leftcolumns == "leftcolumns"*}
 
 {if !$cookie->isLogged()}
 
 <div class="block">
-		<h4 style="text-align:left;">{l s='Your account' mod='fbloginblock'}</h4>
+		<h4 class="text-align-left">{l s='Your account' mod='fbloginblock'}</h4>
 <form action="{$base_dir_ssl|escape:'htmlall':'UTF-8'}{if $fbloginblockis_rewrite == 1}{$fbloginblockiso_lang|escape:'htmlall':'UTF-8'}{if $fbloginblockis15 == 1}login{else}authentication{/if}{else}authentication.php{/if}" method="post">
-		<fieldset class="block_content" style="border-bottom:1px none #D0D3D8;border-top:none">
+		<fieldset class="block_content block-fieldset-custom14">
 			<p class="text">
 				<br/>
 				<label for="email"><b>{l s='E-mail:' mod='fbloginblock'}</b></label>
 				<span><input type="text" id="email" name="email" 
 							 value="{if isset($smarty.post.email)}{$smarty.post.email|escape:'htmlall':'UTF-8'|stripslashes}{/if}" 
-							 class="account_input" style="width:14em"/>
+							 class="account_input width-14-em" />
 				</span>
 			</p>
 			<p class="text">
@@ -43,137 +56,78 @@
 				<label for="passwd"><b>{l s='Password:' mod='fbloginblock'}</b></label>
 				<span><input type="password" id="passwd" name="passwd" 
 							 value="{if isset($smarty.post.passwd)}{$smarty.post.passwd|escape:'htmlall':'UTF-8'|stripslashes}{/if}" 
-							 class="account_input" style="width:14em"/>
+							 class="account_input width-14-em" />
 				</span>
 			</p>
 			<p class="submit">
 				{if isset($back)}
 					<input type="hidden" class="hidden" name="back" value="{$back|escape:'htmlall':'UTF-8'}" />
 				{/if}
-				<div class="fbtwgblock-columns">
-				<input type="submit" id="SubmitLogin" name="SubmitLogin" class="button" 
-						value="{l s='Log in' mod='fbloginblock'}" style="margin-left:0px;float:left"/>
-				<div style="clear:both"></div>
-			
-				{if $fbloginblock_leftcolumnf == "leftcolumnf" && $fbloginblockf_on == 1}
-				<a href="javascript:void(0)" onclick="return fblogin();" 
-				   title="Facebook" >
-	   				<img src="{$fbloginblockfleftimg|escape:'htmlall':'UTF-8'}" alt="Facebook"  />
-	 			</a>
-	 			{/if}
-	 			{if $fbloginblock_leftcolumnt == "leftcolumnt" && $fbloginblockt_on == 1}
-	 			<a href="javascript:void(0)" title="Twitter" 
-	 			{if $fbloginblocktconf == 1}
-		   		   onclick="javascript:popupWin = window.open('{$base_dir_ssl|escape:'htmlall':'UTF-8'}modules/fbloginblock/twitter.php{if $fbloginblockorder_page == 1}?http_referer={$fbloginblockhttp_referer|urlencode}{/if}', 'login', 'location,width=600,height=600,top=0'); popupWin.focus();"
-		   		{else}
-					onclick="alert('{$terror|escape:'htmlall':'UTF-8'}')"
-				{/if}  
-		   		   >
-						<img src="{$fbloginblocktleftimg|escape:'htmlall':'UTF-8'}" alt="Twitter" />
-				</a>
-				{/if}
-				
-				{if $fbloginblock_leftcolumna == "leftcolumna" && $fbloginblocka_on == 1}
-				<a href="javascript:void(0)" onclick="return amazonlogin();" 
-				   title="Amazon" >
-	   				<img src="{$fbloginblockaleftimg|escape:'htmlall':'UTF-8'}" alt="Amazon"  />
-	 			</a>
-	 			{/if}
-				
-	 			{if $fbloginblock_leftcolumng == "leftcolumng" && $fbloginblockg_on == 1}
-	 			<a href="javascript:void(0)" title="Google"
-	 			{if $fbloginblockgconf == 1} 
-		   		   onclick="javascript:popupWin = window.open('{$base_dir_ssl|escape:'htmlall':'UTF-8'}modules/fbloginblock/login.php?p=google{if $fbloginblockorder_page == 1}&http_referer={$fbloginblockhttp_referer|urlencode}{/if}', 'openId', 'location,width=512,height=512,top=0');popupWin.focus();"
-			   	{else}
-					onclick="alert('{$gerror|escape:'htmlall':'UTF-8'}')"
-				{/if}   
-		   		   >
-						<img src="{$fbloginblockgleftimg|escape:'htmlall':'UTF-8'}" alt="Google" />
-				</a>
-				{/if}
-				 {if $fbloginblock_leftcolumny == "leftcolumny" && $fbloginblocky_on == 1}
-				<a href="javascript:void(0)" title="Yahoo" 
-		   			onclick="javascript:popupWin = window.open('{$base_dir_ssl|escape:'htmlall':'UTF-8'}modules/fbloginblock/login.php?p=yahoo{if $fbloginblockorder_page == 1}&http_referer={$fbloginblockhttp_referer|urlencode}{/if}', 'openId', 'location,width=400,height=300,top=0');popupWin.focus();">
-					<img src="{$fbloginblockyleftimg|escape:'htmlall':'UTF-8'}" alt="Yahoo"  />
-				</a>
-	 			{/if}
-				
-				{if $fbloginblock_leftcolumnl == "leftcolumnl" && $fbloginblockl_on == 1}
-	 			<a href="javascript:void(0)" title="LinkedIn"
-	 			{if $fbloginblocklconf == 1}  
-		   		   onclick="javascript:popupWin = window.open('{$base_dir_ssl|escape:'htmlall':'UTF-8'}modules/fbloginblock/linkedin.php{if $fbloginblockorder_page == 1}?http_referer={$fbloginblockhttp_referer|urlencode}{/if}', 'openId', 'location,width=512,height=512,top=0');popupWin.focus();">
-		   		{else}
-					onclick="alert('{$lerror|escape:'htmlall':'UTF-8'}')">
-				{/if}
-						<img src="{$fbloginblocklleftimg|escape:'htmlall':'UTF-8'}" alt="LinkedIn" />
-				</a>
-				{/if}
-				{if $fbloginblock_leftcolumnm == "leftcolumnm" && $fbloginblockm_on == 1}
-	 			<a href="javascript:void(0)" title="Microsoft Live" 
-	 			{if $fbloginblockmconf == 1}
-		   		   onclick="javascript:popupWin = window.open('{$base_dir_ssl|escape:'htmlall':'UTF-8'}modules/fbloginblock/microsoft.php{if $fbloginblockorder_page == 1}?http_referer={$fbloginblockhttp_referer|urlencode}{/if}', 'openId', 'location,width=512,height=512,top=0');popupWin.focus();">
-		   		{else}
-		        	onclick="alert('{$merror|escape:'htmlall':'UTF-8'}')">
-				{/if} 
-						<img src="{$fbloginblockmleftimg|escape:'htmlall':'UTF-8'}" alt="Microsoft Live" />
-				</a>
-				{/if}
-				
-				
-				{if $fbloginblock_leftcolumni == "leftcolumni" && $fbloginblocki_on == 1}
-	 			<a href="javascript:void(0)" title="Instagram"
-		   		{if $fbloginblockiconf == 1}
-		   		   onclick="javascript:popupWin = window.open('{$base_dir_ssl|escape:'htmlall':'UTF-8'}modules/fbloginblock/instagram.php{if $fbloginblockorder_page == 1}?http_referer={$fbloginblockhttp_referer|urlencode}{/if}', 'openId', 'location,width=512,height=512,top=0');popupWin.focus();">
-		   		{else}
-		       		onclick="alert('{$ierror|escape:'htmlall':'UTF-8'}')">
-				 {/if}
-		        
-		        	<img src="{$fbloginblockileftimg|escape:'htmlall':'UTF-8'}" alt="Instagram" />
-				</a>
-				{/if}
-				
-				{if $fbloginblock_leftcolumnfs == "leftcolumnfs" && $fbloginblockfs_on == 1}
-	 			<a href="javascript:void(0)" title="Foursquare"
-		   		{if $fbloginblockfsconf == 1}
-		   		   onclick="javascript:popupWin = window.open('{$base_dir_ssl|escape:'htmlall':'UTF-8'}modules/fbloginblock/foursquare.php{if $fbloginblockorder_page == 1}?http_referer={$fbloginblockhttp_referer|urlencode}{/if}', 'openId', 'location,width=512,height=512,top=0');popupWin.focus();">
-		   		{else}
-		       		onclick="alert('{$fserror|escape:'htmlall':'UTF-8'}')">
-				 {/if}
-		        
-		        	<img src="{$fbloginblockfsleftimg|escape:'htmlall':'UTF-8'}" alt="Foursquare" />
-				</a>
-				{/if}
-				
-				
-				{if $fbloginblock_leftcolumngi == "leftcolumngi" && $fbloginblockgi_on == 1}
-	 			<a href="javascript:void(0)" title="Github" 
-		   		{if $fbloginblockgiconf == 1}
-		   		   onclick="javascript:popupWin = window.open('{$base_dir_ssl|escape:'htmlall':'UTF-8'}modules/fbloginblock/github.php{if $fbloginblockorder_page == 1}?http_referer={$fbloginblockhttp_referer|urlencode}{/if}', 'openId', 'location,width=512,height=512,top=0');popupWin.focus();">
-		   		{else}
-		       		onclick="alert('{$gierror|escape:'htmlall':'UTF-8'}')">
-				 {/if}
-		        
-		        	<img src="{$fbloginblockgileftimg|escape:'htmlall':'UTF-8'}" alt="Github" />
-				</a>
-				{/if}
-				
-				
-				{if $fbloginblock_leftcolumnd == "leftcolumnd" && $fbloginblockd_on == 1}
-	 			<a href="javascript:void(0)" title="Disqus" class="fbloginblock-last"
-		   		{if $fbloginblockdconf == 1}
-		   		   onclick="javascript:popupWin = window.open('{$base_dir_ssl|escape:'htmlall':'UTF-8'}modules/fbloginblock/disqus.php{if $fbloginblockorder_page == 1}?http_referer={$fbloginblockhttp_referer|urlencode}{/if}', 'openId', 'location,width=512,height=512,top=0');popupWin.focus();">
-		   		{else}
-		       		onclick="alert('{$derror|escape:'htmlall':'UTF-8'}')">
-				 {/if}
-		        
-		        	<img src="{$fbloginblockdleftimg|escape:'htmlall':'UTF-8'}" alt="Disqus" />
-				</a>
-				{/if}
-				
-				<div style="clear:both"></div>
+				<div class="fbtwgblock-columns fbloginblock-connects">
+				<input type="submit" id="SubmitLogin" name="SubmitLogin" class="button log-in-13"
+						value="{l s='Log in' mod='fbloginblock'}"/>
+                <div class="clear"></div>
+
+
+
+                {foreach from=$fbloginblockallcon key=prefix_short item=prefix_full name=myLoop}
+
+                    {assign var=prefix_full value=$prefix_full.prefix}
+
+
+                    {if $fbloginblock_leftcolumn{$prefix_short} == "leftcolumn{$prefix_short}" && $fbloginblock{$prefix_short}_on == 1}
+
+                        <a  href="javascript:void(0)"
+
+                                {if is_int($fbloginblock{$prefix_short}leftcolumnimg)}
+                                    class="{$prefix_full|escape:'htmlall':'UTF-8'} custom-social-button-all custom-social-button-{$fbloginblock{$prefix_short}leftcolumnimg|escape:'htmlall':'UTF-8'}"
+                                {/if}
+
+                                {if $prefix_short == "a"}
+                                    onclick="return amazonlogin();" title="Amazon"
+                                {elseif $prefix_short == "y"}
+                                    onclick="javascript:popupWin = window.open('{$fbloginblockredurly|escape:'htmlall':'UTF-8'}', 'openId', 'location,width=600,height=600,top=0');popupWin.focus();"
+                                {else}
+
+                                    {if isset($fbloginblockis_ssl{$prefix_short}) && $fbloginblockis_ssl{$prefix_short} == 0}
+                                        onclick="alert('{$fbloginblockssltxt{$prefix_short}|escape:'htmlall':'UTF-8'}')"
+                                    {elseif $fbloginblock{$prefix_short}conf == 1}
+                                        onclick="javascript:popupWin = window.open('{$fbloginblockredurl{$prefix_short}|escape:'htmlall':'UTF-8'}', 'login', 'location,width=600,height=600,top=0'); popupWin.focus();"
+                                    {else}
+                                        onclick="alert('{${$prefix_short}error|escape:'htmlall':'UTF-8'}')"
+                                    {/if}
+                                    title="{$prefix_full|escape:'htmlall':'UTF-8'|capitalize}"
+
+                                {/if}
+                                >
+
+
+                            {if $fbloginblock{$prefix_short}leftcolumnimg == 1}
+                                <i class="fa fa-{$prefix_full|escape:'htmlall':'UTF-8'}">&nbsp;{$prefix_full|escape:'htmlall':'UTF-8'|capitalize}</i>
+                            {elseif $fbloginblock{$prefix_short}leftcolumnimg == 2}
+                                <i class="fa fa-{$prefix_full|escape:'htmlall':'UTF-8'}"></i>
+                            {elseif $fbloginblock{$prefix_short}leftcolumnimg == 3}
+                                <i class="fa fa-{$prefix_full|escape:'htmlall':'UTF-8'}">&nbsp;{$prefix_full|escape:'htmlall':'UTF-8'|capitalize}</i>
+                            {elseif $fbloginblock{$prefix_short}leftcolumnimg == 4}
+                                <i class="fa fa-{$prefix_full|escape:'htmlall':'UTF-8'}"></i>
+                            {else}
+                                <img src="{$fbloginblock{$prefix_short}leftcolumnimg|escape:'htmlall':'UTF-8'}" class="img-top-custom" alt="{$prefix_full|escape:'htmlall':'UTF-8'|capitalize}"  />
+                            {/if}
+
+                        </a>&nbsp;
+
+                    {/if}
+
+
+
+
+                {/foreach}
+
+
+                <div class="clear"></div>
 				</div>
 			</p>
-			<p class="lost_password" style="margin-top:10px;padding-left:0px">
+			<p class="lost_password margin-top-10 padding-left-0">
 				<a href="{$base_dir_ssl|escape:'htmlall':'UTF-8'}{if $fbloginblockis_rewrite == 1}{$fbloginblockiso_lang|escape:'htmlall':'UTF-8'}password-recovery{else}password.php{/if}">{l s='Forgot your password?' mod='fbloginblock'}</a>
 			</p>
 		</fieldset>
@@ -182,13 +136,13 @@
 
 {else}
 <div class="block">
-		<h4 style="text-align:left;">{l s='Your account' mod='fbloginblock'}</h4>
+		<h4 class="text-align-left">{l s='Your account' mod='fbloginblock'}</h4>
 		<div class="block_content">
 		<br/>
 		<p>
 			{l s='Welcome' mod='fbloginblock'},<br/> <b>{$customerName|escape:'htmlall':'UTF-8'}</b> (<a href="{$base_dir_ssl|escape:'htmlall':'UTF-8'}{if $fbloginblockis_rewrite == 1}{$fbloginblockiso_lang|escape:'htmlall':'UTF-8'}{else}index.php{/if}?mylogout" 
 											 title="{l s='Log out' mod='fbloginblock'}"
-											 style="text-decoration:underline">{l s='Log out' mod='fbloginblock'}</a>)
+											 class="text-decoration-underline">{l s='Log out' mod='fbloginblock'}</a>)
 		</p>
 		<br/>
 		
@@ -217,6 +171,8 @@
 		 <br/>
 		</div>
 </div>
+
+{/if}
 
 {/if}
 

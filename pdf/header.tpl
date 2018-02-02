@@ -107,7 +107,7 @@
 				<td style="width: 50%; "> <img src="{$img_physical_uri}factura/logo_big.jpg" style="width:120px; height:29px; display:block;" />
 				</td>
 				<td style="width: 50%; text-align: right; font-size: 8pt; "><br style="line-height:2.5px;"><br style="line-height:2.5px;"><strong>Farmatalam de México S de RL de C V<BR />
-					RFC: FME140730J95 </strong>
+				RFC: FME140730J95 </strong>
 				</td>
 			</tr>
 			<tr>
@@ -135,7 +135,7 @@
 			  <td style="font-size: 19px; color: #444";>&nbsp;&nbsp;<strong>Denominación/Razón Social:</strong> Farmatalam de México</td>
 			</tr>
 			<tr>
-			  <td style="font-size: 19px; color: #444";>&nbsp;&nbsp;<strong>Régimen Fiscal:</strong> Régimen General de ley Persona Morales</td>
+			  <td style="font-size: 19px; color: #444";>&nbsp;&nbsp;<strong>Régimen Fiscal:</strong> 601 Régimen General de ley Persona Morales</td>
 			</tr>
 			{*<tr>
 			  <td style="font-size: 19px; color: #444";>&nbsp;&nbsp;<strong>Régimen Capital:</strong> Sociedad de responsabilidad limitada de capital variable (*)</td>
@@ -145,6 +145,12 @@
 			</tr>
 			<tr>
 			  <td style="font-size: 19px; color: #444";>&nbsp;&nbsp;<strong>Certificado del Emisor:</strong> 00001000000304972067</td>
+			</tr>
+			<tr>
+			  <td style="font-size: 19px; color: #444";>&nbsp;&nbsp;<strong>Tipo de comprobante:</strong> Ingreso</td>
+			</tr>
+			<tr>
+			  <td style="font-size: 19px; color: #444";>&nbsp;&nbsp;<strong>Uso CFDI:</strong> G01 Adquisición de mercancias</td>
 			</tr>
 
 		</table>
@@ -182,7 +188,7 @@
 			  <td style=" background-color: #EAEAEA;  padding:0px; margin:0px; font-size: 6pt; height:38px; color: #444; width:86px;"><br style="line-height:7px;">&nbsp;&nbsp;&nbsp; <strong>No, y/o letra ext:</strong> 39
 			  	<br>&nbsp;&nbsp;&nbsp; <strong>Y calle:</strong> Calle Joublanc
 			  	<br>&nbsp;&nbsp;&nbsp; <strong>Codigo postal:</strong> 11870
-			  	<br>&nbsp;&nbsp;&nbsp; <strong>Teléfono fijo:</strong> (55)67321090</td>
+			  	<br>&nbsp;&nbsp;&nbsp; <strong>Teléfono fijo:</strong> (55)67321100</td>
 			</tr>
 		</table>
 	</td>

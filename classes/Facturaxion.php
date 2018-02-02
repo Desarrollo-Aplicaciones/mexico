@@ -28,6 +28,7 @@ if (!class_exists('Facturaxion')) {
 		public $RFCEmisor  = '';
 		public $RFCEmisor_nombre = '';
 		public $regimenfiscal = "";
+		public $cadena_original = "";
 
 
 
@@ -43,8 +44,10 @@ if (!class_exists('Facturaxion')) {
 				$this->archivo_cer = "xml_timbrado/certi_valido/00001000000304972067.cer"; // old 00001000000304972067.cer"; // Produccion
 				$this->archivo_pem = "xml_timbrado/certi_valido/publica.key.pem"; // Produccion
 				$this->usuario = "1130A7374C35496EACF575158BA20DEEF49494A2";
+				$this->usuarioxml = "FME140730J95";
+				$this->contrasenia = "1130A7374C35496EACF575158BA20DEEF49494A2";
 				$this->proveedor = "FME140730J95";
-				$this->sucursal = "961549";
+				$this->sucursal = "3204C082-CE9E-E411-93F6-005056B8554D"; //961549
 				$this->RFCEmisor  = 'FME140730J95';
 				$this->RFCEmisor_nombre = 'FARMATALAM DE MEXICO S DE R.L DE C.V';
 				//Código Proveedor (CP):D4C3825A19DB08FD73C025F9F8A54302F7F7A379
@@ -54,7 +57,7 @@ if (!class_exists('Facturaxion')) {
 			} else {
 
 				$this->test_char = 't_';
-				$this->test_mode = true;
+				$this->test_mode = true;	
 
 				$this->numero_certificadoS = "30001000000300023708";
 				$this->numero_certificado = "30001000000300023708";
@@ -62,8 +65,10 @@ if (!class_exists('Facturaxion')) {
 				$this->archivo_pem = "xml_timbrado/certi_prueba/certificate1.pem"; // Prueba de timbrado 
 
 				$this->usuario = "1763AAB0593430490B3B3EE5457A9A2580F9D7DE";
+				$this->usuarioxml = "demo";
+				$this->contrasenia = "123456";
 				$this->proveedor = "N#@Mo!)#oh&amp;gt;)BYOdX=q_ZUCsLxqpv?";
-				$this->sucursal = "151048";
+				$this->sucursal = ""; //151048
 				$this->RFCEmisor  = 'AAA010101AAA';
 				$this->RFCEmisor_nombre = 'Emisor de prueba';
 				$this->regimenfiscal = "REGIMEN GENERAL DE LEY DE LAS PERSONAS MORALES";
@@ -245,7 +250,7 @@ function sellarXML($cfdi, $numero_certificado, $archivo_cer, $archivo_pem, $depu
   $xdoc->loadXML($cfdi);// or die("<br>XML invalido");
  
   $XSL = new DOMDocument();
-  $XSL->load($this->dir_server.'xml_timbrado/utilerias/xslt32/cadenaoriginal_3_2.xslt');
+  $XSL->load($this->dir_server.'xml_timbrado/utilerias/xslt32/cadenaoriginal_3_3.xslt');
   
   if ( $depurar == 1 ) {
   	echo "<br> luego funcion load";  
@@ -258,13 +263,13 @@ function sellarXML($cfdi, $numero_certificado, $archivo_cer, $archivo_pem, $depu
   	echo "<br> luego funcion importStyleSheet";
   }
   
-  $cadena_original = $proc->transformToXML($xdoc);    
+  $cadena_original = $proc->transformToXML($xdoc);
   
   if ( $depurar == 1 ) {
   	echo "<br> luego funcion transformToXML";
   }
 
-  openssl_sign($cadena_original, $sig, $private);
+  openssl_sign($this->cadena_original, $sig, $private, OPENSSL_ALGO_SHA256);
   
   if ( $depurar == 1 ) {
   	echo "<br> luego funcion openssl_sign";
@@ -273,8 +278,8 @@ function sellarXML($cfdi, $numero_certificado, $archivo_cer, $archivo_pem, $depu
   $this->sello_emisor = $sello = base64_encode($sig);
 
 
-  $this->array_xml_a_timbrar['@attributes']['certificado'] = $this->certificado_emisor;
-  $this->array_xml_a_timbrar['@attributes']['sello'] = $this->sello_emisor;
+  $this->array_xml_a_timbrar['@attributes']['Certificado'] = $this->certificado_emisor;
+  $this->array_xml_a_timbrar['@attributes']['Sello'] = $this->sello_emisor;
 
 
 /*
@@ -706,34 +711,68 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 				}
 
 				$cant_prods = 0;
-
+				$order_tot->total_products = 0;
+				$total_productos = 0;
 				$hjys='';
+				$totalDescuentoConceptos = 0;
+				$totalImportes = 0;
+				$infoConceptos = '';
+
 				foreach ($list_products as $key_prod => $value) {
-
-					//$hjys .= "<br>".$list_products[$key_prod]['product_name'];
-					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['descripcion'] = $this->trim_all( trim( $this->stripAccents( $list_products[$key_prod]['product_name'] ) ) );
-					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['cantidad'] = number_format( $list_products[$key_prod]['product_quantity'], 2, '.', '');
-					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['unidad'] = 'Pieza';
-					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['valorUnitario'] = number_format( $list_products[$key_prod]['unit_price_tax_excl'], 2, '.', '');
-
-					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['importe'] = number_format( $list_products[$key_prod]['total_price_tax_excl'], 2, '.', '');
-
-					$cant_prods++;
-
+					if($list_products[$key_prod]['unit_price_tax_excl'] != 0){
+						$total_productos += 1;
+					}
 				}
 
-				/******************  ENVIO DE PRODUCTOS... DOMICILIO ******************/
-
-				if ( $order_tot->total_shipping != '0.00' || $order_tot->total_shipping_tax_incl != '0.00' ) {
-					$val_no_iva_envio =  Tools::ps_round( $order_tot->total_shipping / 1.16 ,3);
-					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['descripcion'] = "FLETE ENVIO";
-					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['cantidad'] = Tools::ps_round( '1' ,2);
-					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['unidad'] = 'Pieza';
-					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['valorUnitario'] = $val_no_iva_envio;
-					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['importe'] = Tools::ps_round( $val_no_iva_envio ,2);
-
+				foreach ($list_products as $key_prod => $value) {
+					if($list_products[$key_prod]['unit_price_tax_excl'] != 0){
+						$base = number_format( $list_products[$key_prod]['total_price_tax_excl'], 2, '.', '');
+						//$hjys .= "<br>".$list_products[$key_prod]['product_name'];
+						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['ClaveProdServ'] = $list_products[$key_prod]['ClaveProdServ'];
+						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['NoIdentificacion'] = $this->trim_all( $list_products[$key_prod]['product_reference'] );
+						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Cantidad'] = number_format( $list_products[$key_prod]['product_quantity'], 6, '.', '');
+						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['ClaveUnidad'] = 'H87';
+						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Unidad'] = 'Pieza';
+						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Descripcion'] = $this->trim_all( trim( $this->stripAccents( $list_products[$key_prod]['product_name'] ) ) );
+						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['ValorUnitario'] = number_format( $list_products[$key_prod]['unit_price_tax_excl'], 2, '.', '');
+						$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Importe'] = $base;
+						if($list_products[$key_prod]['tax_rate'] != '0.000'){
+							$importe = number_format(($list_products[$key_prod]['total_price_tax_excl']*$list_products[$key_prod]['tax_rate'])/100, 2, '.', '');
+							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Base'] = $base;
+							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Impuesto'] = "002";
+							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['TipoFactor'] = "Tasa";
+							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['TasaOCuota'] = number_format($list_products[$key_prod]['tax_rate']/100, 6, '.', '');
+							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Importe'] = $importe;
+							$totalImportes += $importe;
+						}
+						$order_tot->total_products += $base;
+						$cant_prods++;
+					}
 				}
 				
+				/******************  ENVIO DE PRODUCTOS... DOMICILIO ******************/
+				$infoFlete = "";
+				if ( $order_tot->total_shipping != '0.00' || $order_tot->total_shipping_tax_incl != '0.00' ) {
+					$val_no_iva_envio =  Tools::ps_round( $order_tot->total_shipping / 1.16 ,3);
+					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['ClaveProdServ'] = '01010101';
+					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['NoIdentificacion'] = '1';
+					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Cantidad'] = number_format( 1, 6, '.', '');
+					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['ClaveUnidad'] = 'H87';
+					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Unidad'] = 'Pieza';
+					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Descripcion'] = "FLETE ENVIO";
+					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['ValorUnitario'] = number_format( $val_no_iva_envio, 2, '.', '');
+					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Importe'] = Tools::ps_round( $val_no_iva_envio ,2);
+					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Base'] = number_format( $val_no_iva_envio, 2, '.', '');
+					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Impuesto'] = "002";
+					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['TipoFactor'] = "Tasa";
+					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['TasaOCuota'] = "0.160000";
+					$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Importe'] = number_format(($val_no_iva_envio*16)/100, 2, '.', '');
+					$totalImportes += number_format(($val_no_iva_envio*16)/100, 2, '.', '');
+					$order_tot->total_products += Tools::ps_round( $val_no_iva_envio ,2);
+					$fleteTemporal = $arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods];
+					$infoFlete = "01010101|1|".$fleteTemporal['@attributes']['Cantidad']."|H87|Pieza|FLETE ENVIO|".$fleteTemporal['@attributes']['ValorUnitario']."|".$fleteTemporal['@attributes']['Importe']."|".$fleteTemporal['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Base']."|002|Tasa|0.160000|".$fleteTemporal['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Importe']."|";
+				}
+
 				/**
 				 *  si no existe impuesto, crea una regla con valor 0 cero
 				 */
@@ -743,7 +782,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 						echo "<br> 1. tax: ".$key."  - - - Value : ".$value;
 					}
 				}
-				
+				//$val_total_de_iva = 0;
 				ksort($array_ivas);
 
 				if ( $order_tot->id == $orden_validar  ) { 
@@ -752,205 +791,146 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 					}
 				}
 
+				//foreach ($array_ivas as $key => $value) {
+					$order_tot->total_paid = $order_tot->total_products+$totalImportes;
+				//}
+
 				$arr_xml_cargar['@attributes']['xmlns_cfdi'] = 'http://www.sat.gob.mx/cfd/3';
 				$arr_xml_cargar['@attributes']['xmlns_xsi'] = 'http://www.w3.org/2001/XMLSchema-instance';
-				$arr_xml_cargar['@attributes']['xsi_schemaLocation'] = 'http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv32.xsd';
-				$arr_xml_cargar['@attributes']['version'] = '3.2';
+				$arr_xml_cargar['@attributes']['xsi_schemaLocation'] = 'http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd';
+				$arr_xml_cargar['@attributes']['Version'] = '3.3';
+				$arr_xml_cargar['@attributes']['Fecha'] = date("Y-m-d")."T".date("H:i:s",  strtotime ( '-10 minute' , strtotime ( date("H:i:s") ) ));//'2015-01-14T15:57:16';
+				$arr_xml_cargar['@attributes']['TipoDeComprobante'] = 'I'; //ingreso
+				$metodo_pago_numero = explode('(',explode(')',explode('-', $metodo_pago)[0])[0]);
+				$arr_xml_cargar['@attributes']['FormaPago'] = (isset($metodo_pago_numero[1]))?$metodo_pago_numero[1]:$metodo_pago_numero[0];
 				//$arr_xml_cargar['@attributes']['serie'] = 'C';
 				//$arr_xml_cargar['@attributes']['folio'] = '2000';
-				$arr_xml_cargar['@attributes']['fecha'] = date("Y-m-d")."T".date("H:i:s",  strtotime ( '-10 minute' , strtotime ( date("H:i:s") ) ));//'2015-01-14T15:57:16';
-				$arr_xml_cargar['@attributes']['formaDePago'] = 'PAGO EN UNA SOLA EXHIBICION';
+				$arr_xml_cargar['@attributes']['MetodoPago'] = 'PUE';//PAGO EN UNA SOLA EXHIBICION
 				//$arr_xml_cargar['@attributes']['condicionesDePago'] = 'Parcialidades';
-				$arr_xml_cargar['@attributes']['metodoDePago'] = $metodo_pago;
-				$arr_xml_cargar['@attributes']['noCertificado'] = $this->numero_certificado ;
-				$arr_xml_cargar['@attributes']['certificado'] = ('MIIEdDCCA1ygAwIBAgIUMjAwMDEwMDAwMDAxMDAwMDU4NjcwDQYJKoZIhvcNAQEFBQAwggFvMRgwFgYDVQQDDA9BLkMuIGRlIHBydWViYXMxLzAtBgNVBAoMJlNlcnZpY2lvIGRlIEFkbWluaXN0cmFjacOzbiBUcmlidXRhcmlhMTgwNgYDVQQLDC9BZG1pbmlzdHJhY2nDs24gZGUgU2VndXJpZGFkIGRlIGxhIEluZm9ybWFjacOzbjEpMCcGCSqGSIb3DQEJARYaYXNpc25ldEBwcnVlYmFzLnNhdC5nb2IubXgxJjAkBgNVBAkMHUF2LiBIaWRhbGdvIDc3LCBDb2wuIEd1ZXJyZXJvMQ4wDAYDVQQRDAUwNjMwMDELMAkGA1UEBhMCTVgxGTAXBgNVBAgMEERpc3RyaXRvIEZlZGVyYWwxEjAQBgNVBAcMCUNveW9hY8OhbjEVMBMGA1UELRMMU0FUOTcwNzAxTk4zMTIwMAYJKoZIhvcNAQkCDCNSZXNwb25zYWJsZTogSMOpY3RvciBPcm5lbGFzIEFyY2lnYTAeFw0xMjA3MjcxNzAyMDBaFw0xNjA3MjcxNzAyMDBaMIHbMSkwJwYDVQQDEyBBQ0NFTSBTRVJWSUNJT1MgRU1QUkVTQVJJQUxFUyBTQzEpMCcGA1UEKRMgQUNDRU0gU0VSVklDSU9TIEVNUFJFU0FSSUFMRVMgU0MxKTAnBgNVBAoTIEFDQ0VNIFNFUlZJQ0lPUyBFTVBSRVNBUklBTEVTIFNDMSUwIwYDVQQtExxBQUEwMTAxMDFBQUEgLyBIRUdUNzYxMDAzNFMyMR4wHAYDVQQFExUgLyBIRUdUNzYxMDAzTURGUk5OMDkxETAPBgNVBAsTCFVuaWRhZCAxMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC2TTQSPONBOVxpXv9wLYo8jezBrb34i/tLx8jGdtyy27BcesOav2c1NS/Gdv10u9SkWtwdy34uRAVe7H0a3VMRLHAkvp2qMCHaZc4T8k47Jtb9wrOEh/XFS8LgT4y5OQYo6civfXXdlvxWU/gdM/e6I2lg6FGorP8H4GPAJ/qCNwIDAQABox0wGzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIGwDANBgkqhkiG9w0BAQUFAAOCAQEATxMecTpMbdhSHo6KVUg4QVF4Op2IBhiMaOrtrXBdJgzGotUFcJgdBCMjtTZXSlq1S4DG1jr8p4NzQlzxsdTxaB8nSKJ4KEMgIT7E62xRUj15jI49qFz7f2uMttZLNThipunsN/NF1XtvESMTDwQFvas/Ugig6qwEfSZc0MDxMpKLEkEePmQwtZD+zXFSMVa6hmOu4M+FzGiRXbj4YJXn9Myjd8xbL/c+9UIcrYoZskxDvMxc6/6M3rNNDY3OFhBK+V/sPMzWWGt8S1yjmtPfXgFs1t65AZ2hcTwTAuHrKwDatJ1ZPfa482ZBROAAX1waz7WwXp0gso7sDCm2/yUVww==');
-				$arr_xml_cargar['@attributes']['sello'] = '';
-                $arr_xml_cargar['@attributes']['subTotal'] = $order_tot->total_products;
-				$arr_xml_cargar['@attributes']['total'] = number_format( $order_tot->total_paid , 2, '.', '');
-
+				$arr_xml_cargar['@attributes']['Sello'] = '';
+				$arr_xml_cargar['@attributes']['NoCertificado'] = $this->numero_certificado;
+				$arr_xml_cargar['@attributes']['Certificado'] = str_replace(array('\n', '\r'), '', base64_encode(file_get_contents($this->dir_server.$this->archivo_cer)));
+                
 				if ($order_tot->total_discounts != null || $order_tot->total_discounts != 0) {
-					$arr_xml_cargar['@attributes']['descuento'] = number_format( $order_tot->total_discounts , 2, '.', '');
-
-					if ( trim( $cupon['description'] ) != '' ) {
-						$arr_xml_cargar['@attributes']['motivoDescuento'] = $this->trim_all( $this->stripAccents($cupon['description']) ) ;
-					} else {
-						$arr_xml_cargar['@attributes']['motivoDescuento'] = "Cupon Descuento Farmalisto";
+					$arr_xml_cargar['@attributes']['Descuento'] = number_format( $order_tot->total_discounts , 2, '.', '');
+					$arr_xml_cargar['@attributes']['SubTotal'] = $order_tot->total_products;
+					$arr_xml_cargar['@attributes']['Total'] = number_format( $order_tot->total_paid-$order_tot->total_discounts , 2, '.', '');
+				}else{
+					$arr_xml_cargar['@attributes']['Descuento'] = '0.00';
+					$arr_xml_cargar['@attributes']['SubTotal'] = $order_tot->total_products;
+					$arr_xml_cargar['@attributes']['Total'] = number_format( $order_tot->total_paid , 2, '.', '');
+				}
+				
+				$arr_xml_cargar['@attributes']['Moneda'] = 'MXN'; //codigo postal
+				$arr_xml_cargar['@attributes']['LugarExpedicion'] = '11870'; //codigo postal
+				
+				//se insertan los descuentos según el porcentaje del valor de cada producto por aparte
+				$cant_prods = 0;
+				foreach ( $list_products as $key_prod => $value ) {
+					if( $list_products[$key_prod]['unit_price_tax_excl'] != 0 ){
+						$base = number_format( $list_products[$key_prod]['total_price_tax_excl'], 2, '.', '' );
+						$conceptoTemporal = $arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods];
+						$infoConceptos .= $conceptoTemporal['@attributes']['ClaveProdServ']."|".$conceptoTemporal['@attributes']['NoIdentificacion']."|".$conceptoTemporal['@attributes']['Cantidad']."|H87|Pieza|".trim($conceptoTemporal['@attributes']['Descripcion'])."|".$conceptoTemporal['@attributes']['ValorUnitario']."|".$conceptoTemporal['@attributes']['Importe']."|";
+						if ( $order_tot->total_discounts != null || $order_tot->total_discounts != 0 ) {
+							$descuentoConcepto = number_format( $order_tot->total_discounts*( $base/$arr_xml_cargar['@attributes']['SubTotal'] ), 2, '.', '' );
+							$totalDescuentoConceptos += $descuentoConcepto;
+							if ( $cant_prods == ( $total_productos-1 ) ) {
+								$descuentoConcepto = number_format( $descuentoConcepto, 2, '.', '' )-( $totalDescuentoConceptos-$order_tot->total_discounts );
+							}
+							$arr_xml_cargar_p['ar6to67be_Conceptos']['ar6to67be_Concepto'][$cant_prods]['@attributes']['Descuento'] = number_format( $descuentoConcepto, 2, '.', '' );
+							$infoConceptos .= number_format( $descuentoConcepto, 2, '.', '' )."|";
+						}
+						if($list_products[$key_prod]['tax_rate'] != '0.000'){
+							$infoConceptos .= $conceptoTemporal['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Base']."|002|Tasa|".$conceptoTemporal['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['TasaOCuota']."|".$conceptoTemporal['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][0]['@attributes']['Importe']."|";
+						}
+						$cant_prods++;
 					}
 				}
-
-				$arr_xml_cargar['@attributes']['tipoDeComprobante'] = 'ingreso';
-				$arr_xml_cargar['@attributes']['LugarExpedicion'] = 'MEXICO DISTRITO FEDERAL';
-				//$arr_xml_cargar['@attributes']['Moneda'] = 'Dolares';
-				//$arr_xml_cargar['@attributes']['TipoCambio'] = '13.5';
-
-
-					$arr_xml_cargar['ar6to67be_Emisor']['@attributes']['rfc'] = $this->RFCEmisor;
-					$arr_xml_cargar['ar6to67be_Emisor']['@attributes']['nombre'] = $this->RFCEmisor_nombre;
-					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['calle'] = 'Doctora';
-					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['noExterior'] = '39';
-					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['noInterior'] = '0';
-					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['colonia'] = 'Tacubaya';
-					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['localidad'] = 'Miguel Hidalgo';
-					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['municipio'] = 'Miguel Hidalgo';
-					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['estado'] = 'Distrito Federal';
-					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['pais'] = 'M&eacute;xico';
-					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_DomicilioFiscal']['@attributes']['codigoPostal'] = '11870';
-
-					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['calle'] = 'Doctora';
-					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['noExterior'] = '39';
-					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['noInterior'] = '0';
-					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['colonia'] = 'Tacubaya';
-					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['localidad'] = 'Miguel Hidalgo';
-					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['municipio'] = 'Miguel Hidalgo';
-					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['estado'] = 'Distrito Federal';
-					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['pais'] = 'M&eacute;xico';
-					$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_ExpedidoEn']['@attributes']['codigoPostal'] = '11870';
-						/*
+				
+				$arr_xml_cargar['ar6to67be_Emisor']['@attributes']['Rfc'] = $this->RFCEmisor;
+				$arr_xml_cargar['ar6to67be_Emisor']['@attributes']['Nombre'] = $this->RFCEmisor_nombre;
+				$arr_xml_cargar['ar6to67be_Emisor']['@attributes']['RegimenFiscal'] = '601';
+				
+				
+				
+				/********     ASIGNAR    RFC    DE    COMPRA    CON    FACTURA   is_rfc  ********/
+				
+				$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['UsoCFDI'] = 'G01';       
+				$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Rfc'] = 'XAXX010101000';
+				$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] = 'MOSTRADOR';
+				
+				
+				if ( $this->stripAccents( $invoice_address->firstname ) != '' && $this->stripAccents( $invoice_address->firstname ) != null ) {
+					
+					$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] =  $this->trim_all($this->stripAccents( $invoice_address->firstname )); //'Nombre del Receptor';
+					
+				}
+				
+				if (  $this->stripAccents( $invoice_address->lastname ) != '' &&  $this->stripAccents( $invoice_address->lastname ) != null ) {
+					
+					if ( $arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] != '' ) {
 						
-['calle'] = 'Acapulco';
-['noExterior'] = '651';
-['noInterior'] = '1';
-['colonia'] = 'Roma';
-['localidad'] = 'M&eacute;xico';
-['municipio'] = 'Cuauht&eacute;moc';
-['estado'] = 'Distrito Federal';
-['pais'] = 'M&eacute;xico';
-['codigoPostal'] = '35135';
-						 */
-						$arr_xml_cargar['ar6to67be_Emisor']['ar6to67be_RegimenFiscal']['@attributes']['Regimen'] = $this->regimenfiscal;
-
-
-
+						$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] .= " ". $this->trim_all( $this->stripAccents( $invoice_address->lastname )); //'Nombre del Receptor';
+						
+					} else {
+						
+						$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] =  $this->trim_all( $this->stripAccents( $invoice_address->lastname )); //'Nombre del Receptor';
+						
+					}
+				}
+				
+				/***************************************************** CAMBIO PARA RFC ******************************************************************/
+				
+				
+				if ( isset( $invoice_address->id_customer ) && $invoice_address->id_customer != '' && $invoice_address->id_customer != null  ) {						
+					
+					$query = new DbQuery();
+					$query->select(' is_rfc, dni, alias, address1, cpp.nombre AS colonia_name, address2, postcode, firstname, lastname ');
+					$query->from('address', 'a');
+					$query->leftJoin('cod_postal', 'cpp', 'cpp.id_codigo_postal = a.id_colonia' );
+					$query->where(' a.id_customer = '.$invoice_address->id_customer. ' AND a.is_rfc = 1' );
+					$query->limit('1');
+					
+					if ( $dir_factura = Db::getInstance()->executeS($query) ) {
+						
 						/********     ASIGNAR    RFC    DE    COMPRA    CON    FACTURA   is_rfc  ********/
 						
-						$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['rfc'] = 'XAXX010101000';
-
-
-						$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['nombre'] = 'MOSTRADOR';       
-
-
-						if ( $this->stripAccents( $invoice_address->firstname ) != '' && $this->stripAccents( $invoice_address->firstname ) != null ) {
-
-							$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['nombre'] =  $this->trim_all($this->stripAccents( $invoice_address->firstname )); //'Nombre del Receptor';
-
-						}
-
-						if (  $this->stripAccents( $invoice_address->lastname ) != '' &&  $this->stripAccents( $invoice_address->lastname ) != null ) {
-
-							if ( $arr_xml_cargar['ar6to67be_Receptor']['@attributes']['nombre'] != '' ) {
-
-								$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['nombre'] .= " ". $this->trim_all( $this->stripAccents( $invoice_address->lastname )); //'Nombre del Receptor';
-
-							} else {
-
-								$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['nombre'] =  $this->trim_all( $this->stripAccents( $invoice_address->lastname )); //'Nombre del Receptor';
-
-							}
-						}
-
-
-						if (  $this->stripAccents( $invoice_address->address1 ) != '' &&  $this->stripAccents( $invoice_address->address1 ) != null ) {
-							$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['calle'] =  $this->trim_all( $this->stripAccents( $invoice_address->address1 )); //'calle obligatoria';
-						} else {
-							$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['calle'] = " No otorgada "; //'calle obligatoria';
-						}
-
-						if ( $this->stripAccents( $invoice_address->colonia_name ) != '' && $this->stripAccents( $invoice_address->colonia_name ) != null ) {
-							$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['colonia'] =  $this->stripAccents( $invoice_address->colonia_name );
-						}
-
-						if (  $this->stripAccents( $invoice_address->address2 ) != '' &&  $this->stripAccents( $invoice_address->address2 ) != null ) {
-							$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['referencia'] = $this->stripAccents( $invoice_address->address2 );
-						}
-
-						if ( $invoice_address->country != '' && $invoice_address->country != null ) {
-							$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['pais'] = $invoice_address->country ;
-						}
-
-						if ( $invoice_address->postcode != '' && $invoice_address->postcode != null ) {
-							$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['codigoPostal'] = $invoice_address->postcode ;
-						}
-
-
-						/***************************************************** CAMBIO PARA RFC ******************************************************************/
-
-
-						if ( isset( $invoice_address->id_customer ) && $invoice_address->id_customer != '' && $invoice_address->id_customer != null  ) {						
-
-							$query = new DbQuery();
-							$query->select(' is_rfc, dni, alias, address1, cpp.nombre AS colonia_name, address2, postcode, firstname, lastname ');
-							$query->from('address', 'a');
-							$query->leftJoin('cod_postal', 'cpp', 'cpp.id_codigo_postal = a.id_colonia' );
-							$query->where(' a.id_customer = '.$invoice_address->id_customer. ' AND a.is_rfc = 1' );
-							$query->limit('1');
-
-							if ( $dir_factura = Db::getInstance()->executeS($query) ) {
-
-								/********     ASIGNAR    RFC    DE    COMPRA    CON    FACTURA   is_rfc  ********/
+						if ( isset( $dir_factura[0]['is_rfc'] ) && $dir_factura[0]['is_rfc'] == 1 ) {
 							
-								if ( isset( $dir_factura[0]['is_rfc'] ) && $dir_factura[0]['is_rfc'] == 1 ) {
-
-									$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['rfc'] = strtoupper( $dir_factura[0]['dni'] );
-
-									$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['nombre'] = 'MOSTRADOR';
-
-
-									if (  $this->stripAccents( $dir_factura[0]['alias'] ) != '' &&  $this->stripAccents( $dir_factura[0]['alias'] ) != null ) {
-										$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['nombre'] = $this->trim_all( $this->stripAccents( $dir_factura[0]['alias'] ));
-									}
-
-
-									if ( $this->stripAccents( $dir_factura[0]['address1'] ) != '' && $this->stripAccents( $dir_factura[0]['address1'] ) != null ) {
-										$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['calle'] =  $this->trim_all( $this->stripAccents( $dir_factura[0]['address1'] )); //'calle obligatoria';
-									} else {
-										$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['calle'] = " No otorgada "; //'calle obligatoria';
-									}
-
-									if ( $this->stripAccents( $dir_factura[0]['colonia_name'] ) != '' && $this->stripAccents( $dir_factura[0]['colonia_name'] ) != null ) {
-										$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['colonia'] =  $this->stripAccents( $dir_factura[0]['colonia_name'] );
-									}
-
-									if ( $this->trim_all( $this->stripAccents( $dir_factura[0]['address2'] )) != '' && $this->trim_all( $this->stripAccents( $dir_factura[0]['address2'] )) != null ) {
-										$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['referencia'] = $this->trim_all( $this->stripAccents( $dir_factura[0]['address2'] ));
-									}
-
-									$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['pais'] = 'M&eacute;xico' ;
-
-									if ( $dir_factura[0]['postcode'] != '' && $dir_factura[0]['postcode'] != null ) {
-										$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['codigoPostal'] = $dir_factura[0]['postcode'] ;
-
-									}
-								}							
+							$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Rfc'] = strtoupper( $dir_factura[0]['dni'] );
+							
+							$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] = 'MOSTRADOR';
+							
+							
+							if (  $this->stripAccents( $dir_factura[0]['alias'] ) != '' &&  $this->stripAccents( $dir_factura[0]['alias'] ) != null ) {
+								$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre'] = $this->trim_all( $this->stripAccents( $dir_factura[0]['alias'] ));
 							}
-						}
-
-						/********     ASIGNAR    RFC    DE    COMPRA    CON    FACTURA     ********/
-						
-						//$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['calle'] = 'Heriberto Frias';
-						//$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['noExterior'] = '513';
-						//$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['colonia'] = 'Narvarte';
-						//$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['localidad'] = 'MEXICO';
-						//$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['referencia'] = 'Entre Morena y Esperanza';
-						//$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['municipio'] = 'Benito Ju&aacute;rez';
-						//$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['estado'] = 'DISTRITO FEDERAL';
-						//$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['pais'] = 'MEXICO';
-						//$arr_xml_cargar['ar6to67be_Receptor']['ar6to67be_Domicilio']['@attributes']['codigoPostal'] = '03600';
-
-
+							
+						}							
+					}
+				}
+				
+				/********     ASIGNAR    RFC    DE    COMPRA    CON    FACTURA     ********/
+				
 				$arr_xml_cargar =  array_merge($arr_xml_cargar,$arr_xml_cargar_p); // UNIMOS ARRAY DE PRODUCTOS Y EL INICIAL DEL XML
-				$arr_xml_cargar['ar6to67be_Impuestos']['@attributes']['totalImpuestosTrasladados'] = number_format($val_total_de_iva, 2, '.', '');
-
+				$arr_xml_cargar['ar6to67be_Impuestos']['@attributes']['TotalImpuestosRetenidos'] = '0.00';
+				$arr_xml_cargar['ar6to67be_Impuestos']['@attributes']['TotalImpuestosTrasladados'] = $totalImportes;
+				
 				$cant_taxs = 0;
-
+				$infoTaxes = "";
+				
 				foreach ($array_ivas as $key => $value) {
 					if($value > 0){
-						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['impuesto'] = 'IVA';
-						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['tasa'] = number_format($key, 2, '.', '');
-						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['importe'] = number_format($value, 2, '.', '');
+						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['Impuesto'] = '002';
+						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['TipoFactor'] = 'Tasa';
+						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['TasaOCuota'] = number_format($key/100, 6, '.', '');
+						$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['Importe'] = $totalImportes;
+						$infoTaxes = "002|Tasa|".$arr_xml_cargar['ar6to67be_Impuestos']['ar6to67be_Traslados']['ar6to67be_Traslado'][$cant_taxs]['@attributes']['TasaOCuota']."|".$totalImportes."|";
 						$cant_taxs++;
 					}
-
+					
 				}
+				$this->cadena_original = "||3.3|".$arr_xml_cargar['@attributes']['Fecha']."|".$arr_xml_cargar['@attributes']['FormaPago']."|".$this->numero_certificado."|".$arr_xml_cargar['@attributes']['SubTotal']."|".$arr_xml_cargar['@attributes']['Descuento']."|MXN|".$arr_xml_cargar['@attributes']['Total']."|I|PUE|11870|".$this->RFCEmisor."|".$this->RFCEmisor_nombre."|601|".$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Rfc']."|".$arr_xml_cargar['ar6to67be_Receptor']['@attributes']['Nombre']."|G01|".$infoConceptos.$infoFlete."0.00|".$infoTaxes.$totalImportes."||";
 
 				$serie='C';
 				$folio='2000';
@@ -965,25 +945,15 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 			  $buscar = array("&amp;aacute;","&amp;eacute;","&amp;iacute;","&amp;oacute;","&amp;uacute;","&amp;Aacute;","&amp;Eacute;","&amp;Iacute;","&amp;Oacute;","&amp;Uacute;","ar6to67be_", "xmlns_", "xsi_", "a23r4e3r4eee_");
 
 			  $cambiar = array("&aacute;","&eacute;","&iacute;","&oacute;","&uacute;","&Aacute;","&Eacute;","&Iacute;","&Oacute;","&Uacute;","cfdi:", "xmlns:", "xsi:", "tfd:");
-			  //$cambiar = array("á","é","í","ó","ú","Á","É","Í","Ó","Ú","cfdi:", "xmlns:", "xsi:");
-
 
 			  $xml214_1 = html_entity_decode( str_replace( $buscar, $cambiar, $xml1->saveXML() ) );
 
 			  $contenido_fichero_1 = $xml214_1;
-			  //$contenido_fichero_1 = str_replace("<","&amp;lt;",$contenido_fichero_1);
-			  //$contenido_fichero_1 = str_replace(">","&amp;gt;",$contenido_fichero_1);
-			  //$contenido_fichero_1 = str_replace('"','&amp;quot;',$contenido_fichero_1);
 
 			  if ( $order_tot->id == $orden_validar  ) {
 			  	  echo "<br> antes Sellado emisor:<br><textarea style='height: 574px;  width: 1549px;' style='font-size:13px'>"; echo html_entity_decode( str_replace( array("ar6to67be_", "xmlns_", "xsi_"), array("cfdi:", "xmlns:", "xsi:"), $xml1->saveXML() ) ); echo "</textarea><br><hr>";
 
 			  	  $this->LlavesRegistroTimbrado( $contenido_fichero_1, 1 );
-
-			  	  //echo $hjys;
-			  	  //echo "<hr>".$this->stripAccents($hjys);
-			  	 // echo "<pre>";var_dump(debug_backtrace()); echo "</pre>"; 
-			  	//exit();
 			  }
 
 							$this->LlavesRegistroTimbrado( $contenido_fichero_1 );
@@ -1016,81 +986,60 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 				$buscar = array("&amp;aacute;","&amp;eacute;","&amp;iacute;","&amp;oacute;","&amp;uacute;","&amp;Aacute;","&amp;Eacute;","&amp;Iacute;","&amp;Oacute;","&amp;Uacute;","ar6to67be_", "xmlns_", "xsi_", "a23r4e3r4eee_");
 
 				$cambiar = array("&aacute;","&eacute;","&iacute;","&oacute;","&uacute;","&Aacute;","&Eacute;","&Iacute;","&Oacute;","&Uacute;","cfdi:", "xmlns:", "xsi:", "tfd:");
-				//$cambiar = array("á","é","í","ó","ú","Á","É","Í","Ó","Ú","cfdi:", "xmlns:", "xsi:");
 
 
 				$xml214 =html_entity_decode( str_replace( $buscar, $cambiar, $xml2->saveXML() ) );
 
 				$contenido_fichero = $xml214;
-				$contenido_fichero = str_replace("<","&amp;lt;",$contenido_fichero);
-				$contenido_fichero = str_replace(">","&amp;gt;",$contenido_fichero);
-				$contenido_fichero = str_replace('"','&amp;quot;',$contenido_fichero);
-
-				
 
 				//$usuario="0000023492";
 				//$usuario="FME140730J95";
 				$usuario = $this->usuario;
 				$proveedor = $this->proveedor;
-				//$sucursal="961549";
+				$contrasenia = $this->contrasenia;
 				$sucursal = $this->sucursal;
 
 
-				$soapClient = new SoapClient("https://timbre02.facturaxion.net/CFDI.asmx?WSDL");
-
 				if ( $this->test_mode == true ) {
 
-					$metodo = "GenerarTimbrePrueba";
-					$TextoXml='"'.$contenido_fichero.'"&lt;/Parametros&gt;';
-
-					$xml_params = '<GenerarTimbrePrueba xmlns="http://www.facturaxion.com/">
-					<parametros>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;Parametros Version="1.0" fecha="2015-01-14T14:56:16" CodigoUsuarioProveedor="'.$proveedor.'" CodigoUsuario="'.$usuario.'" IdSucursal="'.$sucursal.'" TextoXml="'.$contenido_fichero.'" /&gt;</parametros>
-					</GenerarTimbrePrueba>'; 	
+					$soapClient = new SoapClient("https://wstimbradopruebas.facturaxion.com/WSTimbrado.svc?WSDL");	
 				} else {
-
-					$metodo = "GenerarTimbre";
-					$TextoXml='"'.$contenido_fichero.'"&lt;/Parametros&gt;';
-
-					$xml_params = '<GenerarTimbre xmlns="http://www.facturaxion.com/">
-					<parametros>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;Parametros Version="1.0" fecha="2015-01-14T14:56:16" CodigoUsuarioProveedor="'.$proveedor.'" CodigoUsuario="'.$usuario.'" IdSucursal="'.$sucursal.'" TextoXml="'.$contenido_fichero.'" /&gt;</parametros>
-					</GenerarTimbre>'; 
-
+					$soapClient = new SoapClient("https://wstimbrado.facturaxion.com/WSTimbrado.svc?WSDL");
 				}
-				
+
+				$metodo = "TimbrarParametros";
+
+				$xml_params = array(
+					"Usuario" => $this->usuarioxml,
+					"Contrasenia" => $contrasenia,
+					"XMLPreCFDI" => $contenido_fichero,
+					"XMLOpcionales" => "",
+					"IdAddenda" => "",
+					"NodoAddenda" => "",
+					"IdLlaveUnico" => "",
+					"UUIDSucursal" => $sucursal,
+					"Mail" => "",
+					"MailCC" => "",
+					"MailCCO" => "",
+				);
+				//d($xml_params);
 
 				//echo "<br><textarea cols=150 rows=20>".str_replace(array("&amp;lt;","&amp;gt;",'&amp;quot;',"&lt;","&gt;",'&quot;'),array("<",">",'"',"<",">",'"') ,$xml_params)."</textarea><br>";
 				//exit;
 				if ( is_array($valor_timbrado) && $valor_timbrado != 0 && $obligar_timbrado == 0 ) {
-					$this->TimbradoNoOk( $order_tot->id, "Timbrado previamente generado ", 1, 0, $xml_params );
+					$this->TimbradoNoOk( $order_tot->id, "Timbrado previamente generado ", 1, 0, $contenido_fichero );
 					//echo "<br> SIIIIIIIIIIII existe registro en la bd ";	
 					return ($valor_timbrado);
-
-				} 
-
-				try { 
-
-					$soapVar = new SoapVar($xml_params, XSD_ANYXML, null, null, null); 
-
-				} catch(Exception $e){
-
-					$message = $e->getMessage();//echo $message;
 
 				}
 
 				try {
 
-					$result = $soapClient->$metodo(new SoapParam($soapVar, $metodo));
-
-					if ( $this->test_mode == true ) {
-						$resultado = $result->GenerarTimbrePruebaResult;
-					} else {
-						$resultado = $result->GenerarTimbreResult;
-					}
+					$result = $soapClient->$metodo($xml_params);
+					$resultado = $result->XMLCFDI;
 					usleep(800000);
-					if ($resultado == true) {
-						$responseXML1= $result->resultado;
-						//echo "<hr>Respuesta:<br><textarea cols=150 rows=20>".$responseXML1."</textarea><br>";
-						//$alea=rand(1,100);
+					if ($resultado) {
+						$responseXML1= $result->XMLCFDI;
 						
 						if (!file_exists( $this->dir_server."xml_timbrado/response/".$invoice_date_t )) {
 			                mkdir( $this->dir_server."xml_timbrado/response/".$invoice_date_t , 0755, TRUE);
@@ -1115,20 +1064,24 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 						*/
 
 						//echo "<hr>Respuesta:<textarea cols=150 rows=20>".$responseXML1."</textarea><br>";
-						$xml = simplexml_load_string($responseXML1);
-						$json = json_encode($xml);
-
-						$this->simplexml_to_array($xml, $arr);
-
+						$p = xml_parser_create();
+						$xml = xml_parse_into_struct($p, $responseXML1, $vals, $index);
+						xml_parser_free($p);
+						//d($index['TFD:TIMBREFISCALDIGITAL'][0]);
+						$arr = $vals[$index['TFD:TIMBREFISCALDIGITAL'][0]];
+						//$xml = simplexml_load_string($responseXML1);
+						//$json = json_encode($xml);
+//d($arr);
+						// $this->simplexml_to_array($xml, $arr);
 						//echo "<br>array rta: <pre>";
-						//var_dump($arr['Timbrado']['Resultado']["Informacion"]["Timbre"]["@attributes"]); 
+						//var_dump($arr['Comprobante']["@attributes"]); 
 						//echo "</pre>";
 						//exit;
 
 						$arr_xml_cargar['ar6to67be_Complemento']['a23r4e3r4eee_TimbreFiscalDigital']['@attributes']['xmlns_tfd'] = "http://www.sat.gob.mx/TimbreFiscalDigital";
-						$arr_xml_cargar['ar6to67be_Complemento']['a23r4e3r4eee_TimbreFiscalDigital']['@attributes']['xsi_schemaLocation'] = "http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/TimbreFiscalDigital/TimbreFiscalDigital.xsd";
+						$arr_xml_cargar['ar6to67be_Complemento']['a23r4e3r4eee_TimbreFiscalDigital']['@attributes']['xsi_schemaLocation'] = "http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/cfd/TimbreFiscalDigital/TimbreFiscalDigitalv11.xsd";
 
-						foreach ($arr['Timbrado']['Resultado']["Informacion"]["Timbre"]["@attributes"] as $key => $value) {
+						foreach ($arr["attributes"] as $key => $value) {
 
 							$arr_xml_cargar['ar6to67be_Complemento']['a23r4e3r4eee_TimbreFiscalDigital']['@attributes'][$key] = $value;
 
@@ -1147,7 +1100,7 @@ public function trim_all( $str , $what = NULL , $with = ' ' )
 									$contenido_fichero = str_replace("<","&amp;lt;",$contenido_fichero);
 									$contenido_fichero = str_replace(">","&amp;gt;",$contenido_fichero);
 									$contenido_fichero = str_replace('"','&amp;quot;',$contenido_fichero);
-
+*/
 
 /*
 
@@ -1185,23 +1138,24 @@ array(6) {
 }
 
 						*/
-						$this->TimbradoOk( $order_tot->id, $arr['Timbrado']['Resultado']["Informacion"]["Timbre"]["@attributes"], $arr['Timbrado']['Resultado']["Informacion"]["Documento"]["@attributes"]);
 
-						return ($arr['Timbrado']['Resultado']["Informacion"]["Timbre"]["@attributes"]);
+						//d($arr["Comprobante"]["@attributes"]);
+						$this->TimbradoOk( $order_tot->id, $arr["attributes"], $result->RutaPDF);
+						
+						return ($arr["attributes"]);
 				   
 					} else {
 
 						//echo "Ocurrio el siguiente error al momento de timbrar la factura, contacte a su administrador: ";
 				   
-						$responseXML= $result->resultado;
-						$pieces = explode("<Errores><", $responseXML);
-						$sedunda= $pieces[1];
-						$sedunda= str_replace("/></Errores></Informacion></Resultado></Timbrado>","&lt;",$sedunda);
+						$responseXML= $result->MensajeValidacion;
+						// $pieces = explode("<Errores><", $responseXML);
+						// $sedunda= $pieces[1];
+						// $sedunda= str_replace("/></Errores></Informacion></Resultado></Timbrado>","&lt;",$sedunda);
 						//echo $sedunda;
 						//$this->TimbradoNoOk( $order_tot->id, $arr['Timbrado']['Resultado']["Informacion"]["Timbre"]["@attributes"], $arr['Timbrado']['Resultado']["Informacion"]["Documento"]["@attributes"] );
-						$this->TimbradoNoOk( $order_tot->id, $sedunda, 1, 0, $xml_params );
+						$this->TimbradoNoOk( $order_tot->id, $responseXML, 1, 0, $contenido_fichero );
 						//return $sedunda;
-
 
 					}
 
@@ -1499,7 +1453,7 @@ public function cancelacion( $order_tot_id, $order_invoice_date ) {
 
 
 
-		public function TimbradoOk( $id_order, array $arr_timbre, array $arr_documento ) {
+		public function TimbradoOk( $id_order, array $arr_timbre, $arr_documento ) {
 
 			//echo "<hr> timbradook<br>";
 			$query = new DbQuery();
@@ -1517,7 +1471,6 @@ public function cancelacion( $order_tot_id, $order_invoice_date ) {
 			$query->where('t.id_order = '.$id_order.$and);
 			
 			$timbres = Db::getInstance()->executeS($query);
-
 			//echo "<pre>timbre: ";
 			//if ($timbres[0]['cant'] == 0 ){ echo "0 <br>"; }else{ echo "1<br>"; }
 			//print_r($timbres);
@@ -1532,12 +1485,12 @@ public function cancelacion( $order_tot_id, $order_invoice_date ) {
 				if ( $this->test_mode == true ) {
 
 					$sql = 'INSERT INTO `'._DB_PREFIX_.'timbrado` (`id_order`, `version`, `uuid`, `fechatimbrado`, `sellocfd`, `nocertificadosat`, `sellosat`, `timbrado`, `cancelado`, `rutaxml`, `fecha`, `prueba`)
-						VALUES ("'.$id_order.'", "'.$arr_timbre['version'].'", "'.$arr_timbre['UUID'].'", "'.$arr_timbre['FechaTimbrado'].'", "'.$arr_timbre['selloCFD'].'", "'.$arr_timbre['noCertificadoSAT'].'", "'.$arr_timbre['selloSAT'].'", 1, 0, "'.$arr_documento['RutaXml'].'", NOW(), 1 )';
+						VALUES ("'.$id_order.'", "'.$arr_timbre['VERSION'].'", "'.$arr_timbre['UUID'].'", "'.$arr_timbre['FECHATIMBRADO'].'", "'.$arr_timbre['SELLOCFD'].'", "'.$arr_timbre['NOCERTIFICADOSAT'].'", "'.$arr_timbre['SELLOSAT'].'", 1, 0, "'.$arr_documento.'", NOW(), 1 )';
 
 				} else {
 
 					$sql = 'INSERT INTO `'._DB_PREFIX_.'timbrado` (`id_order`, `version`, `uuid`, `fechatimbrado`, `sellocfd`, `nocertificadosat`, `sellosat`, `timbrado`, `cancelado`, `rutaxml`, `fecha`)
-						VALUES ("'.$id_order.'", "'.$arr_timbre['version'].'", "'.$arr_timbre['UUID'].'", "'.$arr_timbre['FechaTimbrado'].'", "'.$arr_timbre['selloCFD'].'", "'.$arr_timbre['noCertificadoSAT'].'", "'.$arr_timbre['selloSAT'].'", 1, 0, "'.$arr_documento['RutaXml'].'", NOW() )';
+						VALUES ("'.$id_order.'", "'.$arr_timbre['VERSION'].'", "'.$arr_timbre['UUID'].'", "'.$arr_timbre['FECHATIMBRADO'].'", "'.$arr_timbre['SELLOCFD'].'", "'.$arr_timbre['NOCERTIFICADOSAT'].'", "'.$arr_timbre['SELLOSAT'].'", 1, 0, "'.$arr_documento.'", NOW() )';
 
 				}
 
@@ -1691,7 +1644,6 @@ public function cancelacion( $order_tot_id, $order_invoice_date ) {
 
 				echo "<br> registrado." ;*/
 
-					
 			return $is_correct;
 		}
 

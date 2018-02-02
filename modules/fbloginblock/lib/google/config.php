@@ -71,6 +71,7 @@ $apiConfig = array(
           'scope' => array(
               'https://www.googleapis.com/auth/userinfo.profile',
               'https://www.googleapis.com/auth/userinfo.email',
+              //'https://www.googleapis.com/auth/userinfo.email.read',
           )
       ),
       'plus' => array('scope' => 'https://www.googleapis.com/auth/plus.login'),

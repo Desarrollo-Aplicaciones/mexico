@@ -484,5 +484,10 @@ class AdminCustomersController extends AdminCustomersControllerCore
 
 		return AdminController::renderView();
 	}
+
+   
+
+	
+   
 }
 ?>

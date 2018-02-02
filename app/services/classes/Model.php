@@ -44,14 +44,16 @@ class Model extends PaymentModule {
    * Busca producto(s) por los datos dados
    * @return array
    */
-  public function productSearch($id_lang, $expr, $page_number, $page_size, $order_by, $order_way)
+  public function productSearch($id_lang, $expr, $page_number, $page_size, $order_by, $order_way, $active )
   {
     $page_number = empty($page_number) ? 1 : $page_number;
     $page_size   = empty($page_size) ? 1 : $page_size;
     $order_by    = empty($order_by) ? 'position' : $order_by;
     $order_way   = empty($order_way) ? 'desc' : $order_way;
+    $active      = ((empty($active) && !is_numeric($active)) || $active == 1) ? 1 : $active;
+    $active      = $active == 0 ? 0 : $active;
 
-    $results = Search::findApp($id_lang, $expr, $page_number, $page_size, $order_by, $order_way, FALSE, FALSE);
+    $results = Search::findApp($id_lang, $expr, $page_number, $page_size, $order_by, $order_way, $active, FALSE, FALSE);
     $products = array();
     if ((int) $results['total'] > 0) {
       $total_rows = (int) $results['total'];
@@ -115,6 +117,7 @@ class Model extends PaymentModule {
 
             $array_prod[] = array(
               'id' => (int) $value['id_product'],
+              'active' => (int) $value['active'],
               'reference' => (int) $value['reference'],
               'name' => htmlspecialchars( strtolower(strip_tags($value['name'])), ENT_DISALLOWED ),
               'shortname' => strtolower($textocorto),
@@ -640,16 +643,19 @@ class Model extends PaymentModule {
     return $manufacturers;
   }
 
-  public function getProduct($id) 
+  public function getProduct($id,$quantity = 0) 
   {
+    
     $query = "SELECT 
       p.id_product AS id, 
       pl.`name` AS name, 
       pl.description_short AS 'desc', 
       GROUP_CONCAT( DISTINCT im.id_image ORDER BY im.cover DESC SEPARATOR ',') AS imgs,
       ROUND( ps.price + IF ( t.rate IS NULL , 0 , ps.price * ( ( t.rate/100 ) ) ), 2) AS price,
-      GROUP_CONCAT( DISTINCT CONCAT(pvc.id_supplier,',',ROUND(pvc.price,0) ) SEPARATOR ';' ) AS prov
+      GROUP_CONCAT( DISTINCT CONCAT(pvc.id_supplier,',',ROUND(pvc.price,0) ) SEPARATOR ';' ) AS prov,
+      IF (".$quantity."<= sa.quantity,1,0)  AS quantity
       FROM "._DB_PREFIX_."product p
+      INNER JOIN ps_stock_available_mv sa ON (p.id_product = sa.id_product)
       INNER JOIN "._DB_PREFIX_."product_shop ps ON ( p.id_product = ps.id_product )
       INNER JOIN "._DB_PREFIX_."product_lang pl ON ( p.id_product = pl.id_product )
       LEFT JOIN "._DB_PREFIX_."tax_rule tr ON ( tr.id_tax_rules_group = ps.id_tax_rules_group AND tr.id_tax_rule NOT IN (3,4) )
@@ -658,7 +664,7 @@ class Model extends PaymentModule {
       LEFT JOIN "._DB_PREFIX_."proveedores_costo pvc ON ( p.id_product = pvc.id_product )
       WHERE p.id_product = ".$id." AND  p.active=1 AND ps.active=1
       AND p.is_virtual=0 AND ps.visibility='both' AND (tr.id_tax != 0 OR ISNULL(tr.id_tax))";
-
+    
     $array_img = array();
 
     if ($results = Db::getInstance()->ExecuteS($query)) {
@@ -1013,6 +1019,27 @@ class Model extends PaymentModule {
         $flg = true;
         break;
       }
+    }
+
+    $reglas_medios_pago = $this->list_medios_de_pago($args['id_address']);
+
+    foreach($reglas_medios_pago as $medio_pago => $regla){
+      if($medio_pago == $args['payment']['method'] && $regla == '0'){
+        return array(
+          'success' => FALSE,
+          'message' => "Este medio de pago no se encuentra válido para la dirección ingresada por favor selecciona uno diferente"
+        );
+      }
+    }
+    
+    $currency         = Configuration::get('PS_CURRENCY_DEFAULT');
+    $minimal_purchase = Tools::convertPrice((float) Configuration::get('PS_PURCHASE_MINIMUM'), $currency);
+
+    if ($this->context->cart->getOrderTotal(false, Cart::ONLY_PRODUCTS) < $minimal_purchase) {
+      return array(
+        'success' => FALSE,
+        'message' => sprintf(Tools::displayError('Se requiere una compra total mínima de %1s (sin impuestos) para validar su pedido.'), $minimal_purchase)
+      );
     }
     // Enviando el pago a una pasarela de pago
     if ($flg) {
@@ -1446,6 +1473,11 @@ class Model extends PaymentModule {
 
     $output = array();
     parse_str($str_list, $output);
+
+    if($output['cashondelivery'] == '1'){
+      $output['COD-Tarjeta'] = '1';
+      $output['COD-Efectivo'] = '1';
+    }
 
     return $output;
   }

@@ -365,27 +365,48 @@ $(document).ready(function() {validarCampos(); toggleUser(); hybridAuth(); getWi
 			$('#primerHole').slideToggle();
 			$('#segundoHole').slideToggle();
 			$('.resp_button').toggleClass("toggleActive");
+			console.log("1");
 		});
+		
 		$('.resp_button').click(function(){
 			toggleText();
 			elem = $(this);
+			
+			
 			if (elem.next('.contenedor').is(":visible")){
+				ventana = $('#no').attr("ventana");
+				if(ventana != 2) {
+					elem.removeClass("toggleActive");
+					elem.next('.contenedor').slideUp();
+				}
+				console.log(ventana);
 				elem.removeClass("toggleActive");
-				elem.next('.contenedor').slideUp();
+			
 			}
+			
 			else{
 				$('.resp_button').each(function(){
 					if ($(this).next('.contenedor').is(":visible")){
-						$(this).removeClass("toggleActive");
-						$(this).next('.contenedor').slideUp();
+						toggleText();
+						$('#primerHole').slideToggle();
+						$('#segundoHole').slideToggle();
+						$('.resp_button').toggleClass("toggleActive");
+						$('#no').attr("ventana","2");
+			
 						return false;
 					}
 				});
+			
 				elem.addClass("toggleActive");
 				elem.next('.contenedor').slideDown();
-			}
+				
 
+
+			}
+			
 		});
+		console.log("6");
+		
 	}
 	function hybridAuth(){
 		$('.fb_connect_button').click(function(){

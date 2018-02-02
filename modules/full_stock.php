@@ -79,7 +79,8 @@ if ($results = Db::getInstance()->Execute( $query_truncate)) {
 				`sa`.`id_shop_group` AS `id_shop_group`,
 				IF (  (   `ps`.`advanced_stock_management` = 1  ),  count(`i`.`id_icr`),  `sa`.`quantity`  ) AS `quantity`,
  				1 AS `depends_on_stock`,
- 				2 AS `out_of_stock`
+ 				2 AS `out_of_stock`,
+                                (SELECT IF(SUM(missing_quantity) !=0, SUM(missing_quantity), 0) FROM ps_reserve_product WHERE sa.id_product = id_product ) AS reserve_on_stock
 		FROM  `ps_product_shop` `ps`
 		LEFT JOIN `ps_supply_order_detail` `sod` ON ( `sod`.`id_product` = `ps`.`id_product` )
 		LEFT JOIN `ps_supply_order_icr` `soi` ON ( `sod`.`id_supply_order_detail` = `soi`.`id_supply_order_detail` )
