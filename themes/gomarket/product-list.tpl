@@ -130,9 +130,9 @@ function addcartlightbox( element ) {
 						{if $product.active == 1 && ($product.id_product_attribute == 0 || (isset($add_prod_display) && ($add_prod_display == 1))) && $product.available_for_order && !isset($restricted_country_mode) && $product.minimal_quantity <= 1 && $product.customizable != 2 && !$PS_CATALOG_MODE} 						
 						{if ($product.allow_oosp || $product.quantity > 0)}
 						{if isset($static_token)}
-							<a imgpro="{$product.id_image}"linkrewrite="{$product.link_rewrite}"namepro="{$product.name}"pricepro="{$product.price}" class="button ajax_add_to_cart_button exclusive" rel="ajax_id_product_{$product.id_product|intval}" href="{$link->getPageLink('cart',false, NULL, "add&amp;id_product={$product.id_product|intval}&amp;token={$static_token}", false)}" title="{l s='Comprar'}">{l s='Comprar'}</a>
+							<a imgpro="{$product.id_image}"linkrewrite="{$product.link_rewrite}"namepro="{$product.name}"pricepro="{$product.price}" class="button ajax_add_to_cart_button exclusive" rel="ajax_id_product_{$product.id_product|intval}" href="{$link->getPageLink('cart',true, NULL, "add&amp;id_product={$product.id_product|intval}&amp;token={$static_token}", false)}" title="{l s='Comprar'}">{l s='Comprar'}</a>
 						{else}
-							<a imgpro="{$product.id_image}"linkrewrite="{$product.link_rewrite}"namepro="{$product.name}"pricepro="{$product.price}" class="button ajax_add_to_cart_button exclusive" rel="ajax_id_product_{$product.id_product|intval}" href="{$link->getPageLink('cart',false, NULL, "add&amp;id_product={$product.id_product|intval}", false)}" title="{l s='Comprar'}">{l s='Comprar'}</a>
+							<a imgpro="{$product.id_image}"linkrewrite="{$product.link_rewrite}"namepro="{$product.name}"pricepro="{$product.price}" class="button ajax_add_to_cart_button exclusive" rel="ajax_id_product_{$product.id_product|intval}" href="{$link->getPageLink('cart',true, NULL, "add&amp;id_product={$product.id_product|intval}", false)}" title="{l s='Comprar'}">{l s='Comprar'}</a>
 						{/if}						
 					{else}
 						<span class="exclusive">{l s='Out of stock'}</span>
