@@ -156,8 +156,8 @@ class PaymentModule extends PaymentModuleCore {
                     $order->total_discounts_tax_incl = (float) abs($this->context->cart->getOrderTotal(false, Cart::ONLY_DISCOUNTS, $order->product_list, $id_carrier));
                     $order->total_discounts = $order->total_discounts_tax_incl;
 
-                    $order->total_shipping_tax_excl = (float) $this->context->cart->getPackageShippingCost((int) $id_carrier, false, null, $order->product_list);
-                    $order->total_shipping_tax_incl = (float) $this->context->cart->getPackageShippingCost((int) $id_carrier, false, null, $order->product_list);
+                    $order->total_shipping_tax_excl = (float) $this->context->cart->getTotalShippingCost((int) $id_carrier, false, null, $order->product_list);
+                    $order->total_shipping_tax_incl = (float) $this->context->cart->getTotalShippingCost((int) $id_carrier, false, null, $order->product_list,1);
                     $order->total_shipping = $order->total_shipping_tax_incl;
 
                     if (!is_null($carrier) && Validate::isLoadedObject($carrier))
@@ -175,6 +175,7 @@ class PaymentModule extends PaymentModuleCore {
                     $order->delivery_date = '0000-00-00 00:00:00';
 
                     //$order->total_paid_tax_incl = (float) Tools::ps_round((float) $this->context->cart->getOrderTotal(false, Cart::BOTH, $order->product_list, $id_carrier), 2);
+                    //echo "<br>1 order->total_paid:". 
                     $order->total_paid = $order->total_paid_tax_incl;
 
                     $order->private_message = str_replace( "\n", " - ",  str_replace( "\r", " - ", $private_message ) );
@@ -202,7 +203,8 @@ class PaymentModule extends PaymentModuleCore {
                     }*/
 
                     //if ($opera == 1) {
-                        $order->total_paid_real = $order->total_paid;
+                     //echo "<br>2 order->total_paid_real:".   
+                     $order->total_paid_real = $order->total_paid;
                     //}
 
                     //Adicionar a la orden y al context el id_carrier del transportador con menor costo de envío
@@ -281,8 +283,9 @@ print_r($order);
 die();*/
 
                     $order->id_employee_close_order = Context::getContext()->employee->id;
+//echo "<br>3 order->total_paid:". $order->total_paid;
+//exit();
                     $result = $order->add();
-
                     /************ Progressive Discounts ************/
                     $ProgressiveDiscounts = new Progressivediscounts();
                     $ProgressiveDiscounts->idOrder = $order->id;
