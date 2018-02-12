@@ -138,7 +138,7 @@ class Cart extends CartCore {
 
 		// calcular el precio de envio por tabla ps_carrier_city y codigo postal
 		$sql = 'SELECT cac.precio_kilo, car.id_carrier, crp.delimiter2, cac.tarifa, car2.id_carrier AS carrier_cp, 
-				adtrcp.precio AS precio_cp, crp2.delimiter2 AS delimiter2_cp
+				adtrcp.precio AS precio_cp, crp2.delimiter2 AS delimiter2_cp, cac.delimitador_envio AS delimitador_envio_foraneo
             	FROM '._DB_PREFIX_.'address adr 
                 LEFT JOIN '._DB_PREFIX_.'address_city adc ON ( adc.id_address = adr.id_address ) 
                 LEFT JOIN '._DB_PREFIX_.'carrier_city cac ON ( cac.id_city_des = adc.id_city ) 
@@ -174,14 +174,20 @@ class Cart extends CartCore {
 			if ( isset( $resultado[0]['carrier_cp']) && $resultado[0]['carrier_cp'] !=  NULL ) {
 				Context::getContext()->cart->id_carrier = $resultado[0]['carrier_cp'];
 				$delimitador_envio = $resultado[0]['delimiter2_cp'];
+				$delimitador_envio_foraneo = $resultado[0]['delimitador_envio_foraneo'];
+
 				$found_carrier = 1;
 				$cobroenvio = $resultado[0]['tarifa']? $resultado[0]['tarifa'] : 0;
+				
 			}
             elseif ( isset( $resultado[0]['id_carrier']) && $resultado[0]['id_carrier'] !=  NULL ) {
 				Context::getContext()->cart->id_carrier = $resultado[0]['id_carrier'];
 				$delimitador_envio = $resultado[0]['delimiter2'];
+				$delimitador_envio_foraneo = $resultado[0]['delimitador_envio_foraneo'];
+
 				$found_carrier = 1;
 				$cobroenvio = $resultado[0]['tarifa']? $resultado[0]['tarifa'] : 0;
+				
 			}
 
 			if ( $found_carrier == 1 ) {
@@ -195,7 +201,9 @@ class Cart extends CartCore {
 
 				$valtot_tax = (round( (round($val_total*1.16)/100) *2 , 0)/ 2 ) * 100; //valor con impuesto 16% y redondeado
 
-				if ( $val_total > $delimitador_envio && $cobroenvio == 1) { // si total de compra es mayor al valor para no cobrar envio
+				if ( $val_total > $delimitador_envio && $cobroenvio == 1 ) { // si total de compra es mayor al valor para no cobrar envio
+					$val=0;
+				} elseif ( $val_total > $delimitador_envio_foraneo && $cobroenvio == 0 ) {
 					$val=0;
 				}
 			}
@@ -215,7 +223,6 @@ class Cart extends CartCore {
 		    $val = 0;
         }
 
-		//echo $val;
 		return  $val; //$total_shipping;
 	}
 
@@ -291,7 +298,7 @@ class Cart extends CartCore {
 		$val = 0;
 
 		$sql = 'SELECT cac.precio_kilo, car.id_carrier, crp.delimiter2, cac.tarifa, car2.id_carrier AS carrier_cp, 
-				adtrcp.precio AS precio_cp, crp2.delimiter2 AS delimiter2_cp
+				adtrcp.precio AS precio_cp, crp2.delimiter2 AS delimiter2_cp, cac.delimitador_envio AS delimitador_envio_foraneo
                 FROM '._DB_PREFIX_.'cod_postal codpos 
                 LEFT JOIN '._DB_PREFIX_.'carrier_city cac ON (codpos.id_ciudad = cac.id_city_des ) 
                 LEFT JOIN '._DB_PREFIX_.'carrier car ON ( car.id_reference = cac.id_carrier AND car.deleted = 0 AND car.active=1 ) 
@@ -324,11 +331,15 @@ class Cart extends CartCore {
 
 			if ( isset( $resultado[0]['carrier_cp']) && $resultado[0]['carrier_cp'] !=  NULL ) {
 				$delimitador_envio = $resultado[0]['delimiter2_cp'];
+				$delimitador_envio_foraneo = $resultado[0]['delimitador_envio_foraneo'];
+
 				$found_carrier = 1;
 				$cobroenvio = $resultado[0]['tarifa']? $resultado[0]['tarifa'] : 0;
 			}
             elseif ( isset( $resultado[0]['id_carrier']) && $resultado[0]['id_carrier'] !=  NULL ) {
 				$delimitador_envio = $resultado[0]['delimiter2'];
+				$delimitador_envio_foraneo = $resultado[0]['delimitador_envio_foraneo'];
+
 				$found_carrier = 1;
 				$cobroenvio = $resultado[0]['tarifa']? $resultado[0]['tarifa'] : 0;
 			}
@@ -356,6 +367,8 @@ class Cart extends CartCore {
 				}
 				$valtot_tax = (round( (round($val_total*1.16)/100) *2 , 0)/ 2 ) * 100; //valor con impuesto 16% y redondeado
 				if ( $val_total > $delimitador_envio && $cobroenvio == 1) { // si total de compra es mayor al valor para no cobrar envió
+					$val=0;
+				} elseif ( $val_total > $delimitador_envio_foraneo && $cobroenvio == 0 ) {
 					$val=0;
 				}
 			}
@@ -420,7 +433,7 @@ class Cart extends CartCore {
 
 		//echo "<br>\n 2: ".
 		$sql = 'SELECT cac.precio_kilo, car.id_carrier, crp.delimiter2, cac.tarifa, car2.id_carrier AS carrier_cp, 
-				adtrcp.precio AS precio_cp, crp2.delimiter2 AS delimiter2_cp
+				adtrcp.precio AS precio_cp, crp2.delimiter2 AS delimiter2_cp, cac.delimitador_envio AS delimitador_envio_foraneo
                 FROM '._DB_PREFIX_.'address adr 
                 LEFT JOIN '._DB_PREFIX_.'address_city adc ON ( adc.id_address = adr.id_address ) 
                 LEFT JOIN '._DB_PREFIX_.'carrier_city cac ON ( cac.id_city_des = adc.id_city ) 
@@ -458,6 +471,8 @@ class Cart extends CartCore {
             if ( isset( $resultado[0]['carrier_cp']) && $resultado[0]['carrier_cp'] !=  NULL ) {
                 Context::getContext()->cart->id_carrier = $resultado[0]['carrier_cp'];
                 $delimitador_envio = $resultado[0]['delimiter2_cp'];
+                $delimitador_envio_foraneo = $resultado[0]['delimitador_envio_foraneo'];
+
                 $found_carrier = 1;
                 $cobroenvio = $resultado[0]['tarifa']? $resultado[0]['tarifa'] : 0;
 
@@ -465,6 +480,8 @@ class Cart extends CartCore {
             elseif ( isset( $resultado[0]['id_carrier']) && $resultado[0]['id_carrier'] !=  NULL ) {
                 Context::getContext()->cart->id_carrier = $resultado[0]['id_carrier'];
                 $delimitador_envio = $resultado[0]['delimiter2'];
+                $delimitador_envio_foraneo = $resultado[0]['delimitador_envio_foraneo'];
+
                 $found_carrier = 1;
                 $cobroenvio = $resultado[0]['tarifa']? $resultado[0]['tarifa'] : 0;
             }
@@ -483,7 +500,9 @@ class Cart extends CartCore {
 
                 if ( $val_total > $delimitador_envio && $cobroenvio == 1) { // si total de compra es mayor al valor para no cobrar envio
                     $shipping_cost=0;
-                }
+                } elseif ( $val_total > $delimitador_envio_foraneo && $cobroenvio == 0 ) {
+					$val=0;
+				}
             }
 		}
         else {

@@ -1353,7 +1353,7 @@ class CartCore extends ObjectModel
             if (is_null($products) && is_null($id_carrier))
                 $shipping_fees = $this->getTotalShippingCost(null, (boolean)$with_taxes);
             else
-                $shipping_fees = $this->getPackageShippingCost($id_carrier, (int)$with_taxes, null, $products);
+                $shipping_fees = $this->getTotalShippingCost($id_carrier, (int)$with_taxes, null, $products);
         }
         else
             $shipping_fees = 0;
