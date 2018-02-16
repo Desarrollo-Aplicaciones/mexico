@@ -234,8 +234,8 @@ else{
     $sql6 = "UPDATE "._DB_PREFIX_."tmp_product_order ptp 
     INNER JOIN "._DB_PREFIX_."product_supplier ps ON (ptp.id_product = ps.id_product AND ptp.id_supplier = ps.id_supplier)
     SET ptp.precio_compra = CASE 
-    WHEN ptp.precio_compra = 0 THEN SUBSTRING_INDEX(ps.product_supplier_price_te, '.', 1)
-    ELSE SUBSTRING_INDEX(ptp.precio_compra, '.', 1)
+    WHEN ptp.precio_compra = 0 THEN ps.product_supplier_price_te
+    ELSE ptp.precio_compra
     END,  
     ptp.flag='u'
     WHERE ptp.id_order = ".$order;
