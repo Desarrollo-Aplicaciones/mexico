@@ -217,24 +217,8 @@ mysqli_real_connect($mysqli_1,_DB_SERVER_, _DB_USER_, _DB_PASSWD_, _DB_NAME_);
       WHERE ptp.flag='u'");
       */
 
-  $query_8 = mysqli_query($mysqli_1, "update ps_product pp INNER JOIN 
-      (SELECT a1.`id_product` , a1.`id_supplier`, a1.`product_supplier_price_te` AS price 
-        FROM `ps_product_supplier` a1
-        INNER JOIN 
-          ( 
-          SELECT MIN(`product_supplier_price_te` ) AS pmin, `id_product` , `id_supplier`
-          FROM `ps_product_supplier` WHERE `id_product`
-            IN ( SELECT id_product
-            FROM ps_temp_product
-            WHERE flag != 'n'  )
-          AND `product_supplier_price_te` > 0
-          GROUP BY `id_product`
-          ) b2 ON  
-          ( a1.`id_product` =  b2.`id_product` AND
-        a1.`product_supplier_price_te` =  b2.pmin) 
-      ) ptp ON 
-
-      (pp.id_product = ptp.id_product )
+  $query_8 = mysqli_query($mysqli_1, "update ps_product pp 
+      INNER JOIN ps_product_supplier ptp ON (ptp.`id_product` = pp.`id_product`)
       INNER JOIN ps_product_shop pps ON (pps.id_product = ptp.id_product )
       INNER JOIN ps_temp_product pstpo ON (pstpo.id_product = pp.id_product AND pstpo.id_supplier = ptp.id_supplier)
       SET pp.price = pstpo.precio_venta,
