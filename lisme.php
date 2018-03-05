@@ -9,6 +9,18 @@
 	
 
 require(dirname(__FILE__).'/config/config.inc.php');
+include(dirname(__FILE__).'/init.php');
+
+if(isset($_REQUEST['medico_fnd'])){
+  $result = Context::getContext()->cart->addCartMedico(Context::getContext()->cart->id,$_REQUEST['medico_fnd'], !is_numeric($_REQUEST['medico_fnd']));
+  if(!isset($result['error'])){
+    echo json_encode(array('result' => $result, 'success' => true));
+  }else{
+    echo json_encode(array('result' => $result, 'success' => false));
+  }
+  exit();
+}
+
 $search = (isset($_POST['input']) ) ? $_POST['input'] : $_GET['input'];
 
 $url_post = explode(':', _DB_SERVER_);

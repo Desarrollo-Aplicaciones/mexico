@@ -249,16 +249,18 @@ document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/tru
             $('#'+($('#lightbox_content div').attr("id"))).appendTo( '#standard_lightbox .recent' );
             $('#lightbox_content').empty();
             }
-        function standard_lightbox(id){
+        function standard_lightbox(id, bloqueo = false){
             $('#lightbox_content').empty();
             $('#'+id).appendTo( "#lightbox_content" );
             $('#lightbox_content #'+id).show();
             $('#standard_lightbox').fadeIn('slow');
             $('#page').addClass("blurred");
+            if(!bloqueo){
+                $('#standard_lightbox .fog').click(function(){
+                    lightbox_hide();
+                });
+            }
         }
-        $('#standard_lightbox .fog').click(function(){
-            lightbox_hide();
-        });
     </script>
 <!--/Lightbox container-->
 
