@@ -545,6 +545,7 @@ function is_bot(){
 			
 		$this->addjqueryPlugin('easing');
 		$this->addJS(_PS_JS_DIR_.'tools.js');
+		$this->addJS(_THEME_JS_DIR_.'mobile.js');
 
 		if (Tools::isSubmit('live_edit') && Tools::getValue('ad') && Tools::getAdminToken('AdminModulesPositions'.(int)Tab::getIdFromClassName('AdminModulesPositions').(int)Tools::getValue('id_employee')))
 		{
