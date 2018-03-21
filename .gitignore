@@ -71,3 +71,5 @@ modules/*
 themes/gomarket/modules/*
 img/cms/*
 .idea/
+/.buildpath
+/.project
