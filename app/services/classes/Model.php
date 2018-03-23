@@ -11,6 +11,8 @@ class Model extends PaymentModule
 
     private $id_order;
 
+    public $context;
+
     /**
      * Obtiene todas las imagenes del producto
      *
@@ -1008,25 +1010,50 @@ class Model extends PaymentModule
         
         if ((isset($this->context->cookie->id_cart) && ! empty($this->context->cookie->id_cart)) || (isset($args['id_cart']) && ! empty($args['id_cart']))) {
             
-            $this->id_cart = (int) (isset($args['id_cart']) ? $args['id_cart']  : $this->context->cookie->id_cart);
+            $this->id_cart = (int) (isset($args['id_cart']) ? $args['id_cart'] : $this->context->cookie->id_cart);
         } else {
             $this->errors[] = 'No existe un carrito en el contexto.';
             return $this->response();
         }
         
-        $this->id_order = (int) Db::getInstance()->getValue("SELECT id_order FROM ps_orders WHERE id_cart = " . (int) (isset($args['id_cart']) ? $args['id_cart'] : $this->context->cookie->id_cart));
-        $this->method = $args['payment']['method'];
+        $status_cart = PasarelaPagoCore::is_cart_pay_process($this->id_cart);
+        $cantity = 0;
+        
+        if ($this->existOrder()) {
+            PasarelaPagoCore::set_cart_pay_process($this->id_cart, 0);
+            return $this->response();
+        }
+        
+        while (isset($status_cart['in_pay']) && isset($status_cart['status'])) {
+            
+            sleep(2);
+            
+            if ($this->existOrder()) {
+                PasarelaPagoCore::set_cart_pay_process($this->id_cart, 0);
+                return $this->response();
+            }
+            
+            if ($cantity == 2) {
+                break;
+            }
+            
+            $status_cart = PasarelaPagoCore::is_cart_pay_process($this->id_cart);
+            $cantity ++;
+        }
         
         if ($this->id_order) {
             return $this->response();
         } else {
+            PasarelaPagoCore::set_cart_pay_process($this->id_cart, 1);
             $this->context->cart = new Cart($this->id_cart);
-            if (empty($this->context->cart->id_customer))
-                $this->context->cart->id_customer = $args['id_customer'];
-            if (empty($this->context->cart->id_address_invoice))
-                $this->context->cart->id_address_invoice = $args['id_address'];
         }
-      
+        
+        if (empty($this->context->cart->id_customer))
+            $this->context->cart->id_customer = $args['id_customer'];
+        if (empty($this->context->cart->id_address_invoice))
+            $this->context->cart->id_address_invoice = $args['id_address'];
+        $this->method = $args['payment']['method'];
+        
         $flg = false;
         // Valida si el pago debe enviarse a una pasarela de pago
         foreach (PasarelaPagoCore::GetPMediosPsarelas() as $key => $value) {
@@ -1140,6 +1167,7 @@ class Model extends PaymentModule
                 $payment->name = $conn['nombre_pasarela'];
             
             $payment->validateOrder((int) $this->context->cart->id, $state, $total, $this->method, NULL, $extra_vars, (int) $this->context->currency->id, false, $customer->secure_key);
+            PasarelaPagoCore::set_cart_pay_process($this->id_cart, 0);
         } catch (Exception $exc) {
             $this->errors['message'] .= 'Error creando la orden: ' . print_r($exc, TRUE);
         }
@@ -1155,6 +1183,10 @@ class Model extends PaymentModule
         $response = null;
         
         if ($this->id_order) {
+            $status_cart = PasarelaPagoCore::is_cart_pay_process($this->id_cart);
+            if (isset($status_cart['in_pay']) && isset($status_cart['status'])) {
+                PasarelaPagoCore::set_cart_pay_process($this->id_cart, 0);
+            }
             $order = new Order($this->id_order);
             $order_state = Db::getInstance()->getValue("SELECT  osl.`name` FROM ps_order_state_lang osl INNER JOIN ps_orders os ON (osl.id_order_state = os.current_state) WHERE os.id_order = " . $this->id_order);
             $extra_vars = PasarelaPagoCore::get_extra_vars_payu($this->id_cart, $this->method);
@@ -1791,5 +1823,11 @@ class Model extends PaymentModule
         }
         
         return $results;
+    }
+
+    private function existOrder()
+    {
+        $this->id_order = (int) Db::getInstance()->getValue("SELECT id_order FROM ps_orders WHERE id_cart = " . (int) $this->id_cart);
+        return $this->id_order;
     }
 }

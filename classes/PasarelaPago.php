@@ -1188,6 +1188,48 @@
 		$rs = Db::getInstance()->executeS($sql);
 		return $rs[0]['errors'];
 		//return Db::getInstance()->getValue($sql);		
-	}	
+	}
+	
+	/**
+	 *  Inserta o actualiza un carrito al proceso de pago
+	 */
+	public static function set_cart_pay_process($id_cart = 0, $status = NULL)
+	{
+	    $status_cart = PasarelaPagoCore::is_cart_pay_process($id_cart);
+	    
+	    if( isset($status_cart['in_pay']) && isset($status_cart['status'])  != $status){
+	        
+	        return Db::getInstance()->update('cart_pay_process',
+	            array(
+	                'status' => (int) $status,
+	            ),
+	            'id_cart = '.(int)$id_cart);
+	    }
+	    
+	    if(empty($status_cart['in_pay']) && empty($status_cart['status']))
+	    {
+	        return Db::getInstance()->insert('cart_pay_process', array(
+	            'id_cart' => (int) $id_cart,
+	        ));
+	    }
+	    return FALSE;
+	}
+	
+	/**
+	 * Valida si un carrito esta en proceso de pago
+	 */
+	
+	public static function is_cart_pay_process($id_cart)
+	{
+	    $sql = 'SELECT COUNT(id_cart) as in_pay,`status`
+		FROM
+		'._DB_PREFIX_.'cart_pay_process
+		WHERE id_cart = '.(int) $id_cart.'
+		GROUP BY id_cart;';
+	    if ($row = Db::getInstance()->getRow($sql))
+	        return $row;
+	        return array();
+	        
+	}
 
 }

@@ -281,7 +281,7 @@ class PaymentModule extends PaymentModuleCore {
 /*echo "<pre>";
 print_r($order);
 die();*/
-
+                    if (isset(Context::getContext()->employee->id))
                     $order->id_employee_close_order = Context::getContext()->employee->id;
 //echo "<br>3 order->total_paid:". $order->total_paid;
 //exit();
