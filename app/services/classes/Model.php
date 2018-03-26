@@ -1189,7 +1189,7 @@ class Model extends PaymentModule
             if (isset($status_cart['in_pay']) && isset($status_cart['status'])) {
                 PasarelaPagoCore::set_cart_pay_process($this->id_cart, 0);
             }
-            $order = new Order($this->id_order);
+            $response = new Order($this->id_order);
             $success = TRUE;
             $order_state = Db::getInstance()->getValue("SELECT  osl.`name` FROM ps_order_state_lang osl INNER JOIN ps_orders os ON (osl.id_order_state = os.current_state) WHERE os.id_order = " . $this->id_order);
             $extra_vars = PasarelaPagoCore::get_extra_vars_payu($this->id_cart, $this->method);
