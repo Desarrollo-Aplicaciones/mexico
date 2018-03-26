@@ -1193,7 +1193,7 @@ class Model extends PaymentModule
             $success = TRUE;
             $order_state = Db::getInstance()->getValue("SELECT  osl.`name` FROM ps_order_state_lang osl INNER JOIN ps_orders os ON (osl.id_order_state = os.current_state) WHERE os.id_order = " . $this->id_order);
             $extra_vars = PasarelaPagoCore::get_extra_vars_payu($this->id_cart, $this->method);
-            $response = array(
+            $order = array(
                 'id_cart' => $this->id_cart,
                 'id' => $order->id,
                 'reference' => $order->reference,
@@ -1217,7 +1217,8 @@ class Model extends PaymentModule
             );
         } else {
             $obj = array(
-                'response' => $response,
+                'order' => $response,
+                //'response' => $response,
                 'success' => $success,
                 'message' => $this->errors['message']
             );
