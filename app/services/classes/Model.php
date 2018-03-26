@@ -1052,6 +1052,7 @@ class Model extends PaymentModule
             $this->context->cart->id_customer = $args['id_customer'];
         if (empty($this->context->cart->id_address_invoice))
             $this->context->cart->id_address_invoice = $args['id_address'];
+        
         $this->method = $args['payment']['method'];
         
         $flg = false;
@@ -1153,7 +1154,7 @@ class Model extends PaymentModule
             }
             
             $result = Db::getInstance()->insert('sonda_payu', array(
-                'id_cart' => (int) $this->context->cart->id,
+                'id_cart' => (int) $this->id_cart,
                 'date_add' => pSQL($date),
                 'interval' => (int) $interval,
                 'last_update' => pSQL($date),
@@ -1161,12 +1162,12 @@ class Model extends PaymentModule
             ));
             
             if (! $result)
-                Logger::AddLog('Error al agregar la sonda_payu (App) id_cart: ' . $this->context->cart->id, 2, null, null, null, true);
+                Logger::AddLog('Error al agregar la sonda_payu (App) id_cart: ' . $this->id_cart, 2, null, null, null, true);
             
             if ($conn['nombre_pasarela'] == 'payulatam')
                 $payment->name = $conn['nombre_pasarela'];
             
-            $payment->validateOrder((int) $this->context->cart->id, $state, $total, $this->method, NULL, $extra_vars, (int) $this->context->currency->id, false, $customer->secure_key);
+            $payment->validateOrder((int) $this->id_cart, $state, $total, $this->method, NULL, $extra_vars, (int) $this->context->currency->id, false, $customer->secure_key);
             PasarelaPagoCore::set_cart_pay_process($this->id_cart, 0);
         } catch (Exception $exc) {
             $this->errors['message'] .= 'Error creando la orden: ' . print_r($exc, TRUE);
@@ -1182,7 +1183,7 @@ class Model extends PaymentModule
         $extra_vars = null;
         $response = null;
         
-        if ($this->id_order) {
+        if ($this->existOrder()) {
             $status_cart = PasarelaPagoCore::is_cart_pay_process($this->id_cart);
             if (isset($status_cart['in_pay']) && isset($status_cart['status'])) {
                 PasarelaPagoCore::set_cart_pay_process($this->id_cart, 0);
