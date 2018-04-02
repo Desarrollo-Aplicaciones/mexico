@@ -361,7 +361,7 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
                         {* Precio tachado por descuento *}
                         {if !$priceDisplay || $priceDisplay == 2}
                                 {assign var='productPrice' value=$product->getPrice(true, $smarty.const.NULL, $priceDisplayPrecision)}
-                                {assign var='productPriceWithoutReduction' value=$product->getPriceWithoutReduct(false, $smarty.const.NULL)}
+                                {assign var='productPriceWithoutReduction' value=$product->getPriceWithoutReduct(true, $smarty.const.NULL)}
                         {elseif $priceDisplay == 1}
                                 {assign var='productPrice' value=$product->getPrice(false, $smarty.const.NULL, $priceDisplayPrecision)}
                                 {assign var='productPriceWithoutReduction' value=$product->getPriceWithoutReduct(true, $smarty.const.NULL)}
@@ -643,8 +643,9 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
                                         <br>Menores a $350.00, el costo de envío es de $80.00 Iva Incluído
                                         <br>Envío entre 2 y 24 horas máximo
                                         <br><br>Interior de la República:
-                                        <br><br>El costo de envío es de $189.00 IVA incluído
-                                        <br>Envío entre 24 y 48 horas máximo
+					<br><br>Costo de envío $129.00 IVA incluído
+					<br>Envío Gratis Por compras mayores a $999 en pedidos no mayores a 2 KG.
+					<br>Envío entre 24 y 48 horas máximo en días hábiles.
 				</span>
 			</div>
 			<div class="ctn-valor-min"><span class="txt-green-small"><strong>Ver más...</strong></span></div>
@@ -758,8 +759,9 @@ $('.cart_quantity_down').unbind('click').live('click', function(){
                                                                 <br>Menores a $350.00, el costo de envío es de $80.00 Iva Incluído
                                                                 <br>Envío entre 2 y 24 horas máximo
                                                                 <br><br>Interior de la República:
-                                                                <br><br>El costo de envío es de $189.00 IVA incluído
-                                                                <br>Envío entre 24 y 48 horas máximo
+                                                                <br><br>Costo de envío $129.00 IVA incluído
+								<br>Envío Gratis Por compras mayores a $999 en pedidos no mayores a 2 KG.
+                                                                <br>Envío entre 24 y 48 horas máximo en días hábiles.
 							</span>
 						</div>
 					</ul>
