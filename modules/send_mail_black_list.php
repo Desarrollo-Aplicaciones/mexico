@@ -78,7 +78,8 @@ if(COUNT($resultsC) > 0) {
 	$fileAttachment['content'] = $data;
 	$fileAttachment['name'] = "Reporte_clientes_interesados.xls";
 	$fileAttachment['mime'] = "application/vnd.ms-excel";
-	Mail::Send(1, 'send_mail_black_list', 'Clientes interesados', '', ['juan.valdes@farmalisto.com.co',' rolando.estrada@farmalisto.com.mx','juan.espinosa@farmalisto.com.mx '], '',
+	$emails = json_decode(Configuration::get('MAILS_BLACK_LIST'),true);
+	Mail::Send(1, 'send_mail_black_list', 'Clientes interesados', '', $emails, '',
 					null, null, $fileAttachment, null, _PS_MAIL_DIR_, false, 1);
         echo "\r\nEnvia"; 
 }
