@@ -251,7 +251,7 @@ if (isset($_GET['opc_sel'])) {
                 ORDER BY sup.id_supplier ASC';
             if ($results = Db::getInstance_slv()->ExecuteS($sql)) {
                 $output = fopen('php://output', 'w');
-                fputcsv($output, array("ID_PRODUCTO", "REFERENCIA", "DESCRIPCION", "REGISTRO", "PRECIO", "IVA_PROD", "ACTIVO_PRODUCT", "ACTIVO_PRODUCT_SHOP", "MOTIVO", "PROVEEDORES COMPRA 3Meses", "FABRICANTE", "COSTO COMPRA (ÚLTIMO)"));
+                fputcsv($output, array("ID_PRODUCTO", "REFERENCIA", "DESCRIPCION", "REGISTRO", "PRECIO", "IVA_PROD", "ACTIVO_PRODUCT", "ACTIVO_PRODUCT_SHOP", "MOTIVO", "Proveedor Predeterminado", "FABRICANTE", "COSTO COMPRA (ÚLTIMO)"));
                 /* echo "<table border='1'>
                  <tr>
                  <td> ID_PRODUCTO </td>
