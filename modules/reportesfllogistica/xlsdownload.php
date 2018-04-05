@@ -233,7 +233,7 @@ if (isset($_GET['opc_sel'])) {
                     p.active AS estado,
                     pss.active,
                     blmt.name AS Motivo_cancelacion,
-                    GROUP_CONCAT( sup2.name SEPARATOR "|" ) AS Proveedores_Asociados,
+                    GROUP_CONCAT( sup.name SEPARATOR "|" ) AS Proveedores_Asociados,
                     GROUP_CONCAT( DISTINCT (sup.name) SEPARATOR "|" ) AS Proveedores_Comprados3M,
                     m.name AS Fabricante,
                     sod.unit_price_te AS precio_ultimo
@@ -245,9 +245,7 @@ if (isset($_GET['opc_sel'])) {
                     LEFT JOIN ps_product_black_list pbl ON ( p.id_product = pbl.id_product )
                     LEFT JOIN ps_black_motivo blmt ON ( pbl.motivo = blmt.id_black_motivo )
                     LEFT JOIN ps_supply_order_detail sod ON ( p.id_product = sod.id_product AND sod.quantity_received != 0 )
-                    LEFT JOIN ps_product_supplier psup ON ( p.id_product = psup.id_product )
-					LEFT JOIN ps_supplier sup ON ( psup.id_supplier = sup.id_supplier )
-                    LEFT JOIN ps_supplier sup2 ON ( psup.id_supplier = sup2.id_supplier )
+                    LEFT JOIN ps_supplier sup ON ( p.id_supplier = sup.id_supplier )
                     LEFT JOIN ps_manufacturer m ON ( p.id_manufacturer = m.id_manufacturer )
                     GROUP BY p.id_product
                 ORDER BY sup.id_supplier ASC';
