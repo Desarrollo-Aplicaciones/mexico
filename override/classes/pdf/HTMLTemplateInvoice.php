@@ -683,6 +683,7 @@ WHERE o.id_order = ' . (int) $this->order->id;
             'tax_excluded_display' => Group::getPriceDisplayMethod($customer->id_default_group),
             'tax_tab' => $this->getTaxTabContent(),
             'ultimos_numeros' => $ultimos4_digitos,
+            'textCFDI' => $this->getTextCFDI()
         ));
           
          /* $enviartimbradofactura = array(
@@ -763,5 +764,34 @@ WHERE o.id_order = ' . (int) $this->order->id;
         ON tr.id_tax_rule = t.id_tax
         WHERE p.id_product ='.$id_product);
     }
+
+    public function getTextCFDI()
+    {
+        $textCFDI = NULL;
+        $cart = new Cart($this->order->id_cart);
+        $pruducts = $cart->getProducts();
+        
+        foreach ($pruducts as &$valor) {
+            $product = new Product($valor['id_product'], true, $this->context->language->id, $this->context->shop->id);
+            $features = $product->getFrontFeatures($this->context->language->id);
+            foreach ($features as $value) {
+                if (strtoupper($value['name']) == 'CFDI' && isset($value['value'])) {
+                    $condition = (int) $value['value'];
+                    $textCFDI = Configuration::get('PS_CFDI_' . $condition);
+                    if (isset($textCFDI) && ! empty($textCFDI))
+                        break;
+                }
+            }
+        }
+        
+        if (isset($textCFDI) && ! empty($textCFDI))
+            $textCFDI = Configuration::get('PS_CFDI_102885');
+        if (isset($textCFDI) && ! empty($textCFDI))
+            $textCFDI = 'G01 Adquisición de mercancias';
+        
+        return $textCFDI;
+    }
+    
+
 
 }

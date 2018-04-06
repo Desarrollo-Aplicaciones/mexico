@@ -150,7 +150,7 @@
 			  <td style="font-size: 19px; color: #444";>&nbsp;&nbsp;<strong>Tipo de comprobante:</strong> Ingreso</td>
 			</tr>
 			<tr>
-			  <td style="font-size: 19px; color: #444";>&nbsp;&nbsp;<strong>Uso CFDI:</strong> G01 Adquisición de mercancias</td>
+			  <td style="font-size: 19px; color: #444";>&nbsp;&nbsp;<strong>Uso CFDI:</strong> {if isset($textCFDI)}$textCFDI{/if}</td>
 			</tr>
 
 		</table>
