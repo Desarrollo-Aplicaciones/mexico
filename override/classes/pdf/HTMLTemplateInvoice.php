@@ -772,8 +772,8 @@ WHERE o.id_order = ' . (int) $this->order->id;
         $pruducts = $cart->getProducts();
         
         foreach ($pruducts as &$valor) {
-            $product = new Product($valor['id_product'], true, $this->context->language->id, $this->context->shop->id);
-            $features = $product->getFrontFeatures($this->context->language->id);
+            $product = new Product($valor['id_product']);
+            $features = $product->getFrontFeatures();
             foreach ($features as $value) {
                 if (strtoupper($value['name']) == 'CFDI' && isset($value['value'])) {
                     $condition = (int) $value['value'];
