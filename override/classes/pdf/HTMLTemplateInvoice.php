@@ -773,7 +773,7 @@ WHERE o.id_order = ' . (int) $this->order->id;
         $context = Context::getContext();
         
         foreach ($pruducts as &$valor) {
-            $product = new Product($valor['id_product'], true, $context->language->id, $this->context->shop->id);
+            $product = new Product($valor['id_product'], true, $context->language->id, $context->shop->id);
             $features = $product->getFrontFeatures($context->language->id);
             foreach ($features as $value) {
                 if (strtoupper($value['name']) == 'CFDI' && isset($value['value'])) {
