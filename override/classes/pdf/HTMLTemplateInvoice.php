@@ -770,10 +770,11 @@ WHERE o.id_order = ' . (int) $this->order->id;
         $textCFDI = NULL;
         $cart = new Cart($this->order->id_cart);
         $pruducts = $cart->getProducts();
+        $context = Context::getContext();
         
         foreach ($pruducts as &$valor) {
-            $product = new Product($valor['id_product']);
-            $features = $product->getFrontFeatures();
+            $product = new Product($valor['id_product'], true, $context->language->id, $this->context->shop->id);
+            $features = $product->getFrontFeatures($context->language->id);
             foreach ($features as $value) {
                 if (strtoupper($value['name']) == 'CFDI' && isset($value['value'])) {
                     $condition = (int) $value['value'];
