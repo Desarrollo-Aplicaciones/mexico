@@ -785,10 +785,10 @@ WHERE o.id_order = ' . (int) $this->order->id;
         }
         
         if ( empty($textCFDI)){
-            $textCFDI = Configuration::get('PS_CFDI_102885');
+            $textCFDI = Configuration::get('PS_CFDI_102886');
         }
         if ( empty($textCFDI)){
-            $textCFDI = 'G01 Adquisición de mercancias ';
+            $textCFDI = 'G03 Gastos en general';
         }
         
         
