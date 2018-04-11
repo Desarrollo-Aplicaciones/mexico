@@ -1,14 +1,7 @@
 <?php  
   
-class CartRule extends CartRuleCore {
+class CartRule extends CartRuleCore {  
 
-    public $id_origis_manufacturer;
-
-    public function __construct($id = null, $id_lang = null, $id_shop = null)
-    {
-        self::$definition['fields']['id_origis_manufacturer'] = array('type' => ObjectModel::TYPE_INT, 'validate' => 'isUnsignedId');
-        parent::__construct($id, $id_lang, $id_shop);
-    }
 
     /**
      * @static
@@ -530,14 +523,6 @@ public function getAssociatedRestrictions($type, $active_only, $i18n)
 
     public function getContextualValue($use_tax, Context $context = null, $filter = null, $package = null, $use_cache = true)
     {
-        $isOrigisDiscount = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('SELECT * from '._DB_PREFIX_.'cartrule_origis where id_cart = '.pSQL($context->cart->id).' and id_cartrule = '.pSQL($this->id));
-
-        if($isOrigisDiscount){
-            if($use_tax) return $isOrigisDiscount['total_value_tax_incl'];
-            else return $isOrigisDiscount['total_value_tax_excl'];
-        }
-
-
         if (!CartRule::isFeatureActive())
             return 0;
         if (!$context)
@@ -754,12 +739,6 @@ public function getAssociatedRestrictions($type, $active_only, $i18n)
             include_once(_PS_MODULE_DIR_.'quantitydiscountpro/quantitydiscountpro.php');
             $quantityDiscount = new QuantityDiscountRule();
             $quantityDiscount->createAndRemoveRules();
-        }
-
-        if (Module::isEnabled('wip_origis')) {
-            $wip_origis = Module::getInstanceByName('wip_origis');
-            $wip_origis->setTransactionQuote();
-
         }
     }
 
