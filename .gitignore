@@ -73,3 +73,15 @@ img/cms/*
 .idea/
 /.buildpath
 /.project
+!img/c
+img/c/*
+!img/m
+img/m/*
+!img/scenes
+img/scenes/*
+!img/st
+img/st/*
+!img/su
+img/su/*
+!modules/csslider
+modules/csslider/*
