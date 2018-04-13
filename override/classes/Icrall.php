@@ -388,7 +388,7 @@ class Icrall extends IcrallCore {
                                                 GROUP_CONCAT(DISTINCT(tcid.cod_icr)) AS icrs, 
                                                 GROUP_CONCAT(DISTINCT(IFNULL(tcid.estado_icr, 1 ))) AS estado_nuevo
                                             FROM `" . _DB_PREFIX_ . "tmp_cargue_icr_devolucion` tcid
-                                            WHERE tcid.estado_icr NOT IN (".implode('\',\'',$estado_valido).")";
+                                            WHERE tcid.estado_icr NOT IN ('".implode('\',\'',$estado_valido)."')";
                                         //error_log("\n\n query_estados_icr_validos : ".print_r($query_estados_icr_validos ,true),3,"/tmp/hola.log");
 
                                         if ($retorno_estados_icr_validos = DB::getInstance()->executeS($query_estados_icr_validos) ) {
