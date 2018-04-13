@@ -51,6 +51,9 @@ KWE54O31MDORBOJRFRPLMM8C7H24LQQR/*
 **/.DS_Store
 **/._.DS_Store
 .htaccess
+!xml_timbrado
+!xml_timbrado/cancelacion
+!xml_timbrado/response
 xml_timbrado/*
 !admin8256/import
 admin8256/import/*
