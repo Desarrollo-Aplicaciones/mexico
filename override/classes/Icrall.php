@@ -295,8 +295,8 @@ class Icrall extends IcrallCore {
         INTO TABLE ps_tmp_cargue_icr_devolucion
         CHARACTER SET utf8
         FIELDS TERMINATED BY ';'
-        OPTIONALLY ENCLOSED BY '\"' 
-        LINES TERMINATED BY '\\n'
+        OPTIONALLY ENCLOSED BY '\"'
+        LINES TERMINATED BY '\\r\\n' 
         IGNORE 1 LINES 
         ( cod_icr, estado_icr )";
         
