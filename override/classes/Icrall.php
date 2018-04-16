@@ -400,7 +400,7 @@ class Icrall extends IcrallCore {
 
                                             } else {
 
-                                                $this->errores_cargue[] = "Se han presentado errores con los estados de los ICR's ingresados. ICR's con estado inválido ( Icrs: ".$retorno_estados_icr_validos[0]['icrs']." ), Estados colocados: (".$retorno_estados_icr_validos[0]['estado_nuevo']."). | Los estados válidos son: <b>".$estados_validos."</b>";
+                                                $this->errores_cargue[] = "Se han presentado errores con los estados de los ICR's ingresados. ICR's con estado inválido ( Icrs: ".$retorno_estados_icr_validos[0]['icrs']." ), Estados colocados: (".$retorno_estados_icr_validos[0]['estado_nuevo']."). | Los estados válidos son: <b>".implode(',',$estado_valido)."</b>";
                                                 return false;
                                             }
 
