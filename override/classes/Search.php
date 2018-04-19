@@ -98,7 +98,8 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 					ON ( sw.word LIKE tw.palabra || '%' OR ( 100 - ( ( search.levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) >= 70 )
 				GROUP BY si.id_product 
 				HAVING sum(tw.orden) > 0
-				ORDER BY sum(tw.orden) DESC, sum( 100 - ( ( search.levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) DESC";
+				ORDER BY SUM(si.weight) DESC, sum( 100 - ( ( search.levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) DESC";
+				
 
 				//$loggin = new Registrolog();
             	//$loggin->lwrite("Search_ajax", "log_busquedas.txt", $query_psql_1);
@@ -267,7 +268,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 					ON ( sw.word LIKE tw.palabra || '%' OR ( 100 - ( ( search.levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) >= 70 )
 				GROUP BY si.id_product 
 				HAVING sum(tw.orden) > 0
-				ORDER BY sum(tw.orden) DESC, sum( 100 - ( ( search.levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) DESC";
+				ORDER BY SUM(si.weight) DESC, sum( 100 - ( ( search.levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) DESC";
 
 		
 
@@ -655,7 +656,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 					ON ( sw.word LIKE tw.palabra || '%' OR ( 100 - ( ( search.levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) >= 70 )
 				GROUP BY si.id_product 
 				HAVING sum(tw.orden) > 0
-				ORDER BY sum(tw.orden) DESC, sum( 100 - ( ( search.levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) DESC";
+				ORDER BY SUM(si.weight) DESC, sum( 100 - ( ( search.levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) DESC";
 
 				//$loggin = new Registrolog();
             	//$loggin->lwrite("Search_ajax", "log_busquedas.txt", $query_psql_1);
@@ -821,7 +822,7 @@ public static function find($id_lang, $expr, $page_number = 1, $page_size = 1, $
 					ON ( sw.word LIKE tw.palabra || '%' OR ( 100 - ( ( search.levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) >= 70 )
 				GROUP BY si.id_product 
 				HAVING sum(tw.orden) > 0
-				ORDER BY sum(tw.orden) DESC, sum( 100 - ( ( search.levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) DESC";
+				ORDER BY SUM(si.weight) DESC, sum( 100 - ( ( search.levenshtein(sw.word, tw.palabra) ) * 100)/ length(sw.word) ) DESC";
 
 		
 
