@@ -182,7 +182,7 @@ abstract class DbCore
 			self::$_servers = array(
 				array('server' => _DB_SERVER_, 'user' => _DB_USER_, 'password' => _DB_PASSWD_, 'database' => _DB_NAME_), /* MySQL Master server */
 				// Add here your slave(s) server(s)
-					// array('server' => '192.168.0.15', 'user' => 'rep', 'password' => '123456', 'database' => 'rep'),
+					array('server' => 'localhost', 'user' => 'farmalistomx', 'password' => 'GveODitXbYPdov', 'database' => 'farmalisto_mexico'),
 					// array('server' => '192.168.0.3', 'user' => 'myuser', 'password' => 'mypassword', 'database' => 'mydatabase'),
 			);
 

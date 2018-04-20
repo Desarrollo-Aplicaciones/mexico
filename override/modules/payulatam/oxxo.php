@@ -1,8 +1,8 @@
 <?php
 
 $useSSL = true;
-include(dirname(__FILE__).'/../../config/config.inc.php');
-include(dirname(__FILE__).'/../../init.php');
+//include(dirname(__FILE__).'/../../config/config.inc.php');
+//include(dirname(__FILE__).'/../../init.php');
 require_once(_PS_MODULE_DIR_.'payulatam/payulatam.php');
 require_once(_PS_MODULE_DIR_.'payulatam/config.php');
 require_once(_PS_MODULE_DIR_ . 'payulatam/paymentws.php');

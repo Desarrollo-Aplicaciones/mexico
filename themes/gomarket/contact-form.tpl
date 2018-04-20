@@ -22,7 +22,27 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
+<script type="text/javascript">
+    var a = Math.ceil(Math.random() * 10);
+    var b = Math.ceil(Math.random() * 10);
+    var e = Math.ceil(Math.random() * 10);
+    var f = Math.ceil(Math.random() * 10);
+    var g = Math.ceil(Math.random() * 10);
+    var h = Math.ceil(Math.random() * 10);
 
+    var c = a + b
+    function DrawBotBoot()
+    {
+        document.write(" Cuanto es "+ a + " + " + b +"? ");
+        document.write("<input id='BotBootInput' name='BotBootInput' type='text' maxlength='2' size='2'/>");
+    }    
+    function ValidBotBoot(){
+        var d = document.getElementById('BotBootInput').value;
+        if (d == c) return true;        
+        return false;
+        
+    }
+    </script>
 {capture name=path}{l s='Contact'}{/capture}
 {include file="$tpl_dir./breadcrumb.tpl"}
 
@@ -41,7 +61,7 @@
 {else}
 	<p class="bold">{l s='For questions about an order or for more information about our products'}.</p>
 	{include file="$tpl_dir./errors.tpl"}
-	<form action="{$request_uri|escape:'htmlall':'UTF-8'}" method="post" class="std" enctype="multipart/form-data">
+	<form action="{$request_uri|escape:'htmlall':'UTF-8'}" method="post" class="std" enctype="multipart/form-data" onsubmit="return(ValidBotBoot());">
 		<fieldset>
 			<h3>{l s='Send a message'}</h3>
 			<p class="select">
@@ -129,6 +149,7 @@
       Aviso de privacidad, consentimiento de recabaci&oacute;n y resguardo de datos personales
       </a>
     </p>
+    Eres humano ? <script type="text/javascript">DrawBotBoot();</script>
 		<p class="submit">
 			<input type="submit" name="submitMessage" id="submitMessage" value="{l s='Send'}" class="button_large" />
 		</p>

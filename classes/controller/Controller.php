@@ -276,23 +276,23 @@ abstract class ControllerCore
 			foreach ($js_uri as $js_file)
 			{
 				$js_path = Media::getJSPath($js_file);
-				if($footer) {
-                                    if ($js_path && !in_array($js_path, $this->js_files_footer))
-                                        $this->js_files_footer[] = $js_path;
-                                 } else {
+			//	if($footer) {
+                          //          if ($js_path && !in_array($js_path, $this->js_files_footer))
+                            //            $this->js_files_footer[] = $js_path;
+                              //   } else {
                                     if ($js_path && !in_array($js_path, $this->js_files))
                                         $this->js_files[] = $js_path;
-                                 }
+                                // }
 			}
 		else
 		{
 			$js_path = Media::getJSPath($js_uri);
 			if ($js_path) {
-                            if($footer) {
- 				$this->js_files_footer[] = $js_path;
-                            } else {
+//                            if($footer) {
+ //				$this->js_files_footer[] = $js_path;
+   //                         } else {
                                 $this->js_files[] = $js_path;
-                            }
+     //                       }
                          }
 		}
 	}

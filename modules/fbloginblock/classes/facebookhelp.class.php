@@ -49,7 +49,7 @@ class facebookhelp extends Module{
     
     
 	private function _getConnectImages($data){
-		
+		return false;
 		
 		$_http_host = $data['http_host'];
 		$id_shop = $data['id_shop'];

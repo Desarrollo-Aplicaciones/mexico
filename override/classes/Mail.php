@@ -53,6 +53,7 @@ class Mail extends MailCore
 		if (!Validate::isMailName($from_name))
 			$from_name = null;
 
+
 		// It would be difficult to send an e-mail if the e-mail is not valid, so this time we can die if there is a problem
 		if (!is_array($to) && !Validate::isEmail($to))
 		{
@@ -169,6 +170,7 @@ class Mail extends MailCore
 				Tools::dieOrLog(Tools::displayError('Error - No ISO code for email'), $die);
 				return false;
 			}
+
 			$template = $iso.'/'.$template;
 
 			$module_name = false;
@@ -186,6 +188,7 @@ class Mail extends MailCore
 				$template_path = $theme_path.'mails/';
 				$override_mail  = true;
 			}
+
 			if (!file_exists($template_path.$template.'.txt') && ($configuration['PS_MAIL_TYPE'] == Mail::TYPE_BOTH || $configuration['PS_MAIL_TYPE'] == Mail::TYPE_TEXT))
 			{
 				Tools::dieOrLog(Tools::displayError('Error - The following e-mail template is missing:').' '.$template_path.$template.'.txt', $die);

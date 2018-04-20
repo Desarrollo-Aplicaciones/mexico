@@ -26,7 +26,6 @@
  *  International Registered Trademark & Property of PrestaShop SA
  */
 
-
 if (!defined('_PS_VERSION_'))
     exit;
 
@@ -52,7 +51,9 @@ class PayULatam extends PaymentModule {
 
         /* Backward compatibility */
         require_once(_PS_MODULE_DIR_ . 'payulatam/backward_compatibility/backward.php');
-        $this->context->smarty->assign('base_dir', __PS_BASE_URI__);
+        echo "<pre>";
+	var_dump($this->context);
+	$this->context->smarty->assign('base_dir', __PS_BASE_URI__);
         $this->context->smarty->assign('ruta', getcwd());
         $this->context->smarty->assign($this->name.'_dir',_MODULE_DIR_.$this->name);
         $this->context->smarty->assign('module_name', 'payulatam');

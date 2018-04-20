@@ -1,8 +1,8 @@
 <pre>Array
 (
     [currentFolderPath] => ../../img/cms/
-    [new_folder] => optimizadas
+    [new_folder] => aseguradoras
 )
 </pre>
 
-09/Dec/2016 12:22:02
+10/Mar/2018 15:59:33

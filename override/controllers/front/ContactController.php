@@ -4,7 +4,7 @@ class ContactController extends ContactControllerCore
 {
 	public function postProcess()
 	{
-		if (Tools::isSubmit('submitMessage'))
+		if (Tools::isSubmit('submitMessage') && Tools::getValue('BotBootInput') != "")
 		{
 			$extension = array('.txt', '.rtf', '.doc', '.docx', '.pdf', '.zip', '.png', '.jpeg', '.gif', '.jpg');
 			$fileAttachment = Tools::fileAttachment('fileUpload');

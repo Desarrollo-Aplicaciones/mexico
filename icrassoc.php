@@ -161,14 +161,24 @@ if (isset($_POST)) {
 			if($_POST['opcion'] == "save") {
 
 				//echo "<br>cant_pro:".count($arrprods);
-				//echo "<br>prods validos:".
+				//echo "<br>prods validos:".				
+
+				if ( isset($_GET) && isset($_GET['modo_debug']) && $_GET['modo_debug'] == 'md_col_09374' ) {
+
+				echo "<br>cant_pro:".count($arrprods);
+				echo "<br>prods validos:".
 				$prodsValidos = $ordsum -> validarProductosOrden("add");
 
-				//echo "<pre><br>prods_icr:";
-				//print_r($ordsum->productoicr);
+				echo "<pre><br>prods_icr:";
+				print_r($ordsum->productoicr);
 
-				//echo "<br>icr validos:".
+				echo "<br>icr validos:".
 				$icrValidos = $ordsum -> validarIcrOrden();
+				exit();
+			 	} else { 
+			 		$prodsValidos = $ordsum -> validarProductosOrden("add");
+					$icrValidos = $ordsum -> validarIcrOrden();
+				}
 
 				if( $prodsValidos == 1 && $icrValidos == 1 ) {
 					$ordsum -> InsertarProductosIcrOrdenLoad();
@@ -179,7 +189,7 @@ if (isset($_POST)) {
 					echo " <script language=\"javascript\"> parent.document.location = parent.document.location; this.close(); window.close(); 
 	                  function closer() { this.close(); }</script>";
 				} else {
-					echo "<br>cant_pro:".count($arrprods);					
+					echo "<br>cant_pros:".count($arrprods);					
 					echo "<br><b> 2. Error en la validación de los productos y/o los icr's a asociar, ";
 					if ( $prodsValidos == 0) { echo "<u> valide la asociación al proveedor, </u>";} 
 					if ( $icrValidos == 0) { echo "<u> valide que los ICR estén en estado 1 ( creado ), </u>";}
