@@ -38,7 +38,7 @@
 					{l s='Ingresar' mod='blockuserinfo'}
 				</a>
 				<br>
-				<a href="{$link->getPageLink('my-account', true)}" title="{l s='Login to your customer account' mod='blockuserinfo'}" class="login" id="login" rel="nofollow">
+				<a href="{$link->getPageLink('authentication', true)}?reg=5" title="{l s='Login to your customer account' mod='blockuserinfo'}" class="login" id="login" rel="nofollow">
 					{l s='Registrarme' mod='blockuserinfo'}
 				</a> 
 			{/if}

@@ -57,8 +57,8 @@ class Customer extends CustomerCore{
     
     public function get_id_custumer($id_address) {
         $query = "select customer.id_customer FROM
-ps_address adre INNER JOIN ps_customer customer ON (adre.id_customer=customer.id_customer)
-WHERE adre.id_address=" . (int) $id_address . " LIMIT 1;";
+        ps_address adre INNER JOIN ps_customer customer ON (adre.id_customer=customer.id_customer)
+        WHERE adre.id_address=" . (int) $id_address . " LIMIT 1;";
 
         if ($results = Db::getInstance()->ExecuteS($query)) {
             $sid_cusomer = '';
@@ -149,5 +149,63 @@ WHERE adre.id_address=" . (int) $id_address . " LIMIT 1;";
 
                 return $this;
         } 
+
+
+    /**
+     * Update discount for group
+     *
+     * @param type $identification
+     */
+    public function updateGroupDiscount($identification)
+    {
+
+        $sqlEmi = 'SELECT id_doc FROM ' . _DB_PREFIX_ . 'customer_emi WHERE id_doc = "' . $identification . '"';
+        $default = 3;
+        //      User EMI validation     //
+        if ($row = Db::getInstance()->getRow($sqlEmi)) {
+            //      Is the Customer is within the group 5 EMI     //
+            if (empty(Db::getInstance()->executeS('SELECT id_group FROM ps_customer_group WHERE id_customer = ' . $this->id . ' AND id_group = 5'))) {
+                $group = array(5);
+                $this->addGroups($group);
+                $default = 5;
+            }
+        } else {    //      When you are not registered as an EMI user      //
+            $clone_group = $this->getGroups();
+            $this->cleanGroups();
+            foreach ($clone_group as $group) {
+                $groups_update = array();
+                if ($group != 5) {
+                    array_push($groups_update, $group);
+                    $this->addGroups($groups_update);
+                }
+            }
+        }
+        //      Update default group for Customer       //
+        Db::getInstance()->update('customer', array(
+            'id_default_group' => $default
+        ), 'identification = "' . $identification . '"');
+    }
+
+    public function getValidPhones()
+    {
+        return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS("select CONCAT(SUBSTRING(phone, 1, LENGTH(phone)-4),'****') phone,  REPLACE(phone,'+','') valid_phone, id_address as id_address_delivery from (
+            select  
+            distinct(IFNULL(
+            IF(
+             (LENGTH(REPLACE(`phone_mobile`, ' ', ''))=10 AND LEFT( REPLACE(`phone_mobile`, ' ', ''),1 )=1) OR
+              (LENGTH(REPLACE(`phone_mobile`, ' ', ''))=12 AND LEFT( REPLACE(`phone_mobile`, ' ', ''),3 )='521') OR
+                (LENGTH(REPLACE(`phone_mobile`, ' ', ''))=11 AND LEFT( REPLACE(`phone_mobile`, ' ', ''),3 )='346') OR
+              (LENGTH(REPLACE(`phone_mobile`, ' ', ''))=13 AND LEFT( REPLACE(`phone_mobile`, ' ', ''),4 )='+521'), REPLACE(`phone_mobile`, ' ', ''), null),
+
+            IF( 
+             (LENGTH(REPLACE(`phone`, ' ', ''))=10 AND LEFT( REPLACE(`phone`, ' ', ''),1 )=1) OR
+              (LENGTH(REPLACE(`phone`, ' ', ''))=12 AND LEFT( REPLACE(`phone`, ' ', ''),3 )='521') OR
+                  (LENGTH(REPLACE(`phone`, ' ', ''))=11 AND LEFT( REPLACE(`phone`, ' ', ''),3 )='346') OR
+              (LENGTH(REPLACE(`phone`, ' ', ''))=13 AND LEFT( REPLACE(`phone`, ' ', ''),4 )='+521'), REPLACE(`phone`, ' ', ''), null))) phone, a.id_address
+            from ps_address a
+            left join (SELECT max(id_order) max_order, id_address_delivery from ps_orders o group by id_address_delivery) o on o.id_address_delivery=a.id_address
+            where a.id_customer = ".$this->id."
+            order by max_order desc) x  where phone is not null");
+    }
     
 }
