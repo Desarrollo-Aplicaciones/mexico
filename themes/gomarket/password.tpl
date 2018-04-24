@@ -66,7 +66,7 @@
 
 
 <div style="text-align: center; margin: 85px 0 60px 0">
-    <img src="/themes/gomarket/img/logo-farmalisto.png"/>
+    <img src="/themes/gomarket/img/Logo_Login_MX.png"/>
 </div>
 
 <div class="box-account">
