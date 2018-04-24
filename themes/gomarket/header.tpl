@@ -198,6 +198,10 @@
 			<p>{l s='You cannot place a new order from your country.'} <span class="bold">{$geolocation_country}</span></p>
 		</div>
 		{/if}
+		{if $page_name == 'authentication' || $page_name == 'password' }
+		<div id="fondoLog"></div>
+		<div id="fondoLogSuperpuesto"></div>
+		{/if}
 		<div id="page">
 			<!-- Header -->
 
