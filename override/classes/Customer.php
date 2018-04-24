@@ -192,14 +192,16 @@ class Customer extends CustomerCore{
             select  
             distinct(IFNULL(
             IF(
-             (LENGTH(REPLACE(`phone_mobile`, ' ', ''))=10 AND LEFT( REPLACE(`phone_mobile`, ' ', ''),1 )=1) OR
-              (LENGTH(REPLACE(`phone_mobile`, ' ', ''))=12 AND LEFT( REPLACE(`phone_mobile`, ' ', ''),3 )='521') OR
+             (LENGTH(REPLACE(`phone_mobile`, ' ', ''))=10 AND LEFT( REPLACE(`phone_mobile`, ' ', ''),3 )=553) OR
+              (LENGTH(REPLACE(`phone_mobile`, ' ', ''))=8 AND LEFT( REPLACE(`phone_mobile`, ' ', ''),1 )='3') OR
+              (LENGTH(REPLACE(`phone_mobile`, ' ', ''))=11 AND LEFT( REPLACE(`phone_mobile`, ' ', ''),4 )='+553') OR
                 (LENGTH(REPLACE(`phone_mobile`, ' ', ''))=11 AND LEFT( REPLACE(`phone_mobile`, ' ', ''),3 )='346') OR
               (LENGTH(REPLACE(`phone_mobile`, ' ', ''))=13 AND LEFT( REPLACE(`phone_mobile`, ' ', ''),4 )='+521'), REPLACE(`phone_mobile`, ' ', ''), null),
 
             IF( 
-             (LENGTH(REPLACE(`phone`, ' ', ''))=10 AND LEFT( REPLACE(`phone`, ' ', ''),1 )=1) OR
-              (LENGTH(REPLACE(`phone`, ' ', ''))=12 AND LEFT( REPLACE(`phone`, ' ', ''),3 )='521') OR
+             (LENGTH(REPLACE(`phone`, ' ', ''))=10 AND LEFT( REPLACE(`phone`, ' ', ''),3 )=553) OR
+              (LENGTH(REPLACE(`phone`, ' ', ''))=8 AND LEFT( REPLACE(`phone`, ' ', ''),1 )='3') OR
+              (LENGTH(REPLACE(`phone`, ' ', ''))=11 AND LEFT( REPLACE(`phone`, ' ', ''),4 )='+553') OR
                   (LENGTH(REPLACE(`phone`, ' ', ''))=11 AND LEFT( REPLACE(`phone`, ' ', ''),3 )='346') OR
               (LENGTH(REPLACE(`phone`, ' ', ''))=13 AND LEFT( REPLACE(`phone`, ' ', ''),4 )='+521'), REPLACE(`phone`, ' ', ''), null))) phone, a.id_address
             from ps_address a
