@@ -383,6 +383,12 @@ class OrderHistory extends OrderHistoryCore
 					) ON DUPLICATE KEY UPDATE date_change_state = NOW()
 			");
 		}
+		
+		$orderStateSig = (int)Configuration::get(Configuration::get('SIGNATURE_CFDI'));
+		if( $orderStateSig = (int)$this->id_order_state){
+		    $sig = new SignatureCFDI($order);
+		    $sig->sigCDFI();		    
+		}
 
 		if ($new_os->invoice && !$order->invoice_number)
 			$order->setInvoice($use_existing_payment);
