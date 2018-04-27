@@ -386,7 +386,7 @@ class OrderHistory extends OrderHistoryCore
 		
 		$orderStateSig = (int)Configuration::get(Configuration::get('SIGNATURE_CFDI'));
 		
-		if(isset($orderStateSig) && $orderStateSig !=0 && $orderStateSig = (int)$order->current_state){
+		if(isset($orderStateSig) && $orderStateSig !=0 && $orderStateSig == (int)$order->current_state){
 		    $sig = new SignatureCFDI($order);
 		    $sig->sigCDFI();		    
 		}

@@ -99,7 +99,7 @@ class Utilities extends UtilitiesCore {
 				WHERE a.is_rfc = 1
 				AND a.id_customer = ".$idcliente;
 		$dataaddressrfc = Db::getInstance()->ExecuteS($sql);
-
+		if(isset($dataaddressrfc[0]))
 		return $dataaddressrfc[0];
             }
             return array();

@@ -64,7 +64,9 @@
 </script>
 {/if}
 
+{if isset($atomik.product)}
 {assign var=precio value=$atomik.product.price}
+ {/if}
 
 {if $atomik.page_name == 'product'}
 <script type="application/ld+json">

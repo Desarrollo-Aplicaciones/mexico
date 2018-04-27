@@ -327,7 +327,7 @@ $( ".btn-toggle-order-detail" ).toggle(function() {
 
 		function submitforms2() {
 		     	{/literal}
-		     	{if  $pasarela_de_pago === 'payulatam'}
+		     	{if isset($pasarela_de_pago) && $pasarela_de_pago === 'payulatam'}
 		     	$("#formPayU").submit();
 		     	{/if}
 		     	{literal}

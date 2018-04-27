@@ -330,7 +330,7 @@
 		** Al agregar este producto es posible que el plazo de nuestra promesa de entrega se extienda. Agrega este producto y al finalizar tu pedido ponte en contacto con nuestro servicio al cliente para determinar la hora de entrega.</p>
 	     </div> *}
 
-{if $activado_nocturno_express}
+{if isset($activado_nocturno_express) && $activado_nocturno_express}
 	<div id="lightbox_horario_call" style="display:none;">
 		<div class="close_lightbox_horario_call" onclick="lightbox_hide(); ">
 		</div>

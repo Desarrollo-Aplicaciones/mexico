@@ -85,7 +85,7 @@
 <div class="addresses_list">
 {if isset($multipleAddresses) && $multipleAddresses}
 	{foreach from=$multipleAddresses item=address name=myLoop}
-	{if $address.object.is_rfc == 0}
+	{if isset($address.object.is_rfc) && $address.object.is_rfc == 0}
 	<script>
 		var id_{$address.object.id|intval} = {$address.object|@json_encode};
 	</script>

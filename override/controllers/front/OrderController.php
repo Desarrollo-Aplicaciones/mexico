@@ -355,6 +355,7 @@ class OrderController extends OrderControllerCore
                             $this->context->smarty->assign('datacustomer', Utilities::data_customer_billing( $idcliente ) );
 
             // datos address RFC
+                   if(isset($idcliente))
                     $this->context->smarty->assign('dataaddressrfc', Utilities::data_address_RFC( $idcliente ) );
 
                     $this->context->smarty->assign(array(
@@ -529,7 +530,7 @@ public function processAddress()
               	}
               }  
             // valida si se debe mostrar la opción de entrega nocturna
-              if(Utilities::is_rules_entrega_nocturna($this->parameters['id_regla_entrga_nocturna']) && $opcional ){
+              if( isset($this->parameters['id_regla_entrga_nocturna']) && Utilities::is_rules_entrega_nocturna($this->parameters['id_regla_entrga_nocturna']) && $opcional ){
               	
                 // valida si la dirección actual tiene localidad y barrio, y si se debe mostrar la entrega nocturna
               	$result = Utilities::is_localidad_barrio((int)$this->context->cart->id_address_delivery);

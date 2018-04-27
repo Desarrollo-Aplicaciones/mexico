@@ -216,7 +216,7 @@ function hide_date_delivered(id_address){
 		{if $direcciones}			
 			{foreach from=$direcciones item=nr}
 
-				{if $nr['is_rfc'] neq 1}
+				{if isset($nr['is_rfc']) neq 1}
 				<div class="direccion" onclick="changeAddress({$nr['id_address']});">
 						<div class="radio-direccion">
 							<input type="radio" id="rb{$nr['id_address']}" name="id_address_delivery" value="{$nr['id_address']}" onchange="enable({$nr['id_address']});updateAddressesDisplay();{if $opc}updateAddressSelection();{/if}" {if $nr['id_address'] == $cart->id_address_delivery}checked="checked"{/if}"/>

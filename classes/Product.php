@@ -3897,7 +3897,8 @@ class ProductCore extends ObjectModel
             if (is_array($query_result))
                 foreach ($query_result as $row){
                     if ($row2 = Product::getProductProperties($id_lang, $row)){
-                        $result = self::getPriceLabeled( $row2['id_product'] );
+                        $result = (new Product)->getPriceLabeled( $row2['id_product'] );;
+                        //$result = Product::getPriceLabeled( $row2['id_product'] );
                         if ( $result ) {
                             $row2['reduction'] = 5; 
                             $row2['price_without_reduction'] = $result;
