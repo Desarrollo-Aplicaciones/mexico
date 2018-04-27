@@ -581,6 +581,7 @@ XML;
                     }
                 }
                 
+                $arr_xml_cargar_p = array();  
                 foreach ($list_products as $key_prod => $value) {
                     if ($list_products[$key_prod]['unit_price_tax_excl'] != 0) {
                         $base = number_format($list_products[$key_prod]['total_price_tax_excl'], 2, '.', '');
