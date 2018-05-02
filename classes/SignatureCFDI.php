@@ -50,6 +50,7 @@ class SignatureCFDICore extends ObjectModel
 	odr.current_state,
     odr.id_employee_close_order,
 	odr.module,
+    odr.payment_method_sat,
 	payu.method,
 	payu.extras,
 
@@ -138,7 +139,7 @@ WHERE
     {
         $factura = new Facturaxion();
         
-        $sello_SAT = $factura->RegistroTimbrado($this->order->id, 1);
+       $sello_SAT = $factura->RegistroTimbrado($this->order->id, 1);
         
         if ($sello_SAT == 0) {
             
@@ -150,15 +151,13 @@ WHERE
             $paymentMethod = 'No Identificado';
             $lastDigits = null;
             
+            
             if (isset($orderDetail['payment_method_sat']) && ! empty($orderDetail['payment_method_sat'])) {
-                $paymentMethod = $orderDetail['payment_method_sat'];
+                $paymentMethod = $orderDetail['payment_method_sat'].'-payment_method_sat';
             } elseif (isset($orderDetail['medio_de_pago']) && ! empty($orderDetail['medio_de_pago'])) {
                 $paymentMethod = $orderDetail['medio_de_pago'];
             }
             
-            if (isset($orderDetail['medio_de_pago']) && ! empty($orderDetail['medio_de_pago'])) {
-                $paymentMethod = $orderDetail['medio_de_pago'];
-            }
             
             if (isset($orderDetail['json_request']) && ! empty($orderDetail['json_request'])) {
                 $lastDigits = $orderDetail['json_request'];
@@ -223,7 +222,7 @@ WHERE
                     break;
             }
         } else {
-            error_log("<La orden: " . $this->order->id . " ya esta firmada.>");
+            error_log("<La orden: " . $this->order->id . " ya esta Timbrada.>");
         }
         
         return $sello_SAT;
