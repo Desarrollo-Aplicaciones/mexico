@@ -3,6 +3,7 @@
 class Order extends OrderCore {  
     
     public $id_employee_close_order;
+    public $payment_method_sat;
     
     
     public static $definition = array(
@@ -21,6 +22,7 @@ class Order extends OrderCore {
 			'current_state' => 				array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId'),
 			'secure_key' => 				array('type' => self::TYPE_STRING, 'validate' => 'isMd5'),
 			'payment' => 					array('type' => self::TYPE_STRING, 'validate' => 'isGenericName', 'required' => true),
+		    'payment_method_sat' => 		array('type' => self::TYPE_STRING, 'validate' => 'isGenericName'),
 			'module' => 					array('type' => self::TYPE_STRING, 'validate' => 'isModuleName', 'required' => true),
 			'recyclable' => 				array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
 			'gift' => 						array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),

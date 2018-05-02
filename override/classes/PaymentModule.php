@@ -284,7 +284,8 @@ die();*/
                     if (isset(Context::getContext()->employee->id))
                     $order->id_employee_close_order = Context::getContext()->employee->id;
 //echo "<br>3 order->total_paid:". $order->total_paid;
-//exit();
+//exit();           
+                    $order->payment_method_sat = Tools::getValue('payment_method_sat');
                     $result = $order->add();
                     /************ Progressive Discounts ************/
                     $ProgressiveDiscounts = new Progressivediscounts();

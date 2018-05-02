@@ -48,6 +48,7 @@ class SignatureCFDICore extends ObjectModel
 	cus.identification,
 	adr.dni,
 	odr.current_state,
+    odr.id_employee_close_order,
 	odr.module,
 	payu.method,
 	payu.extras,
@@ -149,6 +150,12 @@ WHERE
             $paymentMethod = 'No Identificado';
             $lastDigits = null;
             
+            if (isset($orderDetail['payment_method_sat']) && ! empty($orderDetail['payment_method_sat'])) {
+                $paymentMethod = $orderDetail['payment_method_sat'];
+            } elseif (isset($orderDetail['medio_de_pago']) && ! empty($orderDetail['medio_de_pago'])) {
+                $paymentMethod = $orderDetail['medio_de_pago'];
+            }
+            
             if (isset($orderDetail['medio_de_pago']) && ! empty($orderDetail['medio_de_pago'])) {
                 $paymentMethod = $orderDetail['medio_de_pago'];
             }
@@ -208,12 +215,12 @@ WHERE
             $totals = $this->getTotals();
             $sello_SAT = $factura->solicitud2($paymentMethod, $this->cupon_xml_calc, $list_products, $invoice_address, $this->order, $totals['array_ivas'], $totals['val_total_de_ivas'], $this->order->current_state, $obligar_timbrado, $hacer_debug);
             $count = 0;
-           while ( !is_array($sello_SAT ) ){
+            while (! is_array($sello_SAT)) {
                 usleep(800000);
                 $sello_SAT = $factura->RegistroTimbrado($this->order->id, 1);
-               $count ++;
-               if($count >= 8)
-                   break;
+                $count ++;
+                if ($count >= 8)
+                    break;
             }
         } else {
             error_log("<La orden: " . $this->order->id . " ya esta firmada.>");

@@ -1362,7 +1362,7 @@ public function processAjax()
 												$employee = new Employee((int)Context::getContext()->cookie->id_employee);
 												$cod_pagar = Tools::getValue('cod_pagar');
 												$private_message = Tools::getValue('private_message');
-                                                                                                
+												
 												if($payment_module->validateOrder(
 												   (int)$cart->id, (int)$id_order_state,
 												   $cart->getOrderTotal(true, Cart::BOTH), !empty($cod_pagar) ? $cod_pagar : $payment_module->displayName, $this->l('Manual order -- Employee:').
@@ -2440,6 +2440,7 @@ public function renderForm()
 	                               'show_toolbar' => $this->show_toolbar,
 	                               'toolbar_btn' => $this->toolbar_btn,
 	                               'toolbar_scroll' => $this->toolbar_scroll,
+	                               'payment_methods_sat' => $this->listPaymentMethodsSat(),
 	                               'title' => array($this->l('Orders'), $this->l('Create order'))
 	                               ));
 $this->content .= $this->createTemplate('form.tpl')->fetch();
@@ -2485,7 +2486,17 @@ public function ivaProduct($id_product)
     	if (isset($employee_name) && !empty($employee_name)) {
     		$this->extra_vars_tpl['employee_name'] = $employee_name; 
     	}
-    }    
+    } 
+    
+    private function listPaymentMethodsSat(){
+        
+        $sql = 'select `value`,`name`
+        FROM '._DB_PREFIX_.'payment_methods_sat';
+        if ($results = Db::getInstance()->ExecuteS($sql))
+            return  $results;
+        return null;
+        
+    }
 
 }
 

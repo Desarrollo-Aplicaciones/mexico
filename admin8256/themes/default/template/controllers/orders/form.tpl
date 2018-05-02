@@ -1715,6 +1715,15 @@
 				{/foreach}
 			</select>
 		</div>
+		<label>Modo de pago SAT</label>
+			<div class="margin-form">
+			<select name="payment_method_sat" id="payment_method_sat">
+				{foreach from=$payment_methods_sat item='payment_method'}
+					<option value="{$payment_method.value}" >{$payment_method.name}</option>
+				{/foreach}
+			</select>
+		</div>
+
 		<div class="margin-form">
 			<input type="submit" name="submitAddOrder" class="button" value="{l s='Create the order'}" onclick="validarCodPago(this);" id="cod_submit"/>
 		</div>
