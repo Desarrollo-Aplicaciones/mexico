@@ -62,7 +62,7 @@ class AdminOrdersController extends AdminOrdersControllerCore
 		$this->_orderWay = 'DESC';
 
 		$statuses_array = array();
-		$statuses = OrderState::getOrderStates((int)$this->context->language->id,(int)$this->context->employee->id_profile);
+		$statuses = OrderState::getOrderStates((int)$this->context->language->id, (int)$this->context->employee->id_profile, false, true);
 
 		foreach ($statuses as $status)
 			$statuses_array[$status['id_order_state']] = $status['name'];
