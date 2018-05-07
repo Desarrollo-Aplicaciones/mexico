@@ -17,7 +17,8 @@ INNER JOIN ps_registry_product_list AS rpl ON (cr.id_registry=rpl.id_registry)
 INNER JOIN ps_product AS p ON (p.id_product=rpl.id_product)
 INNER JOIN ps_product_lang AS pl ON (pl.id_product=p.id_product)
 LEFT JOIN ps_product_black_list AS pbl ON (pbl.id_product=pl.id_product)
-WHERE rpl.state = 1 AND p.active=1';
+WHERE  rpl.state = 1;';
+
 $resultsC = Db::getInstance()->ExecuteS($sqlC); 
 echo "\r\nejecuta query"; 
 $objPHPExcel = new PHPExcel();
