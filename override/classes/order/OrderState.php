@@ -32,10 +32,10 @@ class OrderState extends OrderStateCore
 	* @param integer $id_lang Language id for state name
 	* @return array Order states
 	*/
-	public static function getOrderStates($id_lang, $id_profile = NULL, $flag_order_back = false)
+	public static function getOrderStates($id_lang, $id_profile = NULL, $flag_order_back = false, $without_status_profile = false)
 	{ 
 		$sql = '';
-		if(!is_null($id_profile) && is_int($id_profile)){
+		if(!is_null($id_profile) && is_int($id_profile) && !$without_status_profile){
 			$sql = 'SELECT * 
 					FROM
 						`'._DB_PREFIX_.'order_state` os INNER JOIN `'._DB_PREFIX_.'order_states_profile` osp ON(os.`id_order_state` = osp.`id_order_state` )
