@@ -85,3 +85,4 @@ img/st/*
 img/su/*
 !/modules/csslider
 !themes/gomarket/modules/fbloginblock
+modules/csslider/images/*
